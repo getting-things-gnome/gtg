@@ -120,8 +120,20 @@ class MainWindow(Gtk.ApplicationWindow):
         self.sidebar = Sidebar(app, app.ds)
         self.sidebar_container.set_child(self.sidebar)
 
-        self.task_pane = TaskPane(self)
-        self.open_pane.set_child(self.task_pane)
+        self.panes = {
+            'active': None,
+            'workview': None,
+            'closed': None,
+        }
+
+        self.panes['active'] = TaskPane(self, 'active')
+        self.open_pane.set_child(self.panes['active'])
+
+        self.panes['workview'] = TaskPane(self, 'workview')
+        self.actionable_pane.set_child(self.panes['workview'])
+
+        self.panes['closed'] = TaskPane(self, 'closed')
+        self.closed_pane.set_child(self.panes['closed'])
 
         # Treeviews handlers
         # self.vtree_panes = {}
@@ -870,7 +882,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # signal the event for the plugins to catch
         GLib.idle_add(self.emit, "task-added-via-quick-add", task.id)
-        self.task_pane.select_last()
+        self.get_pane().select_last()
 
 
     def on_tag_treeview_click_begin(self, gesture, sequence):
@@ -1038,14 +1050,14 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_add_subtask(self, widget=None):
 
-        for task in self.task_pane.get_selection():
+        for task in self.get_pane().get_selection():
             new_task = self.app.ds.tasks.new(parent=task.id)
             new_task.tags = task.tags
             self.app.open_task(new_task)
             
 
     def on_add_parent(self, widget=None):
-        selection = self.task_pane.get_selection()
+        selection = self.get_pane().get_selection()
         
         if not selection:
             return
@@ -1075,7 +1087,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
 
     def on_edit_active_task(self, widget=None, row=None, col=None):
-        for task in self.task_pane.get_selection():
+        for task in self.get_pane().get_selection():
             self.app.open_task(task)
 
     def on_edit_done_task(self, widget, row=None, col=None):
@@ -1088,7 +1100,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # If we don't have a parameter, then take the selection in the
         # treeview
         if not tid:
-            tasks_todelete = self.task_pane.get_selection()
+            tasks_todelete = self.get_pane().get_selection()
 
             if not tasks_todelete:
                 return
@@ -1100,7 +1112,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
 
     def update_start_date(self, widget, new_start_date):
-        for task in self.task_pane.get_selection():
+        for task in self.get_pane().get_selection():
             task.date_start = new_start_date
 
     def update_start_to_next_day(self, day_number):
@@ -1108,7 +1120,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         next_day = Date.today() + datetime.timedelta(days=day_number)
 
-        for task in self.task_pane.get_selection():
+        for task in self.get_pane().get_selection():
             task.date_start = next_day
 
 
@@ -1165,7 +1177,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def update_due_date(self, widget, new_due_date):
         due_date = Date.parse(new_due_date)
 
-        for task in self.task_pane.get_selection():
+        for task in self.get_pane().get_selection():
             task.date_due = due_date
 
     def on_set_due_today(self, action, param):
@@ -1269,50 +1281,50 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_modify_tags(self, action, params):
         """Open modify tags dialog for selected tasks."""
 
-        tasks = self.task_pane.get_selection()
+        tasks = self.get_pane().get_selection()
         self.modifytags_dialog.modify_tags(tasks)
 
 
     def on_sort_start(self, action, params) -> None:
         """Callback when changing task sorting."""
 
-        self.task_pane.set_sorter('Start')
+        self.get_pane().set_sorter('Start')
         
 
     def on_sort_due(self, action, params) -> None:
         """Callback when changing task sorting."""
         
-        self.task_pane.set_sorter('Due')
+        self.get_pane().set_sorter('Due')
         
 
     def on_sort_added(self, action, params) -> None:
         """Callback when changing task sorting."""
         
-        self.task_pane.set_sorter('Added')
+        self.get_pane().set_sorter('Added')
         
 
     def on_sort_title(self, action, params) -> None:
         """Callback when changing task sorting."""
         
-        self.task_pane.set_sorter('Title')
+        self.get_pane().set_sorter('Title')
         
 
     def on_sort_modified(self, action, params) -> None:
         """Callback when changing task sorting."""
         
-        self.task_pane.set_sorter('Modified')
+        self.get_pane().set_sorter('Modified')
         
 
     def on_sort_added(self, action, params) -> None:
         """Callback when changing task sorting."""
         
-        self.task_pane.set_sorter('Added')
+        self.get_pane().set_sorter('Added')
         
 
     def on_sort_tags(self, action, params) -> None:
         """Callback when changing task sorting."""
         
-        self.task_pane.set_sorter('Tags')
+        self.get_pane().set_sorter('Tags')
         
 
     def close_all_task_editors(self, task_id):
@@ -1332,15 +1344,15 @@ class MainWindow(Gtk.ApplicationWindow):
 
 
     def on_mark_as_done(self, widget=None):
-        for task in self.task_pane.get_selection():
+        for task in self.get_pane().get_selection():
             task.toggle_active()
 
     def on_dismiss_task(self, widget=None):
-        for task in self.task_pane.get_selection():
+        for task in self.get_pane().get_selection():
             task.toggle_dismiss()
 
     def on_reopen_task(self, widget=None):
-        for task in self.task_pane.get_selection():
+        for task in self.get_pane().get_selection():
             task.toggle_active()
 
 
@@ -1390,7 +1402,6 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         current_pane = self.get_selected_pane()
         self.config.set('view', current_pane)
-        self.reapply_filter(current_pane)
 
 # PUBLIC METHODS ###########################################################
     def get_menu(self):
@@ -1432,6 +1443,13 @@ class MainWindow(Gtk.ApplicationWindow):
         current = self.stack_switcher.get_stack().get_visible_child_name()
 
         return PANE_STACK_NAMES_MAP[current]
+
+
+    def get_pane(self):
+        """Get the selected pane."""
+        
+        return self.stack_switcher.get_stack().get_visible_child().get_child().get_child()
+        
 
     def get_selected_tree(self, refresh: bool = False):
         return self.req.get_tasks_tree(name=self.get_selected_pane(),
