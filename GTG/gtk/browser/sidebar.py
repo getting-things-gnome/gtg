@@ -395,7 +395,7 @@ class Sidebar(Gtk.ScrolledWindow):
         index = listbox.get_selected_row().get_index()
 
         if index == 0:
-            self.app.browser.task_pane.set_filter_tags()
+            self.app.browser.get_pane().set_filter_tags()
             
 
     def on_search_selected(self, model, position, user_data=None):
@@ -427,7 +427,7 @@ class Sidebar(Gtk.ScrolledWindow):
         self.unselect_general_box()
         self.unselect_searches()
 
-        self.app.browser.task_pane.set_filter_tags(set(self.selected_tags()))
+        self.app.browser.get_pane().set_filter_tags(set(self.selected_tags()))
 
 
     def on_tag_reveal(self, event) -> None:

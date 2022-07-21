@@ -20,7 +20,7 @@
 
 from gi.repository import Gtk, GObject, Gdk
 from GTG.core.tags2 import Tag2
-from GTG.core.tasks2 import Task2
+from GTG.core.tasks2 import Task2, Status
 
 
 def unwrap(row, expected_type):
@@ -49,24 +49,30 @@ class TagEmptyFilter(Gtk.Filter):
         return self.ds.task_count[self.pane].get(tag.name, False)
 
 
-class TaskFilter(Gtk.Filter):
-    __gtype_name__ = 'TaskFilter'
+class TaskPaneFilter(Gtk.Filter):
+    __gtype_name__ = 'TaskPaneFilter'
 
-    def __init__(self, ds, status, tags = []):
-        super(TaskFilter, self).__init__()
+    def __init__(self, ds, pane, tags = []):
+        super(TaskPaneFilter, self).__init__()
         self.ds = ds
-        self.status = status
+        self.pane = pane
         self.tags = set()
 
 
     def do_match(self, item) -> bool:
         task = unwrap(item, Task2)
 
-        if task.status is self.status:
+        if self.pane == 'active':
+            show = task.status is Status.ACTIVE
+        elif self.pane == 'workview':
+            show = task.is_actionable
+        elif self.pane == 'closed':
+            show = task.status is not Status.ACTIVE
+
+        if show:
             if self.tags:
                 return len(self.tags.intersection(set(task.tags))) >= len(self.tags)
             else:
                 return True
         else:
             return False
- 

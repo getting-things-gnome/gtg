@@ -20,9 +20,10 @@
 
 from gi.repository import Gtk, GObject, Gdk, Gio
 from GTG.core.tasks2 import Task2, Status
-from GTG.core.filters import TaskFilter
+from GTG.core.filters import TaskPaneFilter
 from GTG.core.sorters import *
 from GTG.gtk.browser.tag_pill import TagPill
+from gettext import gettext as _
 
 
 class TaskBox(Gtk.Box):
@@ -45,12 +46,13 @@ def unwrap(row, expected_type):
 class TaskPane(Gtk.ScrolledWindow):
     """The task pane widget"""
     
-    def __init__(self, browser):
+    def __init__(self, browser, pane):
 
         super(TaskPane, self).__init__()
         self.ds = browser.app.ds
         self.app = browser.app
         self.browser = browser
+        self.pane = pane
 
         self.set_vexpand(True)
         self.set_hexpand(True)
@@ -69,12 +71,11 @@ class TaskPane(Gtk.ScrolledWindow):
         title_box.set_margin_start(24)
         title_box.set_margin_end(24)
         
-        title = Gtk.Label()
-        title.set_halign(Gtk.Align.START)
-        title.set_hexpand(True)
-        title.set_text('All Open Tasks')
-        title.add_css_class('title-1')
-        title_box.append(title)
+        self.title = Gtk.Label()
+        self.title.set_halign(Gtk.Align.START)
+        self.title.set_hexpand(True)
+        self.title.add_css_class('title-1')
+        title_box.append(self.title)
         
         sort_btn = Gtk.MenuButton()
         sort_btn.set_icon_name('view-more-symbolic')
@@ -89,7 +90,7 @@ class TaskPane(Gtk.ScrolledWindow):
         # -------------------------------------------------------------------------------
 
         filtered = Gtk.FilterListModel()
-        self.filter = TaskFilter(self.app.ds, Status.ACTIVE)
+        self.filter = TaskPaneFilter(self.app.ds, pane)
         filtered.set_model(self.app.ds.tasks.tree_model)
         filtered.set_filter(self.filter)
 
@@ -118,17 +119,44 @@ class TaskPane(Gtk.ScrolledWindow):
         wrap_box.append(view)
         self.set_child(wrap_box)
 
+        self.set_title()
 
-    def set_filter_status(self, status=Status.ACTIVE) -> None:
+
+    def set_title(self) -> None:
+        """Change pane title."""
+        
+        if not self.filter.tags:
+           if self.pane == 'active':
+               self.title.set_text(_('All Open Tasks'))
+           if self.pane == 'workview':
+               self.title.set_text(_('Actionable Tasks'))
+           if self.pane == 'closed':
+               self.title.set_text(_('All Closed Tasks'))
+               
+        else:
+           tags = ', '.join('@' + t.name for t in self.filter.tags)
+
+           if self.pane == 'active':
+               self.title.set_text(_('{0} (Open)'.format(tags)))
+           if self.pane == 'workview':
+               self.title.set_text(_('{0} (Actionable)'.format(tags)))
+           if self.pane == 'closed':
+               self.title.set_text(_('{0} (Closed)'.format(tags)))
+            
+
+    def set_filter_pane(self, pane) -> None:
         """Change tasks filter."""
 
-        self.filter.status = status
+        self.pane = pane
+        self.filter.pane = pane
+        self.set_title()
 
 
     def set_filter_tags(self, tags=[]) -> None:
         """Change tasks filter."""
 
         self.filter.tags = tags
+        self.set_title()
 
 
     def set_sorter(self, method=None) -> None:
