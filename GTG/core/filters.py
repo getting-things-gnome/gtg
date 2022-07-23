@@ -21,6 +21,7 @@
 from gi.repository import Gtk, GObject, Gdk
 from GTG.core.tags2 import Tag2
 from GTG.core.tasks2 import Task2, Status
+from GTG.core import search
 
 
 def unwrap(row, expected_type):
@@ -76,3 +77,27 @@ class TaskPaneFilter(Gtk.Filter):
                 return True
         else:
             return False
+
+
+class SearchTaskFilter(Gtk.Filter):
+    __gtype_name__ = 'SearchTaskFilter'
+
+    def __init__(self, ds):
+        super(SearchTaskFilter, self).__init__()
+        self.ds = ds
+        self.query = ''
+        self.checks = None
+    
+
+    def set_query(self, query: str) -> None:
+        self.query = query
+        
+        try:
+            self.checks = search.parse_search_query(query)
+        except search.InvalidQuery:
+            self.checks = None
+
+
+    def do_match(self, item) -> bool:
+        task = unwrap(item, Task2)
+        return search.search_filter(task, self.checks)
