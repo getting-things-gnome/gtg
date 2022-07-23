@@ -149,6 +149,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
         self.pane = pane
         self.filter.pane = pane
+        self.filter.changed(Gtk.FilterChange.DIFFERENT)
         self.set_title()
 
 
@@ -156,6 +157,7 @@ class TaskPane(Gtk.ScrolledWindow):
         """Change tasks filter."""
 
         self.filter.tags = tags
+        self.filter.changed(Gtk.FilterChange.DIFFERENT)
         self.set_title()
 
 
