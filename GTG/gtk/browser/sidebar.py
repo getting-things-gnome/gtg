@@ -76,7 +76,6 @@ class Sidebar(Gtk.ScrolledWindow):
 
         self.general_box = Gtk.ListBox()
         self.general_box.get_style_context().add_class('navigation-sidebar')
-        self.box_handle = self.general_box.connect('row-selected', self.on_general_box_selected)
 
         all_count = str(ds.task_count['open']['all'])
         untag_count = str(ds.task_count['open']['untagged'])
@@ -91,6 +90,9 @@ class Sidebar(Gtk.ScrolledWindow):
         separator = Gtk.Separator()
         separator.set_sensitive(False)
         wrap_box.append(separator)
+
+        self.general_box.select_row(self.general_box.get_row_at_index(0))
+        self.box_handle = self.general_box.connect('row-selected', self.on_general_box_selected)
         
         # -------------------------------------------------------------------------------
         # Saved Searches Section
@@ -115,6 +117,7 @@ class Sidebar(Gtk.ScrolledWindow):
 
         self.searches_selection = Gtk.SingleSelection.new(ds.saved_searches.model)
         self.searches_selection.set_can_unselect(True)
+        self.searches_selection.unselect_item(0)
         self.search_handle = self.searches_selection.connect('selection-changed', self.on_search_selected)
 
         searches_signals = Gtk.SignalListItemFactory()
