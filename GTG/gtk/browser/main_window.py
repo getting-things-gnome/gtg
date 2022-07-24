@@ -517,12 +517,10 @@ class MainWindow(Gtk.ApplicationWindow):
             self.search_button.set_active(False)
             self.searchbar.set_search_mode(False)
             self.search_entry.set_text('')
-            self.get_pane().toggle_search_filter()
         else:
             self.search_button.set_active(True)
             self.searchbar.set_search_mode(True)
             self.search_entry.grab_focus()
-            self.get_pane().toggle_search_filter()
 
 
     def _try_filter_by_query(self, query, refresh: bool = True):

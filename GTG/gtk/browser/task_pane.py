@@ -90,10 +90,12 @@ class TaskPane(Gtk.ScrolledWindow):
         # Task List
         # -------------------------------------------------------------------------------
 
+        self.search_filter = SearchTaskFilter(self.ds)
+        self.task_filter = TaskPaneFilter(self.app.ds, pane) 
+
         self.filtered = Gtk.FilterListModel()
-        self.filter = TaskPaneFilter(self.app.ds, pane)
         self.filtered.set_model(self.app.ds.tasks.tree_model)
-        self.filtered.set_filter(self.filter)
+        self.filtered.set_filter(self.task_filter)
 
         self.sort_model = Gtk.TreeListRowSorter()
         
@@ -125,8 +127,8 @@ class TaskPane(Gtk.ScrolledWindow):
 
     def set_title(self) -> None:
         """Change pane title."""
-        
-        if not self.filter.tags:
+
+        if not self.task_filter.tags:
            if self.pane == 'active':
                self.title.set_text(_('All Open Tasks'))
            if self.pane == 'workview':
@@ -135,7 +137,7 @@ class TaskPane(Gtk.ScrolledWindow):
                self.title.set_text(_('All Closed Tasks'))
                
         else:
-           tags = ', '.join('@' + t.name for t in self.filter.tags)
+           tags = ', '.join('@' + t.name for t in self.task_filter.tags)
 
            if self.pane == 'active':
                self.title.set_text(_('{0} (Open)'.format(tags)))
@@ -145,42 +147,37 @@ class TaskPane(Gtk.ScrolledWindow):
                self.title.set_text(_('{0} (Closed)'.format(tags)))
             
 
-    def toggle_search_filter(self) -> None:
-        if self.searching:
-            self.searching = False
-            self.filter = TaskPaneFilter(self.ds, self.pane)
-        else:
-            self.searching = True
-            self.filter = SearchTaskFilter(self.ds)
-
-        self.filtered.set_filter(self.filter)
-
     def set_search_query(self, query) -> None:
         """Change tasks filter."""
 
-        try:
-            self.filter.set_query(query)
-            self.filter.changed(Gtk.FilterChange.DIFFERENT)
-        except AttributeError:
-            # Could happen if toggle_search_filter 
-            # wasn't called first
-            pass
+        self.filtered.set_filter(self.search_filter)
+        self.search_filter.set_query(query)
+        self.search_filter.changed(Gtk.FilterChange.DIFFERENT)
+        self.searching = True
 
 
     def set_filter_pane(self, pane) -> None:
         """Change tasks filter."""
 
+        if self.searching:
+            self.searching = False
+            self.filtered.set_filter(self.task_filter)
+
         self.pane = pane
-        self.filter.pane = pane
-        self.filter.changed(Gtk.FilterChange.DIFFERENT)
+        self.task_filter.pane = pane
+        self.task_filter.changed(Gtk.FilterChange.DIFFERENT)
         self.set_title()
 
 
     def set_filter_tags(self, tags=[]) -> None:
         """Change tasks filter."""
 
-        self.filter.tags = tags
-        self.filter.changed(Gtk.FilterChange.DIFFERENT)
+        if self.searching:
+            self.searching = False
+            self.filtered.set_filter(self.task_filter)
+
+        self.task_filter.tags = tags
+        self.task_filter.changed(Gtk.FilterChange.DIFFERENT)
         self.set_title()
 
 
