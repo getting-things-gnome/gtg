@@ -247,7 +247,7 @@ def search_filter(task, parameters=None):
     """ Check if task satisfies all search parameters """
 
     if parameters is None or 'q' not in parameters:
-        return False
+        return True
 
     def check_commands(commands_list):
         """ Execute search commands
