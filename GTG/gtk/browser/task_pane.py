@@ -20,7 +20,7 @@
 
 from gi.repository import Gtk, GObject, Gdk, Gio
 from GTG.core.tasks2 import Task2, Status
-from GTG.core.filters import TaskPaneFilter
+from GTG.core.filters import TaskPaneFilter, SearchTaskFilter
 from GTG.core.sorters import *
 from GTG.gtk.browser.tag_pill import TagPill
 from gettext import gettext as _
@@ -53,6 +53,7 @@ class TaskPane(Gtk.ScrolledWindow):
         self.app = browser.app
         self.browser = browser
         self.pane = pane
+        self.searching = False
 
         self.set_vexpand(True)
         self.set_hexpand(True)
@@ -89,15 +90,15 @@ class TaskPane(Gtk.ScrolledWindow):
         # Task List
         # -------------------------------------------------------------------------------
 
-        filtered = Gtk.FilterListModel()
+        self.filtered = Gtk.FilterListModel()
         self.filter = TaskPaneFilter(self.app.ds, pane)
-        filtered.set_model(self.app.ds.tasks.tree_model)
-        filtered.set_filter(self.filter)
+        self.filtered.set_model(self.app.ds.tasks.tree_model)
+        self.filtered.set_filter(self.filter)
 
         self.sort_model = Gtk.TreeListRowSorter()
         
         main_sorter = Gtk.SortListModel()
-        main_sorter.set_model(filtered)
+        main_sorter.set_model(self.filtered)
         main_sorter.set_sorter(self.sort_model)
 
         self.task_selection = Gtk.MultiSelection.new(main_sorter)
@@ -144,6 +145,28 @@ class TaskPane(Gtk.ScrolledWindow):
                self.title.set_text(_('{0} (Closed)'.format(tags)))
             
 
+    def toggle_search_filter(self) -> None:
+        if self.searching:
+            self.searching = False
+            self.filter = TaskPaneFilter(self.ds, self.pane)
+        else:
+            self.searching = True
+            self.filter = SearchTaskFilter(self.ds)
+
+        self.filtered.set_filter(self.filter)
+
+    def set_search_query(self, query) -> None:
+        """Change tasks filter."""
+
+        try:
+            self.filter.set_query(query)
+            self.filter.changed(Gtk.FilterChange.DIFFERENT)
+        except AttributeError:
+            # Could happen if toggle_search_filter 
+            # wasn't called first
+            pass
+
+
     def set_filter_pane(self, pane) -> None:
         """Change tasks filter."""
 
@@ -177,7 +200,8 @@ class TaskPane(Gtk.ScrolledWindow):
         elif method == 'Tags':
             sorter = TaskTagSorter()
         elif method == 'Title':
-            sorter = TaskTitleSorter()
+            sort
+            er = TaskTitleSorter()
 
         self.sort_model.set_sorter(sorter)
 

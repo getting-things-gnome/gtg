@@ -517,11 +517,13 @@ class MainWindow(Gtk.ApplicationWindow):
             self.search_button.set_active(False)
             self.searchbar.set_search_mode(False)
             self.search_entry.set_text('')
-            self.get_selected_tree().unapply_filter(SEARCH_TAG)
+            self.get_pane().toggle_search_filter()
         else:
             self.search_button.set_active(True)
             self.searchbar.set_search_mode(True)
             self.search_entry.grab_focus()
+            self.get_pane().toggle_search_filter()
+
 
     def _try_filter_by_query(self, query, refresh: bool = True):
         log.debug("Searching for %r", query)
@@ -537,7 +539,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def do_search(self):
         """Perform the actual search and cancel the timeout."""
 
-        self._try_filter_by_query(self.search_entry.get_text())
+        self.get_pane().set_search_query(self.search_entry.get_text())
         GLib.source_remove(self.search_timeout)
         self.search_timeout = None
 
