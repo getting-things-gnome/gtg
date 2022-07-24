@@ -404,6 +404,9 @@ class Sidebar(Gtk.ScrolledWindow):
         self.unselect_tags()
         self.unselect_general_box()
 
+        item = model.get_item(position)
+        self.app.browser.get_pane().set_search_query(item.query)
+
 
     def selected_tags(self, names_only: bool = False) -> list:
         """Get a list of selected tags"""

@@ -22,6 +22,7 @@ import threading
 import datetime
 import logging
 import ast
+import re
 #import liblarch_gtk  # Just for types
 
 from gi.repository import GObject, Gtk, Gdk, Gio, GLib
@@ -557,15 +558,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_save_search(self, action, param):
         query = self.search_entry.get_text()
+        name = re.sub(r'!(?=\w)+', '', query) 
 
-        # Try if this is a new search tag and save it correctly
-        tag_id = self.req.new_search_tag(query)
+        self.app.ds.saved_searches.new(name, query)
 
-        # Apply new search right now
-        if self.tagtreeview is not None:
-            self.select_search_tag(tag_id)
-        else:
-            self.get_selected_tree().apply_filter(tag_id)
 
     def select_search_tag(self, tag_id):
         tag = self.req.get_tag(tag_id)
