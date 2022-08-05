@@ -98,6 +98,13 @@ class Task2(GObject.Object):
         self._date_closed = Date.no_date()
         self._date_modified = Date(datetime.datetime.now())
 
+        self._has_date_due = False
+        self._has_date_start = False
+
+        self._date_due_str = ''
+        self._date_start_str = ''
+        self._is_active = True
+
         super(Task2, self).__init__()
 
 
@@ -122,10 +129,12 @@ class Task2(GObject.Object):
 
         if self.status is Status.ACTIVE:
             self.status = Status.DONE
+            self.is_active = False
             self.date_closed = Date.today()
 
         else:
             self.status = Status.ACTIVE
+            self.is_active = True
             self.date_closed = Date.no_date()
 
             if self.parent and self.parent.status is not Status.ACTIVE:
@@ -141,10 +150,12 @@ class Task2(GObject.Object):
 
         if self.status is Status.ACTIVE:
             self.status = Status.DISMISSED
+            self.is_active = False
             self.date_closed = Date.today()
 
         elif self.status is Status.DISMISSED:
             self.status = Status.ACTIVE
+            self.is_active = True
             self.date_closed = Date.no_date()
 
             if self.parent and self.parent.status is not Status.ACTIVE:
@@ -159,6 +170,7 @@ class Task2(GObject.Object):
         """Set status for task."""
 
         self.status = status
+        self.is_active = (status == Status.ACTIVE)
 
         for child in self.children:
             child.set_status(status)
@@ -172,6 +184,8 @@ class Task2(GObject.Object):
     @date_due.setter
     def date_due(self, value: Date) -> None:
         self._date_due = value
+        self.has_date_due = bool(value)
+        self.date_due_str = self._date_due.to_readable_string()
 
         if not value or value.is_fuzzy():
             return
@@ -208,6 +222,8 @@ class Task2(GObject.Object):
     @date_start.setter
     def date_start(self, value: Any) -> None:
         self._date_start = Date(value)
+        self.has_date_start = bool(value)
+        self.date_start_str = self._date_start.to_readable_string()
 
 
     @property
@@ -292,6 +308,65 @@ class Task2(GObject.Object):
         """Update the modified property."""
 
         self._date_modified = Date(datetime.datetime.now())
+
+
+    # -----------------------------------------------------------------------
+    # Bind Properties
+    #
+    # Since PyGobject doesn't support bind_property_full() yet
+    # we can't do complex binds. These props below serve as a 
+    # workaround so that we can use them with the regular 
+    # bind_property().
+    # -----------------------------------------------------------------------
+
+    @GObject.Property(type=bool, default=False)
+    def has_date_due(self) -> bool:
+        return self._has_date_due
+
+
+    @has_date_due.setter
+    def set_has_date_due(self, value) -> None:
+        self._has_date_due = value
+
+
+    @GObject.Property(type=bool, default=False)
+    def has_date_start(self) -> bool:
+        return self._has_date_start
+
+
+    @has_date_start.setter
+    def set_has_date_start(self, value) -> None:
+        self._has_date_start = value
+
+
+    @GObject.Property(type=str)
+    def date_start_str(self) -> str:
+        return self._date_start_str
+
+
+    @date_start_str.setter
+    def set_date_start_str(self, value) -> None:
+        self._date_start_str = value
+
+
+    @GObject.Property(type=str)
+    def date_due_str(self) -> str:
+        return self._date_due_str
+
+
+    @date_due_str.setter
+    def set_date_due_str(self, value) -> None:
+        self._date_due_str = value
+
+
+    @GObject.Property(type=bool, default=True)
+    def is_active(self) -> bool:
+        return self._is_active
+
+
+    @is_active.setter
+    def set_is_active(self, value) -> None:
+        self._is_active = value
 
 
     def __str__(self) -> str:

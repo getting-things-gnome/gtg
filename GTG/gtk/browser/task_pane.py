@@ -26,10 +26,23 @@ from GTG.gtk.browser.tag_pill import TagPill
 from gettext import gettext as _
 
 
+BIND_FLAGS = GObject.BindingFlags.DEFAULT | GObject.BindingFlags.SYNC_CREATE
+
 class TaskBox(Gtk.Box):
     """Box subclass to keep a pointer to the tag object"""
 
     task = GObject.Property(type=Task2)
+
+    @GObject.Property(type=bool, default=True)
+    def is_active(self) -> None:
+        return
+
+    @is_active.setter
+    def set_is_active(self, value) -> bool:
+        if value:
+            self.remove_css_class('closed-task')
+        else:
+            self.add_css_class('closed-task')
 
 
 def unwrap(row, expected_type):
@@ -247,6 +260,8 @@ class TaskPane(Gtk.ScrolledWindow):
             task.toggle_dismiss()
         else:
             task.toggle_active()
+        
+        task.notify('is_active')
 
 
     def task_setup_cb(self, factory, listitem, user_data=None):
@@ -339,7 +354,8 @@ class TaskPane(Gtk.ScrolledWindow):
     def task_bind_cb(self, factory, listitem, user_data=None):
         """Bind values to the widgets in setup_cb"""
 
-        expander = listitem.get_child().get_first_child()
+        box = listitem.get_child()
+        expander = box.get_first_child()
         check = expander.get_next_sibling()
         label = check.get_next_sibling()
         due_icon = label.get_next_sibling()
@@ -350,13 +366,22 @@ class TaskPane(Gtk.ScrolledWindow):
         color = separator.get_next_sibling()
         icons = color.get_next_sibling()
 
-        box = listitem.get_child()
-        
-        # icons.set_visible(False)
-        # color.set_visible(False)
-
         item = unwrap(listitem, Task2)
+        box.props.task = item
 
+        expander.set_list_row(listitem.get_item())
+
+        item.bind_property('title', label, 'label', BIND_FLAGS)
+        item.bind_property('excerpt', box, 'tooltip-text', BIND_FLAGS)
+
+        item.bind_property('has_date_due', due_icon, 'visible', BIND_FLAGS)
+        item.bind_property('has_date_start', start_icon, 'visible', BIND_FLAGS)
+
+        item.bind_property('date_due_str', due, 'label', BIND_FLAGS)
+        item.bind_property('date_start_str', start, 'label', BIND_FLAGS)
+
+        item.bind_property('is_active', box, 'is_active', BIND_FLAGS)
+        
         colors = []
         for t in item.tags:
             if t.color and not t.icon:
@@ -367,15 +392,7 @@ class TaskPane(Gtk.ScrolledWindow):
         color.set_size_request((16 + 6) * len(colors), 16)
         color.colors = colors
 
-        box.props.task = item
-        expander.set_list_row(listitem.get_item())
-
         check.set_active(item.status == Status.DONE)
-
-        if item.status == Status.ACTIVE:
-            box.remove_css_class('closed-task')
-        else:
-            box.add_css_class('closed-task')
 
         # Set icons from tags
         icons_text = ''
@@ -397,21 +414,6 @@ class TaskPane(Gtk.ScrolledWindow):
                 cssProvider.load_from_data(background)
                 box.get_style_context().add_provider(cssProvider, 
                                                     Gtk.STYLE_PROVIDER_PRIORITY_USER)
-
-        label.set_text(item.props.title)
-        box.set_tooltip_text(item.props.excerpt)
-        
-        if item.date_due:
-            due_icon.set_visible(True)
-            due.set_text(item.date_due.to_readable_string())
-        else:
-            due_icon.set_visible(False)
-
-        if item.date_start:
-            start_icon.set_visible(True)
-            start.set_text(item.date_start.to_readable_string())
-        else:
-            start_icon.set_visible(False)
 
         check.connect('toggled', self.on_checkbox_toggled, item)
 
