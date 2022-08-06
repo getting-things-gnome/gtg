@@ -221,7 +221,11 @@ class Task2(GObject.Object):
 
     @date_start.setter
     def date_start(self, value: Any) -> None:
-        self._date_start = Date(value)
+        if isinstance(value, str):
+            self._date_start = Date.parse(value)
+        else:
+            self._date_start = Date(value)
+
         self.has_date_start = bool(value)
         self.date_start_str = self._date_start.to_readable_string()
 
