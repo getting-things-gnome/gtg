@@ -6,6 +6,23 @@
     min-width: 16px;
 }
 
+.task-list {
+    border-top: 1px solid rgb(213, 208, 204);
+}
+
+/* 
+    We have to get move the padding into the boxes 
+    so the background color of the rows reaches all
+    the way to the edges
+*/
+.task-list row {
+    padding: 0;
+}
+
+.task-list row > box {
+    padding: 15px 16px;
+} 
+
 /* --------------------------------------------------------------------------------
  * ERROR HANDLER
  * --------------------------------------------------------------------------------
