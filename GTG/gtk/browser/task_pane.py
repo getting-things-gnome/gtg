@@ -125,6 +125,7 @@ class TaskPane(Gtk.ScrolledWindow):
         view = Gtk.ListView.new(self.task_selection, tasks_signals)
         view.set_hexpand(True)
         view.set_show_separators(True)
+        view.add_css_class('task-list')
 
         key_controller = Gtk.EventControllerKey()
         key_controller.connect('key-released', self.on_key_released)
@@ -278,12 +279,6 @@ class TaskPane(Gtk.ScrolledWindow):
         due_icon = Gtk.Image.new_from_icon_name('alarm-symbolic') 
         start = Gtk.Label() 
         start_icon = Gtk.Image.new_from_icon_name('media-playback-start-symbolic') 
-
-        padding = str.encode('box { padding: 12px; }')
-
-        cssProvider = Gtk.CssProvider()
-        cssProvider.load_from_data(padding)
-        box.get_style_context().add_provider(cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
         color.set_size_request(16, 16)
         
