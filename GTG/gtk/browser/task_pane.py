@@ -333,19 +333,6 @@ class TaskPane(Gtk.ScrolledWindow):
         listitem.set_child(box)
 
 
-    # def generate_css(tags: list) -> bytes:
-    #     """Generate CSS styles for tags."""
-        
-    #     style = []
-    
-    #     for tag in tags:
-    #         if tag.color:
-    #             color_text = 'rgba(255, 0, 0, 0.25)'
-    #             style.append(f'.tag-{tag.name}' + '{' + color_text + '; }')
-        
-    #     return str.encode('\n'.join(style))
-
-
     def task_bind_cb(self, factory, listitem, user_data=None):
         """Bind values to the widgets in setup_cb"""
 
