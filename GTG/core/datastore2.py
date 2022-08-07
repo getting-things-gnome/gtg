@@ -226,6 +226,15 @@ class Datastore2:
                     self.tasks.filter(Filter.ACTIONABLE))
 
 
+    def notify_tag_change(self, tag) -> None:
+        """Notify tasks that this tag has changed."""
+        
+        for task in self.tasks.lookup.values():
+            if tag in task.tags:
+                task.notify('icons')
+                task.notify('row_css')
+
+
     def first_run(self, path: str) -> et.Element:
         """Write initial data file."""
 
