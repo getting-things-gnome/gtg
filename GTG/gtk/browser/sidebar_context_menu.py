@@ -77,7 +77,7 @@ class TagContextMenu(Gtk.PopoverMenu):
     def on_mi_ctag_activate(self, widget, action_name, param):
 
         self.tag.color = self.ds.tags.generate_color()
-        self.ds.tags.tree_model.emit('items-changed', 0, 0, 0)
+        self.ds.notify_tag_change(self.tag)
 
 
 class SearchesContextMenu(Gtk.PopoverMenu):
