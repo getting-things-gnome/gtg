@@ -19,7 +19,7 @@
 """Everything related to tasks."""
 
 
-from gi.repository import GObject, Gio, Gtk
+from gi.repository import GObject, Gio, Gtk, Gdk
 from gettext import gettext as _
 
 from uuid import uuid4, UUID
@@ -371,6 +371,31 @@ class Task2(GObject.Object):
     @is_active.setter
     def set_is_active(self, value) -> None:
         self._is_active = value
+
+
+    @GObject.Property(type=bool, default=False)
+    def has_children(self) -> bool:
+        return bool(len(self.children))
+
+
+    @GObject.Property(type=str)
+    def icons(self) -> str:
+        icons_text = ''
+        for t in self.tags:
+            if t.icon:
+                icons_text += t.icon
+
+        return icons_text
+
+
+    @GObject.Property(type=str)
+    def row_css(self) -> str:
+        for tag in self.tags:
+            if tag.color:
+                color = Gdk.RGBA()
+                color.parse('#' + tag.color)
+                color.alpha = 0.1
+                return '* { background:' + color.to_string() + '; }'
 
 
     def __str__(self) -> str:
