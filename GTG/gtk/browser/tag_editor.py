@@ -248,7 +248,7 @@ class TagEditor(Gtk.Dialog):
                 
             self.tag.name = self.tag_name
 
-        self.app.ds.tags.tree_model.emit('items-changed', 0, 0, 0)
+        self.app.ds.notify_tag_change(self.tag)
         self.destroy()
 
     # CALLBACKS #####
