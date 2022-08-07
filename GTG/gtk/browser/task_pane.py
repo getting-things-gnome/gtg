@@ -157,6 +157,16 @@ class TaskPane(Gtk.ScrolledWindow):
         self.set_title()
 
 
+    @GObject.Signal(name='expand-all')
+    def expand_all(self, *_):
+        """Emit this signal to expand all TreeRowExpanders"""
+
+
+    @GObject.Signal(name='collapse-all')
+    def collapse_all(self, *_):
+        """Emit this signal to collapse all TreeRowExpanders"""
+
+
     def set_title(self) -> None:
         """Change pane title."""
 
@@ -229,8 +239,7 @@ class TaskPane(Gtk.ScrolledWindow):
         elif method == 'Tags':
             sorter = TaskTagSorter()
         elif method == 'Title':
-            sort
-            er = TaskTitleSorter()
+            sorter = TaskTitleSorter()
 
         self.sort_model.set_sorter(sorter)
 
@@ -337,6 +346,9 @@ class TaskPane(Gtk.ScrolledWindow):
         task_RMB_controller = Gtk.GestureSingle(button=Gdk.BUTTON_SECONDARY)
         task_RMB_controller.connect('end', self.on_task_RMB_click)
         box.add_controller(task_RMB_controller)
+
+        self.connect('expand-all', lambda s: expander.activate_action('listitem.expand'))
+        self.connect('collapse-all', lambda s: expander.activate_action('listitem.collapse'))
 
         box.append(expander)
         box.append(check)

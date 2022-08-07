@@ -756,11 +756,13 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_collapse_all_tasks(self, action, param):
         """Collapse all tasks."""
-        self.vtree_panes['active'].collapse_all()
+
+        self.get_pane().emit('collapse-all')
 
     def on_expand_all_tasks(self, action, param):
         """Expand all tasks."""
-        self.vtree_panes['active'].expand_all()
+
+        self.get_pane().emit('expand-all')
 
     def on_task_expanded(self, sender, path: str):
         # For some reason, path is turned from a tuple into a string of a
