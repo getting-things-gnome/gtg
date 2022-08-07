@@ -43,6 +43,24 @@ class TaskBox(Gtk.Box):
             self.remove_css_class('closed-task')
         else:
             self.add_css_class('closed-task')
+    
+
+    @GObject.Property(type=str)
+    def row_css(self) -> None:
+        return
+
+
+    @row_css.setter
+    def set_row_css(self, value) -> None:
+        if not value:
+            return
+
+        val = str.encode(value)
+
+        cssProvider = Gtk.CssProvider()
+        cssProvider.load_from_data(val)
+        self.get_style_context().add_provider(cssProvider, 
+                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
 
 def unwrap(row, expected_type):
@@ -363,7 +381,10 @@ class TaskPane(Gtk.ScrolledWindow):
         item.bind_property('date_start_str', start, 'label', BIND_FLAGS)
 
         item.bind_property('is_active', box, 'is_active', BIND_FLAGS)
-        
+        item.bind_property('icons', icons, 'label', BIND_FLAGS)
+        item.bind_property('row_css', box, 'row_css', BIND_FLAGS)
+
+
         colors = []
         for t in item.tags:
             if t.color and not t.icon:
@@ -375,28 +396,6 @@ class TaskPane(Gtk.ScrolledWindow):
         color.colors = colors
 
         check.set_active(item.status == Status.DONE)
-
-        # Set icons from tags
-        icons_text = ''
-        for t in item.tags:
-            if t.icon:
-                icons_text += t.icon
-
-        icons.set_text(icons_text)
-        
-        # Set row color
-        for t in item.tags:
-            if t.color:
-                color = Gdk.RGBA()
-                color.parse('#' + t.color)
-                color.alpha = 0.1
-                background = str.encode('* { background:' + color.to_string() + '; }')
-
-                cssProvider = Gtk.CssProvider()
-                cssProvider.load_from_data(background)
-                box.get_style_context().add_provider(cssProvider, 
-                                                    Gtk.STYLE_PROVIDER_PRIORITY_USER)
-
         check.connect('toggled', self.on_checkbox_toggled, item)
 
 
