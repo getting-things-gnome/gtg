@@ -408,6 +408,7 @@ class Sidebar(Gtk.ScrolledWindow):
         self.unselect_general_box()
 
         item = model.get_item(position)
+        self.app.browser.get_pane().emit('expand-all')
         self.app.browser.get_pane().set_search_query(item.query)
 
 
@@ -433,6 +434,7 @@ class Sidebar(Gtk.ScrolledWindow):
         self.unselect_general_box()
         self.unselect_searches()
 
+        self.app.browser.get_pane().emit('expand-all')
         self.app.browser.get_pane().set_filter_tags(set(self.selected_tags()))
 
 
