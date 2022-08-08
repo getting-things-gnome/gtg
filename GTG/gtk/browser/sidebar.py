@@ -313,13 +313,13 @@ class Sidebar(Gtk.ScrolledWindow):
     def tags_bind_cb(self, signallistitem, listitem, user_data=None) -> None:
         """Bind properties for a specific row in the tags listview"""
 
-        expander = listitem.get_child().get_first_child()
+        box = listitem.get_child()
+        expander = box.get_first_child()
         color = expander.get_next_sibling()
         icon = color.get_next_sibling()
         label = icon.get_next_sibling()
         count_label = label.get_next_sibling()
 
-        box = listitem.get_child()
         item = unwrap(listitem, Tag2)
 
         box.props.tag = item
