@@ -26,6 +26,7 @@ from GTG.core.filters import TagEmptyFilter
 from GTG.core.saved_searches import SavedSearch
 from GTG.core.datastore2 import Datastore2
 from GTG.gtk.browser.sidebar_context_menu import TagContextMenu, SearchesContextMenu
+from GTG.gtk.browser.tag_pill import TagPill
 
 
 class TagBox(Gtk.Box):
@@ -253,14 +254,15 @@ class Sidebar(Gtk.ScrolledWindow):
         label = Gtk.Label()
         expander = Gtk.TreeExpander()
         icon = Gtk.Label()
-        color = Gtk.Button()
+        color = TagPill()
         count_label = Gtk.Label()
 
         expander.set_margin_end(6)
         expander.add_css_class('arrow-only-expander')
         icon.set_margin_end(6)
-        color.set_sensitive(False)
         color.set_margin_end(6)
+        color.set_size_request(16, 16)
+
         color.set_valign(Gtk.Align.CENTER)
         color.set_halign(Gtk.Align.CENTER)
         color.set_vexpand(False)
@@ -327,6 +329,7 @@ class Sidebar(Gtk.ScrolledWindow):
 
         item.bind_property('name', label, 'label', BIND_FLAGS)
         item.bind_property('icon', icon, 'label', BIND_FLAGS)
+        item.bind_property('color', color, 'color_list', BIND_FLAGS)
 
         try:
             count = str(self.ds.task_count['open'][item.props.name])
@@ -350,19 +353,13 @@ class Sidebar(Gtk.ScrolledWindow):
             expander.set_visible(False)
         else:
             expander.set_visible(True)
-        
+ 
         if item.props.icon:
             icon.set_visible(True)
             color.set_visible(False)
 
         elif item.props.color:
             color.set_visible(True)
-            background = str.encode(f'* {{ background: #{item.props.color}; }}')
-            cssProvider = Gtk.CssProvider()
-            cssProvider.load_from_data(background)
-            color.add_css_class('color-pill')
-            color.get_style_context().add_provider(cssProvider,
-                                                   Gtk.STYLE_PROVIDER_PRIORITY_USER)
         else:
             icon.set_visible(False)
             color.set_visible(False)
