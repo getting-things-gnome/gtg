@@ -18,7 +18,7 @@
 
 """Tag colors widget"""
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GObject
 
 
 class TagPill(Gtk.DrawingArea):
@@ -30,8 +30,31 @@ class TagPill(Gtk.DrawingArea):
 
         super(TagPill, self).__init__()
         self.colors = [Gdk.RGBA()]
+        self.colors_str = ''
         self.radius = radius
         self.set_draw_func(self.do_draw_function)
+
+
+    @GObject.Property(type=str)
+    def color_list(self) -> str:
+        return self.colors_str
+
+
+    @color_list.setter
+    def set_colors(self, value) -> None:
+
+        try:
+            self.colors = []
+
+            for color in value.split(','):
+                rgba = Gdk.RGBA()
+                rgba.parse(color)
+                self.colors.append(rgba)
+
+            self.set_size_request((16 + 6) * len(self.colors), 16)
+            self.queue_draw()
+        except AttributeError:
+            self.colors = [Gdk.RGBA()]
 
 
     def draw_rect(self, context, x: int, w: int, h: int, 
