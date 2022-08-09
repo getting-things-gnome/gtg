@@ -187,13 +187,3 @@ class GeneralPreferences(Gtk.ScrolledWindow):
 
         self.config.set("dark_mode", state)
         self.app.toggle_darkmode(state)
-        collapsed = self.config.get("collapsed_tasks")
-
-        # Refresh panes
-        func = self.app.browser.tv_factory.get_task_bg_color
-
-        for pane in self.app.browser.vtree_panes.values():
-            pane.set_bg_color(func, 'bg_color')
-            pane.basetree.get_basetree().refresh_all()
-
-        self.app.browser.restore_collapsed_tasks(collapsed)
