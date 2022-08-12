@@ -331,6 +331,9 @@ class Sidebar(Gtk.ScrolledWindow):
         item.bind_property('icon', icon, 'label', BIND_FLAGS)
         item.bind_property('color', color, 'color_list', BIND_FLAGS)
 
+        item.bind_property('has_color', color, 'visible', BIND_FLAGS)
+        item.bind_property('has_icon', icon, 'visible', BIND_FLAGS)
+
         try:
             count = str(self.ds.task_count['open'][item.props.name])
             count_label.set_text(count)
@@ -354,16 +357,6 @@ class Sidebar(Gtk.ScrolledWindow):
         else:
             expander.set_visible(True)
  
-        if item.props.icon:
-            icon.set_visible(True)
-            color.set_visible(False)
-
-        elif item.props.color:
-            color.set_visible(True)
-        else:
-            icon.set_visible(False)
-            color.set_visible(False)
-
 
     def unselect_tags(self) -> None:
         """Clear tags selection"""
