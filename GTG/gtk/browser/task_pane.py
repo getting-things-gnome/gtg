@@ -396,16 +396,7 @@ class TaskPane(Gtk.ScrolledWindow):
         item.bind_property('icons', icons, 'label', BIND_FLAGS)
         item.bind_property('row_css', box, 'row_css', BIND_FLAGS)
 
-
-        colors = []
-        for t in item.tags:
-            if t.color and not t.icon:
-                colorstr = Gdk.RGBA()
-                colorstr.parse('#' + t.color)
-                colors.append(colorstr)
-
-        color.set_size_request((16 + 6) * len(colors), 16)
-        color.colors = colors
+        item.bind_property('tag_colors', color, 'color_list', BIND_FLAGS)
 
         check.set_active(item.status == Status.DONE)
         check.connect('toggled', self.on_checkbox_toggled, item)
