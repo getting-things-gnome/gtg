@@ -90,6 +90,7 @@ class Tag2(GObject.Object):
     @icon.setter
     def set_icon(self, value: str) -> None:
         self._icon = value
+        self.notify('has-icon')
 
 
     @GObject.Property(type=str)
@@ -102,6 +103,19 @@ class Tag2(GObject.Object):
     @color.setter
     def set_color(self, value: str) -> None:
         self._color = value
+        self.notify('has-color')
+
+
+    @GObject.Property(type=bool, default=False)
+    def has_color(self) -> bool:
+
+        return self._color and not self._icon
+
+
+    @GObject.Property(type=bool, default=False)
+    def has_icon(self) -> bool:
+
+        return self._icon
 
 
     def __hash__(self):
