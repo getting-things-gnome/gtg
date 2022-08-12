@@ -393,7 +393,7 @@ class Task2(GObject.Object):
         for tag in self.tags:
             if tag.color:
                 color = Gdk.RGBA()
-                color.parse('#' + tag.color)
+                color.parse(tag.color)
                 color.alpha = 0.1
                 return '* { background:' + color.to_string() + '; }'
 

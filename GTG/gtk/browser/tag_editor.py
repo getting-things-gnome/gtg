@@ -188,7 +188,7 @@ class TagEditor(Gtk.Dialog):
         rgba.red, rgba.green, rgba.blue, rgba.alpha = 1.0, 1.0, 1.0, 1.0
 
         if color := tag.color:
-            if not rgba.parse('#' + color):
+            if not rgba.parse(color):
                 log.warning("Failed to parse tag color for %r: %r",
                             tag.name, color)
 

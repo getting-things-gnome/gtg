@@ -263,7 +263,7 @@ class TagStore(BaseStore):
             g = random.randint(0, 255)
             b = random.randint(0, 255)
              
-            return f'{r:02x}{g:02x}{b:02x}'
+            return f'#{r:02x}{g:02x}{b:02x}'
 
         color = rand_color()
 
