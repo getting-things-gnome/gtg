@@ -398,6 +398,12 @@ class Task2(GObject.Object):
                 return '* { background:' + color.to_string() + '; }'
 
 
+    @GObject.Property(type=str)
+    def tag_colors(self) -> str:
+        return ','.join(t.color for t in self.tags 
+                        if t.color and not t.icon)
+
+
     def __str__(self) -> str:
         """String representation."""
 
