@@ -233,6 +233,7 @@ class Datastore2:
             if tag in task.tags:
                 task.notify('icons')
                 task.notify('row_css')
+                task.notify('tag_colors')
 
 
     def first_run(self, path: str) -> et.Element:
