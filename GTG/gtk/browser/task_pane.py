@@ -397,6 +397,7 @@ class TaskPane(Gtk.ScrolledWindow):
         item.bind_property('row_css', box, 'row_css', BIND_FLAGS)
 
         item.bind_property('tag_colors', color, 'color_list', BIND_FLAGS)
+        item.bind_property('show_tag_colors', color, 'visible', BIND_FLAGS)
 
         check.set_active(item.status == Status.DONE)
         check.connect('toggled', self.on_checkbox_toggled, item)

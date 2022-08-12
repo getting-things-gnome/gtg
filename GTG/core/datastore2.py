@@ -234,6 +234,7 @@ class Datastore2:
                 task.notify('icons')
                 task.notify('row_css')
                 task.notify('tag_colors')
+                task.notify('show_tag_colors')
 
 
     def first_run(self, path: str) -> et.Element:

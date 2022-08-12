@@ -404,6 +404,11 @@ class Task2(GObject.Object):
                         if t.color and not t.icon)
 
 
+    @GObject.Property(type=bool, default=False)
+    def show_tag_colors(self) -> str:
+        return any(t.color and not t.icon for t in self.tags)
+
+
     def __str__(self) -> str:
         """String representation."""
 
