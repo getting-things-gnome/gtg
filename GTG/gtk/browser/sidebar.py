@@ -389,6 +389,8 @@ class Sidebar(Gtk.ScrolledWindow):
 
         if index == 0:
             self.app.browser.get_pane().set_filter_tags()
+        elif index == 1:
+            self.app.browser.get_pane().set_filter_notags()
             
 
     def on_search_selected(self, model, position, user_data=None):
