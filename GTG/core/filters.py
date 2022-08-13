@@ -53,12 +53,12 @@ class TagEmptyFilter(Gtk.Filter):
 class TaskPaneFilter(Gtk.Filter):
     __gtype_name__ = 'TaskPaneFilter'
 
-    def __init__(self, ds, pane, tags = []):
+    def __init__(self, ds, pane, tags = [], no_tags=False):
         super(TaskPaneFilter, self).__init__()
         self.ds = ds
         self.pane = pane
         self.tags = set()
-
+        self.no_tags = no_tags
 
     def do_match(self, item) -> bool:
         task = unwrap(item, Task2)
@@ -71,7 +71,9 @@ class TaskPaneFilter(Gtk.Filter):
             show = task.status is not Status.ACTIVE
 
         if show:
-            if self.tags:
+            if self.no_tags:
+                return not task.tags
+            elif self.tags:
                 return len(self.tags.intersection(set(task.tags))) >= len(self.tags)
             else:
                 return True
