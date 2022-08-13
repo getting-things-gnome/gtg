@@ -155,7 +155,9 @@ class GeneralPreferences(Gtk.ScrolledWindow):
         curstate = self.config.get("bg_color_enable")
         if curstate != self._bg_color_button.get_active():
             self.config.set("bg_color_enable", not curstate)
-            self._refresh_task_browser()
+
+            for task in self.app.ds.tasks.lookup.values():
+                task.notify('row_css')
 
     @Gtk.Template.Callback()
     def on_font_change(self, widget):
