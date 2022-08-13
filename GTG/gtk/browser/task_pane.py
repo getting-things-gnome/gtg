@@ -33,6 +33,10 @@ class TaskBox(Gtk.Box):
 
     task = GObject.Property(type=Task2)
 
+    def __init__(self, config):
+        self.config = config
+        super(TaskBox, self).__init__()
+
     @GObject.Property(type=bool, default=True)
     def is_active(self) -> None:
         return
@@ -52,15 +56,21 @@ class TaskBox(Gtk.Box):
 
     @row_css.setter
     def set_row_css(self, value) -> None:
-        if not value:
-            return
+        show = self.config.get('bg_color_enable')
+        context = self.get_style_context()
 
+        if not value or not show:
+            try:
+                context.remove_provider(self.provider)
+                return
+            except AttributeError:
+                return
+                
         val = str.encode(value)
 
-        cssProvider = Gtk.CssProvider()
-        cssProvider.load_from_data(val)
-        self.get_style_context().add_provider(cssProvider, 
-                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
+        self.provider = Gtk.CssProvider()
+        self.provider.load_from_data(val)
+        context.add_provider(self.provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
 
 def unwrap(row, expected_type):
@@ -308,7 +318,7 @@ class TaskPane(Gtk.ScrolledWindow):
     def task_setup_cb(self, factory, listitem, user_data=None):
         """Setup widgets for rows"""
 
-        box = TaskBox()
+        box = TaskBox(self.app.config)
         label = Gtk.Label() 
         separator = Gtk.Separator() 
         expander = Gtk.TreeExpander() 
