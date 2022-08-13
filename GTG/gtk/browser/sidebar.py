@@ -386,6 +386,7 @@ class Sidebar(Gtk.ScrolledWindow):
         self.unselect_tags()
         self.unselect_searches()
         index = listbox.get_selected_row().get_index()
+        self.app.browser.get_pane().emit('expand-all')
 
         if index == 0:
             self.app.browser.get_pane().set_filter_tags()
