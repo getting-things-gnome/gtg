@@ -145,12 +145,12 @@ class UrgencyColorPreferences(Gtk.Window):
 class UrgencyColorPlugin():
     def __init__(self):
         self._plugin_api = None
-        self.req = None
+        self.ds = None
 
     def activate(self, plugin_api):
         """ Plugin is activated """
         self._plugin_api = plugin_api
-        self.req = self._plugin_api.get_requester()
+        self.ds = self._plugin_api.ds
         self.prefs_window = UrgencyColorPreferences(plugin_api)
         self._pref_data = self.prefs_window.get_data_reference()
         # Set color function
@@ -267,22 +267,20 @@ class UrgencyColorPlugin():
             (i.e - the subtasks which are not marked as 'Done' or 'Dismissed'
             """
             child_list = []
-            for child_id in node.children:
-                child = node.req.get_task(child_id)
+            for child in node.children:
                 child_list += __get_active_child_list(child)
-                if child.get_status() in [child.STA_ACTIVE]:
+                if child.is_active:
                     child_list.append(child_id)
             return child_list
 
         child_list = __get_active_child_list(node)
 
         daysleft = None
-        for child_id in child_list:
-            child = self.req.get_task(child_id)
-            if child.get_due_date() == Date.no_date():
+        for child in child_list:
+            if child.date_due == Date.no_date():
                 continue
 
-            daysleft_of_child = child.get_due_date().days_left()
+            daysleft_of_child = child.date_due.days_left()
             if daysleft is None:
                 daysleft = daysleft_of_child
                 color = self.get_node_bgcolor(child)

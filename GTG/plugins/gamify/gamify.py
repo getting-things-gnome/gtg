@@ -399,7 +399,7 @@ class Gamify:
         2 points for @medium
         3 points for @hard
         """
-        task = self.plugin_api.get_requester().get_task(task_id)
+        task = self.plugin_api.ds.tasks.lookup[task_id]
         return max(list(map(self.get_points, task.get_tags_name())), default=1)
 
     # FRONTEND/UI #############################################################
