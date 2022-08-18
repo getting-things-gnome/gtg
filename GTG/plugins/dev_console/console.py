@@ -40,20 +40,22 @@ class GTGNamespace(Namespace):
     @property
     @Namespace.shortcut
     def app(self):
-        """The Pitivi instance."""
+        """The GTG instance."""
         return self._app
+
+
+    @property
+    @Namespace.shortcut
+    def ds(self):
+        """The Datastore instance."""
+        return self._app.ds
+
 
     @property
     @Namespace.shortcut
     def browser(self):
         """The Plugin Manager instance."""
         return self._app.browser
-
-    @property
-    @Namespace.shortcut
-    def req(self):
-        """The current project."""
-        return self._app.req
 
 
 class DevConsolePlugin():
@@ -121,7 +123,7 @@ class DevConsolePlugin():
                  'You can use the following shortcuts:'
                  '\n'
                  '- app (The application class)\n'
-                 '- req (The requester class)\n'
+                 '- ds (The datastore)\n'
                  '- browser (The main window)\n'
                  '\n'
                  'Type "help (<command>)" for more information.'

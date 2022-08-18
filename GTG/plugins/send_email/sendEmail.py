@@ -67,14 +67,14 @@ class SendEmailPlugin():
         task = plugin_api.get_ui().get_task()
 
         # Body contains Status Tags, Subtasks and Content.
-        body = _("Status: %s") % (task.get_status()) + \
-            _("\nTags: %s") % (", ".join(task.get_tags_name())) + \
+        body = _("Status: %s") % (task.status) + \
+            _("\nTags: %s") % (", ".join(t.name for t in task.tags)) + \
             _("\nSubtasks: %s") % (
-                "".join(["\n- "+subtask.get_title() for subtask in task.get_subtasks()])) + \
-            _("\nTask content:\n%s") % (task.get_text())
+                "".join(["\n- "+subtask.title for subtask in task.children])) + \
+            _("\nTask content:\n%s") % (task.content)
 
         # Title contains the title and the start and due dates.
-        title = _("Task: %(task_title)s") % {'task_title': task.get_title()}
+        title = _("Task: %(task_title)s") % {'task_title': task.title}
 
         parameters = urllib.parse.urlencode({'subject': title, 'body': body})
         parameters = parameters.replace('+', '%20')

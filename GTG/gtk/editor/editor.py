@@ -226,11 +226,11 @@ class TaskEditor(Gtk.Window):
         # self.repeat_button.set_popover(self.recurring_menu)
         # self.sync_repeat_button()
 
-        # plugins
-        # self.pengine = PluginEngine()
-        # self.plugin_api = PluginAPI(self.req, self.app, self)
-        # self.pengine.register_api(self.plugin_api)
-        # self.pengine.onTaskLoad(self.plugin_api)
+        # Plugins
+        self.pengine = PluginEngine()
+        self.plugin_api = PluginAPI(self.app, self)
+        self.pengine.register_api(self.plugin_api)
+        self.pengine.onTaskLoad(self.plugin_api)
 
         # Putting the refresh callback at the end make the start a lot faster
         self.refresh_editor()

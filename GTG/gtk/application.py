@@ -257,7 +257,7 @@ class Application(Gtk.Application):
         """Setup the plugin engine."""
 
         self.plugin_engine = PluginEngine()
-        plugin_api = PluginAPI(self.req, self)
+        plugin_api = PluginAPI(self)
         self.plugin_engine.register_api(plugin_api)
 
         try:
