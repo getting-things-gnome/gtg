@@ -87,7 +87,7 @@ class Task2(GObject.Object):
         self.id = id
         self.raw_title = title.strip('\t\n')
         self.content =  ''
-        self.tags = []
+        self.tags = set()
         self.children = []
         self.status = Status.ACTIVE
         self.parent = None
@@ -279,8 +279,7 @@ class Task2(GObject.Object):
         """Add a tag to this task."""
 
         if isinstance(tag, Tag2):
-            if tag not in self.tags:
-                self.tags.append(tag)
+            self.tags.add(tag)
         else:
             raise ValueError
 
@@ -551,7 +550,7 @@ class TaskStore(BaseStore):
                 for t in taglist.iter('tag'):
                     try:
                         tag = tag_store.get(t.text)
-                        task.tags.append(tag)
+                        task.tags.add(tag)
                     except KeyError:
                         pass
 
