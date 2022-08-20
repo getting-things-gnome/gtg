@@ -87,8 +87,6 @@ class MainWindow(Gtk.ApplicationWindow):
     quickadd_pane = Gtk.Template.Child()
 
     sidebar_vbox = Gtk.Template.Child('sidebar_vbox')
-    sidebar_container = Gtk.Template.Child('sidebar-scroll')
-    sidebar_notebook = Gtk.Template.Child()
 
     vbox_toolbars = None
     stack_switcher = Gtk.Template.Child()
@@ -119,7 +117,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self._init_context_menus()
 
         self.sidebar = Sidebar(app, app.ds)
-        self.sidebar_container.set_child(self.sidebar)
+        self.sidebar_vbox.append(self.sidebar)
 
         self.panes = {
             'active': None,
@@ -128,13 +126,13 @@ class MainWindow(Gtk.ApplicationWindow):
         }
 
         self.panes['active'] = TaskPane(self, 'active')
-        self.open_pane.set_child(self.panes['active'])
+        self.open_pane.append(self.panes['active'])
 
         self.panes['workview'] = TaskPane(self, 'workview')
-        self.actionable_pane.set_child(self.panes['workview'])
+        self.actionable_pane.append(self.panes['workview'])
 
         self.panes['closed'] = TaskPane(self, 'closed')
-        self.closed_pane.set_child(self.panes['closed'])
+        self.closed_pane.append(self.panes['closed'])
 
         # Treeviews handlers
         # self.vtree_panes = {}
@@ -1447,7 +1445,7 @@ class MainWindow(Gtk.ApplicationWindow):
     def get_pane(self):
         """Get the selected pane."""
         
-        return self.stack_switcher.get_stack().get_visible_child().get_child().get_child()
+        return self.stack_switcher.get_stack().get_visible_child().get_first_child()
         
 
     def get_selected_tree(self, refresh: bool = False):
