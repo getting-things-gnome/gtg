@@ -61,7 +61,7 @@ class PluginAPI():
             self.__ui = self.browser
             self.__task_id = None
             
-            for pane in self.browser.panes:
+            for pane in self.browser.panes.values():
                 pane.task_selection.connect('selection-changed', self.__selection_changed, pane)
 
         self.taskwidget_id = 0
