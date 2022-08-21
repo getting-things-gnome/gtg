@@ -18,7 +18,7 @@
 
 """Task pane and list."""
 
-from gi.repository import Gtk, GObject, Gdk, Gio
+from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 from GTG.core.tasks2 import Task2, Status
 from GTG.core.filters import TaskPaneFilter, SearchTaskFilter
 from GTG.core.sorters import *
@@ -151,7 +151,6 @@ class TaskPane(Gtk.ScrolledWindow):
         tasks_signals.connect('bind', self.task_bind_cb)
 
         view = Gtk.ListView.new(self.task_selection, tasks_signals)
-        view.set_hexpand(True)
         view.set_show_separators(True)
         view.add_css_class('task-list')
 
@@ -343,7 +342,8 @@ class TaskPane(Gtk.ScrolledWindow):
         icons.set_margin_end(6)
 
         label.set_hexpand(True)
-        label.set_margin_end(6)
+        label.set_ellipsize(Pango.EllipsizeMode.END)
+        label.set_margin_end(12)
         label.set_xalign(0)
 
         due_icon.set_margin_end(6)
