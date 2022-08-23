@@ -335,10 +335,17 @@ class Sidebar(Gtk.ScrolledWindow):
         item.bind_property('has_icon', icon, 'visible', BIND_FLAGS)
 
         try:
-            count = str(self.ds.task_count['open'][item.props.name])
-            count_label.set_text(count)
-        except KeyError:
-            pass
+            pane = self.app.browser.get_pane().pane
+        except AttributeError:
+            pane = 'active'
+
+        if pane == 'active':
+            item.bind_property('task_count_open', count_label, 'label', BIND_FLAGS)
+        elif pane == 'actionable':
+            item.bind_property('task_count_actionable', count_label, 'label', BIND_FLAGS)
+        elif pane == 'closed':
+            item.bind_property('task_count_closed', count_label, 'label', BIND_FLAGS)
+        
 
         if item.parent:
             parent = item

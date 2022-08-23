@@ -48,7 +48,12 @@ class Tag2(GObject.Object):
         self.children = []
         self.parent = None
 
+        self._task_count_open = 0
+        self._task_count_actionable = 0
+        self._task_count_closed = 0
+
         super(Tag2, self).__init__()
+
 
     def __str__(self) -> str:
         """String representation."""
@@ -116,6 +121,39 @@ class Tag2(GObject.Object):
     def has_icon(self) -> bool:
 
         return self._icon
+
+    
+    @GObject.Property(type=int, default=0)
+    def task_count_open(self) -> int:
+
+        return self._task_count_open
+
+
+    @task_count_open.setter
+    def set_task_count_open(self, value: int) -> None:
+        self._task_count_open = value
+
+
+    @GObject.Property(type=int, default=0)
+    def task_count_actionable(self) -> int:
+
+        return self._task_count_actionable
+
+
+    @task_count_actionable.setter
+    def set_task_count_actionable(self, value: int) -> None:
+        self._task_count_actionable = value
+
+
+    @GObject.Property(type=int, default=0)
+    def task_count_closed(self) -> int:
+
+        return self._task_count_closed
+
+
+    @task_count_closed.setter
+    def set_task_count_closed(self, value: int) -> None:
+        self._task_count_closed = value
 
 
     def __hash__(self):
