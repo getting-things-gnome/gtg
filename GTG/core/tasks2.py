@@ -187,6 +187,12 @@ class Task2(GObject.Object):
         self.has_date_due = bool(value)
         self.date_due_str = self._date_due.to_readable_string()
 
+        for tag in self.tags:
+            if self.is_actionable:
+                tag.task_count_actionable += 1 
+            else:
+                tag.task_count_actionable -= 1 
+
         if not value or value.is_fuzzy():
             return
 
@@ -280,6 +286,14 @@ class Task2(GObject.Object):
 
         if isinstance(tag, Tag2):
             self.tags.add(tag)
+
+            if self.status == Status.ACTIVE:
+                tag.task_count_open += 1
+            else: 
+                tag.task_count_closed += 1
+            
+            if self.is_actionable:
+                tag.task_count_actionable += 1
         else:
             raise ValueError
 
@@ -290,6 +304,15 @@ class Task2(GObject.Object):
         for t in self.tags:
             if t.name == tag_name:
                 self.tags.remove(t)
+
+                if self.status == Status.ACTIVE:
+                    tag.task_count_open -= 1
+                else: 
+                    tag.task_count_closed -= 1
+                
+                if self.is_actionable():
+                    tag.task_count_actionable -= 1
+
                 self.content = (self.content.replace(f'{tag_name}\n\n', '')
                                             .replace(f'{tag_name},', '')
                                             .replace(f'{tag_name}', ''))
@@ -550,7 +573,7 @@ class TaskStore(BaseStore):
                 for t in taglist.iter('tag'):
                     try:
                         tag = tag_store.get(t.text)
-                        task.tags.add(tag)
+                        task.add_tag(tag)
                     except KeyError:
                         pass
 
@@ -729,3 +752,19 @@ class TaskStore(BaseStore):
             t.children.sort(key=attrgetter(key), reverse=reverse)
 
         tasks.sort(key=attrgetter(key), reverse=reverse)
+
+
+    @GObject.Property(type=str)
+    def task_count_all(self) -> str:
+        return str(len(self.lookup.keys()))
+
+
+    @GObject.Property(type=str)
+    def task_count_no_tags(self) -> str:
+        i = 0
+        
+        for task in self.lookup.values():
+            if not task.tags:
+                i += 1
+
+        return str(i)
