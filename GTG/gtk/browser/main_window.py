@@ -116,7 +116,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self._init_context_menus()
 
-        self.sidebar = Sidebar(app, app.ds)
+        self.sidebar = Sidebar(app, app.ds, self)
         self.sidebar_vbox.append(self.sidebar)
 
         self.panes = {
@@ -1400,6 +1400,10 @@ class MainWindow(Gtk.ApplicationWindow):
         self.config.set('view', current_pane)
         self.get_pane().set_filter_tags(set(self.sidebar.selected_tags()))
 
+        self.notify('is_pane_open')
+        self.notify('is_pane_actionable')
+        self.notify('is_pane_closed')
+
 # PUBLIC METHODS ###########################################################
     def get_menu(self):
         """Get the primary application menu"""
@@ -1446,6 +1450,21 @@ class MainWindow(Gtk.ApplicationWindow):
         """Get the selected pane."""
         
         return self.stack_switcher.get_stack().get_visible_child().get_first_child()
+ 
+    
+    @GObject.Property(type=bool, default=True)
+    def is_pane_open(self) -> bool:
+        return self.get_selected_pane() == 'active'
+    
+
+    @GObject.Property(type=bool, default=False)
+    def is_pane_actionable(self) -> bool:
+        return self.get_selected_pane() == 'workview'
+    
+    
+    @GObject.Property(type=bool, default=False)
+    def is_pane_closed(self) -> bool:
+        return self.get_selected_pane() == 'closed'
         
 
     def get_selected_tree(self, refresh: bool = False):
