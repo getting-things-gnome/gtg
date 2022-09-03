@@ -185,7 +185,11 @@ class Task2(GObject.Object):
     def date_due(self, value: Date) -> None:
         self._date_due = value
         self.has_date_due = bool(value)
-        self.date_due_str = self._date_due.to_readable_string()
+        
+        if value:
+            self.date_due_str = self._date_due.to_readable_string()
+        else:
+            self.date_due_str = ''
 
         for tag in self.tags:
             if self.is_actionable:
