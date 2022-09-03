@@ -41,7 +41,11 @@ class TaskBox(Gtk.Box):
         self.expander.set_margin_end(6)
         self.expander.add_css_class('arrow-only-expander')
 
+        self.check = Gtk.CheckButton() 
+        self.check.set_margin_end(6)
+
         self.append(self.expander)
+        self.append(self.check)
 
 
     @GObject.Property(type=bool, default=True)
@@ -52,6 +56,7 @@ class TaskBox(Gtk.Box):
     @has_children.setter
     def set_has_children(self, value) -> bool:
         self.expander.set_visible(value)
+        widget = self.expander if value else self.check
 
         if self.task.parent:
             parent = self.task
@@ -61,9 +66,9 @@ class TaskBox(Gtk.Box):
                 depth += 1
                 parent = parent.parent
 
-            self.set_margin_start(6 + (21 * depth))
+            widget.set_margin_start(6 + (21 * depth))
         else:
-            self.set_margin_start(6)
+            widget.set_margin_start(6)
 
 
     @GObject.Property(type=bool, default=True)
@@ -352,7 +357,7 @@ class TaskPane(Gtk.ScrolledWindow):
         separator = Gtk.Separator() 
         # expander = Gtk.TreeExpander() 
         icons = Gtk.Label() 
-        check = Gtk.CheckButton() 
+        # check = Gtk.CheckButton() 
         color = TagPill()
         due = Gtk.Label() 
         due_icon = Gtk.Image.new_from_icon_name('alarm-symbolic') 
@@ -368,7 +373,7 @@ class TaskPane(Gtk.ScrolledWindow):
         separator.set_margin_end(12)
         # expander.set_margin_start(6)
         # expander.set_margin_end(6)
-        check.set_margin_end(6)
+        # check.set_margin_end(6)
         icons.set_margin_end(6)
 
         label.set_hexpand(True)
@@ -403,8 +408,6 @@ class TaskPane(Gtk.ScrolledWindow):
         self.connect('expand-all', lambda s: box.expander.activate_action('listitem.expand'))
         self.connect('collapse-all', lambda s: box.expander.activate_action('listitem.collapse'))
 
-        # box.append(expander)
-        box.append(check)
         box.append(label)
         box.append(due_icon)
         box.append(due)
@@ -454,8 +457,8 @@ class TaskPane(Gtk.ScrolledWindow):
         item.bind_property('tag_colors', color, 'color_list', BIND_FLAGS)
         item.bind_property('show_tag_colors', color, 'visible', BIND_FLAGS)
 
-        check.set_active(item.status == Status.DONE)
-        check.connect('toggled', self.on_checkbox_toggled, item)
+        box.check.set_active(item.status == Status.DONE)
+        box.check.connect('toggled', self.on_checkbox_toggled, item)
 
 
     def drag_prepare(self, source, x, y):
