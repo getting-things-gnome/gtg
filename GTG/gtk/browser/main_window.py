@@ -850,11 +850,9 @@ class MainWindow(Gtk.ApplicationWindow):
         text = self.quickadd_entry.get_text().strip()
 
         if not text:
-            # TODO: Adapt this to new core
-            # if no text is selected, we open the currently selected task
-            nids = self.vtree_panes['active'].get_selected_nodes()
-            for nid in nids:
-                self.app.open_task(nid)
+            tasks = self.get_pane().get_selection()
+            for t in tasks:
+                self.app.open_task(t)
             
             return
             
