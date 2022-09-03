@@ -585,6 +585,8 @@ class Sidebar(Gtk.ScrolledWindow):
         tag = target.get_widget().props.tag
         task.add_tag(tag)
 
+        self.ds.tasks.notify('task_count_no_tags')
+
 
     def multi_task_drag_drop(self, target, tasklist, x, y):
         """Callback when dropping onto a target"""
@@ -592,6 +594,11 @@ class Sidebar(Gtk.ScrolledWindow):
         for task in list(tasklist):
             tag = target.get_widget().props.tag
             task.add_tag(tag)
+            task.notify('row_css')
+            task.notify('icons')
+            task.notify('tag_colors')
+
+        self.ds.tasks.notify('task_count_no_tags')
 
 
     def on_toplevel_tag_drop(self, drop_target, tag, x, y):
