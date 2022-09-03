@@ -37,9 +37,39 @@ class TaskBox(Gtk.Box):
         self.config = config
         super(TaskBox, self).__init__()
 
+        self.expander = Gtk.TreeExpander()
+        self.expander.set_margin_end(6)
+        self.expander.add_css_class('arrow-only-expander')
+
+        self.append(self.expander)
+
+
+    @GObject.Property(type=bool, default=True)
+    def has_children(self) -> None:
+        return
+
+
+    @has_children.setter
+    def set_has_children(self, value) -> bool:
+        self.expander.set_visible(value)
+
+        if self.task.parent:
+            parent = self.task
+            depth = 0
+
+            while parent.parent:
+                depth += 1
+                parent = parent.parent
+
+            self.set_margin_start(6 + (21 * depth))
+        else:
+            self.set_margin_start(6)
+
+
     @GObject.Property(type=bool, default=True)
     def is_active(self) -> None:
         return
+
 
     @is_active.setter
     def set_is_active(self, value) -> bool:
@@ -320,7 +350,7 @@ class TaskPane(Gtk.ScrolledWindow):
         box = TaskBox(self.app.config)
         label = Gtk.Label() 
         separator = Gtk.Separator() 
-        expander = Gtk.TreeExpander() 
+        # expander = Gtk.TreeExpander() 
         icons = Gtk.Label() 
         check = Gtk.CheckButton() 
         color = TagPill()
@@ -336,8 +366,8 @@ class TaskPane(Gtk.ScrolledWindow):
         color.set_valign(Gtk.Align.CENTER)
 
         separator.set_margin_end(12)
-        expander.set_margin_start(6)
-        expander.set_margin_end(6)
+        # expander.set_margin_start(6)
+        # expander.set_margin_end(6)
         check.set_margin_end(6)
         icons.set_margin_end(6)
 
@@ -370,10 +400,10 @@ class TaskPane(Gtk.ScrolledWindow):
         task_RMB_controller.connect('end', self.on_task_RMB_click)
         box.add_controller(task_RMB_controller)
 
-        self.connect('expand-all', lambda s: expander.activate_action('listitem.expand'))
-        self.connect('collapse-all', lambda s: expander.activate_action('listitem.collapse'))
+        self.connect('expand-all', lambda s: box.expander.activate_action('listitem.expand'))
+        self.connect('collapse-all', lambda s: box.expander.activate_action('listitem.collapse'))
 
-        box.append(expander)
+        # box.append(expander)
         box.append(check)
         box.append(label)
         box.append(due_icon)
@@ -402,9 +432,11 @@ class TaskPane(Gtk.ScrolledWindow):
         icons = color.get_next_sibling()
 
         item = unwrap(listitem, Task2)
-        box.props.task = item
 
-        expander.set_list_row(listitem.get_item())
+        box.props.task = item
+        box.expander.set_list_row(listitem.get_item())
+
+        item.bind_property('has_children', box, 'has_children', BIND_FLAGS)
 
         item.bind_property('title', label, 'label', BIND_FLAGS)
         item.bind_property('excerpt', box, 'tooltip-text', BIND_FLAGS)
