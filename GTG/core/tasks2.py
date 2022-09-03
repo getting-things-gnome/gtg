@@ -659,7 +659,19 @@ class TaskStore(BaseStore):
         if not parent_id:
             self.model.append(item)
 
+        self.notify('task_count_all')
+        self.notify('task_count_no_tags')
+
         self.emit('added', item)
+
+
+    def remove(self, item_id: UUID) -> None:
+        """Remove an existing task."""
+
+        super().remove(item_id)
+
+        self.notify('task_count_all')
+        self.notify('task_count_no_tags')
 
 
     def parent(self, item_id: UUID, parent_id: UUID) -> None:
