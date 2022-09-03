@@ -43,6 +43,7 @@ class DeleteTagsDialog:
 
             self.browser.app.ds.tags.remove(tag.id)
 
+        self.browser.app.ds.tasks.notify('task_count_no_tags')
         self.tags_todelete = []
 
     def on_response(self, dialog, response, tagslist, callback):
