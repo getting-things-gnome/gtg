@@ -395,11 +395,11 @@ class TaskPane(Gtk.ScrolledWindow):
         box.add_controller(source)
 
         # Set drop for DnD
-        # drop = Gtk.DropTarget.new(Task2, Gdk.DragAction.COPY)
-        # drop.connect('drop', drag_drop)
-        # drop.connect('enter', drop_enter)
+        drop = Gtk.DropTarget.new(Task2, Gdk.DragAction.COPY)
+        drop.connect('drop', self.drag_drop)
+        drop.connect('enter', self.drop_enter)
 
-        # box.add_controller(drop)
+        box.add_controller(drop)
 
         task_RMB_controller = Gtk.GestureSingle(button=Gdk.BUTTON_SECONDARY)
         task_RMB_controller.connect('end', self.on_task_RMB_click)
@@ -500,6 +500,49 @@ class TaskPane(Gtk.ScrolledWindow):
 
         if source.get_widget():
             source.get_widget().set_opacity(1)
+
+
+    def drop_enter(self, target, x, y, user_data=None):
+        """Callback when the mouse hovers over the drop target."""
+
+        expander = target.get_widget().get_first_child()
+
+        if target.get_widget().task.children:
+            expander.activate_action('listitem.expand')
+
+        # There's a funny bug in here. If the expansion of the row
+        # makes the window larger, Gtk won't recognize the new drop areas
+        # and will think you're dragging outside the window.
+
+        return Gdk.DragAction.COPY
+
+
+    def check_parent(self, value, target) -> bool:
+        """Check to parenting a parent to its own children"""
+        
+        item = target
+        while item.parent:
+            if item.parent == value:
+                return False
+            
+            item = item.parent
+        
+        return True
+
+
+    def drag_drop(self, target, task, x, y):
+        """Callback when dropping onto a target"""
+
+        dropped = target.get_widget().props.task
+
+        if not self.check_parent(task, dropped):
+            return
+
+        if task.parent:
+            self.ds.tasks.unparent(task.id, task.parent.id)
+        
+        self.ds.tasks.parent(task.id, dropped.id)
+        self.ds.tasks.tree_model.emit('items-changed', 0, 0, 0)
 
 
     def on_task_RMB_click(self, gesture, sequence) -> None:
