@@ -189,6 +189,10 @@ class TaskPane(Gtk.ScrolledWindow):
         view.set_show_separators(True)
         view.add_css_class('task-list')
 
+        view_drop = Gtk.DropTarget.new(Task2, Gdk.DragAction.COPY)
+        view_drop.connect("drop", self.on_toplevel_tag_drop)
+        wrap_box.add_controller(view_drop)
+
         key_controller = Gtk.EventControllerKey()
         key_controller.connect('key-released', self.on_key_released)
         view.add_controller(key_controller)
@@ -565,3 +569,12 @@ class TaskPane(Gtk.ScrolledWindow):
         rect.y = point.y
         menu.set_pointing_to(rect)
         menu.popup()
+
+
+    def on_toplevel_tag_drop(self, drop_target, task, x, y):
+        if task.parent:
+            self.ds.tasks.unparent(task.id, task.parent.id)
+            self.ds.tasks.tree_model.emit('items-changed', 0, 0, 0)
+            return True
+        else:
+            return False
