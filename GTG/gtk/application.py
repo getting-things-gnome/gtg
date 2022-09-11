@@ -36,6 +36,7 @@ from GTG.gtk.editor import text_tags
 from GTG.gtk.preferences import Preferences
 from GTG.gtk.plugins import PluginsDialog
 from GTG.core import clipboard
+from GTG.core.config import CoreConfig
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api import PluginAPI
 from GTG.backends import BackendFactory
@@ -120,27 +121,27 @@ class Application(Gtk.Application):
             self.ds.data_path = os.path.join(DATA_DIR, 'gtg_data2.xml')
 
             # Register backends
-            datastore = DataStore()
+            # datastore = DataStore()
 
-            for backend_dic in BackendFactory().get_saved_backends_list():
-                datastore.register_backend(backend_dic)
+            # for backend_dic in BackendFactory().get_saved_backends_list():
+            #     datastore.register_backend(backend_dic)
 
-            # Save the backends directly to be sure projects.xml is written
-            datastore.save(quit=False)
+            # # Save the backends directly to be sure projects.xml is written
+            # datastore.save(quit=False)
 
-            self.req = datastore.get_requester()
+            # self.req = datastore.get_requester()
 
-            self.config_core = self.req._config
-            self.config = self.req.get_config("browser")
-            self.config_plugins = self.req.get_config("plugins")
+            self.config_core = CoreConfig()
+            self.config = self.config_core.get_subconfig('browser')
+            self.config_plugins = self.config_core.get_subconfig('plugins') 
 
-            self.clipboard = clipboard.TaskClipboard(self.req)
+            self.clipboard = clipboard.TaskClipboard(self.ds)
 
             self.timer = Timer(self.config)
             self.timer.connect('refresh', self.autoclean)
 
-            self.preferences_dialog = Preferences(self.req, self)
-            self.plugins_dialog = PluginsDialog(self.req)
+            self.preferences_dialog = Preferences(self)
+            self.plugins_dialog = PluginsDialog(self.config_plugins)
 
             if self.config.get('dark_mode'):
                 self.toggle_darkmode()
@@ -248,7 +249,7 @@ class Application(Gtk.Application):
     def init_browser(self):
         # Browser (still hidden)
         if not self.browser:
-            self.browser = MainWindow(self.req, self)
+            self.browser = MainWindow(self)
 
             if self.props.application_id == 'org.gnome.GTGDevel':
                 self.browser.add_css_class('devel')

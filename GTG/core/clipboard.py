@@ -24,10 +24,10 @@ taskeditors, preserving subtasks
 
 class TaskClipboard():
 
-    def __init__(self, req):
+    def __init__(self, ds):
         self.description = None
         self.content = []
-        self.req = req
+        self.ds = ds
 
     """"take two Gtk.TextIter as parameter and copy the
     """
@@ -56,9 +56,7 @@ class TaskClipboard():
                 if hasattr(ta, 'is_subtask'):
                     is_subtask = True
                     tid = ta.child
-                    tas = self.req.get_task(tid)
-                    tas.set_to_keep()
-                    tas.sync()
+                    tas = self.ds.tasks.lookup[tid]
                     self.content.append(['subtask', tid])
             if not is_subtask:
                 if end_line.get_line() < stop.get_line():

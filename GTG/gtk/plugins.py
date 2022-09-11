@@ -129,10 +129,9 @@ class PluginsDialog(Gtk.Dialog):
     _plugin_tree = Gtk.Template.Child()
     _plugin_configure_button = Gtk.Template.Child()
 
-    def __init__(self, requester):
+    def __init__(self, config):
         super().__init__()
-        self.req = requester
-        self.config = self.req.get_config("plugins")
+        self.config = config
 
         self.set_title(_("Plugins"))
 

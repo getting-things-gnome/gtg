@@ -102,13 +102,12 @@ class MainWindow(Gtk.ApplicationWindow):
     help_overlay = Gtk.Template.Child('shortcuts')
     about = Gtk.Template.Child('about_dialog')
 
-    def __init__(self, requester, app):
+    def __init__(self, app):
         super().__init__(application=app)
 
         # Object prime variables
-        self.req = requester
         self.app = app
-        self.config = self.req.get_config('browser')
+        self.config = app.config
         self.tag_active = False
 
         # Timeout handler for search
@@ -183,7 +182,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.restore_state_from_conf()
 
-        self.reapply_filter()
         self._set_defer_days()
         self.browser_shown = False
 
