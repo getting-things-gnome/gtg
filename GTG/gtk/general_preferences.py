@@ -45,10 +45,9 @@ class GeneralPreferences(Gtk.ScrolledWindow):
     _autoclean_days_spin = Gtk.Template.Child()
     _dark_mode_switch = Gtk.Template.Child()
 
-    def __init__(self, req, app):
+    def __init__(self, app):
         super().__init__()
-        self.req = req
-        self.config = self.req.get_config('browser')
+        self.config = app.config
 
         self.app = app
         self.timer = app.timer
@@ -104,14 +103,6 @@ class GeneralPreferences(Gtk.ScrolledWindow):
         dark_mode = self.config.get("dark_mode")
         self._dark_mode_switch.set_active(dark_mode)
 
-    def _refresh_task_browser(self):
-        """ Refresh tasks in task browser """
-
-        collapsed = self.config.get("collapsed_tasks")
-        task_tree = self.req.get_tasks_tree(refresh=False).get_basetree()
-        task_tree.refresh_all()
-
-        self.app.browser.restore_collapsed_tasks(collapsed)
 
     @Gtk.Template.Callback()
     def on_valid_time_check(self, widget):
@@ -147,7 +138,6 @@ class GeneralPreferences(Gtk.ScrolledWindow):
         curstate = self.config.get("contents_preview_enable")
         if curstate != self._preview_button.get_active():
             self.config.set("contents_preview_enable", not curstate)
-            self._refresh_task_browser()
 
     @Gtk.Template.Callback()
     def on_bg_color_toggled(self, widget, state):

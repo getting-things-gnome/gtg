@@ -33,13 +33,12 @@ class Preferences(Gtk.Window):
 
     _page_stack = Gtk.Template.Child()
 
-    def __init__(self, req, app):
+    def __init__(self, app):
         super().__init__()
-        self.req = req
-        self.config = self.req.get_config('browser')
+        self.config = app.config
 
         self.pages = {}
-        self.add_page(GeneralPreferences(req, app))
+        self.add_page(GeneralPreferences(app))
 
     def activate(self):
         """ Activate the preferences window."""
