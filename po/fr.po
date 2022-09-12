@@ -401,7 +401,7 @@ msgstr "Début de la journée"
 msgid ""
 "Automatically refreshes the task list and adjusts the \"Actionable\" view"
 msgstr ""
-"Met à jour automatiquement la liste des tâches et la vue « Actionable »"
+"Met à jour automatiquement la liste des tâches et la vue « Actionnables »"
 
 #: GTG/gtk/data/general_preferences.ui:281
 msgid "Task Editor font"
@@ -1548,7 +1548,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:208
 msgid "Learn How to Use the Actionable View Mode"
-msgstr "Apprendre à utiliser la vue « Actionable »"
+msgstr "Apprendre à utiliser la vue « Actionnables »"
 
 #: GTG/core/firstrun_tasks.py:215
 msgid ""
