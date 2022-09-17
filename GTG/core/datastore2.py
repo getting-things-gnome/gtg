@@ -76,6 +76,7 @@ class Datastore2:
         }
 
         self.data_path = None
+        self._activate_non_default_backends()
 
 
     @property
@@ -446,6 +447,9 @@ class Datastore2:
                 log.error("registering already registered backend")
                 return None
 
+
+            backend.register_datastore(self)
+
             if first_run:
                 backend.this_is_the_first_run(None)
 
@@ -460,21 +464,20 @@ class Datastore2:
             if GenericBackend.KEY_DEFAULT_BACKEND not in backend_dic:
                 backend.set_parameter(GenericBackend.KEY_DEFAULT_BACKEND, True)
             # if it's enabled, we initialize it
-            if backend.is_enabled() and \
-                    (self.is_default_backend_loaded or backend.is_default()):
-
-                backend.initialize(connect_signals=False)
+            if backend.is_enabled():
+                self._backend_startup(backend)
+                # backend.initialize()
                 # Filling the backend
                 # Doing this at start is more efficient than
                 # after the GUI is launched
-                backend.start_get_tasks()
+                # backend.start_get_tasks()
 
             return backend
         else:
             log.error("Tried to register a backend without a pid")
 
 
-    def _activate_non_default_backends(self, sender=None):
+    def _activate_non_default_backends(self):
         """
         Non-default backends have to wait until the default loads before
         being  activated. This function is called after the first default
@@ -483,9 +486,8 @@ class Datastore2:
         @param sender: not used, just here for signal compatibility
         """
 
-        self.is_default_backend_loaded = True
         for backend in self.backends.values():
-            if backend.is_enabled() and not backend.is_default():
+            if backend.is_enabled():
                 self._backend_startup(backend)
 
 

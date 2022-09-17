@@ -123,8 +123,8 @@ class Application(Gtk.Application):
             # Register backends
             # datastore = DataStore()
 
-            # for backend_dic in BackendFactory().get_saved_backends_list():
-            #     datastore.register_backend(backend_dic)
+            for backend_dic in BackendFactory().get_saved_backends_list():
+                self.ds.register_backend(backend_dic)
 
             # # Save the backends directly to be sure projects.xml is written
             # datastore.save(quit=False)

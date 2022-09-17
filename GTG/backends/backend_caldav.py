@@ -107,7 +107,7 @@ class Backend(PeriodicImportBackend):
 
     @interruptible
     def do_periodic_import(self) -> None:
-        with self.datastore.get_backend_mutex():
+        with self.datastore.mutex:
             self._do_periodic_import()
 
     @interruptible
