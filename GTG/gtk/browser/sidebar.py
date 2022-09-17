@@ -584,6 +584,7 @@ class Sidebar(Gtk.ScrolledWindow):
 
         tag = target.get_widget().props.tag
         task.add_tag(tag)
+        self.notify_task(task)
 
         self.ds.tasks.notify('task_count_no_tags')
 
@@ -594,12 +595,18 @@ class Sidebar(Gtk.ScrolledWindow):
         for task in list(tasklist):
             tag = target.get_widget().props.tag
             task.add_tag(tag)
-            task.notify('row_css')
-            task.notify('icons')
-            task.notify('tag_colors')
+            self.notify_task(task)
 
         self.ds.tasks.notify('task_count_no_tags')
 
+
+    def notify_task(self, task: Task2) -> None:
+        """Notify that tasks props have changed."""
+        
+        task.notify('row_css')
+        task.notify('icons')
+        task.notify('tag_colors')
+        
 
     def on_toplevel_tag_drop(self, drop_target, tag, x, y):
         if tag.parent:
