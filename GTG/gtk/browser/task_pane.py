@@ -327,7 +327,7 @@ class TaskPane(Gtk.ScrolledWindow):
         self.task_selection.select_item(position - 1, True)
         
 
-    def get_selection(self) -> list:
+    def get_selection(self, indices: bool = False) -> list:
         """Get the currently selected tasks."""
 
         selection = self.task_selection.get_selection()
@@ -336,7 +336,12 @@ class TaskPane(Gtk.ScrolledWindow):
         
         while iterator.is_valid():
             val = iterator.get_value()
-            selected.append(unwrap(self.task_selection.get_item(val), Task2))
+
+            if indices:
+                selected.append(val)
+            else:
+                selected.append(unwrap(self.task_selection.get_item(val), Task2))
+                
             iterator.next()
 
         return selected
