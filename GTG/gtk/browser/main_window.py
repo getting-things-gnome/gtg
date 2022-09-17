@@ -1671,7 +1671,7 @@ class MainWindow(Gtk.ApplicationWindow):
         @param backend_id: the id of the backend which Gtk.Infobar should be
                             removed.
         """
-        backend = self.req.get_backend(backend_id)
+        backend = self.app.ds.get_backend(backend_id)
         if not backend or (backend and backend.is_enabled()):
             # remove old infobar related to backend_id, if any
             if self.vbox_toolbars:
