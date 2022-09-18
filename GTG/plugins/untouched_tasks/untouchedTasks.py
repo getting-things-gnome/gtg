@@ -1,4 +1,3 @@
-
 # Copyright (c) 2012 - Tom Kadwill <tomkadwill@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -26,7 +25,6 @@ log = logging.getLogger(__name__)
 
 
 class UntouchedTasksPlugin():
-
     DEFAULT_PREFERENCES = {'max_days': 30,
                            'is_automatic': False,
                            'default_tag': 'untouched'}
@@ -51,11 +49,11 @@ class UntouchedTasksPlugin():
             self.builder.get_object("pref_tag_name")
         SIGNAL_CONNECTIONS_DIC = {
             "on_preferences_dialog_delete_event":
-            self.on_preferences_cancel,
+                self.on_preferences_cancel,
             "on_btn_preferences_cancel_clicked":
-            self.on_preferences_cancel,
+                self.on_preferences_cancel,
             "on_btn_preferences_ok_clicked":
-            self.on_preferences_ok,
+                self.on_preferences_ok,
         }
 
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
@@ -80,7 +78,7 @@ class UntouchedTasksPlugin():
         """
         plugin_api.remove_menu_item(self.menu_item)
 
-# CORE FUNCTIONS ##############################################################
+    # CORE FUNCTIONS ##############################################################
     def schedule_autopurge(self):
         self.timer = Timer(self.TIME_BETWEEN_PURGES,
                            self.add_untouched_tag)
@@ -110,7 +108,11 @@ class UntouchedTasksPlugin():
         # Add untouched tag to all tasks where new_date < time now
         for task in closed_tasks:
             modified_time = task.get_modified()
+            # get_modified might return a gtg.core.Date or a datetime.datetime.  The validity of the comparison depends
+            # on which one we get, so check explicitly.  This should probably be fixed in Task, eventually.
             new_time = modified_time + datetime.timedelta(days=max_days)
+            if type(new_time) == datetime.datetime:
+                new_time = new_time.date()
             if new_time < today:
                 log.debug('Adding %r tag to: %r as last time it was modified '
                           'was %r', tag_name, task.get_title(), modified_time)
@@ -120,7 +122,7 @@ class UntouchedTasksPlugin():
         if self.is_automatic:
             self.schedule_autopurge()
 
-# Preferences methods #########################################################
+    # Preferences methods #########################################################
     def is_configurable(self):
         """A configurable plugin should have this method and return True"""
         return True
