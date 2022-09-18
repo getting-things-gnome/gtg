@@ -100,7 +100,7 @@ class UntouchedTasksPlugin():
             tag_name = self.preferences['default_tag']
 
         log.debug("Starting process for adding %s", tag_name)
-        today = datetime.datetime.now()
+        today = datetime.date.today()
         max_days = self.preferences["max_days"]
         requester = self.plugin_api.get_requester()
         closed_tree = requester.get_tasks_tree(name='inactive')
