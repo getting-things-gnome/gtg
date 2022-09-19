@@ -251,16 +251,25 @@ class CoreConfig_:
             DEFAULTS['task'],
             self.save_task_config)
 
+    def rename_backend_section(self, backend_name, backend_id):
+        """Rename section `backend_name` to `backend_id` if it exists."""
+        if backend_name in self._backends_conf:
+            assert backend_id not in self._backends_conf
+            self._backends_conf.add_section(backend_id)
+            for (k, v) in self._backends_conf[backend_name].items():
+                self._backends_conf.set(backend_id, k, v)
+            self._backends_conf.remove_section(backend_name)
+
     def get_all_backends(self):
         return self._backends_conf.sections()
 
-    def get_backend_config(self, backend):
-        if backend not in self._backends_conf:
-            self._backends_conf.add_section(backend)
+    def get_backend_config(self, backend_id):
+        if backend_id not in self._backends_conf:
+            self._backends_conf.add_section(backend_id)
 
         return SectionConfig(
-            f'Backend {backend}',
-            self._backends_conf[backend],
+            f'Backend {backend_id}',
+            self._backends_conf[backend_id],
             DEFAULTS['backend'],
             self.save_backends_config)
 
