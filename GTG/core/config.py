@@ -203,10 +203,14 @@ class SectionConfig(GObject.Object):
         self._save_function()
 
 
-class CoreConfig:
+class CoreConfig_:
     """ Class holding configuration to all systems and tasks """
 
+    _instance = None
+
     def __init__(self):
+        assert self._instance is None
+
         self._conf_path = os.path.join(CONFIG_DIR, 'gtg.conf')
         self._conf = open_config_file(self._conf_path)
 
@@ -215,6 +219,11 @@ class CoreConfig:
 
         self._backends_conf_path = os.path.join(CONFIG_DIR, 'backends.conf')
         self._backends_conf = open_config_file(self._backends_conf_path)
+
+    @classmethod
+    def get_instance(cls):
+        cls._instance = cls._instance or cls()
+        return cls._instance
 
     def save_gtg_config(self):
         self._conf.write(open(self._conf_path, 'w'))
@@ -254,3 +263,6 @@ class CoreConfig:
             self._backends_conf[backend],
             DEFAULTS['backend'],
             self.save_backends_config)
+
+def CoreConfig():
+    return CoreConfig_.get_instance()
