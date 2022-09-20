@@ -105,6 +105,10 @@ class Task2(GObject.Object):
         self._date_start_str = ''
         self._is_active = True
 
+        self._is_recurring = False
+        self.recurring_term = None
+        self.recurring_updated_date = datetime.datetime.now()
+
         super(Task2, self).__init__()
 
 
@@ -340,6 +344,162 @@ class Task2(GObject.Object):
         self._date_modified = Date(datetime.datetime.now())
 
 
+    def set_recurring(self, recurring: bool, recurring_term: str = None, newtask=False):
+        """Sets a task as recurring or not, and its recurring term.
+
+        Like anything related to dates, repeating tasks are subtle and complex
+        when creating a new task, the due date is calculated from either the
+        current date or the start date, while we get the next occurrence of a
+        task not from the current date but from the due date itself.
+        
+        However when we are retrieving the task from the XML files, we should
+        only set the the recurring_term.
+
+        There are 4 cases to acknowledge when setting a task to recurring:
+          - if repeating but the term is invalid: it will be set to False.
+          - if repeating and the term is valid: we set it to True.
+          - if not repeating and the term is valid: we set the bool attr to True and set the term.
+          - if not repeating and the term is invalid: we set it to False and keep the previous term.
+
+        Setting a task as recurrent implies that the children of a recurrent
+        task will be also set to recurrent and will inherit their parent's
+        recurring term
+
+        Args:
+            recurring (bool): True if the task is recurring and False if not.
+            recurring_term (str, optional): the recurring period of a task (every Monday, day..).
+                                            Defaults to None.
+            newtask (bool, optional): if this is a new task, we must set the due_date.
+                                      Defaults to False.
+        """
+        def is_valid_term():
+            """ Verify if the term is valid and returns the appropriate Due date.
+
+            Return a tuple of (bool, Date)
+            """
+            if recurring_term is None:
+                return False, None
+
+            try:
+                # If a start date is already set,
+                # we should calculate the next date from that day.
+                if self.date_start == Date.no_date():
+                    start_from = Date(datetime.datetime.now())
+                else:
+                    start_from = self.date_start
+
+                newdate = start_from.parse_from_date(recurring_term, newtask)
+
+                return True, newdate
+
+            except ValueError:
+                return False, None
+
+        self._is_recurring = recurring
+
+        # We verifiy if the term passed is valid
+        valid, newdate = is_valid_term()
+        recurring_term = recurring_term if valid else None
+
+        if self._is_recurring:
+            if not valid:
+                self.recurring_term = None
+                self._is_recurring = False
+            else:
+                self.recurring_term = recurring_term
+                self.recurring_updated_date = datetime.datetime.now()
+
+                if newtask:
+                    self.date_due = newdate
+        else:
+            if valid:
+                self.recurring_term = recurring_term
+                self.recurring_updated_date = datetime.datetime.now()
+
+        # setting its children to recurrent
+        for child in self.children:
+            if child.status is Status.ACTIVE:
+                child.set_recurring(self._is_recurring, self.recurring_term)
+
+                if self._is_recurring:
+                    child.date_due = newdate
+
+
+    def toggle_recurring(self):
+        """ Toggle a task's recurrency ON/OFF. Use this function to toggle, not set_recurring"""
+
+        # If there is no recurring_term, We assume it to recur every day.
+        newtask = False
+
+        if self.recurring_term is None:
+            self.recurring_term = 'day'
+            newtask = True
+
+        self.set_recurring(not self._is_recurring, self.recurring_term, newtask)
+
+
+    def inherit_recursion(self):
+        """ Inherits the recurrent state of the parent.
+                If the task has a recurrent parent, it must be set to recur, itself.
+        """
+        if self.parent and self.parent._is_recurring:
+            self.set_recurring(True, self.parent.recurring_term)
+            self.date_due = self.parent.date_due
+        else:
+            self._is_recurring = False
+
+
+    def is_parent_recurring(self):
+        """Determine if the parent task is recurring."""
+        
+        return (self.parent and 
+                self.parent.status() == Status.ACTIVE 
+                and self.parent._is_recurring)
+
+
+    def get_next_occurrence(self):
+        """Calcutate the next occurrence of a recurring task
+
+        To know which is the correct next occurrence there are two rules:
+        - if the task was marked as done before or during the open period (before the duedate);
+          in this case, we need to deal with the issue of tasks that recur on the same date.
+          example: due_date is 09/09 and done_date is 09/09
+        - if the task was marked after the due date, we need to figure out the next occurrence
+          after the current date(today).
+
+        Raises:
+            ValueError: if the recurring_term is invalid
+
+        Returns:
+            Date: the next due date of a task
+        """
+
+        today = datetime.date.today()
+        
+        if today <= self.date_due:
+            try:
+                nextdate = self.date_due.parse_from_date(self.recurring_term, newtask=False)
+
+                while nextdate <= self.date_due:
+                    nextdate = nextdate.parse_from_date(self.recurring_term, newtask=False)
+
+                return nextdate
+
+            except Exception:
+                raise ValueError(f'Invalid recurring term {self.recurring_term}')
+
+        elif today > self.date_due:
+            try:
+                next_date = self.date_due.parse_from_date(self.recurring_term, newtask=False)
+
+                while next_date < datetime.date.today():
+                    next_date = next_date.parse_from_date(self.recurring_term, newtask=False)
+                    
+                return next_date
+
+            except Exception:
+                raise ValueError(f'Invalid recurring term {self.recurring_term}')
+
     # -----------------------------------------------------------------------
     # Bind Properties
     #
@@ -348,6 +508,11 @@ class Task2(GObject.Object):
     # workaround so that we can use them with the regular 
     # bind_property().
     # -----------------------------------------------------------------------
+
+    @GObject.Property(type=bool, default=False)
+    def is_recurring(self) -> bool:
+        return self._is_recurring
+
 
     @GObject.Property(type=bool, default=False)
     def has_date_due(self) -> bool:
