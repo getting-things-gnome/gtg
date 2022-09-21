@@ -109,6 +109,8 @@ class Task2(GObject.Object):
         self.recurring_term = None
         self.recurring_updated_date = datetime.datetime.now()
 
+        self.duplicate_cb = NotImplemented
+
         super(Task2, self).__init__()
 
 
@@ -128,7 +130,7 @@ class Task2(GObject.Object):
                 and can_start)
 
 
-    def toggle_active(self, propagate: bool = True) -> None:
+    def toggle_active(self, propagated: bool = False) -> None:
         """Toggle between possible statuses."""
 
         if self.status is Status.ACTIVE:
@@ -137,10 +139,10 @@ class Task2(GObject.Object):
         elif self.status is Status.DONE:
             status = Status.ACTIVE
 
-        self.set_status(status, propagate)
+        self.set_status(status, propagated)
 
 
-    def toggle_dismiss(self, propagate: bool = True) -> None:
+    def toggle_dismiss(self, propagated: bool = False) -> None:
         """Set this task to be dismissed."""
 
         if self.status is Status.ACTIVE:
@@ -149,10 +151,10 @@ class Task2(GObject.Object):
         elif self.status is Status.DISMISSED:
             status = Status.ACTIVE
 
-        self.set_status(status, propagate)
+        self.set_status(status, propagated)
 
 
-    def set_status(self, status: Status, propagate: bool = True) -> None:
+    def set_status(self, status: Status, propagated: bool = False) -> None:
         """Set status for task."""
 
         self.status = status
@@ -160,15 +162,26 @@ class Task2(GObject.Object):
 
         if status != Status.ACTIVE:
             self.date_closed = Date.today()
+
+            # If the task is recurring, it must be duplicate with
+            # another task id and the next occurence of the task
+            # while preserving child/parent relations.
+            # For a task to be duplicated, it must satisfy 3 rules.
+            #   1- It is recurring.
+            #   2- It has no parent or no recurring parent.
+            #   3- It was directly marked as done (not by propagation from its parent).
+            if (self._is_recurring and not propagated and 
+                 not self.is_parent_recurring()):
+                self.duplicate_cb(self)
+            
         else:
             self.date_closed = Date.no_date()
 
             if self.parent and self.parent.status is not Status.ACTIVE:
-                self.parent.set_status(status, propagate=False)
+                self.parent.set_status(status, propagated=True)
             
-        if propagate:
-            for child in self.children:
-                child.set_status(status)
+        for child in self.children:
+            child.set_status(status, propagated=True)
 
 
     @property
@@ -444,7 +457,7 @@ class Task2(GObject.Object):
         """Determine if the parent task is recurring."""
         
         return (self.parent and 
-                self.parent.status() == Status.ACTIVE 
+                self.parent.status == Status.ACTIVE 
                 and self.parent._is_recurring)
 
 
@@ -662,6 +675,27 @@ class TaskStore(BaseStore):
         return self.lookup[tid]
 
 
+    def duplicate_for_recurrent(self, task: Task2) -> Task2:
+        """Duplicate a task for the next ocurrence."""
+        
+        new_task = self.new(task.title)
+        new_task.tags = task.tags
+        new_task.content = task.content
+        new_task.date_added = task.date_added
+        new_task.date_due = task.get_next_occurrence()
+
+        # Only goes through for the first task 
+        if task.parent and task.parent.is_active:
+            self.parent(new_task.id, task.parent.id)
+
+        for child in task.children:
+            new_child = self.duplicate_for_recurrent(child)
+            self.parent(new_child.id, new_task.id)
+
+        log.debug("Duplicated task %s as task %s", task.id, new_task.id)
+        return new_task
+        
+
     def new(self, title: str = None, parent: UUID = None) -> Task2:
         """Create a new task and add it to the store."""
 
@@ -818,7 +852,8 @@ class TaskStore(BaseStore):
 
         if not parent_id:
             self.model.append(item)
-
+        
+        item.duplicate_cb = self.duplicate_for_recurrent
         self.notify('task_count_all')
         self.notify('task_count_no_tags')
 

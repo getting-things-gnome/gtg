@@ -36,7 +36,7 @@ class RecurringMenu(Gtk.PopoverMenu):
     _month_calendar = Gtk.Template.Child()
     _year_calendar = Gtk.Template.Child()
 
-    def __init__(self, requester, tid, editor):
+    def __init__(self, editor, task):
         # Setting up the actions
         # Before super().__init__ as install_*_action acts on the class,
         # and in this case doesn't work for all instances if you do it after
@@ -60,9 +60,9 @@ class RecurringMenu(Gtk.PopoverMenu):
         super().__init__()
 
         # General attributes
-        self.task = requester.get_task(tid)
+        self.task = task
         self._editor = editor
-        self._selected_recurring_term = self.task.get_recurring_term()
+        self._selected_recurring_term = self.task.recurring_term
 
         self._is_header_menu_item_shown = False
 
@@ -93,7 +93,7 @@ class RecurringMenu(Gtk.PopoverMenu):
         GPropertyAction, however the tag class itself doesn't use GObject
         properties.
         """
-        return self.task.get_recurring()
+        return self.task._is_recurring
 
     @is_task_recurring.setter
     def is_task_recurring(self, recurs: bool):
@@ -104,6 +104,7 @@ class RecurringMenu(Gtk.PopoverMenu):
         else:
             self._update_task(False)
             self._update_header()
+
         self._editor.refresh_editor()
 
     def _is_term_set(self):
@@ -154,12 +155,12 @@ class RecurringMenu(Gtk.PopoverMenu):
                 markup = _('Every <b>other day</b>')
             elif self._selected_recurring_term == 'week':  # Recurring weekly from today
                 markup = _('Every <b>{week_day}</b>').format(
-                    week_day=self.task.get_recurring_updated_date().strftime('%A'))
+                    week_day=self.task.recurring_updated_date.strftime('%A'))
             elif self._selected_recurring_term == 'month':  # Recurring monthly from today
                 markup = _('Every <b>{month_day} of the month</b>').format(
-                    month_day=self.task.get_recurring_updated_date().strftime('%d'))
+                    month_day=self.task.recurring_updated_date.strftime('%d'))
             elif self._selected_recurring_term == 'year':  # Recurring yearly from today
-                date = self.task.get_recurring_updated_date()
+                date = self.task.recurring_updated_date
                 markup = _('Every <b>{month} {day}</b>').format(
                     month=date.strftime('%B'), day=date.strftime('%d'))
             else:  # Recurring weekly from selected week day
@@ -204,7 +205,7 @@ class RecurringMenu(Gtk.PopoverMenu):
             need_month_hack = False
             if self._selected_recurring_term in ('month', 'year'):
                 # Recurring monthly/yearly from 'today'
-                d = self.task.get_recurring_updated_date().date()
+                d = self.task.recurring_updated_date.date()
                 need_month_hack = self._set_selected_term == 'month'
             elif self._selected_recurring_term.isdigit():
                 if len(self._selected_recurring_term) <= 2:
