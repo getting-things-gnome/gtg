@@ -132,52 +132,43 @@ class Task2(GObject.Object):
         """Toggle between possible statuses."""
 
         if self.status is Status.ACTIVE:
-            self.status = Status.DONE
-            self.is_active = False
-            self.date_closed = Date.today()
+            status = Status.DONE
 
-        else:
-            self.status = Status.ACTIVE
-            self.is_active = True
-            self.date_closed = Date.no_date()
+        elif self.status is Status.DONE:
+            status = Status.ACTIVE
 
-            if self.parent and self.parent.status is not Status.ACTIVE:
-                self.parent.toggle_active(propagate=False)
-
-        if propagate:
-            for child in self.children:
-                child.toggle_active()
+        self.set_status(status, propagate)
 
 
     def toggle_dismiss(self, propagate: bool = True) -> None:
         """Set this task to be dismissed."""
 
         if self.status is Status.ACTIVE:
-            self.status = Status.DISMISSED
-            self.is_active = False
-            self.date_closed = Date.today()
+            status = Status.DISMISSED
 
         elif self.status is Status.DISMISSED:
-            self.status = Status.ACTIVE
-            self.is_active = True
-            self.date_closed = Date.no_date()
+            status = Status.ACTIVE
 
-            if self.parent and self.parent.status is not Status.ACTIVE:
-                self.parent.toggle_dismiss(propagate=False)
-
-        if propagate:
-            for child in self.children:
-                child.toggle_dismiss()
+        self.set_status(status, propagate)
 
 
-    def set_status(self, status: Status) -> None:
+    def set_status(self, status: Status, propagate: bool = True) -> None:
         """Set status for task."""
 
         self.status = status
         self.is_active = (status == Status.ACTIVE)
 
-        for child in self.children:
-            child.set_status(status)
+        if status != Status.ACTIVE:
+            self.date_closed = Date.today()
+        else:
+            self.date_closed = Date.no_date()
+
+            if self.parent and self.parent.status is not Status.ACTIVE:
+                self.parent.set_status(status, propagate=False)
+            
+        if propagate:
+            for child in self.children:
+                child.set_status(status)
 
 
     @property
