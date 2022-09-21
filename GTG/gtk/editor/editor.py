@@ -221,10 +221,10 @@ class TaskEditor(Gtk.Window):
         self.tags_tree.set_search_equal_func(self.search_function, None)
 
         # Recurrence
-        # self.recurring_menu = RecurringMenu(self.req, task.tid, self)
-        # self.recurring_menu.connect('notify::is-task-recurring', self.sync_repeat_button)
-        # self.repeat_button.set_popover(self.recurring_menu)
-        # self.sync_repeat_button()
+        self.recurring_menu = RecurringMenu(self, task)
+        self.recurring_menu.connect('notify::is-task-recurring', self.sync_repeat_button)
+        self.repeat_button.set_popover(self.recurring_menu)
+        self.sync_repeat_button()
 
         # Plugins
         self.pengine = PluginEngine()
