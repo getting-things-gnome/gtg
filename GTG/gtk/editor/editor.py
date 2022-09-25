@@ -667,15 +667,15 @@ class TaskEditor(Gtk.Window):
         all_subtasks = []
 
         def trace_subtasks(root):
-            for i in root.get_subtasks():
-                if i not in all_subtasks:
-                    all_subtasks.append(i)
-                    trace_subtasks(i)
+            for c in root.children:
+                if c.id not in all_subtasks:
+                    all_subtasks.append(c)
+                    trace_subtasks(c)
 
         trace_subtasks(self.task)
 
         for task in all_subtasks:
-            self.app.close_task(task.get_id())
+            self.app.close_task(task.id)
 
     def dismiss(self):
         self.task.toggle_dismissed()
@@ -683,7 +683,7 @@ class TaskEditor(Gtk.Window):
 
         if self.task.status != Status.ACTIVE:
             self.close_all_subtasks()
-            self.close(None)
+            self.close()
 
 
     def change_status(self):
@@ -692,7 +692,7 @@ class TaskEditor(Gtk.Window):
 
         if self.task.status != Status.ACTIVE:
             self.close_all_subtasks()
-            self.close(None)
+            self.close()
 
 
     def reopen(self):
@@ -864,7 +864,7 @@ class TaskEditor(Gtk.Window):
         # We should also destroy the whole taskeditor object.
         if self:
             self.destruction()
-            self.destroy()
+            super().close()
             self = None
 
 
