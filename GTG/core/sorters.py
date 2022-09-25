@@ -131,18 +131,26 @@ class TaskTagSorter(Gtk.Sorter):
         super(TaskTagSorter, self).__init__()
 
 
+    def get_first_letter(self, tags) -> str:
+        """Get first letter of the first tag in a set of tags."""
+        
+        # Fastest way to get the first item
+        # on a set in Python
+        for t in tags:
+            return t.name[0]
+
     def do_compare(self, a, b) -> Gtk.Ordering:
         
         a = unwrap(a, Task2)
         b = unwrap(b, Task2)
 
         if a.tags:
-            first = a.tags[0].name[0]
+            first = self.get_first_letter(a.tags)
         else:
             first = 'zzzzzzz'
 
         if b.tags:
-            second = b.tags[0].name[0]
+            second = self.get_first_letter(b.tags)
         else:
             second = 'zzzzzzz'
 
