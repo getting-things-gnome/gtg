@@ -361,10 +361,13 @@ class Application(Gtk.Application):
 
     def mark_as_done(self, param, action):
         """Callback to mark a task as done."""
+
         try:
             self.get_active_editor().change_status()
         except AttributeError:
             self.browser.on_mark_as_done()
+        finally:
+            self.browser.get_pane().refresh()
 
     def dismiss(self, param, action):
         """Callback to mark a task as done."""
@@ -373,6 +376,8 @@ class Application(Gtk.Application):
             self.get_active_editor().toggle_dismiss()
         except AttributeError:
             self.browser.on_dismiss_task()
+        finally:
+            self.browser.get_pane().refresh()
     
     def reopen(self, param, action):
         """Callback to mark task as open."""
@@ -381,6 +386,8 @@ class Application(Gtk.Application):
             self.get_active_editor().reopen()
         except AttributeError:
             self.browser.on_reopen_task()
+        finally:
+            self.browser.get_pane().refresh()
 
     def open_help(self, action, param):
         """Open help callback."""

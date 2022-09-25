@@ -284,6 +284,12 @@ class TaskPane(Gtk.ScrolledWindow):
         self.set_title()
 
 
+    def refresh(self):
+        """Refresh the task filter"""
+        
+        self.task_filter.changed(Gtk.FilterChange.DIFFERENT)
+        
+
     def set_sorter(self, method=None) -> None:
         """Change tasks filter."""
 
