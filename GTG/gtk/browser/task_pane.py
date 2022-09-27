@@ -353,6 +353,13 @@ class TaskPane(Gtk.ScrolledWindow):
         return selected
 
 
+    def get_selected_number(self) -> int:
+        """Get number of items currently selected."""
+
+        selection = self.task_selection.get_selection()
+        return selection.get_size()
+
+
     def on_checkbox_toggled(self, button, task=None):
         """Callback when clicking a checkbox."""
         
