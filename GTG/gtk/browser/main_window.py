@@ -1042,11 +1042,14 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_add_subtask(self, widget=None):
 
-        for task in self.get_pane().get_selection():
+        pane = self.get_pane()
+
+        for task in pane.get_selection():
             new_task = self.app.ds.tasks.new(parent=task.id)
             new_task.tags = task.tags
             self.app.open_task(new_task)
-            
+            pane.refresh()
+
 
     def on_add_parent(self, widget=None):
         selection = self.get_pane().get_selection()
@@ -1076,6 +1079,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.app.ds.tasks.parent(task.id, new_parent.id)
         
             self.app.open_task(new_parent)
+            self.get_pane().refresh()
 
 
     def on_edit_active_task(self, widget=None, row=None, col=None):
