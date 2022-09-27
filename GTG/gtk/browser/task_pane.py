@@ -175,11 +175,11 @@ class TaskPane(Gtk.ScrolledWindow):
 
         self.sort_model = Gtk.TreeListRowSorter()
         
-        main_sorter = Gtk.SortListModel()
-        main_sorter.set_model(self.filtered)
-        main_sorter.set_sorter(self.sort_model)
+        self.main_sorter = Gtk.SortListModel()
+        self.main_sorter.set_model(self.filtered)
+        self.main_sorter.set_sorter(self.sort_model)
 
-        self.task_selection = Gtk.MultiSelection.new(main_sorter)
+        self.task_selection = Gtk.MultiSelection.new(self.main_sorter)
 
         tasks_signals = Gtk.SignalListItemFactory()
         tasks_signals.connect('setup', self.task_setup_cb)
