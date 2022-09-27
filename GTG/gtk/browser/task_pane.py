@@ -55,8 +55,15 @@ class TaskBox(Gtk.Box):
 
     @has_children.setter
     def set_has_children(self, value) -> bool:
+
         self.expander.set_visible(value)
-        widget = self.expander if value else self.check
+
+        if value:
+            widget = self.expander 
+            self.check.set_margin_start(0)
+        else:
+            widget = self.check
+            self.expander.set_margin_start(0)
 
         if self.task.parent:
             parent = self.task
@@ -69,7 +76,7 @@ class TaskBox(Gtk.Box):
             widget.set_margin_start(6 + (21 * depth))
         else:
             widget.set_margin_start(6)
-
+        
 
     @GObject.Property(type=bool, default=True)
     def is_active(self) -> None:
