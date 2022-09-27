@@ -588,6 +588,9 @@ class TaskPane(Gtk.ScrolledWindow):
 
         task = gesture.get_widget().task
 
+        if self.get_selected_number() <= 1:
+            self.select_task(task)
+
         if task.status == Status.ACTIVE:
             menu = self.browser.open_menu
         else:
