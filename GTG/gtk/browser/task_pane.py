@@ -333,6 +333,22 @@ class TaskPane(Gtk.ScrolledWindow):
         self.task_selection.select_item(position - 1, True)
         
 
+    def select_task(self, task: Task2) -> None:
+        """Select a task in the list."""
+        
+        position = None
+
+        for i in range(self.main_sorter.get_n_items()):
+            item = unwrap(self.main_sorter.get_item(i), Task2)
+
+            if item == task:
+                position = i
+                break
+
+        if position:
+            self.task_selection.select_item(position, True)
+
+
     def get_selection(self, indices: bool = False) -> list:
         """Get the currently selected tasks."""
 
