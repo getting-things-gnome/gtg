@@ -594,7 +594,8 @@ class TaskPane(Gtk.ScrolledWindow):
     def on_task_RMB_click(self, gesture, sequence) -> None:
         """Callback when right-clicking on an open task."""
 
-        task = gesture.get_widget().task
+        widget = gesture.get_widget() 
+        task = widget.task
 
         if self.get_selected_number() <= 1:
             self.select_task(task)
@@ -603,15 +604,14 @@ class TaskPane(Gtk.ScrolledWindow):
             menu = self.browser.open_menu
         else:
             menu = self.browser.closed_menu
-            
-        menu.set_parent(gesture.get_widget())
-        menu.set_halign(Gtk.Align.START)
-        menu.set_position(Gtk.PositionType.BOTTOM)
 
         point = gesture.get_point(sequence)
+        x, y = widget.translate_coordinates(self.browser, point.x, point.y)
+
         rect = Gdk.Rectangle()
-        rect.x = point.x
-        rect.y = point.y
+        rect.x = x
+        rect.y = y
+        
         menu.set_pointing_to(rect)
         menu.popup()
 

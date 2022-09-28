@@ -203,13 +203,21 @@ class MainWindow(Gtk.ApplicationWindow):
         self.closed_menu = Gtk.PopoverMenu.new_from_model_full(
             closed_menu_model, Gtk.PopoverMenuFlags.NESTED
         )
+
         self.closed_menu.set_has_arrow(False)
+        self.closed_menu.set_parent(self)
+        self.closed_menu.set_halign(Gtk.Align.START)
+        self.closed_menu.set_position(Gtk.PositionType.BOTTOM)
 
         open_menu_model = builder.get_object('task_menu')
         self.open_menu = Gtk.PopoverMenu.new_from_model_full(
             open_menu_model, Gtk.PopoverMenuFlags.NESTED
         )
+
         self.open_menu.set_has_arrow(False)
+        self.open_menu.set_parent(self)
+        self.open_menu.set_halign(Gtk.Align.START)
+        self.open_menu.set_position(Gtk.PositionType.BOTTOM)
 
         sort_menu_model = builder.get_object('sort_menu')
         self.sort_menu = Gtk.PopoverMenu.new_from_model(sort_menu_model)
