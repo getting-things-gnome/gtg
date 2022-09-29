@@ -432,6 +432,8 @@ class TaskView(GtkSource.View):
             # I find this confusing too :)
             tag_name = match.group(0)
             tag_name = tag_name.replace('@', '')
+
+            self.add_tasktag_cb(tag_name)
             tag_tag = TaskTagTag(tag_name, self.ds)
             self.tags_applied.append(tag_tag)
 
@@ -439,7 +441,6 @@ class TaskView(GtkSource.View):
             self.buffer.apply_tag(tag_tag, tag_start, tag_end)
             self.task_tags.add(tag_name)
 
-            self.add_tasktag_cb(tag_name)
 
 
     def detect_internal_link(self, text: str, start: Gtk.TextIter) -> None:
