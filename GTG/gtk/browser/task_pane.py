@@ -407,6 +407,7 @@ class TaskPane(Gtk.ScrolledWindow):
         due_icon = Gtk.Image.new_from_icon_name('alarm-symbolic') 
         start = Gtk.Label() 
         start_icon = Gtk.Image.new_from_icon_name('media-playback-start-symbolic') 
+        recurring_icon = Gtk.Label() 
 
         color.set_size_request(16, 16)
         
@@ -420,6 +421,9 @@ class TaskPane(Gtk.ScrolledWindow):
         label.set_ellipsize(Pango.EllipsizeMode.END)
         label.set_margin_end(12)
         label.set_xalign(0)
+
+        recurring_icon.set_margin_end(16)
+        recurring_icon.set_label('\u2B6E')
 
         due_icon.set_margin_end(6)
         due.set_margin_end(24)
@@ -449,6 +453,7 @@ class TaskPane(Gtk.ScrolledWindow):
         self.connect('collapse-all', lambda s: box.expander.activate_action('listitem.collapse'))
 
         box.append(label)
+        box.append(recurring_icon)
         box.append(due_icon)
         box.append(due)
         box.append(start_icon)
@@ -466,7 +471,8 @@ class TaskPane(Gtk.ScrolledWindow):
         expander = box.get_first_child()
         check = expander.get_next_sibling()
         label = check.get_next_sibling()
-        due_icon = label.get_next_sibling()
+        recurring_icon = label.get_next_sibling()
+        due_icon = recurring_icon.get_next_sibling()
         due = due_icon.get_next_sibling()
         start_icon = due.get_next_sibling()
         start = start_icon.get_next_sibling()
@@ -483,6 +489,8 @@ class TaskPane(Gtk.ScrolledWindow):
 
         item.bind_property('title', label, 'label', BIND_FLAGS)
         item.bind_property('excerpt', box, 'tooltip-text', BIND_FLAGS)
+
+        item.bind_property('is_recurring', recurring_icon, 'visible', BIND_FLAGS)
 
         item.bind_property('has_date_due', due_icon, 'visible', BIND_FLAGS)
         item.bind_property('has_date_start', start_icon, 'visible', BIND_FLAGS)
