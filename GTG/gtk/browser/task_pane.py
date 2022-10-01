@@ -401,9 +401,7 @@ class TaskPane(Gtk.ScrolledWindow):
         box = TaskBox(self.app.config)
         label = Gtk.Label() 
         separator = Gtk.Separator() 
-        # expander = Gtk.TreeExpander() 
         icons = Gtk.Label() 
-        # check = Gtk.CheckButton() 
         color = TagPill()
         due = Gtk.Label() 
         due_icon = Gtk.Image.new_from_icon_name('alarm-symbolic') 
@@ -412,14 +410,10 @@ class TaskPane(Gtk.ScrolledWindow):
 
         color.set_size_request(16, 16)
         
-        # Does this even work?
         color.set_vexpand(False)
         color.set_valign(Gtk.Align.CENTER)
 
         separator.set_margin_end(12)
-        # expander.set_margin_start(6)
-        # expander.set_margin_end(6)
-        # check.set_margin_end(6)
         icons.set_margin_end(6)
 
         label.set_hexpand(True)
