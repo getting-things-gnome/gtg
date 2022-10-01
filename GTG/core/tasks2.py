@@ -427,6 +427,8 @@ class Task2(GObject.Object):
 
                 if self._is_recurring:
                     child.date_due = newdate
+        
+        self.notify('is_recurring')
 
 
     def toggle_recurring(self):
