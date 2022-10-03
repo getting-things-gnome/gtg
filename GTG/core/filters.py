@@ -46,9 +46,19 @@ class TagEmptyFilter(Gtk.Filter):
 
     def do_match(self, item) -> bool:
         tag = unwrap(item, Tag2)
-        
-        return self.ds.task_count[self.pane].get(tag.name, False)
 
+        if self.pane == 'open':
+            return tag.task_count_open > 0
+
+        elif self.pane == 'closed':
+            return tag.task_count_closed > 0
+
+        elif self.pane == 'workview':
+            return tag.task_count_actionable > 0
+
+        else:
+            return True
+            
 
 class TaskPaneFilter(Gtk.Filter):
     __gtype_name__ = 'TaskPaneFilter'
