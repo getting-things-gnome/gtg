@@ -157,6 +157,18 @@ class Task2(GObject.Object):
     def set_status(self, status: Status, propagated: bool = False) -> None:
         """Set status for task."""
 
+        if self.status == Status.ACTIVE:
+            for t in self.tags:
+                t.task_count_open -= 1
+            
+            if self.is_actionable:
+                for t in self.tags:
+                    t.task_count_actionable -= 1
+
+        else:
+            for t in self.tags:
+                t.task_count_closed -= 1
+
         self.status = status
         self.is_active = (status == Status.ACTIVE)
 
@@ -179,6 +191,19 @@ class Task2(GObject.Object):
 
             if self.parent and self.parent.status is not Status.ACTIVE:
                 self.parent.set_status(status, propagated=True)
+
+        if status == Status.ACTIVE:
+            for t in self.tags:
+                t.task_count_open += 1
+            
+            if self.is_actionable:
+                for t in self.tags:
+                    t.task_count_actionable += 1
+
+        else:
+            for t in self.tags:
+                t.task_count_closed += 1
+
             
         for child in self.children:
             child.set_status(status, propagated=True)
