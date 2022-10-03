@@ -137,11 +137,12 @@ class Sidebar(Gtk.ScrolledWindow):
         # -------------------------------------------------------------------------------
         # Tags Section
         # -------------------------------------------------------------------------------
-        filtered = Gtk.FilterListModel()
-        filtered.set_model(ds.tags.tree_model)
-        filtered.set_filter(TagEmptyFilter(ds, 'open'))
+        self.tags_filter = TagEmptyFilter(ds, 'open')
+        self.filtered_tags = Gtk.FilterListModel()
+        self.filtered_tags.set_model(ds.tags.tree_model)
+        self.filtered_tags.set_filter(self.tags_filter)
         
-        self.tag_selection = Gtk.MultiSelection.new(filtered)
+        self.tag_selection = Gtk.MultiSelection.new(self.filtered_tags)
         self.tag_handle = self.tag_selection.connect('selection-changed', self.on_tag_selected)
 
         tags_signals = Gtk.SignalListItemFactory()
@@ -190,6 +191,13 @@ class Sidebar(Gtk.ScrolledWindow):
         wrap_box.append(button)
         wrap_box.append(self.revealer)
         self.set_child(wrap_box)
+
+
+    def refresh_tags(self) -> None:
+        """Refresh tags list."""
+        
+        self.filtered_tags.items_changed(0, 0, 0)
+        self.tags_filter.changed(Gtk.FilterChange.DIFFERENT)
 
 
     def on_tag_RMB_click(self, gesture, sequence) -> None:
