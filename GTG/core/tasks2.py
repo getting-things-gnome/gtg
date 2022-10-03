@@ -318,12 +318,12 @@ class Task2(GObject.Object):
                 self.tags.remove(t)
 
                 if self.status == Status.ACTIVE:
-                    tag.task_count_open -= 1
+                    t.task_count_open -= 1
                 else: 
-                    tag.task_count_closed -= 1
+                    t.task_count_closed -= 1
                 
                 if self.is_actionable():
-                    tag.task_count_actionable -= 1
+                    t.task_count_actionable -= 1
 
                 self.content = (self.content.replace(f'{tag_name}\n\n', '')
                                             .replace(f'{tag_name},', '')
