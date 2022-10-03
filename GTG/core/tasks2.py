@@ -297,15 +297,16 @@ class Task2(GObject.Object):
         """Add a tag to this task."""
 
         if isinstance(tag, Tag2):
-            self.tags.add(tag)
+            if tag not in self.tags:
+                self.tags.add(tag)
 
-            if self.status == Status.ACTIVE:
-                tag.task_count_open += 1
-            else: 
-                tag.task_count_closed += 1
-            
-            if self.is_actionable:
-                tag.task_count_actionable += 1
+                if self.status == Status.ACTIVE:
+                    tag.task_count_open += 1
+                else: 
+                    tag.task_count_closed += 1
+                
+                if self.is_actionable:
+                    tag.task_count_actionable += 1
         else:
             raise ValueError
 
