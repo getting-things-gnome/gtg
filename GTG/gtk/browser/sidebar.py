@@ -200,6 +200,13 @@ class Sidebar(Gtk.ScrolledWindow):
         self.tags_filter.changed(Gtk.FilterChange.DIFFERENT)
 
 
+    def change_pane(self, pane: str) -> None:
+        """Change pane for the tag list."""
+        
+        self.tags_filter.pane = pane
+        self.tags_filter.changed(Gtk.FilterChange.DIFFERENT)
+        
+
     def on_tag_RMB_click(self, gesture, sequence) -> None:
         """Callback when right-clicking on a tag."""
         

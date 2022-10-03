@@ -1400,6 +1400,7 @@ class MainWindow(Gtk.ApplicationWindow):
         current_pane = self.get_selected_pane()
         self.config.set('view', current_pane)
         self.get_pane().set_filter_tags(set(self.sidebar.selected_tags()))
+        self.sidebar.change_pane(current_pane)
 
         self.notify('is_pane_open')
         self.notify('is_pane_actionable')
