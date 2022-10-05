@@ -70,6 +70,13 @@ class TaskPaneFilter(Gtk.Filter):
         self.tags = set()
         self.no_tags = no_tags
 
+
+    def match_tags(self, task: Task2) -> bool:
+        """Match selected tags to task tags."""
+        
+        return len(self.tags.intersection(set(task.tags))) >= len(self.tags)
+
+
     def do_match(self, item) -> bool:
         task = unwrap(item, Task2)
 
@@ -82,9 +89,11 @@ class TaskPaneFilter(Gtk.Filter):
 
         if show:
             if self.no_tags:
-                return not task.tags
+                current = not task.tags
+                return current or any(bool(c.tags) for c in task.children)
             elif self.tags:
-                return len(self.tags.intersection(set(task.tags))) >= len(self.tags)
+                current = self.match_tags(task)
+                return current or any(self.match_tags(c) for c in task.children)
             else:
                 return True
         else:
