@@ -136,7 +136,7 @@ class Task2(GObject.Object):
         if self.status is Status.ACTIVE:
             status = Status.DONE
 
-        elif self.status is Status.DONE:
+        else:
             status = Status.ACTIVE
 
         self.set_status(status, propagated)
@@ -148,7 +148,7 @@ class Task2(GObject.Object):
         if self.status is Status.ACTIVE:
             status = Status.DISMISSED
 
-        elif self.status is Status.DISMISSED:
+        else:
             status = Status.ACTIVE
 
         self.set_status(status, propagated)
