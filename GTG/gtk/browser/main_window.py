@@ -1399,6 +1399,12 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         current_pane = self.get_selected_pane()
         self.config.set('view', current_pane)
+
+        # HACK: We expand all the tasks in the open tab
+        #       so their subtasks "exist" when switching
+        #       to actionable
+        self.stack_switcher.get_stack().get_first_child().get_first_child().emit('expand-all')
+        
         self.get_pane().set_filter_tags(set(self.sidebar.selected_tags()))
         self.sidebar.change_pane(current_pane)
 
