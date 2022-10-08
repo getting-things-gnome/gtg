@@ -84,6 +84,7 @@ class TaskPaneFilter(Gtk.Filter):
             show = task.status is Status.ACTIVE
         elif self.pane == 'workview':
             show = task.is_actionable
+            item.set_expanded(True)
         elif self.pane == 'closed':
             show = task.status is not Status.ACTIVE
 
@@ -121,4 +122,6 @@ class SearchTaskFilter(Gtk.Filter):
 
     def do_match(self, item) -> bool:
         task = unwrap(item, Task2)
+        item.set_expanded(True)
+
         return search.search_filter(task, self.checks)
