@@ -28,6 +28,7 @@ import urllib.parse  # GLibs URI functions not available for some reason
 
 from GTG.core.dirs import DATA_DIR
 from GTG.core.datastore2 import Datastore2
+from GTG.core.tasks2 import Filter
 
 from GTG.gtk.browser.delete_task import DeletionUI
 from GTG.gtk.browser.main_window import MainWindow
@@ -467,17 +468,14 @@ class Application(Gtk.Application):
 
         today = Date.today()
         max_days = self.config.get('autoclean_days')
-        closed_tree = self.req.get_tasks_tree(name='inactive')
-
-        closed_tasks = [self.req.get_task(tid) for tid in
-                        closed_tree.get_all_nodes()]
-
+        closed_tasks = self.ds.tasks.filter(Filter.CLOSED)
+        
         to_remove = [t for t in closed_tasks
-                     if (today - t.get_closed_date()).days > max_days]
+                     if (today - t.date_closed).days > max_days]
 
-        [self.req.delete_task(task.get_id())
-         for task in to_remove
-         if self.req.has_task(task.get_id())]
+        for t in to_remove:
+            self.ds.tasks.remove(t.id)
+
 
     def autoclean(self, timer):
         """Run Automatic cleanup of old tasks."""
