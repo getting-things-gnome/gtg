@@ -110,20 +110,14 @@ class Backend(GenericBackend):
 
         return os.path.abspath(path)
 
+
     def initialize(self):
         """ This is called when a backend is enabled """
 
         super(Backend, self).initialize()
         filepath = self.get_path()
 
-        if versioning.is_required(filepath):
-            log.warning('Found old file. Running versioning code.')
-            old_path = os.path.join(DATA_DIR, 'gtg_tasks.xml')
-            tree = versioning.convert(old_path, self.datastore)
-
-            xml.save_file(filepath, tree)
-
-        elif not os.path.isfile(filepath):
+        if not os.path.isfile(filepath):
             root = firstrun_tasks.generate()
             xml.create_dirs(self.get_path())
             xml.save_file(self.get_path(), root)
@@ -140,6 +134,7 @@ class Backend(GenericBackend):
         xml.save_file(self.get_path(), self.data_tree)
         xml.write_backups(self.get_path())
 
+
     def this_is_the_first_run(self, _) -> None:
         """ Called upon the very first GTG startup.
 
@@ -152,16 +147,7 @@ class Backend(GenericBackend):
         """
 
         filepath = self.get_path()
-        if versioning.is_required(filepath):
-            log.warning('Found old file. Running versioning code.')
-            old_path = os.path.join(DATA_DIR, 'gtg_tasks.xml')
-            tree = versioning.convert(old_path, self.datastore)
-
-            xml.save_file(filepath, tree)
-        else:
-            root = firstrun_tasks.generate()
-            xml.create_dirs(self.get_path())
-            xml.save_file(self.get_path(), root)
+        self.do_first_run_versioning(filepath)
 
 
         self._parameters[self.KEY_DEFAULT_BACKEND] = True
@@ -171,6 +157,46 @@ class Backend(GenericBackend):
         self.task_tree = self.data_tree.find('tasklist')
         self.tag_tree = self.data_tree.find('taglist')
         xml.backup_used = None
+
+
+    def do_first_run_versioning(self, filepath: str) -> None:
+        """If there is an old file around needing versioning, convert it, then rename the old file."""
+        old_path = self.find_old_path(DATA_DIR)
+        if old_path is not None:
+            log.warning('Found old file: %r. Running versioning code.', old_path)
+            tree = versioning.convert(old_path, self.datastore)
+            xml.save_file(filepath, tree)
+            os.rename(old_path, old_path + '.imported')
+        else:
+            root = firstrun_tasks.generate()
+            xml.create_dirs(self.get_path())
+            xml.save_file(self.get_path(), root)
+
+
+    def find_old_path(self, datadir: str) -> str:
+        """Reliably find the old data files."""
+        # used by which version?
+        path = os.path.join(datadir, 'gtg_tasks.xml')
+        if os.path.isfile(path):
+            return path
+        # used by (at least) 0.3.1-4
+        path = os.path.join(datadir, 'projects.xml')
+        if os.path.isfile(path):
+            return self.find_old_uuid_path(path)
+        return None
+
+
+    def find_old_uuid_path(self, path: str) -> str:
+        """Find the first backend entry with module='backend_localfile' and return its path."""
+        old_tree = xml.open_file(path, 'config')
+        for backend in old_tree.findall('backend'):
+            module = backend.get('module')
+            if module == 'backend_localfile':
+                uuid_path = backend.get('path')
+                if os.path.isfile(uuid_path):
+                    return uuid_path
+        return None
+
 
     def start_get_tasks(self) -> None:
         """ This function starts submitting the tasks from the XML file into
