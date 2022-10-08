@@ -39,15 +39,6 @@ tags_cache = {}
 tid_cache = {}
 
 
-def is_required(path: str) -> bool:
-    """Determine if we need to run versioning code."""
-
-    # Old filename for versions before 0.5
-    old_file = os.path.join(DATA_DIR, 'gtg_tasks.xml')
-
-    return not os.path.isfile(path) and os.path.isfile(old_file)
-
-
 def convert(path: str, ds: datastore) -> et.ElementTree:
     """Convert old XML into the new format."""
 
