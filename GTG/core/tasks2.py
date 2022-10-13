@@ -339,7 +339,7 @@ class Task2(GObject.Object):
     def remove_tag(self, tag_name: str) -> None:
         """Remove a tag from this task."""
 
-        for t in self.tags:
+        for t in self.tags.copy():
             if t.name == tag_name:
                 self.tags.remove(t)
 
