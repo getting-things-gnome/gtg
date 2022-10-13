@@ -108,7 +108,7 @@ class ModifyTagsDialog(Gtk.Dialog):
                 if is_positive:
                     task.add_tag(_tag)
                 else:
-                    task.remove_tag(_tag)
+                    task.remove_tag(_tag.name)
 
         self.app.ds.save()
         self.app.ds.tasks.notify('task_count_no_tags')
