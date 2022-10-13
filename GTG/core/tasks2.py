@@ -348,7 +348,7 @@ class Task2(GObject.Object):
                 else: 
                     t.task_count_closed -= 1
                 
-                if self.is_actionable():
+                if self.is_actionable:
                     t.task_count_actionable -= 1
 
                 self.content = (self.content.replace(f'{tag_name}\n\n', '')
