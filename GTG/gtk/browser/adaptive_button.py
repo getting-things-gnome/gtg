@@ -276,7 +276,7 @@ class AdaptiveFittingWidget(Gtk.Container):
                 except Exception as e:
                     log.warning("Silenced exception: %r", e)
         except AttributeError as e: # ... object has no attribute '_children'
-            log.warning("Got error in for but it should've stay valid: %r", e)
+            log.warning("Got error in for but it should have stayed valid: %r", e)
 
     def do_child_type(self):
         log.debug("returning %r", Gtk.Widget.__gtype__)
@@ -293,4 +293,3 @@ class AdaptiveFittingWidget(Gtk.Container):
         # We don't have any child properties anyway
         log.debug("Unimplemented child=%r, property_id=%r, value=%r, pspec=%r",
                   child, property_id, value, pspec)
-
