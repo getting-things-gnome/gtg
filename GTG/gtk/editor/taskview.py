@@ -378,7 +378,7 @@ class TaskView(GtkSource.View):
         task = self.req.get_task(tid)
 
         if not task:
-            log.warn('Failed to toggle status for %s', tid)
+            log.warning('Failed to toggle status for %s', tid)
             return
 
         task.toggle_status()
