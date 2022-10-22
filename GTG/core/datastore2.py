@@ -246,6 +246,57 @@ class Datastore2:
         self.save(path)
 
 
+    def do_first_run_versioning(self, filepath: str) -> None:
+        """If there is an old file around needing versioning, convert it, then rename the old file."""
+
+        old_path = self.find_old_path(DATA_DIR)
+        
+        if old_path is not None:
+            log.warning('Found old file: %r. Running versioning code.', old_path)
+            tree = versioning.convert(old_path, self)
+            self.load_data(tree)
+            self.save(filepath)
+            os.rename(old_path, old_path + '.imported')
+            
+        else:
+            self.first_run(self.data_path)
+
+
+    def find_old_path(self, datadir: str) -> None | str:
+        """Reliably find the old data files."""
+
+        # used by which version?
+        path = os.path.join(datadir, 'gtg_tasks.xml')
+        
+        if os.path.isfile(path):
+            return path
+        
+        # used by (at least) 0.3.1-4
+        path = os.path.join(datadir, 'projects.xml')
+        
+        if os.path.isfile(path):
+            return self.find_old_uuid_path(path)
+
+        return None
+
+
+    def find_old_uuid_path(self, path: str) -> None | str:
+        """Find the first backend entry with module='backend_localfile' and return its path."""
+
+        with open(path, 'r') as stream:
+            xml_tree = et.parse(stream)
+            
+        for backend in xml_tree.findall('backend'):
+            module = backend.get('module')
+            if module == 'backend_localfile':
+                uuid_path = backend.get('path')
+                if os.path.isfile(uuid_path):
+
+                    return uuid_path
+
+        return None
+
+
     @staticmethod
     def get_backup_path(path: str, i: int = None) -> str:
         """Get path of backups which are backup/ directory."""
