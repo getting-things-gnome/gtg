@@ -170,13 +170,4 @@ class BackendFactory(Borg):
             backend_data['backend'] = module.Backend(backend_data)
             backends.append(backend_data)
 
-        # If no backend available, we create a new using localfile. Dic
-        # will be filled in by the backend
-        if not backends:
-            dic = BackendFactory().get_new_backend_dict(
-                "backend_localfile")
-
-            dic["first_run"] = True
-            backends.append(dic)
-
         return backends

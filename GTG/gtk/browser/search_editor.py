@@ -41,7 +41,7 @@ class SearchEditor(Gtk.Dialog):
     _icon_button = Gtk.Template.Child('icon-button')
     _name_entry = Gtk.Template.Child('name-entry')
 
-    def __init__(self, req, app, search=None):
+    def __init__(self, app, search=None):
         super().__init__(use_header_bar=1)
 
         set_icon_shortcut = Gtk.Shortcut.new(
@@ -50,7 +50,6 @@ class SearchEditor(Gtk.Dialog):
 
         self.add_shortcut(set_icon_shortcut)
 
-        self.req = req
         self.app = app
         self.search = search
 

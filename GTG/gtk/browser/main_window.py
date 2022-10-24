@@ -23,7 +23,6 @@ import datetime
 import logging
 import ast
 import re
-#import liblarch_gtk  # Just for types
 
 from gi.repository import GObject, Gtk, Gdk, Gio, GLib
 
@@ -39,10 +38,8 @@ from GTG.gtk.browser import quick_add
 from GTG.gtk.browser.backend_infobar import BackendInfoBar
 from GTG.gtk.browser.modify_tags import ModifyTagsDialog
 from GTG.gtk.browser.delete_tag import DeleteTagsDialog
-# from GTG.gtk.browser.tag_context_menu import TagContextMenu
 from GTG.gtk.browser.sidebar import Sidebar
 from GTG.gtk.browser.task_pane import TaskPane
-# from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
 from GTG.core.dates import Date
@@ -132,27 +129,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.panes['closed'] = TaskPane(self, 'closed')
         self.closed_pane.append(self.panes['closed'])
-
-        # Treeviews handlers
-        # self.vtree_panes = {}
-        # self.tv_factory = TreeviewFactory(self.req, self.config)
-
-        # Active Tasks
-        # self.activetree = self.req.get_tasks_tree(name='active', refresh=False)
-        # self.vtree_panes['active'] = \
-        #     self.tv_factory.active_tasks_treeview(self.activetree)
-
-        # Workview Tasks
-        # self.workview_tree = \
-        #     self.req.get_tasks_tree(name='workview', refresh=False)
-        # self.vtree_panes['workview'] = \
-        #     self.tv_factory.active_tasks_treeview(self.workview_tree)
-
-        # Closed Tasks
-        # self.closedtree = \
-        #     self.req.get_tasks_tree(name='closed', refresh=False)
-        # self.vtree_panes['closed'] = \
-        #     self.tv_factory.closed_tasks_treeview(self.closedtree)
 
         # YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         # Setup GTG icon theme
@@ -339,42 +315,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.defer_menu_days_section.remove(i)
             self.defer_menu_days_section.insert_item(i, replacement_item)
 
-    def init_tags_sidebar(self):
-        """
-        initializes the tagtree (left area with tags and searches)
-        """
-        self.tagtree = self.req.get_tag_tree()
-        self.tagtreeview = self.tv_factory.tags_treeview(self.tagtree)
-        self.tagtreeview.get_selection().connect('changed', self.on_select_tag)
-
-        # self.tagpopup = TagContextMenu(self.req, self.app)
-        # self.tagpopup.set_parent(self.sidebar_container)
-        # self.tagpopup.set_halign(Gtk.Align.START)
-        # self.tagpopup.set_position(Gtk.PositionType.BOTTOM)
-
-        tagtree_gesture_single = Gtk.GestureSingle(button=Gdk.BUTTON_SECONDARY)
-        tagtree_gesture_single.connect('begin', self.on_tag_treeview_click_begin)
-        tagtree_key_controller = Gtk.EventControllerKey()
-        tagtree_key_controller.connect('key-pressed', self.on_tag_treeview_key_press_event)
-        self.tagtreeview.add_controller(tagtree_gesture_single)
-        self.tagtreeview.add_controller(tagtree_key_controller)
-        self.tagtreeview.connect('node-expanded', self.on_tag_expanded)
-        self.tagtreeview.connect('node-collapsed', self.on_tag_collapsed)
-
-        self.sidebar_container.set_child(self.tagtreeview)
-
-        for path_t in self.config.get("expanded_tags"):
-            # the tuple was stored as a string. we have to reconstruct it
-            path = ()
-            for p in path_t[1:-1].split(","):
-                p = p.strip(" '")
-                path += (p, )
-            if path[-1] == '':
-                path = path[:-1]
-            self.tagtreeview.expand_node(path)
-
-        # expanding search tag does not work automatically, request it
-        self.expand_search_tag()
 
     def _init_about_dialog(self):
         """
@@ -567,25 +507,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.app.ds.saved_searches.new(name, query)
 
 
-    def select_search_tag(self, tag_id):
-        tag = self.req.get_tag(tag_id)
-        """Select new search in tagsidebar and apply it"""
-
-        # Make sure search tag parent is expanded
-        # (otherwise selection does not work)
-        self.expand_search_tag()
-
-        # Get iterator for new search tag
-        model = self.tagtreeview.get_model()
-        path = self.tagtree.get_paths_for_node(tag.get_id())[0]
-        tag_iter = model.my_get_iter(path)
-
-        # Select only it and apply filters on top of that
-        selection = self.tagtreeview.get_selection()
-        selection.unselect_all()
-        selection.select_iter(tag_iter)
-        self.on_select_tag()
-
     def quit(self, widget=None, data=None):
         self.app.quit()
 
@@ -755,8 +676,6 @@ class MainWindow(Gtk.ApplicationWindow):
         assert param.name == 'visible'
         visible = obj.get_property(param.name)
         self.config.set("tag_pane", visible)
-        # if visible and not self.tagtreeview:
-        #     self.init_tags_sidebar()
 
     def on_collapse_all_tasks(self, action, param):
         """Collapse all tasks."""
