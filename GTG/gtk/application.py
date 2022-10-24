@@ -58,9 +58,6 @@ class Application(Gtk.Application):
     ds: Datastore2 = Datastore2()
     """Datastore loaded with the default data file"""
 
-    # Requester
-    req = None
-
     # List of opened tasks (task editor windows). Task IDs are keys,
     # while the editors are their values.
     open_tasks = {}
@@ -118,19 +115,8 @@ class Application(Gtk.Application):
             data_file = os.path.join(DATA_DIR, 'gtg_data.xml')
             self.ds.find_and_load_file(data_file)
 
-            # TODO: Remove this once the new core is stable
-            self.ds.data_path = os.path.join(DATA_DIR, 'gtg_data2.xml')
-
-            # Register backends
-            # datastore = DataStore()
-
             for backend_dic in BackendFactory().get_saved_backends_list():
                 self.ds.register_backend(backend_dic)
-
-            # # Save the backends directly to be sure projects.xml is written
-            # datastore.save(quit=False)
-
-            # self.req = datastore.get_requester()
 
             self.config_core = CoreConfig()
             self.config = self.config_core.get_subconfig('browser')
@@ -490,7 +476,7 @@ class Application(Gtk.Application):
     def open_edit_backends(self, sender=None, backend_id=None):
         """Open the backends dialog."""
 
-        self.backends_dialog = BackendsDialog(self.req)
+        self.backends_dialog = BackendsDialog(self.ds)
         self.backends_dialog.dialog.insert_action_group('app', self)
 
         self.backends_dialog.activate()
@@ -513,7 +499,7 @@ class Application(Gtk.Application):
     def open_tag_editor(self, tag):
         """Open Tag editor dialog."""
 
-        self.edit_tag_dialog = TagEditor(self.req, self, tag)
+        self.edit_tag_dialog = TagEditor(self, tag)
         self.edit_tag_dialog.set_transient_for(self.browser)
         self.edit_tag_dialog.insert_action_group('app', self)
 
@@ -521,7 +507,7 @@ class Application(Gtk.Application):
     def open_search_editor(self, search):
         """Open Saved search editor dialog."""
 
-        self.edit_search_dialog = SearchEditor(self.req, self, search)
+        self.edit_search_dialog = SearchEditor(self, search)
         self.edit_search_dialog.set_transient_for(self.browser)
         self.edit_search_dialog.insert_action_group('app', self)
 
@@ -658,10 +644,6 @@ class Application(Gtk.Application):
 
         self.save_plugin_settings()
         self.ds.save()
-
-        if self.req is not None:
-            # Save data and shutdown datastore backends
-            self.req.save_datastore(quit=True)
 
         Gtk.Application.do_shutdown(self)
 

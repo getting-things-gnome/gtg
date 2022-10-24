@@ -49,12 +49,11 @@ class BackendsDialog():
         - the backend adding view
     """
 
-    def __init__(self, req):
+    def __init__(self, ds):
         """
         Initializes the gtk objects and signals.
-        @param req: a Requester object
         """
-        self.req = req
+        self.ds = ds
         # Declare subsequently loaded widget
         self.dialog = None
         self.treeview_window = None
@@ -91,19 +90,12 @@ class BackendsDialog():
         @param data: same as widget, disregard the content
         """
         self.dialog.hide()
-        self.req.save_datastore()
+        self.ds.save()
         return True
 
 ########################################
 # HELPER FUNCTIONS #####################
 ########################################
-    def get_requester(self):
-        """
-        Helper function: returns the requester.
-        It's used by the "views" displayed by this class (backend editing and
-        adding views) to access the requester
-        """
-        return self.req
 
     def _show_panel(self, panel_name):
         """
@@ -196,7 +188,7 @@ class BackendsDialog():
         if backend_id:
             self._show_panel("configuration")
             self.config_panel.set_backend(backend_id)
-            backend = self.req.get_backend(backend_id)
+            backend = self.ds.get_backend(backend_id)
             self.remove_button.set_sensitive(not backend.is_default())
 
     def on_add_button(self, widget=None, data=None):
@@ -221,7 +213,7 @@ class BackendsDialog():
         backend_dic = BackendFactory().get_new_backend_dict(backend_name)
         if backend_dic:
             backend_dic[GenericBackend.KEY_ENABLED] = False
-            self.req.register_backend(backend_dic)
+            self.ds.register_backend(backend_dic)
         # Restore UI
         self._show_panel("configuration")
 
@@ -242,7 +234,7 @@ class BackendsDialog():
         if backend_id is None:
             # no backend selected
             return
-        backend = self.req.get_backend(backend_id)
+        backend = self.ds.get_backend(backend_id)
         dialog = Gtk.MessageDialog(
             transient_for=self.dialog,
             modal=True,
@@ -258,6 +250,6 @@ class BackendsDialog():
     def on_remove_response(self, dialog, response, backend_id):
         if response == Gtk.ResponseType.YES:
             # delete the backend and remove it from the lateral treeview
-            self.req.remove_backend(backend_id)
+            self.ds.remove_backend(backend_id)
             self.backends_tv.remove_backend(backend_id)
         dialog.destroy()
