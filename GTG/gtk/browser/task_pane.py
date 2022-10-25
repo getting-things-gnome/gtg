@@ -262,6 +262,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
         self.pane = pane
         self.task_filter.pane = pane
+        self.task_filter.expand = True
         self.task_filter.changed(Gtk.FilterChange.DIFFERENT)
         self.set_title()
 
