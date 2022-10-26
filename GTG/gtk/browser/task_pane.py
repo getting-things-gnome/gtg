@@ -161,12 +161,11 @@ class TaskPane(Gtk.ScrolledWindow):
         self.title.add_css_class('title-1')
         title_box.append(self.title)
         
-        sort_btn = Gtk.MenuButton()
-        sort_btn.set_icon_name('view-more-symbolic')
-        sort_btn.set_popover(browser.sort_menu)
-        sort_btn.add_css_class('flat')
+        self.sort_btn = Gtk.MenuButton()
+        self.sort_btn.set_icon_name('view-more-symbolic')
+        self.sort_btn.add_css_class('flat')
         
-        title_box.append(sort_btn)
+        title_box.append(self.sort_btn)
 
 
         # -------------------------------------------------------------------------------
