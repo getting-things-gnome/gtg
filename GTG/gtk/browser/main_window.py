@@ -110,8 +110,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # Timeout handler for search
         self.search_timeout = None
 
-        self._init_context_menus()
-
         self.sidebar = Sidebar(app, app.ds, self)
         self.sidebar_vbox.append(self.sidebar)
 
@@ -129,6 +127,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.panes['closed'] = TaskPane(self, 'closed')
         self.closed_pane.append(self.panes['closed'])
+
+        self._init_context_menus()
 
         # YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         # Setup GTG icon theme
@@ -197,6 +197,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         sort_menu_model = builder.get_object('sort_menu')
         self.sort_menu = Gtk.PopoverMenu.new_from_model(sort_menu_model)
+        self.panes['active'].sort_btn.set_popover(self.sort_menu)
 
 
     def _set_actions(self):
