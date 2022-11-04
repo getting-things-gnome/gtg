@@ -22,8 +22,8 @@
 
 TMPFOLDER=`mktemp -d /tmp/pocketmod.XXXXXXXXXX`
 OUTFILE=`mktemp /tmp/pockemod.XXXXXXXXXXXXX`.pdf
-SOURCEFILE=$1
-pdflatex -interaction nonstopmode -output-directory $TMPFOLDER -jobname temp $SOURCEFILE  1>&2
+SOURCEFILE="$1"
+pdflatex -interaction nonstopmode -output-directory $TMPFOLDER -jobname temp "$SOURCEFILE"  1>&2
 PDFFILE=$TMPFOLDER/temp.pdf
 pdftk $PDFFILE cat 6 7 8 1 output $TMPFOLDER/seite6781.pdf   1>&2
 pdftk $PDFFILE cat 5 4 3 2 output $TMPFOLDER/seite5432.pdf   1>&2
