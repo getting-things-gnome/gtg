@@ -585,13 +585,7 @@ class MainWindow(Gtk.ApplicationWindow):
             GLib.idle_add(open_task, self.app.ds, t)
 
     def refresh_all_views(self, timer):
-        collapsed = self.config.get("collapsed_tasks")
-
-        for pane in 'active', 'workview', 'closed':
-            self.req.get_tasks_tree(pane, False).reset_filters(refresh=False)
-        self.reapply_filter()
-
-        self.restore_collapsed_tasks(collapsed)
+        self.get_pane().refresh()
 
     def find_value_in_treestore(self, store, treeiter, value):
         """Search for value in tree store recursively."""
