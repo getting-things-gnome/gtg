@@ -177,7 +177,6 @@ class SavedSearchStore(BaseStore):
         """Add a tag to the tagstore."""
 
         super().add(item, parent_id)
-        self.lookup[item.name] = item
         self.model.append(item)
 
         self.emit('added', item)
