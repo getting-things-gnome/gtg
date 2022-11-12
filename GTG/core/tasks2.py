@@ -777,9 +777,9 @@ class TaskStore(BaseStore):
             due_date = Date.parse(dates.findtext('due'))
 
             if fuzzy_due_date:
-                task._date_due = fuzzy_due_date
+                task.date_due = fuzzy_due_date
             elif due_date:
-                task._date_due = due_date
+                task.date_due = due_date
 
             fuzzy_start = dates.findtext('fuzzyStart')
             start = dates.findtext('start')
