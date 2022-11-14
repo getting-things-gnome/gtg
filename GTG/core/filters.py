@@ -107,11 +107,12 @@ class TaskPaneFilter(Gtk.Filter):
 class SearchTaskFilter(Gtk.Filter):
     __gtype_name__ = 'SearchTaskFilter'
 
-    def __init__(self, ds):
+    def __init__(self, ds, pane):
         super(SearchTaskFilter, self).__init__()
         self.ds = ds
         self.query = ''
         self.checks = None
+        self.pane = pane
     
 
     def set_query(self, query: str) -> None:
@@ -125,6 +126,18 @@ class SearchTaskFilter(Gtk.Filter):
 
     def do_match(self, item) -> bool:
         task = unwrap(item, Task2)
-        item.set_expanded(True)
 
-        return search.search_filter(task, self.checks)
+        if self.pane == 'active':
+            show = task.status is Status.ACTIVE
+        elif self.pane == 'workview':
+            show = task.is_actionable
+            if self.expand:
+                item.set_expanded(True)
+                self.expand = False
+        elif self.pane == 'closed':
+            show = task.status is not Status.ACTIVE
+
+        if show:
+            return search.search_filter(task, self.checks)
+        else:
+            return False
