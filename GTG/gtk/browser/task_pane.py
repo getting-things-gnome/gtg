@@ -172,7 +172,7 @@ class TaskPane(Gtk.ScrolledWindow):
         # Task List
         # -------------------------------------------------------------------------------
 
-        self.search_filter = SearchTaskFilter(self.ds)
+        self.search_filter = SearchTaskFilter(self.ds, pane)
         self.task_filter = TaskPaneFilter(self.app.ds, pane) 
 
         self.filtered = Gtk.FilterListModel()
@@ -248,6 +248,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
         self.filtered.set_filter(self.search_filter)
         self.search_filter.set_query(query)
+        self.search_filter.pane = self.pane
         self.search_filter.changed(Gtk.FilterChange.DIFFERENT)
         self.searching = True
 
