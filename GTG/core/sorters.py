@@ -24,7 +24,7 @@ from GTG.core.tasks2 import Task2
 def unwrap(row, expected_type):
     """Find an item in TreeRow widget (sometimes nested)."""
     
-    item = row.get_item()
+    item = row
     
     while type(item) is not expected_type:
         item = item.get_item()
