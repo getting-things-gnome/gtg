@@ -228,6 +228,16 @@ class Date:
         return (self.dt_by_accuracy(Accuracy.fuzzy),
                 other.dt_by_accuracy(Accuracy.fuzzy))
 
+    def strftime(self,format: str) -> str:
+        if isinstance(self.dt_value, (date,datetime)):
+            return self.dt_value.strftime(format)
+        else:
+            # If dt_value is not an instance of datetime.date or datetime.datetime, use self.date() to get one of those
+            # and call its strftime() method
+            temp_date = self.date()
+            return temp_date.strftime(format)
+
+
     def __add__(self, other):
         a, b = self._cast_for_operation(other, is_comparison=False)
         return a + b
