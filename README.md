@@ -60,7 +60,7 @@ You can get most of those from your distribution packages:
 
 ```sh
 # On Fedora:
-sudo dnf install meson python3-cairo python3-gobject gtk3 itstool gettext python3-lxml libsecret gtksourceview4-devel
+sudo dnf install meson python3-cairo python3-gobject gtk3 itstool gettext python3-lxml libsecret gtksourceview4
 # On Debian 10 (buster), you need to install the backported version, activate it with:
 echo 'deb http://deb.debian.org/debian buster-backports main' | sudo tee -a /etc/apt/sources.list
 # On Debian/Ubuntu:
