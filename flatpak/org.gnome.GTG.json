@@ -39,8 +39,8 @@
       ],
       "buildsystem": "meson",
       "sources": [{
-        "type": "git",
-        "url": "https://github.com/getting-things-gnome/gtg"
+        "type": "dir",
+        "path": ".."
       }
       ]
     }
