@@ -202,9 +202,3 @@ yelp docs/user_manual/C/index.page
 * Our wiki serves as our website: https://wiki.gnome.org/Apps/GTG
 * Check out the [docs folder in the main repository](./docs/) for more
   information and documentation for contributors
-
-## Test suite status
-
-We need help bringing the test suite back online with updated tests (before the badge below can be moved back up in this readme file). Get in touch if you'd like to work on this.
-
-[![Build Status](https://travis-ci.org/getting-things-gnome/gtg.svg?branch=master)](https://travis-ci.org/getting-things-gnome/gtg)
