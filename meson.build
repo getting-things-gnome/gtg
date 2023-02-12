@@ -59,6 +59,13 @@ dep_gtk = dependency('gtk+-3.0', required: false)
 dep_libsecret = dependency('libsecret-1', required: false)
 dep_gtksourceview = dependency('gtksourceview-4', required: false)
 
+test(
+	'pytest',
+	python3,
+	args : ['-m', 'pytest', 'tests'],
+	workdir : meson.source_root()
+)
+
 subdir('GTG')
 subdir('data')
 subdir('po')
