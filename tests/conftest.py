@@ -16,11 +16,8 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gi
+from GTG import gi_version_requires
 
+def pytest_collection(session):
+    gi_version_requires()
 
-def gi_version_requires():
-    """Load all required GObject introspection libraries. """
-    gi.require_version('Gdk', '4.0')
-    gi.require_version('Gtk', '4.0')
-    gi.require_version('GtkSource', '5')
