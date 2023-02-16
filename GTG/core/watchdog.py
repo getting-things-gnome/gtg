@@ -49,6 +49,4 @@ class Watchdog():
             self.timer.cancel()
         except Exception:
             pass
-        if value is None:
-            return True
-        return False
+        return value is None
