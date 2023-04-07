@@ -24,6 +24,7 @@ from gi.repository import GObject, Gtk, Gio
 from uuid import uuid4, UUID
 import logging
 import random
+import re
 
 from lxml.etree import Element, SubElement
 from typing import Any, Dict, Set
@@ -31,6 +32,12 @@ from typing import Any, Dict, Set
 from GTG.core.base_store import BaseStore
 
 log = logging.getLogger(__name__)
+
+
+def extract_tags_from_text(text):
+    """ Given a string, returns a list of the @tags contained in that """
+
+    return re.findall(r'(?:^|[\s])(@[\w\/\.\-\:\&]*\w)', text)
 
 
 class Tag2(GObject.Object):
