@@ -30,8 +30,6 @@ from GTG.core import info
 from GTG.backends.backend_signals import BackendSignals
 from GTG.core.dirs import ICONS_DIR
 from GTG.core.search import parse_search_query, InvalidQuery
-from GTG.core.tag import SEARCH_TAG
-from GTG.core.task import Task
 from gettext import gettext as _
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser import quick_add
@@ -468,16 +466,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.searchbar.set_search_mode(True)
             self.search_entry.grab_focus()
 
-
-    def _try_filter_by_query(self, query, refresh: bool = True):
-        log.debug("Searching for %r", query)
-        vtree = self.get_selected_tree()
-        try:
-            vtree.apply_filter(SEARCH_TAG, parse_search_query(query),
-                               refresh=refresh)
-        except InvalidQuery as error:
-            log.debug("Invalid query %r: %r", query, error)
-            vtree.unapply_filter(SEARCH_TAG)
 
 
     def do_search(self):
@@ -1266,33 +1254,6 @@ class MainWindow(Gtk.ApplicationWindow):
         for task in self.get_pane().get_selection():
             task.toggle_active()
 
-
-    def reapply_filter(self, current_pane: str = None):
-        if current_pane is None:
-            current_pane = self.get_selected_pane()
-        filters = self.get_selected_tags()
-        filters.append(current_pane)
-        vtree = self.req.get_tasks_tree(name=current_pane, refresh=False)
-        # Re-applying search if some search is specified
-        search = self.search_entry.get_text()
-        if search:
-            filters.append(SEARCH_TAG)
-        # only resetting filters if the applied filters are different from
-        # current ones, leaving a chance for liblarch to make the good call on
-        # whether to refilter or not
-        if sorted(filters) != sorted(vtree.list_applied_filters()):
-            vtree.reset_filters(refresh=False)
-        # Browsing and applying filters. For performance optimization, only
-        # allowing liblarch to trigger a refresh on last item. This way the
-        # refresh is never triggered more than once and we let the possibility
-        # to liblarch not to trigger refresh is filters did not change.
-        for filter_name in filters:
-            is_last = filter_name == filters[-1]
-            if filter_name == SEARCH_TAG:
-                self._try_filter_by_query(search, refresh=is_last)
-            else:
-                vtree.apply_filter(filter_name, refresh=is_last)
-
     def on_select_tag(self, widget=None, row=None, col=None):
         """ Callback for tag(s) selection from left sidebar.
 
@@ -1632,12 +1593,3 @@ class MainWindow(Gtk.ApplicationWindow):
                 if tag.is_search_tag():
                     return tags[0]
         return None
-
-    def expand_search_tag(self):
-        """ For some unknown reason, search tag is not expanded correctly and
-        it must be done manually """
-        if self.tagtreeview is not None:
-            model = self.tagtreeview.get_model()
-            search_iter = model.my_get_iter((SEARCH_TAG, ))
-            search_path = model.get_path(search_iter)
-            self.tagtreeview.expand_row(search_path, False)

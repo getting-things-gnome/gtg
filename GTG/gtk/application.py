@@ -41,7 +41,6 @@ from GTG.core.config import CoreConfig
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api import PluginAPI
 from GTG.backends import BackendFactory
-from GTG.core.datastore import DataStore
 from GTG.core.dirs import CSS_DIR
 from GTG.core.dates import Date
 from GTG.gtk.backends import BackendsDialog

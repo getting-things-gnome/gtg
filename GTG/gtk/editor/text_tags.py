@@ -22,7 +22,7 @@ from uuid import uuid4
 from gi.repository import Gtk, Pango, Gdk
 
 from GTG.core.datastore2 import Datastore2
-from GTG.core.task import Task
+from GTG.core.tasks2 import Status
 from GTG.gtk.colors import background_color
 from webbrowser import open as openurl
 
@@ -111,7 +111,7 @@ class InternalLinkTag(Gtk.TextTag):
 
         self.set_property('underline', Pango.Underline.SINGLE)
 
-        if status == Task.STA_ACTIVE:
+        if status == Status.ACTIVE:
             self.set_property('strikethrough', False)
             self.set_property('foreground', colors['link_active'])
         else:

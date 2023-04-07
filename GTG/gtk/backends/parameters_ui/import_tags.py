@@ -19,7 +19,8 @@ from functools import reduce
 
 from gi.repository import Gtk
 
-from GTG.core.tag import ALLTASKS_TAG
+
+ALLTASKS_TAG = 'gtg-tags-all'
 
 
 class ImportTagsUI(Gtk.Box):
