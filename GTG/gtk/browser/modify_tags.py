@@ -21,7 +21,6 @@ from gi.repository import Gtk
 
 from gettext import gettext as _
 from GTG.gtk.browser import GnomeConfig
-from GTG.core.tag import parse_tag_list
 
 @Gtk.Template(filename=GnomeConfig.MODIFYTAGS_UI_FILE)
 
