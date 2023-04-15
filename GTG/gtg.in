@@ -73,7 +73,21 @@ if __name__ == "__main__":
 import gi
 gi.require_version('Gdk', '4.0')
 gi.require_version('Gtk', '4.0')
-gi.require_version('GtkSource', '5') 
+gi.require_version('GtkSource', '5')
+
+
+# Monkey patch Gtk.CssProvider.load_from_data for backwards compatibility.
+# GTK 4.10 introduced an api change that requires a fix in PyGObject:
+# https://gitlab.gnome.org/GNOME/pygobject/-/merge_requests/231
+from gi.repository import Gtk
+if (Gtk.get_major_version(), Gtk.get_minor_version()) >= (4, 9):
+    def decorate(original_func):
+        def compat(self, data: bytes):
+            original_func(self, data.decode(), -1)
+        return compat
+
+    Gtk.CssProvider.load_from_data = decorate(Gtk.CssProvider.load_from_data)
+
 
 from gi.repository import GLib
 
