@@ -406,7 +406,7 @@ class GenericBackend():
             elif param_value == "False":
                 return False
             else:
-                raise Exception(f"Unrecognized bool value '{param_type}'")
+                raise Exception(f"Unrecognized bool value {param_type!r}")
         elif param_type == cls.TYPE_PASSWORD:
             if param_value == -1:
                 return None
@@ -417,7 +417,7 @@ class GenericBackend():
                 the_list = [the_list]
             return the_list
         else:
-            raise NotImplemented(f"I don't know what type is '{param_type}'")
+            raise NotImplementedError(f"I don't know what type is {param_type!r}")
 
     def cast_param_type_to_string(self, param_type, param_value):
         """

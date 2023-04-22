@@ -78,7 +78,7 @@ def open_config_file(config_file):
     if not os.path.exists(config_file):
         open(config_file, "w").close()
     if not os.access(config_file, os.R_OK | os.W_OK):
-        raise Exception("File " + config_file + " is a configuration file "
+        raise Exception(f"File {config_file} is a configuration file "
                         "for gtg, but it cannot be read or written. "
                         "Please check it")
     config = configparser.ConfigParser(interpolation=None)
@@ -159,9 +159,8 @@ class SectionConfig():
                         error)
 
         if value is None and default_value is None:
-            raise ValueError(
-                'No valid configuration value or default value was '
-                'found for %s in %s'.format(option, self._section_name))
+            raise ValueError("No valid configuration value or default value "
+                             f"was found for {option} in {self._section_name}")
         elif value is None:
             return default_value
         else:

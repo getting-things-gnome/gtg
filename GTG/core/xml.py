@@ -77,7 +77,7 @@ def task_from_element(task, element: etree.Element):
     # Retrieving all dates
     dates = element.find('dates')
     done_date = None
-            
+
     # supporting old ways of salvaging fuzzy dates
     for key, get_date, set_date in (
             ('fuzzyDue', task.get_due_date, task.set_due_date),
@@ -95,7 +95,7 @@ def task_from_element(task, element: etree.Element):
         value = dates.find(key)
         if value is not None and value.text:
             set_date(Date(value.text))
-            
+
     return task
 
 
@@ -251,7 +251,7 @@ def open_file(xml_path: str, root_tag: str) -> etree.ElementTree:
             return open_file(xml_path, root_tag)
 
         except IOError:
-            raise SystemError(f'Could not write a file at {xml_path}')
+            raise SystemError(f"Could not write a file at {xml_path}")
 
 
 def write_backups(filepath: str) -> None:

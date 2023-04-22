@@ -50,7 +50,7 @@ class Task(TreeNode):
         # the id of this task in the project should be set
         # tid is a string ! (we have to choose a type and stick to it)
         if not isinstance(task_id, str):
-            raise ValueError("Wrong type for task_id %r", type(task_id))
+            raise ValueError(f"Wrong type for task_id {type(task_id)!r}")
         self.tid = task_id
         self.set_uuid(task_id)
         self.remote_ids = {}

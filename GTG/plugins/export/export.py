@@ -40,7 +40,7 @@ for dependence in "pdflatex", "pdftk", "pdfjam":
                              stderr=subprocess.DEVNULL,)
     if retval != 0:
         log.debug('Missing command %r', dependence)
-        raise ImportError(f'Missing command "{dependence}"')
+        raise ImportError(f"Missing command {dependence!r}")
 
 
 def get_desktop_dir():

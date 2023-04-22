@@ -142,8 +142,8 @@ class Timer(GObject.GObject):
             if not invalid_format:
                 return datetime.time(int(hour), int(minute))
             else:
-                raise ValueError('This time value or format\
-                                 is not allowed: {0}'.format(time))
+                raise ValueError("This time value or format "
+                                 f"is not allowed: {time!r}")
         else:
             # The final attempt to parse the input
             return datetime.datetime.strptime(time, '%X')

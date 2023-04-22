@@ -132,7 +132,7 @@ class Date:
         elif value in LOOKUP:
             self.dt_value = LOOKUP[value]
         if self.dt_value is None:
-            raise ValueError(f"Unknown value for date: '{value}'")
+            raise ValueError(f"Unknown value for date: {value!r}")
 
     @staticmethod
     def __parse_dt_str(string):
@@ -215,7 +215,7 @@ class Date:
         """
         if isinstance(other, timedelta):
             if is_comparison:
-                raise ValueError("can't compare with %r" % other)
+                raise ValueError(f"can't compare with {other!r}")
             return self.dt_value, other
         if not isinstance(other, self.__class__):
             other = self.__class__(other)
@@ -459,7 +459,7 @@ class Date:
         if result is not None:
             return cls(result)
         else:
-            raise ValueError(f"Can't parse date '{string}'")
+            raise ValueError(f"Can't parse date {string!r}")
 
     @staticmethod
     def date_in_the_next_month(mday, dt):
@@ -595,7 +595,7 @@ class Date:
         if result is not None:
             return Date(result)
         else:
-            raise ValueError(f"Can't parse date '{string}'")
+            raise ValueError(f"Can't parse date {string!r}")
 
     def to_readable_string(self):
         """ Return nice representation of date.

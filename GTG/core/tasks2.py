@@ -261,7 +261,7 @@ class Task2(GObject.Object):
             if tag not in self.tags:
                 self.tags.append(tag)
         else:
-            raise ValueError
+            raise ValueError(tag)
 
 
     def remove_tag(self, tag_name: str) -> None:
