@@ -418,6 +418,7 @@ class Datastore2:
             try:
                 # Try making a new empty file and open it
                 self.first_run(path)
+                self.data_path = path
 
             except IOError:
                 raise SystemError(f'Could not write a file at {path}')
