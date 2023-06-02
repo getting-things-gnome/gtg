@@ -67,13 +67,13 @@ tasks = [
             "# Creating and editing tasks\n"
             "\n"
             "Using GTG is easy: you organize what you have to do by creating new "
-            "tasks. To do this, simply press the &quot;New Task&quot; (+) button, "
+            "tasks. To do this, simply press the \"New Task\" (+) button, "
             "edit the task by describing it, set some parameters, and that's it! "
-            "Once a task is done, you can close it by pressing the &quot;Mark As "
-            "Done&quot; button.\n"
+            "Once a task is done, you can close it by pressing the \"Mark As "
+            "Done\" button.\n"
             "\n"
             "In GTG, a task is automatically saved while you are editing it. No "
-            "need to press any &quot;Save&quot; button! Try it: add some text to "
+            "need to press any \"Save\" button! Try it: add some text to "
             "this task, close the window, and reopen it: your changes are still "
             "there!\n"
             "\n"
@@ -81,21 +81,21 @@ tasks = [
             "\n"
             "In life, you often get more things done by refining them in "
             "smaller, more operational tasks. GTG helps to do just this by "
-            "defining  &quot;subtasks&quot;. In GTG, those subtasks are "
+            "defining  \"subtasks\". In GTG, those subtasks are "
             "considered as prerequisites that must be completed before being able "
             "to close their parent task.\n"
             "\n"
             "Therefore, in GTG, a task might host one or several subtasks. Those "
             "appear as links in the task description, just like the link below. "
             "To open and edit a subtask, simply click on its link! "
-            "You can always come back using the &quot;Open Parent&quot; button. "
+            "You can always come back using the \"Open Parent\" button. "
             "Try opening the following subtask for example:\n"
             "{! 262d1410-71aa-4e35-abec-90ef1bab44d3 !}\n"
             "\n"
             "# Closing a task\n"
             "\n"
             "In GTG, once you are done with a task, you can close it by pushing "
-            "either the &quot;Mark as Done&quot; or the &quot;Dismiss&quot; "
+            "either the \"Mark as Done\" or the \"Dismiss\" "
             "button. Use the first one if the task is done, and the latter if you "
             "want to close it because it is not relevant anymore.\n"
             "\n"
@@ -105,7 +105,7 @@ tasks = [
             "anymore (they were prerequisites, after all).\n"
             "\n"
             "Note that the tasks that you have marked as done or dismissed are "
-            "listed in the &quot;Closed&quot; tasks view mode.\n"
+            "listed in the \"Closed\" tasks view mode.\n"
             "\n"
             "# Learn more about GTG\n"
             "\n"
@@ -121,7 +121,7 @@ tasks = [
             "{! 586dd1a7-0772-4d0a-85db-34edfc8ee30c !}\n"
             "\n"
             "We also recommend you read our user manual, by pressing F1 "
-            "or using the &quot;Help&quot; entry in the main window's menu button.\n"
+            "or using the \"Help\" entry in the main window's menu button.\n"
             "\n"
             "We hope you will enjoy using GTG, and thank you for trying it out! "
             "To learn more about the GTG project and how you can contribute, "
@@ -136,16 +136,16 @@ tasks = [
         'added': today,
         'modified': today,
         'content': _(
-            "A &quot;Subtask&quot; is something that you need to do first before "
+            "A \"Subtask\" is something that you need to do first before "
             "being able to accomplish your task. In GTG, the purpose of subtasks "
             "is to cut down a task (or project) in smaller, action-oriented subtasks "
             "that are easier to achieve and to track down.\n\n"
             "To insert a subtask in the task description (this window, for "
-            "instance), begin a line with &quot;-&quot;, then write the subtask "
+            "instance), begin a line with \"-\", then write the subtask "
             "title and press Enter.\n"
             "\n"
-            "Try inserting one subtask below. Type &quot;- This is my first "
-            "subtask!&quot;, for instance, and press Enter:\n"
+            "Try inserting one subtask below. Type \"- This is my first "
+            "subtask!\", for instance, and press Enter:\n"
             "\n"
             "\n"
             "\n"
@@ -168,9 +168,9 @@ tasks = [
         'modified': today,
         'content': _(
             "In GTG, you use tags to sort your tasks. A tag is a simple word that "
-            "begins with &quot;@&quot;.\n"
+            "begins with \"@\".\n"
             "\n"
-            "Try to type a word beginning with &quot;@&quot; here:\n"
+            "Try to type a word beginning with \"@\" here:\n"
             "\n"
             "Once it becomes highlighted, it means it is recognized as a tag, "
             "and this tag is immediately linked to the task.\n"
@@ -201,19 +201,19 @@ tasks = [
         'added': today,
         'modified': today,
         'content': _(
-            "If you press the &quot;Actionable&quot; tab, only actionable tasks "
+            "If you press the \"Actionable\" tab, only actionable tasks "
             "will be displayed in your list.\n"
             "\n"
             "What is an actionable task? It's a task you can do directly, right "
             "now.\n"
             "\n"
-            "It's a task that is already &quot;start-able&quot;, i.e. the start "
+            "It's a task that is already \"start-able\", i.e. the start "
             "date is already over.\n"
             "\n"
             "It's a task that doesn't have open subtasks, i.e. you can do the "
             "task itself directly, it does not depend on something else.\n"
             "\n"
-            "It's a task that has a due date different than &quot;Someday&quot;, "
+            "It's a task that has a due date different than \"Someday\", "
             "since this kind of date is reserved for things that needs more "
             "thoughts before being actionable.\n"
             "\n"
@@ -232,7 +232,7 @@ tasks = [
             "Actionable view, it might disappear from the view due to the change "
             "you just made (e.g. adding a tag hidden in the Actionable view, etc.). "
             "To avoid this, you may prefer to edit your task while "
-            "in the &quot;Open&quot; tasks view instead.")
+            "in the \"Open\" tasks view instead.")
     },
 
     {
@@ -244,7 +244,7 @@ tasks = [
         'content': _(
             "GTG has the ability to add plugins to extend its core functionality."
             "\n\n"
-            "You can find the Plugins Manager by clicking on &quot;Plugins&quot; "
+            "You can find the Plugins Manager by clicking on \"Plugins\" "
             "in the main window's menu button. We would like to encourage you "
             "to write your own plugins and contribute them to the GTG project "
             "so that we can consider them for wider inclusion.")
@@ -303,11 +303,11 @@ tasks = [
             "if you want to edit your tasks using an online service.\n"
             "\n"
             "To use synchronization services, click the menu button in the main window, "
-            "and select &quot;Synchronization&quot;. You will then have the "
+            "and select \"Synchronization\". You will then have the "
             "possibility to select among several online or local services "
             "from/to where you can import or export your tasks.\n"
             "As of v0.6, only CalDAV is available. You need to have the "
-            "&quot;caldav&quot; Python package installed if it doesn't appear.")
+            "\"caldav\" Python package installed if it doesn't appear.")
     },
 
     {
@@ -323,18 +323,18 @@ tasks = [
             "Searching for tasks is really easy: in the main window, hit Ctrl+F and "
             "just type the words you are looking for in the search bar.\n"
             "\n"
-            "GTG can store your searches in the sidebar, in the &quot;Saved Searches"
-            "&quot; section. You can thus always go back to a previous search if you "
+            "GTG can store your searches in the sidebar, in the \"Saved Searches"
+            "\" section. You can thus always go back to a previous search if you "
             "need it. Search results are updated automatically, so you always get "
             "all the tasks matching your search request.\n"
             "\n"
             "GTG's search feature is really powerful and accepts many parameters "
             "that allow you to search for very specific tasks. For instance, "
-            "using the search query &quot;@errands !today&quot;, you can search "
+            "using the search query \"@errands !today\", you can search "
             "for tasks with the @errands tag that must be done today. To learn "
             "more about the various search parameters you can use, refer to the "
             "Search Syntax documentation in GTG's user manual, found through the "
-            "&quot;Help&quot; menu item in the main window's menu button.")
+            "\"Help\" menu item in the main window's menu button.")
     },
 ]
 
