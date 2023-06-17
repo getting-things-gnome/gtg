@@ -141,9 +141,6 @@ class TaskPane(Gtk.ScrolledWindow):
         self.set_vexpand(True)
         self.set_hexpand(True)
         
-        wrap_box = Gtk.Box()
-        wrap_box.set_orientation(Gtk.Orientation.VERTICAL)
-
         # -------------------------------------------------------------------------------
         # Title
         # -------------------------------------------------------------------------------
@@ -197,17 +194,14 @@ class TaskPane(Gtk.ScrolledWindow):
 
         view_drop = Gtk.DropTarget.new(Task2, Gdk.DragAction.COPY)
         view_drop.connect("drop", self.on_toplevel_tag_drop)
-        wrap_box.add_controller(view_drop)
+        view.add_controller(view_drop)
 
         key_controller = Gtk.EventControllerKey()
         key_controller.connect('key-released', self.on_key_released)
         view.add_controller(key_controller)
         view.connect('activate', self.on_listview_activated)
 
-        wrap_box.append(title_box)
-        wrap_box.append(view)
-        self.set_child(wrap_box)
-
+        self.set_child(view)
         self.set_title()
 
 
