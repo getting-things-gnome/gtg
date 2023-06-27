@@ -177,6 +177,7 @@ class MainWindow(Gtk.ApplicationWindow):
             ('change_tags', self.on_modify_tags, ('win.change_tags', ['<ctrl>T'])),
             ('focus_sidebar', self.focus_sidebar, ('win.focus_sidebar', ['<ctrl>B'])),
             ('search', self.toggle_search, ('win.search', ['<ctrl>F'])),
+            ('hide_search', self.hide_search, ('win.hide_search', ['Escape'])),
             ('focus_quickentry', self.focus_quickentry, ('win.focus_quickentry', ['<ctrl>L'])),
             ('delete_task', self.on_delete_tasks, ('win.delete_task', ['<ctrl>Delete'])),
             ('help_overlay', None, ('win.show-help-overlay', ['<ctrl>question'])),
@@ -456,21 +457,22 @@ class MainWindow(Gtk.ApplicationWindow):
 
 # HELPER FUNCTIONS ##########################################################
 
+    def hide_search(self, action, param):
+        if (self.searchbar.get_search_mode()):
+            self.search_button.set_active(False)
+            self.searchbar.set_search_mode(False)
+            self.search_entry.set_text('')
+            self.get_selected_tree().unapply_filter(SEARCH_TAG)
+
     def toggle_search(self, action, param):
         """Callback to toggle search bar."""
 
         self.on_search_toggled()
 
     def on_search_toggled(self, widget=None):
-        if self.searchbar.get_search_mode():
-            self.search_button.set_active(False)
-            self.searchbar.set_search_mode(False)
-            self.search_entry.set_text('')
-            self.get_selected_tree().unapply_filter(SEARCH_TAG)
-        else:
-            self.search_button.set_active(True)
-            self.searchbar.set_search_mode(True)
-            self.search_entry.grab_focus()
+        self.search_button.set_active(True)
+        self.searchbar.set_search_mode(True)
+        self.search_entry.grab_focus()
 
     def _try_filter_by_query(self, query, refresh: bool = True):
         log.debug("Searching for %r", query)
