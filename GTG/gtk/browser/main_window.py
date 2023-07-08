@@ -176,7 +176,8 @@ class MainWindow(Gtk.ApplicationWindow):
             ('expand_all_tasks', self.on_expand_all_tasks, None),
             ('change_tags', self.on_modify_tags, ('win.change_tags', ['<ctrl>T'])),
             ('focus_sidebar', self.focus_sidebar, ('win.focus_sidebar', ['<ctrl>B'])),
-            ('search', self.toggle_search, ('win.search', ['<ctrl>F'])),
+            ('toggle_search', self.toggle_search, None),
+            ('focus_search', self.focus_search, ('win.focus_search', ['<ctrl>F'])),
             ('focus_quickentry', self.focus_quickentry, ('win.focus_quickentry', ['<ctrl>L'])),
             ('delete_task', self.on_delete_tasks, ('win.delete_task', ['<ctrl>Delete'])),
             ('help_overlay', None, ('win.show-help-overlay', ['<ctrl>question'])),
@@ -456,21 +457,31 @@ class MainWindow(Gtk.ApplicationWindow):
 
 # HELPER FUNCTIONS ##########################################################
 
+    def focus_search(self, action, param):
+        """Callback to focus search entry"""
+        
+        if self.searchbar.get_search_mode():
+            if self.search_entry.has_focus():
+                self._set_searchbar_visibility(False)
+            else:
+                self.search_entry.grab_focus()
+        else:
+            self._set_searchbar_visibility(True)
+
     def toggle_search(self, action, param):
         """Callback to toggle search bar."""
 
-        self.on_search_toggled()
+        self._set_searchbar_visibility(not self.searchbar.get_search_mode())
 
-    def on_search_toggled(self, widget=None):
-        if self.searchbar.get_search_mode():
-            self.search_button.set_active(False)
-            self.searchbar.set_search_mode(False)
-            self.search_entry.set_text('')
-            self.get_selected_tree().unapply_filter(SEARCH_TAG)
-        else:
+    def _set_searchbar_visibility(self, visible: bool):
+        if visible:
             self.search_button.set_active(True)
             self.searchbar.set_search_mode(True)
             self.search_entry.grab_focus()
+        else:
+            self.search_button.set_active(False)
+            self.searchbar.set_search_mode(False)
+            self.get_selected_tree().unapply_filter(SEARCH_TAG)
 
     def _try_filter_by_query(self, query, refresh: bool = True):
         log.debug("Searching for %r", query)
