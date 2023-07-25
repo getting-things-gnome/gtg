@@ -1239,7 +1239,7 @@ class MainWindow(Gtk.ApplicationWindow):
         trace_subtasks(self.req.get_task(task_id))
 
         for task in all_subtasks:
-            self.app.close_task(task.get_id())
+            self.app.close_task(task.id)
 
 
     def on_mark_as_done(self, widget=None):
