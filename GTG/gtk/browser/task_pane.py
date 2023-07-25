@@ -410,6 +410,18 @@ class TaskPane(Gtk.ScrolledWindow):
         color.set_valign(Gtk.Align.CENTER)
 
         separator.set_margin_end(12)
+
+        def on_notify_visibility(obj, gparamstring):
+            val = ((recurring_icon.is_visible()
+                    or due_icon.is_visible()
+                    or start_icon.is_visible())
+                   and
+                   (color.is_visible() or icons.is_visible()))
+            separator.set_visible(val)
+
+        for widget in (recurring_icon, due_icon, start_icon, color, icons):
+            widget.connect("notify::visible", on_notify_visibility)
+
         icons.set_margin_end(6)
 
         label.set_hexpand(True)
@@ -495,6 +507,10 @@ class TaskPane(Gtk.ScrolledWindow):
 
         item.bind_property('is_active', box, 'is_active', BIND_FLAGS)
         item.bind_property('icons', icons, 'label', BIND_FLAGS)
+
+        def not_empty(binding, value, user_data=None):
+            return len(value) > 0
+        item.bind_property('icons', icons, 'visible', BIND_FLAGS, not_empty)
         item.bind_property('row_css', box, 'row_css', BIND_FLAGS)
 
         item.bind_property('tag_colors', color, 'color_list', BIND_FLAGS)
