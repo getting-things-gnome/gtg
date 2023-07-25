@@ -433,7 +433,7 @@ class TaskEditor(Gtk.Window):
                 self.set_default_size(int(size[0]), int(size[1]))
             except ValueError as e:
                 log.warning('Invalid size configuration for task %s: %s',
-                            self.task.get_id(), size)
+                            self.task.id, size)
 
     # Can be called at any time to reflect the status of the Task
     # Refresh should never interfere with the TaskView.
