@@ -187,6 +187,7 @@ class TaskPane(Gtk.ScrolledWindow):
         tasks_signals = Gtk.SignalListItemFactory()
         tasks_signals.connect('setup', self.task_setup_cb)
         tasks_signals.connect('bind', self.task_bind_cb)
+        tasks_signals.connect('unbind', self.task_unbind_cb)
 
         view = Gtk.ListView.new(self.task_selection, tasks_signals)
         view.set_show_separators(True)
@@ -493,32 +494,42 @@ class TaskPane(Gtk.ScrolledWindow):
         box.props.task = item
         box.expander.set_list_row(listitem.get_item())
 
-        item.bind_property('has_children', box, 'has_children', BIND_FLAGS)
-
-        item.bind_property('title', label, 'label', BIND_FLAGS)
-        item.bind_property('excerpt', box, 'tooltip-text', BIND_FLAGS)
-
-        item.bind_property('is_recurring', recurring_icon, 'visible', BIND_FLAGS)
-
-        item.bind_property('has_date_due', due_icon, 'visible', BIND_FLAGS)
-        item.bind_property('has_date_start', start_icon, 'visible', BIND_FLAGS)
-
-        item.bind_property('date_due_str', due, 'label', BIND_FLAGS)
-        item.bind_property('date_start_str', start, 'label', BIND_FLAGS)
-
-        item.bind_property('is_active', box, 'is_active', BIND_FLAGS)
-        item.bind_property('icons', icons, 'label', BIND_FLAGS)
-
         def not_empty(binding, value, user_data=None):
             return len(value) > 0
-        item.bind_property('icons', icons, 'visible', BIND_FLAGS, not_empty)
-        item.bind_property('row_css', box, 'row_css', BIND_FLAGS)
 
-        item.bind_property('tag_colors', color, 'color_list', BIND_FLAGS)
-        item.bind_property('show_tag_colors', color, 'visible', BIND_FLAGS)
+        listitem.bindings = [
+            item.bind_property('has_children', box, 'has_children', BIND_FLAGS),
+
+            item.bind_property('title', label, 'label', BIND_FLAGS),
+            item.bind_property('excerpt', box, 'tooltip-text', BIND_FLAGS),
+
+            item.bind_property('is_recurring', recurring_icon, 'visible', BIND_FLAGS),
+
+            item.bind_property('has_date_due', due_icon, 'visible', BIND_FLAGS),
+            item.bind_property('has_date_start', start_icon, 'visible', BIND_FLAGS),
+
+            item.bind_property('date_due_str', due, 'label', BIND_FLAGS),
+            item.bind_property('date_start_str', start, 'label', BIND_FLAGS),
+
+            item.bind_property('is_active', box, 'is_active', BIND_FLAGS),
+            item.bind_property('icons', icons, 'label', BIND_FLAGS),
+            item.bind_property('icons', icons, 'visible', BIND_FLAGS, not_empty),
+            item.bind_property('row_css', box, 'row_css', BIND_FLAGS),
+
+            item.bind_property('tag_colors', color, 'color_list', BIND_FLAGS),
+            item.bind_property('show_tag_colors', color, 'visible', BIND_FLAGS),
+        ]
 
         box.check.set_active(item.status == Status.DONE)
         box.check.connect('toggled', self.on_checkbox_toggled, item)
+
+    def task_unbind_cb(self, factory, listitem, user_data=None):
+        """Clean up bindings made in task_bind_cb"""
+        for binding in listitem.bindings:
+            binding.unbind()
+        listitem.bindings.clear()
+        box = listitem.get_child()
+        box.check.disconnect_by_func(self.on_checkbox_toggled)
 
 
     def drag_prepare(self, source, x, y):

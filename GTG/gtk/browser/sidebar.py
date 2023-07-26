@@ -125,6 +125,7 @@ class Sidebar(Gtk.ScrolledWindow):
         searches_signals = Gtk.SignalListItemFactory()
         searches_signals.connect('setup', self.searches_setup_cb)
         searches_signals.connect('bind', self.searches_bind_cb)
+        searches_signals.connect('unbind', self.searches_unbind_cb)
 
         searches_view = Gtk.ListView.new(self.searches_selection, searches_signals)
         searches_view.get_style_context().add_class('navigation-sidebar')
@@ -148,6 +149,7 @@ class Sidebar(Gtk.ScrolledWindow):
         tags_signals = Gtk.SignalListItemFactory()
         tags_signals.connect('setup', self.tags_setup_cb)
         tags_signals.connect('bind', self.tags_bind_cb)
+        tags_signals.connect('unbind', self.tags_unbind_cb)
 
         view = Gtk.ListView.new(self.tag_selection, tags_signals)
         view.get_style_context().add_class('navigation-sidebar')
@@ -360,16 +362,18 @@ class Sidebar(Gtk.ScrolledWindow):
         box.props.tag = item
         expander.set_list_row(listitem.get_item())
 
-        item.bind_property('name', label, 'label', BIND_FLAGS)
-        item.bind_property('icon', icon, 'label', BIND_FLAGS)
-        item.bind_property('color', color, 'color_list', BIND_FLAGS)
+        listitem.bindings = [
+            item.bind_property('name', label, 'label', BIND_FLAGS),
+            item.bind_property('icon', icon, 'label', BIND_FLAGS),
+            item.bind_property('color', color, 'color_list', BIND_FLAGS),
 
-        item.bind_property('has_color', color, 'visible', BIND_FLAGS)
-        item.bind_property('has_icon', icon, 'visible', BIND_FLAGS)
+            item.bind_property('has_color', color, 'visible', BIND_FLAGS),
+            item.bind_property('has_icon', icon, 'visible', BIND_FLAGS),
 
-        item.bind_property('task_count_open', open_count_label, 'label', BIND_FLAGS)
-        item.bind_property('task_count_actionable', actionable_count_label, 'label', BIND_FLAGS)
-        item.bind_property('task_count_closed', closed_count_label, 'label', BIND_FLAGS)
+            item.bind_property('task_count_open', open_count_label, 'label', BIND_FLAGS),
+            item.bind_property('task_count_actionable', actionable_count_label, 'label', BIND_FLAGS),
+            item.bind_property('task_count_closed', closed_count_label, 'label', BIND_FLAGS),
+        ]
         
         self.browser.bind_property('is_pane_open', open_count_label, 'visible', BIND_FLAGS)
         self.browser.bind_property('is_pane_actionable', actionable_count_label, 'visible', BIND_FLAGS)
@@ -392,6 +396,12 @@ class Sidebar(Gtk.ScrolledWindow):
             expander.set_visible(False)
         else:
             expander.set_visible(True)
+
+
+    def tags_unbind_cb(self, signallistitem, listitem, user_data=None) -> None:
+        """Clean up bindings made in tags_bind_cb"""
+        for binding in listitem.bindings:
+            binding.unbind()
  
 
     def unselect_tags(self) -> None:
@@ -511,8 +521,16 @@ class Sidebar(Gtk.ScrolledWindow):
         item = unwrap(listitem, SavedSearch)
         box.search = item
 
-        item.bind_property('name', label, 'label', BIND_FLAGS)
-        item.bind_property('icon', icon, 'label', BIND_FLAGS)
+        listitem.bindings = [
+            item.bind_property('name', label, 'label', BIND_FLAGS),
+            item.bind_property('icon', icon, 'label', BIND_FLAGS),
+        ]
+
+    def searches_unbind_cb(self, signallistitem, listitem, user_data=None) -> None:
+        """Clean up bindings made in searches_bind_cb"""
+        for binding in listitem.bindings:
+            binding.unbind()
+        listitem.bindings.clear()
 
 
     # -------------------------------------------------------------------------------------------
