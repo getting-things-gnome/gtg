@@ -266,7 +266,7 @@ class TaskView(GtkSource.View):
 
             # Add new subtask
             task = self.new_subtask_cb(text[2:])
-            status = task.status if task else 'Active'
+            status = task.status if task else Status.ACTIVE
 
             # Add the checkbox
             self.add_checkbox(task.id, start)
@@ -354,7 +354,7 @@ class TaskView(GtkSource.View):
             self.rename_subtask_cb(tid, text)
 
             # Get the task and instantiate an internal link tag
-            status = str(task.status) if task else 'Active'
+            status = task.status if task else Status.ACTIVE
             link_tag = InternalLinkTag(tid, status)
             self.table.add(link_tag)
 
@@ -864,7 +864,7 @@ class TaskView(GtkSource.View):
         end = start.copy()
         end.forward_to_line_end()
 
-        link_tag = InternalLinkTag(task.id, str(task.status))
+        link_tag = InternalLinkTag(task.id, task.status)
         self.table.add(link_tag)
         self.buffer.apply_tag(link_tag, start, end)
         self.tags_applied.append(link_tag)
