@@ -388,6 +388,7 @@ class TaskPane(Gtk.ScrolledWindow):
             task.toggle_active()
         
         task.notify('is_active')
+        self.task_filter.changed(Gtk.FilterChange.DIFFERENT)
 
 
     def task_setup_cb(self, factory, listitem, user_data=None):
