@@ -387,7 +387,7 @@ class TaskView(GtkSource.View):
             log.warning('Failed to toggle status for %s', tid)
             return
 
-        task.toggle_status()
+        task.toggle_active()
         self.process()
 
 
