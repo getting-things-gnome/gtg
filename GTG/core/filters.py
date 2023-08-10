@@ -113,7 +113,8 @@ class SearchTaskFilter(Gtk.Filter):
         self.query = ''
         self.checks = None
         self.pane = pane
-    
+        self.expand = False
+
 
     def set_query(self, query: str) -> None:
         self.query = query
