@@ -90,6 +90,7 @@ class TaskEditor(Gtk.Window):
         self.task_config = self.config.get_task_config(str(task.id))
         self.time = None
         self.clipboard = app.clipboard
+        use_dark = self.config.get_subconfig('browser')
 
         self.set_application(app)
 
@@ -126,7 +127,7 @@ class TaskEditor(Gtk.Window):
         # So don't try to change anything with glade, this is a home-made
         # widget
         self.scrolled.set_child(None)
-        self.textview = TaskView(app.ds, task, self.clipboard)
+        self.textview = TaskView(app.ds, task, self.clipboard, use_dark)
         self.textview.set_vexpand(True)
         self.scrolled.set_child(self.textview)
 

@@ -76,7 +76,7 @@ class TaskView(GtkSource.View):
     PROCESSING_DELAY = 250
 
 
-    def __init__(self, ds: Datastore2, task, clipboard) -> None:
+    def __init__(self, ds: Datastore2, task, clipboard, dark) -> None:
         super().__init__()
 
         self.ds = ds
@@ -145,6 +145,12 @@ class TaskView(GtkSource.View):
             'tags': [],
             'to_delete': []
         }
+
+        if dark:
+            # TODO: It would be better to avoid hardcoding the style
+            manager = GtkSource.StyleSchemeManager().get_default()
+            scheme = manager.get_scheme('oblivion')
+            self.buffer.set_style_scheme(scheme)
 
         # Signals and callbacks
         self.id_modified = self.buffer.connect('changed', self.on_modified)
