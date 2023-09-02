@@ -272,7 +272,7 @@ class CalDAVTest(TestCase):
                 ('CHILD-PARENT', ['ROOT'], ['GRAND-CHILD'])):
             task = datastore.get_task(uid)
             self.assertEqual(children, CHILDREN_FIELD.get_dav(get_todo(uid)),
-                             "children should've been written by sync down")
+                             "children should have been written by sync down")
             self.assertEqual(children, task.get_children(),
                              "children missing from task")
             self.assertEqual(parents, PARENT_FIELD.get_dav(get_todo(uid)),

@@ -107,7 +107,7 @@ class ModifyTagsDialog():
                 if is_positive:
                     t.add_tag(_tag)
                 else:
-                    t.remove_tag(_tag)
+                    t.remove_tag(_tag.name)
 
         self.app.ds.save()
 
