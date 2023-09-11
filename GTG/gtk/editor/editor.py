@@ -803,7 +803,7 @@ class TaskEditor(Gtk.Window):
     def save(self):
         t = self.app.ds.tasks.get(self.task.id)
         t.title = self.textview.get_title()
-        t.contents = self.textview.get_text()
+        t.content = self.textview.get_text()
         self.app.ds.save()
 
         if self.task_config is not None:
