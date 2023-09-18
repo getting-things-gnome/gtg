@@ -1468,7 +1468,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if self.tagtreeview:
             taglist = self.tagtreeview.get_selected_nodes()
         # If no selection, we display all
-        if not nospecial and (not taglist or len(taglist) < 0):
+        if not nospecial and (not taglist):
             taglist = ['gtg-tags-all']
         if nospecial:
             special = ['gtg-tags-all', 'gtg-tags-none',
