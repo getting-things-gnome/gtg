@@ -325,9 +325,15 @@ class TaskPane(Gtk.ScrolledWindow):
         """Callback when a key is released. """
         
         is_enter = keyval in (Gdk.KEY_Return, Gdk.KEY_KP_Enter)
+        is_left = keyval == Gdk.KEY_Left
+        is_right = keyval == Gdk.KEY_Right
 
         if is_enter:
             self.app.browser.on_edit_active_task()
+        elif is_left:
+            self.expand_selected(False)
+        elif is_right:
+            self.expand_selected(True)
 
 
     def select_last(self) -> None:
@@ -371,6 +377,20 @@ class TaskPane(Gtk.ScrolledWindow):
             iterator.next()
 
         return selected
+
+
+    def expand_selected(self, expand) -> None:
+        """Get the box widgets of the selected tasks."""
+
+        selection = self.task_selection.get_selection()
+        result, iterator, _ = Gtk.BitsetIter.init_first(selection)
+        
+        while iterator.is_valid():
+            val = iterator.get_value()
+            row = self.task_selection.get_item(val)
+            row.set_expanded(expand)
+                
+            iterator.next()
 
 
     def get_selected_number(self) -> int:
@@ -522,6 +542,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
         box.check.set_active(item.status == Status.DONE)
         box.check.connect('toggled', self.on_checkbox_toggled, item)
+
 
     def task_unbind_cb(self, factory, listitem, user_data=None):
         """Clean up bindings made in task_bind_cb"""
