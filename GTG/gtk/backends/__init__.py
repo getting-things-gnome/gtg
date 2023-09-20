@@ -169,7 +169,7 @@ class BackendsDialog():
 
     def _create_widgets_for_conf_panel(self):
         """simply creates the panel to configure backends"""
-        self.config_panel = ConfigurePanel(self)
+        self.config_panel = ConfigurePanel(self, self.ds)
 
     def _create_widgets_for_add_panel(self):
         """simply creates the panel to add backends"""
