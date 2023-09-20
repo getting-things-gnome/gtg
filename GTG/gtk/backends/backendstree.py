@@ -43,7 +43,7 @@ class BackendsTree(Gtk.TreeView):
         """
         super().__init__()
         self.dialog = backendsdialog
-        self.req = backendsdialog.get_requester()
+        self.ds = backendsdialog.ds
         self._init_liststore()
         self._init_renderers()
         self._init_signals()
@@ -57,7 +57,7 @@ class BackendsTree(Gtk.TreeView):
         # Sort backends
         # 1, put default backend on top
         # 2, sort backends by human name
-        backends = list(self.req.get_all_backends(disabled=True))
+        backends = list(self.ds.get_all_backends(disabled=True))
         backends = sorted(backends,
                           key=lambda backend: (not backend.is_default(),
                                                backend.get_human_name()))
@@ -75,7 +75,7 @@ class BackendsTree(Gtk.TreeView):
         @param backend_id: the id of the backend to add
         """
         # Add
-        backend = self.req.get_backend(backend_id)
+        backend = self.ds.get_backend(backend_id)
         if not backend:
             return
         self.add_backend(backend)
@@ -112,7 +112,7 @@ class BackendsTree(Gtk.TreeView):
         if backend_id in self.backendid_to_iter:
             b_iter = self.backendid_to_iter[backend_id]
             b_path = self.liststore.get_path(b_iter)
-            backend = self.req.get_backend(backend_id)
+            backend = self.ds.get_backend(backend_id)
             backend_name = backend.get_human_name()
             self.liststore[b_path][self.COLUMN_TEXT] = backend_name
             self.liststore[b_path][self.COLUMN_ENABLED] = backend.is_enabled()
@@ -131,7 +131,7 @@ class BackendsTree(Gtk.TreeView):
         if ALLTASKS_TAG in tag_names:
             tags_txt = ""
         else:
-            tags_txt = get_colored_tags_markup(self.req, tag_names)
+            tags_txt = get_colored_tags_markup(self.ds, tag_names)
         return "<small>" + tags_txt + "</small>"
 
     def remove_backend(self, backend_id):

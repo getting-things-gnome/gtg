@@ -46,13 +46,12 @@ class ParametersUI(Gtk.Box):
 
     COMMON_WIDTH = 170
 
-    def __init__(self, requester):
+    def __init__(self):
         """Constructs the list of the possible widgets.
 
         @param requester: a GTG.core.requester.Requester object
         """
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
-        self.req = requester
         self.set_spacing(10)
 
         # Keep track of our children, for some reason iterating through

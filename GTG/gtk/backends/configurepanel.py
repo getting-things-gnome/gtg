@@ -28,7 +28,7 @@ class ConfigurePanel(Gtk.Box):
     A vertical Box that lets you configure a backend
     """
 
-    def __init__(self, backends):
+    def __init__(self, backends, ds):
         """
         Constructor, creating all the gtk widgets
 
@@ -40,7 +40,7 @@ class ConfigurePanel(Gtk.Box):
         self.should_spinner_be_shown = False
         self.task_deleted_handle = None
         self.task_added_handle = None
-        self.req = backends.get_requester()
+        self.ds = ds
         self._create_widgets()
         self._connect_signals()
 
@@ -66,7 +66,7 @@ class ConfigurePanel(Gtk.Box):
         self._fill_middle_box(middle)
         self.append(top)
         self.append(middle)
-        self.parameters_ui = ParametersUI(self.req)
+        self.parameters_ui = ParametersUI()
         self.parameters_ui.set_margin_top(10)
         self.append(self.parameters_ui)
 
@@ -179,7 +179,7 @@ class ConfigurePanel(Gtk.Box):
         @param sender: not used, here only for signal callback compatibility
         """
         self.parameters_ui.commit_changes()
-        self.req.set_backend_enabled(self.backend.get_id(),
+        self.ds.set_backend_enabled(self.backend.get_id(),
                                      not self.backend.is_enabled())
 
     def on_sync_started(self, sender, backend_id):
