@@ -119,7 +119,7 @@ class ConfigurePanel(Gtk.Box):
 
         @param backend_id: the id of the backend to configure
         """
-        self.backend = self.dialog.get_requester().get_backend(backend_id)
+        self.backend = self.dialog.ds.get_backend(backend_id)
         self.refresh_title()
         self.refresh_sync_status()
         self.parameters_ui.refresh(self.backend)
