@@ -589,12 +589,7 @@ class Datastore2:
                 threading.Thread(target=backend.quit,
                                  kwargs={'disable': True}).start()
             elif current_state is False and state is True:
-                if self.is_default_backend_loaded is True:
-                    self._backend_startup(backend)
-                else:
-                    # will be activated afterwards
-                    backend.set_parameter(GenericBackend.KEY_ENABLED,
-                                          True)
+                self._backend_startup(backend)
 
 
     def remove_backend(self, backend_id):
