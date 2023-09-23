@@ -67,6 +67,7 @@ class ConfigurePanel(Gtk.Box):
         self.append(top)
         self.append(middle)
         self.parameters_ui = ParametersUI()
+        self.parameters_ui.ds = self.ds
         self.parameters_ui.set_margin_top(10)
         self.append(self.parameters_ui)
 

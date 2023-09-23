@@ -24,17 +24,17 @@ from gettext import gettext as _
 class PasswordUI(Gtk.Box):
     """Widget displaying a gtk.Label and a textbox to input a password"""
 
-    def __init__(self, req, backend, width):
+    def __init__(self, ds, backend, width):
         """Creates the gtk widgets and loads the current password in the text
         field
 
-        @param req: a Requester
+        @param ds: a Requester
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
         """
         super().__init__()
         self.backend = backend
-        self.req = req
+        self.ds = ds
         self._populate_gtk(width)
         self._load_password()
         self._connect_signals()
@@ -78,4 +78,4 @@ class PasswordUI(Gtk.Box):
         @param sender: not used, only here for signal compatibility
         """
         if self.backend.is_enabled() and not self.backend.is_default():
-            self.req.set_backend_enabled(self.backend.get_id(), False)
+            self.ds.set_backend_enabled(self.backend.get_id(), False)

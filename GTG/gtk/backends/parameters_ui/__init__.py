@@ -120,7 +120,7 @@ class ParametersUI(Gtk.Box):
         @return function: return a widget generator, not a widget. the widget
                            can be obtained by calling widget_generator(backend)
         """
-        return lambda backend: param_type(req=self.req,
+        return lambda backend: param_type(ds=self.ds,
                                           backend=backend,
                                           width=self.COMMON_WIDTH,
                                           **special_arguments)
