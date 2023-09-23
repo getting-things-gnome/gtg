@@ -28,17 +28,17 @@ class PathUI(Gtk.Box):
     filesystem explorer to modify that path (also, a label to describe those)
     """
 
-    def __init__(self, req, backend, width):
+    def __init__(self, ds, backend, width):
         """
         Creates the textbox, the button and loads the current path.
 
-        @param req: a Requester
+        @param ds: Datastore
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
         """
         super().__init__()
         self.backend = backend
-        self.req = req
+        self.ds = ds
         self._populate_gtk(width)
 
     def _populate_gtk(self, width):
@@ -74,7 +74,7 @@ class PathUI(Gtk.Box):
         @param sender: not used, only here for signal compatibility
         """
         if self.backend.is_enabled() and not self.backend.is_default():
-            self.req.set_backend_enabled(self.backend.get_id(), False)
+            self.ds.set_backend_enabled(self.backend.get_id(), False)
 
     def on_button_clicked(self, sender):
         """Shows the filesystem explorer to choose a new file

@@ -25,11 +25,11 @@ class CheckBoxUI(Gtk.Box):
     meaning
     """
 
-    def __init__(self, req, backend, width, text, parameter):
+    def __init__(self, ds, backend, width, text, parameter):
         """
         Creates the checkbox and the related label.
 
-        @param req: a Requester
+        @param ds: Datastore
         @param backend: a backend object
         @param width: the width of the gtk.Label object
         @param parameter: the backend parameter this checkbox should display
@@ -37,7 +37,7 @@ class CheckBoxUI(Gtk.Box):
         """
         super().__init__()
         self.backend = backend
-        self.req = req
+        self.ds = ds
         self.text = text
         self.parameter = parameter
         self._populate_gtk(width)
@@ -66,4 +66,4 @@ class CheckBoxUI(Gtk.Box):
         @param sender: not used, only here for signal compatibility
         """
         if self.backend.is_enabled() and not self.backend.is_default():
-            self.req.set_backend_enabled(self.backend.get_id(), False)
+            self.ds.set_backend_enabled(self.backend.get_id(), False)

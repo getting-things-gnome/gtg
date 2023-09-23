@@ -23,18 +23,18 @@ class TextUI(Gtk.Box):
     """A widget to display a simple textbox and a label to describe its content
     """
 
-    def __init__(self, req, backend, width, description, parameter_name):
+    def __init__(self, ds, backend, width, description, parameter_name):
         """
         Creates the textbox and the related label. Loads the current
         content.
 
-        @param req: a Requester
+        @param ds: Datastore
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
         """
         super().__init__()
         self.backend = backend
-        self.req = req
+        self.ds = ds
         self.parameter_name = parameter_name
         self.description = description
         self._populate_gtk(width)
@@ -71,4 +71,4 @@ class TextUI(Gtk.Box):
         @param sender: not used, only here for signal compatibility
         """
         if self.backend.is_enabled() and not self.backend.is_default():
-            self.req.set_backend_enabled(self.backend.get_id(), False)
+            self.ds.set_backend_enabled(self.backend.get_id(), False)
