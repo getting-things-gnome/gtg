@@ -27,7 +27,7 @@ import urllib.parse  # GLibs URI functions not available for some reason
 
 
 from GTG.core.dirs import DATA_DIR
-from GTG.core.datastore2 import Datastore2
+from GTG.core.datastore import Datastore
 from GTG.core.tasks import Filter
 
 from GTG.gtk.browser.delete_task import DeletionUI
@@ -54,7 +54,7 @@ log = logging.getLogger(__name__)
 
 class Application(Gtk.Application):
 
-    ds: Datastore2 = Datastore2()
+    ds: Datastore = Datastore()
     """Datastore loaded with the default data file"""
 
     # List of opened tasks (task editor windows). Task IDs are keys,

@@ -21,7 +21,7 @@
 from uuid import uuid4
 from gi.repository import Gtk, Pango, Gdk
 
-from GTG.core.datastore2 import Datastore2
+from GTG.core.datastore import Datastore
 from GTG.core.tasks import Status
 from GTG.gtk.colors import background_color
 from webbrowser import open as openurl
@@ -217,7 +217,7 @@ class TaskTagTag(Gtk.TextTag):
     """Text tag for task tags."""
 
 
-    def __init__(self, tag: str, ds: Datastore2) -> None:
+    def __init__(self, tag: str, ds: Datastore) -> None:
         super().__init__()
 
         self.tag_name = tag

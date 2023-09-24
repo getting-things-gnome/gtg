@@ -44,7 +44,7 @@ from typing import Optional
 log = logging.getLogger(__name__)
 
 
-class Datastore2:
+class Datastore:
 
     #: Amount of backups to keep
     BACKUPS_NUMBER = 7
