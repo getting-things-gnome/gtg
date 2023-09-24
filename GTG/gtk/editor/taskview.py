@@ -27,7 +27,7 @@ import logging
 from gi.repository import Gtk, GLib, Gdk, GObject, GtkSource
 
 from GTG.core.datastore2 import Datastore2
-from GTG.core.tasks2 import Status
+from GTG.core.tasks import Status
 import GTG.core.urlregex as url_regex
 from webbrowser import open as openurl
 from gettext import gettext as _

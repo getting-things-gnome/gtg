@@ -20,7 +20,7 @@
 
 from gi.repository import Gtk, GObject, Gdk
 from GTG.core.tags2 import Tag2
-from GTG.core.tasks2 import Task2, Status
+from GTG.core.tasks import Task, Status
 from GTG.core import search
 
 
@@ -72,14 +72,14 @@ class TaskPaneFilter(Gtk.Filter):
         self.expand = False
 
 
-    def match_tags(self, task: Task2) -> bool:
+    def match_tags(self, task: Task) -> bool:
         """Match selected tags to task tags."""
         
         return len(self.tags.intersection(set(task.tags))) >= len(self.tags)
 
 
     def do_match(self, item) -> bool:
-        task = unwrap(item, Task2)
+        task = unwrap(item, Task)
 
         if self.pane == 'active':
             show = task.status is Status.ACTIVE
@@ -126,7 +126,7 @@ class SearchTaskFilter(Gtk.Filter):
 
 
     def do_match(self, item) -> bool:
-        task = unwrap(item, Task2)
+        task = unwrap(item, Task)
 
         if self.pane == 'active':
             show = task.status is Status.ACTIVE

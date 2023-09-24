@@ -19,7 +19,7 @@
 """Sorters for tags and tasks."""
 
 from gi.repository import Gtk, GObject, Gdk
-from GTG.core.tasks2 import Task2
+from GTG.core.tasks import Task
 
 def unwrap(row, expected_type):
     """Find an item in TreeRow widget (sometimes nested)."""
@@ -41,8 +41,8 @@ class TaskTitleSorter(Gtk.Sorter):
 
     def do_compare(self, a, b) -> Gtk.Ordering:
         
-        a = unwrap(a, Task2)
-        b = unwrap(b, Task2)
+        a = unwrap(a, Task)
+        b = unwrap(b, Task)
 
         first = a.title[-1]
         second = b.title[-1]
@@ -64,8 +64,8 @@ class TaskDueSorter(Gtk.Sorter):
 
     def do_compare(self, a, b) -> Gtk.Ordering:
         
-        a = unwrap(a, Task2)
-        b = unwrap(b, Task2)
+        a = unwrap(a, Task)
+        b = unwrap(b, Task)
 
         first = a.date_due
         second = b.date_due
@@ -87,8 +87,8 @@ class TaskStartSorter(Gtk.Sorter):
 
     def do_compare(self, a, b) -> Gtk.Ordering:
         
-        a = unwrap(a, Task2)
-        b = unwrap(b, Task2)
+        a = unwrap(a, Task)
+        b = unwrap(b, Task)
 
         first = a.date_start
         second = b.date_start
@@ -110,8 +110,8 @@ class TaskModifiedSorter(Gtk.Sorter):
 
     def do_compare(self, a, b) -> Gtk.Ordering:
         
-        a = unwrap(a, Task2)
-        b = unwrap(b, Task2)
+        a = unwrap(a, Task)
+        b = unwrap(b, Task)
 
         first = a.date_modified
         second = b.date_modified
@@ -141,8 +141,8 @@ class TaskTagSorter(Gtk.Sorter):
 
     def do_compare(self, a, b) -> Gtk.Ordering:
         
-        a = unwrap(a, Task2)
-        b = unwrap(b, Task2)
+        a = unwrap(a, Task)
+        b = unwrap(b, Task)
 
         if a.tags:
             first = self.get_first_letter(a.tags)
@@ -171,8 +171,8 @@ class TaskAddedSorter(Gtk.Sorter):
 
     def do_compare(self, a, b) -> Gtk.Ordering:
         
-        a = unwrap(a, Task2)
-        b = unwrap(b, Task2)
+        a = unwrap(a, Task)
+        b = unwrap(b, Task)
 
         first = a.date_added
         second = b.date_added

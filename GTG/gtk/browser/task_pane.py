@@ -19,7 +19,7 @@
 """Task pane and list."""
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
-from GTG.core.tasks2 import Task2, Status
+from GTG.core.tasks import Task, Status
 from GTG.core.filters import TaskPaneFilter, SearchTaskFilter
 from GTG.core.sorters import *
 from GTG.gtk.browser.tag_pill import TagPill
@@ -31,7 +31,7 @@ BIND_FLAGS = GObject.BindingFlags.DEFAULT | GObject.BindingFlags.SYNC_CREATE
 class TaskBox(Gtk.Box):
     """Box subclass to keep a pointer to the tag object"""
 
-    task = GObject.Property(type=Task2)
+    task = GObject.Property(type=Task)
 
     def __init__(self, config):
         self.config = config
@@ -193,7 +193,7 @@ class TaskPane(Gtk.ScrolledWindow):
         view.set_show_separators(True)
         view.add_css_class('task-list')
 
-        view_drop = Gtk.DropTarget.new(Task2, Gdk.DragAction.COPY)
+        view_drop = Gtk.DropTarget.new(Task, Gdk.DragAction.COPY)
         view_drop.connect("drop", self.on_toplevel_tag_drop)
         view.add_controller(view_drop)
 
@@ -343,13 +343,13 @@ class TaskPane(Gtk.ScrolledWindow):
         self.task_selection.select_item(position - 1, True)
         
 
-    def select_task(self, task: Task2) -> None:
+    def select_task(self, task: Task) -> None:
         """Select a task in the list."""
         
         position = None
 
         for i in range(self.main_sorter.get_n_items()):
-            item = unwrap(self.main_sorter.get_item(i), Task2)
+            item = unwrap(self.main_sorter.get_item(i), Task)
 
             if item == task:
                 position = i
@@ -372,7 +372,7 @@ class TaskPane(Gtk.ScrolledWindow):
             if indices:
                 selected.append(val)
             else:
-                selected.append(unwrap(self.task_selection.get_item(val), Task2))
+                selected.append(unwrap(self.task_selection.get_item(val), Task))
                 
             iterator.next()
 
@@ -468,7 +468,7 @@ class TaskPane(Gtk.ScrolledWindow):
         box.add_controller(source)
 
         # Set drop for DnD
-        drop = Gtk.DropTarget.new(Task2, Gdk.DragAction.COPY)
+        drop = Gtk.DropTarget.new(Task, Gdk.DragAction.COPY)
         drop.connect('drop', self.drag_drop)
         drop.connect('enter', self.drop_enter)
 
@@ -509,7 +509,7 @@ class TaskPane(Gtk.ScrolledWindow):
         color = separator.get_next_sibling()
         icons = color.get_next_sibling()
 
-        item = unwrap(listitem, Task2)
+        item = unwrap(listitem, Task)
 
         box.props.task = item
         box.expander.set_list_row(listitem.get_item())

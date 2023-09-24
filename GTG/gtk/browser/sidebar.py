@@ -21,7 +21,7 @@
 from gi.repository import Gtk, GObject, Gdk, Gio
 
 from GTG.core.tags2 import Tag2
-from GTG.core.tasks2 import Task2
+from GTG.core.tasks import Task
 from GTG.core.filters import TagEmptyFilter
 from GTG.core.saved_searches import SavedSearch
 from GTG.core.datastore2 import Datastore2
@@ -316,7 +316,7 @@ class Sidebar(Gtk.ScrolledWindow):
         drop.connect('enter', self.drop_enter)
         box.add_controller(drop)
 
-        task_drop = Gtk.DropTarget.new(Task2, Gdk.DragAction.COPY)
+        task_drop = Gtk.DropTarget.new(Task, Gdk.DragAction.COPY)
         task_drop.connect('drop', self.task_drag_drop)
         task_drop.connect('enter', self.drop_enter)
         box.add_controller(task_drop)
@@ -633,7 +633,7 @@ class Sidebar(Gtk.ScrolledWindow):
         self.ds.tasks.notify('task_count_no_tags')
 
 
-    def notify_task(self, task: Task2) -> None:
+    def notify_task(self, task: Task) -> None:
         """Notify that tasks props have changed."""
         
         task.notify('row_css')

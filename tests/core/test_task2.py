@@ -20,7 +20,7 @@ from unittest import TestCase
 from uuid import uuid4
 import datetime
 
-from GTG.core.tasks2 import Task2, Status, TaskStore, Filter
+from GTG.core.tasks import Task, Status, TaskStore, Filter
 from GTG.core.tags2 import Tag2, TagStore
 from GTG.core.dates import Date
 
@@ -30,12 +30,12 @@ from lxml.etree import Element, SubElement, XML
 class TestTask2(TestCase):
 
     def test_title(self):
-        task = Task2(id=uuid4(), title='\tMy Title\n')
+        task = Task(id=uuid4(), title='\tMy Title\n')
 
         self.assertEqual(task.title, 'My Title')
 
     def test_excerpt(self):
-        task = Task2(id=uuid4(), title='A Task')
+        task = Task(id=uuid4(), title='A Task')
 
         self.assertEqual(task.excerpt, '')
 
@@ -51,7 +51,7 @@ class TestTask2(TestCase):
 
 
     def test_toggle_active_single(self):
-        task = Task2(id=uuid4(), title='A Task')
+        task = Task(id=uuid4(), title='A Task')
 
         self.assertEqual(task.status, Status.ACTIVE)
 
@@ -64,8 +64,8 @@ class TestTask2(TestCase):
         self.assertEqual(task.date_closed, Date.no_date())
 
     def test_toggle_active_children(self):
-        task = Task2(id=uuid4(), title='A Task')
-        task2 = Task2(id=uuid4(), title='A Child Task')
+        task = Task(id=uuid4(), title='A Task')
+        task2 = Task(id=uuid4(), title='A Child Task')
         task.children.append(task2)
         task2.parent = task
 
@@ -83,7 +83,7 @@ class TestTask2(TestCase):
 
 
     def test_toggle_dismiss_single(self):
-        task = Task2(id=uuid4(), title='A Task')
+        task = Task(id=uuid4(), title='A Task')
 
         task.toggle_dismiss()
         self.assertEqual(task.status, Status.DISMISSED)
@@ -95,8 +95,8 @@ class TestTask2(TestCase):
 
 
     def test_toggle_dismiss_children(self):
-        task = Task2(id=uuid4(), title='A Task')
-        task2 = Task2(id=uuid4(), title='A Child Task')
+        task = Task(id=uuid4(), title='A Task')
+        task2 = Task(id=uuid4(), title='A Child Task')
         task.children.append(task2)
         task2.parent = task
 
@@ -114,7 +114,7 @@ class TestTask2(TestCase):
 
 
     def test_tags(self):
-        task = Task2(id=uuid4(), title='A Task')
+        task = Task(id=uuid4(), title='A Task')
         tag = Tag2(id=uuid4(), name='A Tag')
 
         task.add_tag(tag)
@@ -133,8 +133,8 @@ class TestTask2(TestCase):
 
 
     def test_tags_children(self):
-        task1 = Task2(id=uuid4(), title='A Parent Task')
-        task2 = Task2(id=uuid4(), title='A Child Task')
+        task1 = Task(id=uuid4(), title='A Parent Task')
+        task2 = Task(id=uuid4(), title='A Child Task')
 
         tag1 = Tag2(id=uuid4(), name='A Tag')
         tag2 = Tag2(id=uuid4(), name='Another Tag')
@@ -152,12 +152,12 @@ class TestTask2(TestCase):
 
 
     def test_due_date(self):
-        task1 = Task2(id=uuid4(), title='A Parent Task')
-        task2 = Task2(id=uuid4(), title='A Child Task')
-        task3 = Task2(id=uuid4(), title='Another Child Task')
-        task4 = Task2(id=uuid4(), title='Yet Another Child Task')
-        task5 = Task2(id=uuid4(), title='So many Child Tasks')
-        task6 = Task2(id=uuid4(), title='More childs')
+        task1 = Task(id=uuid4(), title='A Parent Task')
+        task2 = Task(id=uuid4(), title='A Child Task')
+        task3 = Task(id=uuid4(), title='Another Child Task')
+        task4 = Task(id=uuid4(), title='Yet Another Child Task')
+        task5 = Task(id=uuid4(), title='So many Child Tasks')
+        task6 = Task(id=uuid4(), title='More childs')
 
         task1.children.append(task2)
         task1.children.append(task3)
@@ -221,7 +221,7 @@ class TestTask2(TestCase):
         store = TaskStore()
         task = store.new('My Task')
 
-        self.assertIsInstance(task, Task2)
+        self.assertIsInstance(task, Task)
         self.assertEqual(store.get(task.id), task)
         self.assertEqual(task.title, 'My Task')
         self.assertEqual(store.count(), 1)

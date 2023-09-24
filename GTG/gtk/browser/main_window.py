@@ -41,7 +41,7 @@ from GTG.gtk.browser.task_pane import TaskPane
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
 from GTG.core.dates import Date
-from GTG.core.tasks2 import Filter, Status
+from GTG.core.tasks import Filter, Status
 from GTG.gtk.browser.adaptive_button import AdaptiveFittingWidget # Register type
 
 log = logging.getLogger(__name__)
