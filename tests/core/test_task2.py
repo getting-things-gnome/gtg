@@ -21,7 +21,7 @@ from uuid import uuid4
 import datetime
 
 from GTG.core.tasks import Task, Status, TaskStore, Filter
-from GTG.core.tags2 import Tag2, TagStore
+from GTG.core.tags import Tag, TagStore
 from GTG.core.dates import Date
 
 from lxml.etree import Element, SubElement, XML
@@ -115,7 +115,7 @@ class TestTask2(TestCase):
 
     def test_tags(self):
         task = Task(id=uuid4(), title='A Task')
-        tag = Tag2(id=uuid4(), name='A Tag')
+        tag = Tag(id=uuid4(), name='A Tag')
 
         task.add_tag(tag)
         self.assertEqual(len(task.tags), 1)
@@ -136,8 +136,8 @@ class TestTask2(TestCase):
         task1 = Task(id=uuid4(), title='A Parent Task')
         task2 = Task(id=uuid4(), title='A Child Task')
 
-        tag1 = Tag2(id=uuid4(), name='A Tag')
-        tag2 = Tag2(id=uuid4(), name='Another Tag')
+        tag1 = Tag(id=uuid4(), name='A Tag')
+        tag2 = Tag(id=uuid4(), name='Another Tag')
 
         task1.children.append(task2)
         task1.add_tag(tag1)
@@ -281,7 +281,7 @@ class TestTask2(TestCase):
         TAG_ID = '6f1ba7b3-a797-44b9-accd-303adaf04073'
         TASK_ID = '1d34df07-4185-43ad-adbd-698a86193411'
 
-        tag = Tag2(id=TAG_ID, name='My Tag')
+        tag = Tag(id=TAG_ID, name='My Tag')
         tag_store.add(tag)
 
         parsed_xml = XML(f'''
@@ -524,8 +524,8 @@ class TestTask2(TestCase):
         task3 = task_store.new('My Other Other Task')
         task4 = task_store.new('My Other Other Other Task')
 
-        tag1 = Tag2(id=uuid4(), name='A Tag')
-        tag2 = Tag2(id=uuid4(), name='Another Tag')
+        tag1 = Tag(id=uuid4(), name='A Tag')
+        tag2 = Tag(id=uuid4(), name='Another Tag')
 
         task1.add_tag(tag1)
         task2.add_tag(tag2)

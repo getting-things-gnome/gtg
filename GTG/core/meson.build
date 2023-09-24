@@ -40,7 +40,7 @@ gtg_core_sources = [
   'versioning.py',
   'base_store.py',
   'tasks.py',
-  'tags2.py',
+  'tags.py',
   'saved_searches.py',
   'datastore2.py',
   'filters.py',

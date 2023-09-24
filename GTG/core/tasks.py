@@ -33,7 +33,7 @@ from operator import attrgetter
 from lxml.etree import Element, SubElement, CDATA
 
 from GTG.core.base_store import BaseStore
-from GTG.core.tags2 import Tag2, TagStore
+from GTG.core.tags import Tag, TagStore
 from GTG.core.dates import Date
 
 log = logging.getLogger(__name__)
@@ -318,10 +318,10 @@ class Task(GObject.Object):
         return f'{txt.strip()[:50]}…'
 
 
-    def add_tag(self, tag: Tag2) -> None:
+    def add_tag(self, tag: Tag) -> None:
         """Add a tag to this task."""
 
-        if isinstance(tag, Tag2):
+        if isinstance(tag, Tag):
             if tag not in self.tags:
                 self.tags.add(tag)
 

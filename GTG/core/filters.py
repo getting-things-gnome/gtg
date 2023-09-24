@@ -19,7 +19,7 @@
 """Filters for tags and tasks"""
 
 from gi.repository import Gtk, GObject, Gdk
-from GTG.core.tags2 import Tag2
+from GTG.core.tags import Tag
 from GTG.core.tasks import Task, Status
 from GTG.core import search
 
@@ -45,7 +45,7 @@ class TagEmptyFilter(Gtk.Filter):
 
 
     def do_match(self, item) -> bool:
-        tag = unwrap(item, Tag2)
+        tag = unwrap(item, Tag)
 
         if self.pane == 'open':
             return tag.task_count_open > 0
