@@ -24,7 +24,7 @@ from GTG.core.tags import Tag
 from GTG.core.tasks import Task
 from GTG.core.filters import TagEmptyFilter
 from GTG.core.saved_searches import SavedSearch
-from GTG.core.datastore2 import Datastore2
+from GTG.core.datastore import Datastore
 from GTG.gtk.browser.sidebar_context_menu import TagContextMenu, SearchesContextMenu
 from GTG.gtk.browser.tag_pill import TagPill
 
@@ -60,7 +60,7 @@ signal_block = GObject.signal_handler_block
 class Sidebar(Gtk.ScrolledWindow):
     """The sidebar widget"""
     
-    def __init__(self, app, ds: Datastore2, browser):
+    def __init__(self, app, ds: Datastore, browser):
 
         super(Sidebar, self).__init__()
         self.ds = ds

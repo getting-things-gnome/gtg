@@ -78,8 +78,8 @@ and fill it with test data like this:
 
 ```python
 
-from GTG.core.datastore2 import DataStore2
-ds = DataStore2()
+from GTG.core.datastore import DataStore
+ds = DataStore()
 ds.fill_with_samples(200)
 ds.print_info()
 ```

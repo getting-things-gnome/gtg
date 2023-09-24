@@ -26,7 +26,7 @@ import logging
 
 from gi.repository import Gtk, GLib, Gdk, GObject, GtkSource
 
-from GTG.core.datastore2 import Datastore2
+from GTG.core.datastore import Datastore
 from GTG.core.tasks import Status
 import GTG.core.urlregex as url_regex
 from webbrowser import open as openurl
@@ -76,7 +76,7 @@ class TaskView(GtkSource.View):
     PROCESSING_DELAY = 250
 
 
-    def __init__(self, ds: Datastore2, task, clipboard, dark) -> None:
+    def __init__(self, ds: Datastore, task, clipboard, dark) -> None:
         super().__init__()
 
         self.ds = ds
