@@ -40,7 +40,7 @@ def extract_tags_from_text(text):
     return re.findall(r'(?:^|[\s])(@[\w\/\.\-\:\&]*\w)', text)
 
 
-class Tag2(GObject.Object):
+class Tag(GObject.Object):
     """A tag that can be applied to a Task."""
 
     __gtype_name__ = 'gtg_Tag'
@@ -59,7 +59,7 @@ class Tag2(GObject.Object):
         self._task_count_actionable = 0
         self._task_count_closed = 0
 
-        super(Tag2, self).__init__()
+        super(Tag, self).__init__()
 
 
     def __str__(self) -> str:
@@ -179,17 +179,17 @@ class TagStore(BaseStore):
 
     def __init__(self) -> None:
         self.used_colors: Set[Color] = set()
-        self.lookup_names: Dict[str, Tag2] = {}
+        self.lookup_names: Dict[str, Tag] = {}
 
         super().__init__()
 
 
-        self.model = Gio.ListStore.new(Tag2)
+        self.model = Gio.ListStore.new(Tag)
         self.tree_model = Gtk.TreeListModel.new(self.model, False, False, self.model_expand)
 
 
     def model_expand(self, item):
-        model = Gio.ListStore.new(Tag2)
+        model = Gio.ListStore.new(Tag)
 
         if type(item) == Gtk.TreeListRow:
             item = item.get_item()
@@ -208,13 +208,13 @@ class TagStore(BaseStore):
         return f'Tag Store. Holds {len(self.lookup)} tag(s)'
 
 
-    def find(self, name: str) -> Tag2:
+    def find(self, name: str) -> Tag:
         """Get a tag by name."""
 
         return self.lookup_names[name]
 
 
-    def new(self, name: str, parent: UUID = None) -> Tag2:
+    def new(self, name: str, parent: UUID = None) -> Tag:
         """Create a new tag and add it to the store."""
 
         name = name if not name.startswith('@') else name[1:]
@@ -223,7 +223,7 @@ class TagStore(BaseStore):
             return self.lookup_names[name]
         except KeyError:
             tid = uuid4()
-            tag = Tag2(id=tid, name=name)
+            tag = Tag(id=tid, name=name)
 
             if parent:
                 self.add(tag, parent)
@@ -247,7 +247,7 @@ class TagStore(BaseStore):
             color = element.get('color')
             icon = element.get('icon')
 
-            tag = Tag2(id=tid, name=name)
+            tag = Tag(id=tid, name=name)
             tag.color = color
             tag.icon = icon
 

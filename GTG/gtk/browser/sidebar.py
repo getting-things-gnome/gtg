@@ -20,7 +20,7 @@
 
 from gi.repository import Gtk, GObject, Gdk, Gio
 
-from GTG.core.tags2 import Tag2
+from GTG.core.tags import Tag
 from GTG.core.tasks import Task
 from GTG.core.filters import TagEmptyFilter
 from GTG.core.saved_searches import SavedSearch
@@ -32,7 +32,7 @@ from GTG.gtk.browser.tag_pill import TagPill
 class TagBox(Gtk.Box):
     """Box subclass to keep a pointer to the tag object"""
 
-    tag = GObject.Property(type=Tag2)
+    tag = GObject.Property(type=Tag)
 
 
 class SearchBox(Gtk.Box):
@@ -156,7 +156,7 @@ class Sidebar(Gtk.ScrolledWindow):
         view.set_vexpand(True)
         view.set_hexpand(True)
 
-        view_drop = Gtk.DropTarget.new(Tag2, Gdk.DragAction.COPY)
+        view_drop = Gtk.DropTarget.new(Tag, Gdk.DragAction.COPY)
         view_drop.connect("drop", self.on_toplevel_tag_drop)
         view.add_controller(view_drop)
 
@@ -311,7 +311,7 @@ class Sidebar(Gtk.ScrolledWindow):
         box.add_controller(source)
 
         # ... and drop
-        drop = Gtk.DropTarget.new(Tag2, Gdk.DragAction.COPY)
+        drop = Gtk.DropTarget.new(Tag, Gdk.DragAction.COPY)
         drop.connect('drop', self.drag_drop)
         drop.connect('enter', self.drop_enter)
         box.add_controller(drop)
@@ -357,7 +357,7 @@ class Sidebar(Gtk.ScrolledWindow):
         actionable_count_label = open_count_label.get_next_sibling()
         closed_count_label = actionable_count_label.get_next_sibling()
 
-        item = unwrap(listitem, Tag2)
+        item = unwrap(listitem, Tag)
 
         box.props.tag = item
         expander.set_list_row(listitem.get_item())
@@ -460,7 +460,7 @@ class Sidebar(Gtk.ScrolledWindow):
         
         while iterator.is_valid():
             val = iterator.get_value()
-            item = unwrap(self.tag_selection.get_item(val), Tag2)
+            item = unwrap(self.tag_selection.get_item(val), Tag)
             selected.append(item.name if names_only else item)
             iterator.next()
         

@@ -19,7 +19,7 @@
 from unittest import TestCase
 from uuid import uuid4
 
-from GTG.core.tags2 import Tag2, TagStore
+from GTG.core.tags import Tag, TagStore
 from lxml.etree import Element, SubElement, XML
 
 
@@ -32,7 +32,7 @@ class TestTagStore(TestCase):
 
         self.assertEqual(len(store.data), 1)
         self.assertEqual(store.lookup[tag.id], tag)
-        self.assertIsInstance(tag, Tag2)
+        self.assertIsInstance(tag, Tag)
 
         tag2 = store.new('@a_tag')
         self.assertEqual(len(store.data), 2)

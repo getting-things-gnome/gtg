@@ -21,7 +21,7 @@
 Tasks should serve as a quick tutorial how GTG works """
 
 from gettext import gettext as _
-from GTG.core.tags2 import extract_tags_from_text
+from GTG.core.tags import extract_tags_from_text
 from GTG.core.dates import Date
 
 from uuid import uuid4
