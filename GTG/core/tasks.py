@@ -78,7 +78,7 @@ class Filter(Enum):
 DEFAULT_TITLE = _('New Task')
 
 
-class Task2(GObject.Object):
+class Task(GObject.Object):
     """A single task."""
 
     __gtype_name__ = 'gtg_Task'
@@ -111,7 +111,7 @@ class Task2(GObject.Object):
 
         self.duplicate_cb = NotImplemented
 
-        super(Task2, self).__init__()
+        super(Task, self).__init__()
 
 
     @GObject.Property(type=bool, default=True)
@@ -673,12 +673,12 @@ class TaskStore(BaseStore):
     def __init__(self) -> None:
         super().__init__()
 
-        self.model = Gio.ListStore.new(Task2)
+        self.model = Gio.ListStore.new(Task)
         self.tree_model = Gtk.TreeListModel.new(self.model, False, False, self.model_expand)
 
 
     def model_expand(self, item):
-        model = Gio.ListStore.new(Task2)
+        model = Gio.ListStore.new(Task)
 
         if type(item) == Gtk.TreeListRow:
             item = item.get_item()
@@ -697,13 +697,13 @@ class TaskStore(BaseStore):
         return f'Task Store. Holds {len(self.lookup)} task(s)'
 
 
-    def get(self, tid: UUID) -> Task2:
+    def get(self, tid: UUID) -> Task:
         """Get a task by name."""
 
         return self.lookup[tid]
 
 
-    def duplicate_for_recurrent(self, task: Task2) -> Task2:
+    def duplicate_for_recurrent(self, task: Task) -> Task:
         """Duplicate a task for the next ocurrence."""
         
         new_task = self.new(task.title)
@@ -724,12 +724,12 @@ class TaskStore(BaseStore):
         return new_task
         
 
-    def new(self, title: str = None, parent: UUID = None) -> Task2:
+    def new(self, title: str = None, parent: UUID = None) -> Task:
         """Create a new task and add it to the store."""
 
         tid = uuid4()
         title = title or DEFAULT_TITLE
-        task = Task2(id=tid, title=title)
+        task = Task(id=tid, title=title)
         task.date_added = Date.now()
 
         if parent:
@@ -751,7 +751,7 @@ class TaskStore(BaseStore):
             title = element.find('title').text
             status = element.get('status')
 
-            task = Task2(id=tid, title=title)
+            task = Task(id=tid, title=title)
 
             dates = element.find('dates')
 
