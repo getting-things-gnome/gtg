@@ -258,7 +258,7 @@ class Backend(PeriodicImportBackend):
         if do_delete:  # the task was missing for a good reason
             counts['deleted'] += 1
             self._cache.del_todo(uid)
-            self.datastore.request_task_deletion(uid)
+            self.datastore.tasks.remove(uid)
 
     @staticmethod
     def _denorm_children_on_vtodos(todos: list):
@@ -297,9 +297,10 @@ class Backend(PeriodicImportBackend):
             uid = UID_FIELD.get_dav(todo)
             self._cache.set_todo(todo, uid)
             # Updating and creating task according to todos
-            task = self.datastore.get_task(uid)
+            task = self.datastore.tasks.lookup[uid]
             if not task:  # not found, creating it
-                task = self.datastore.task_factory(uid)
+                task = Task()
+                task.id = uid
                 Translator.fill_task(todo, task, self.namespace)
                 self.datastore.tasks.add(task)
                 counts['created'] += 1
@@ -333,7 +334,7 @@ class Backend(PeriodicImportBackend):
                 parents = PARENT_FIELD.get_dav(todo)
                 if (not parents  # no parent mean no relationship on build
                         or parents[0] in known_todos  # already known parent
-                        or self.datastore.get_task(uid)):  # already known uid
+                        or self.datastore.tasks.lookup[uid]):  # already known uid
                     yield todo
                     known_todos.add(uid)
             if loop >= MAX_CALENDAR_DEPTH:
@@ -342,8 +343,7 @@ class Backend(PeriodicImportBackend):
 
     def _get_calendar_tasks(self, calendar: iCalendar):
         """Getting all tasks that has the calendar tag"""
-        for uid in self.datastore.get_all_tasks():
-            task = self.datastore.get_task(uid)
+        for task in self.datastore.tasks.data:
             if CATEGORIES.has_calendar_tag(task, calendar):
                 yield uid, task
 
