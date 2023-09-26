@@ -642,7 +642,7 @@ class Categories(Field):
         return self.to_tag(calendar.name, DAV_TAG_PREFIX)
 
     def has_calendar_tag(self, task: Task, calendar: iCalendar) -> bool:
-        return self.get_calendar_tag(calendar) in task.get_tags_name()
+        return self.get_calendar_tag(calendar) in [t.name for t in task.tags]
 
 
 class AttributeField(Field):
