@@ -632,6 +632,11 @@ class Task(GObject.Object):
     @GObject.Property(type=bool, default=False)
     def show_tag_colors(self) -> str:
         return any(t.color and not t.icon for t in self.tags)
+
+
+    @property
+    def tag_names(self) -> list[str]:
+        return [ t.name for t in self.tags ]
     
 
     def set_attribute(self, att_name, att_value, namespace="") -> None:
