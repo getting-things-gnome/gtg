@@ -108,6 +108,8 @@ class Task(GObject.Object):
         self._is_recurring = False
         self.recurring_term = None
         self.recurring_updated_date = datetime.datetime.now()
+        
+        self.attributes = {}
 
         self.duplicate_cb = NotImplemented
 
@@ -630,6 +632,19 @@ class Task(GObject.Object):
     @GObject.Property(type=bool, default=False)
     def show_tag_colors(self) -> str:
         return any(t.color and not t.icon for t in self.tags)
+    
+
+    def set_attribute(self, att_name, att_value, namespace="") -> None:
+        """Set an arbitrary attribute."""
+
+        val = str(att_value)
+        self.attributes[(namespace, att_name)] = val
+
+
+    def get_attribute(self, att_name, namespace="") -> str | None:
+        """Get an attribute."""
+
+        return self.attributes.get((namespace, att_name), None)
 
 
     def __str__(self) -> str:
