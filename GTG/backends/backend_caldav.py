@@ -301,7 +301,7 @@ class Backend(PeriodicImportBackend):
             if not task:  # not found, creating it
                 task = Task()
                 task.id = uid
-                Translator.fill_task(todo, task, self.namespace)
+                Translator.fill_task(todo, task, self.namespace, self.datastore)
                 self.datastore.tasks.add(task)
                 counts['created'] += 1
             else:
@@ -317,7 +317,7 @@ class Backend(PeriodicImportBackend):
             todo_seq = SEQUENCE.get_dav(todo)
             if task_seq >= todo_seq:
                 return 'unchanged'
-        Translator.fill_task(todo, task, self.namespace)
+        Translator.fill_task(todo, task, self.namespace, self.datastore)
         return 'updated'
 
     def __sort_todos(self, todos: list, max_depth: int = 500):
@@ -971,7 +971,7 @@ class Translator:
         return vcal
 
     @classmethod
-    def fill_task(cls, todo: iCalendar, task: Task, namespace: str):
+    def fill_task(cls, todo: iCalendar, task: Task, namespace: str, datastore):
         nmspc = {'namespace': namespace}
         for field in cls.fields:
             field.set_gtg(todo, task, **nmspc)
@@ -979,7 +979,8 @@ class Translator:
         task.set_attribute("calendar_url", str(todo.parent.url), **nmspc)
         task.set_attribute("calendar_name", todo.parent.name, **nmspc)
         if not CATEGORIES.has_calendar_tag(task, todo.parent):
-            task.add_tag(CATEGORIES.get_calendar_tag(todo.parent))
+            tag = datastore.tags.new(CATEGORIES.get_calendar_tag(todo.parent))
+            task.add_tag(tag)
         return task
 
     @classmethod
