@@ -1,6 +1,6 @@
 import re
 
-import dbus
+from gi.repository import GLib, Gio
 
 
 class FactBuilder():
@@ -25,7 +25,7 @@ class FactBuilder():
         if self.preferences['activity'] == 'tag':
             hamster_activities = {
                 str(x[0]).lower()
-                for x in self.hamster.GetActivities('')
+                for x in self.hamster.GetActivities('(s)', '')
             }
             activity_candidates = hamster_activities.intersection(gtg_tags)
             if len(activity_candidates) >= 1:
@@ -45,7 +45,7 @@ class FactBuilder():
         if self.preferences['category'] == 'auto_tag':
             hamster_activities = {
                 str(activity[0]): activity[1]
-                for activity in self.hamster.GetActivities('')
+                for activity in self.hamster.GetActivities('(s)', '')
             }
             if gtg_title in hamster_activities or \
                     gtg_title.replace(",", "") in hamster_activities:
@@ -78,13 +78,16 @@ class FactBuilder():
         tag_candidates = []
         try:
             if self.preferences['tags'] == 'existing':
-                hamster_tags = {str(x[1]) for x in self.hamster.GetTags(False)}
+                hamster_tags = {str(x[1]) for x in self.hamster.GetTags('(b)', False)}
                 tag_candidates = list(hamster_tags.intersection(set(gtg_tags)))
             elif self.preferences['tags'] == 'all':
                 tag_candidates = gtg_tags
-        except dbus.exceptions.DBusException:
-            # old hamster version, doesn't support tags
-            pass
+        except GLib.Error as e:
+            if e.matches(Gio.DBusError.quark(),
+                         Gio.DBusError.UNKNOWN_METHOD):
+                pass # old hamster version, doesn't support tags
+            else:
+                raise e
         tag_str = "".join([" #" + x for x in tag_candidates])
         return tag_str
 
