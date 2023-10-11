@@ -777,6 +777,7 @@ class TaskEditor(Gtk.Window):
 
         else:
             self.app.open_task(parent)
+            self.close()
 
 
     def show_multiple_parent_popover(self, parent_ids):
