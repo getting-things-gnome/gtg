@@ -30,7 +30,7 @@ from GTG.core import info
 from GTG.backends.backend_signals import BackendSignals
 from GTG.core.dirs import ICONS_DIR
 from GTG.core.search import parse_search_query, InvalidQuery
-from GTG.core.tag import SEARCH_TAG
+from GTG.core.tag import SEARCH_TAG, SEARCH_TAG_PREFIX
 from GTG.core.task import Task
 from gettext import gettext as _
 from GTG.gtk.browser import GnomeConfig
@@ -1432,11 +1432,11 @@ class MainWindow(Gtk.ApplicationWindow):
             current_pane = self.get_selected_pane()
         filters = self.get_selected_tags()
         # find all filters that are saved searches
-        filter_searched = [filter_name for filter_name in filters if filter_name.find('__SAVED_SEARCH_') != -1]
+        filter_searched = [filter_name for filter_name in filters if filter_name.find(SEARCH_TAG_PREFIX) != -1]
         # if there are any saved search filters
-        if filter_searched:
+        if len(filter_searched):
             # change the current search to match the first saved search text
-            self.search_entry.set_text(filter_searched[0][15:])
+            self.search_entry.set_text(filter_searched[0][len(SEARCH_TAG_PREFIX):])
         filters.append(current_pane)
         vtree = self.req.get_tasks_tree(name=current_pane, refresh=False)
         # Re-applying search if some search is specified
