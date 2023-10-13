@@ -195,6 +195,40 @@
       </item>
     </section>
   </menu>
+
+  <menu id="sort_menu">
+    <item>
+      <attribute name="label" translatable="yes">Sort by Title</attribute>
+      <attribute name="action">win.sort_by_title</attribute>
+    </item>
+
+    <item>
+      <attribute name="label" translatable="yes">Sort by Start Date</attribute>
+      <attribute name="action">win.sort_by_start</attribute>
+    </item>
+
+    <item>
+      <attribute name="label" translatable="yes">Sort by Due Date</attribute>
+      <attribute name="action">win.sort_by_due</attribute>
+    </item>
+
+    <item>
+      <attribute name="label" translatable="yes">Sort by Added Date</attribute>
+      <attribute name="action">win.sort_by_added</attribute>
+    </item>
+
+    <item>
+      <attribute name="label" translatable="yes">Sort by Modified Date</attribute>
+      <attribute name="action">win.sort_by_modified</attribute>
+    </item>
+    
+    <item>
+      <attribute name="label" translatable="yes">Sort by Tags</attribute>
+      <attribute name="action">win.sort_by_tags</attribute>
+    </item>
+  </menu>
+
+
   <menu id="main_menu">
     <section>
       <item>
@@ -272,6 +306,13 @@
             <property name="valign">center</property>
             <property name="action_name">win.search</property>
             <property name="icon_name">edit-find-symbolic</property>
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkMenuButton" id="sort_menu_btn">
+            <property name="receives_default">True</property>
+            <property name="menu_model">sort_menu</property>
+            <property name="icon_name">view-sort-descending-symbolic</property>
           </object>
         </child>
         <child>
