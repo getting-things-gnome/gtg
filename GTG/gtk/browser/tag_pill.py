@@ -25,11 +25,15 @@ class TagPill(Gtk.DrawingArea):
     """Color pill widget for tags."""
     
     __gtype_name__ = 'TagPill'
+    
+    default_color = '#666666'
 
     def __init__(self, radius: int = 5):
 
         super(TagPill, self).__init__()
         self.colors = [Gdk.RGBA()]
+        self.colors[0].parse(self.default_color)
+
         self.colors_str = ''
         self.radius = radius
         self.set_draw_func(self.do_draw_function)
@@ -48,13 +52,20 @@ class TagPill(Gtk.DrawingArea):
 
             for color in value.split(','):
                 rgba = Gdk.RGBA()
-                rgba.parse(color)
-                self.colors.append(rgba)
+                valid = rgba.parse(color)
+                
+                if valid:
+                    self.colors.append(rgba)
+                else:
+                    self.colors = [Gdk.RGBA()]
+                    self.colors[0].parse(self.default_color)
 
-            self.set_size_request((16 + 6) * len(self.colors), 16)
-            self.queue_draw()
         except AttributeError:
             self.colors = [Gdk.RGBA()]
+            self.colors[0].parse(self.default_color)
+
+        self.set_size_request((16 + 6) * len(self.colors), 16)
+        self.queue_draw()
 
 
     def draw_rect(self, context, x: int, w: int, h: int, 
@@ -66,8 +77,6 @@ class TagPill(Gtk.DrawingArea):
         
         if color:
             context.set_source_rgba(color.red, color.green, color.blue)
-        else:
-            context.set_source_rgba(0, 0, 0, 0.5)
 
         #   A  *  BQ
         #  H       C
