@@ -367,7 +367,7 @@ class Sidebar(Gtk.ScrolledWindow):
             item.bind_property('icon', icon, 'label', BIND_FLAGS),
             item.bind_property('color', color, 'color_list', BIND_FLAGS),
 
-            item.bind_property('has_color', color, 'visible', BIND_FLAGS),
+            item.bind_property('has_icon', color, 'visible', BIND_FLAGS, lambda b, v: not v),
             item.bind_property('has_icon', icon, 'visible', BIND_FLAGS),
 
             item.bind_property('task_count_open', open_count_label, 'label', BIND_FLAGS),
