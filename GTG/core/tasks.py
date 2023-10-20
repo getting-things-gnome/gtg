@@ -757,7 +757,6 @@ class TaskStore(BaseStore):
         else:
             self.add(task)
 
-        self.emit('added', task)
         return task
 
 
@@ -894,7 +893,7 @@ class TaskStore(BaseStore):
         return root
 
     def add(self, item: Any, parent_id: UUID = None) -> None:
-        """Add a tag to the tagstore."""
+        """Add a task to the taskstore."""
 
         super().add(item, parent_id)
 
