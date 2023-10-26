@@ -886,6 +886,10 @@ class TaskEditor(Gtk.Window):
         tid = self.task.id
 
         if self.is_new():
+            # Remove task from the ListStore
+            pos = self.app.ds.tasks.model.find(self.task)
+            self.app.ds.tasks.model.remove(pos[1])
+
             self.app.ds.tasks.remove(tid)
         else:
             self.save()
