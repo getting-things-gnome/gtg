@@ -911,6 +911,11 @@ class TaskStore(BaseStore):
     def remove(self, item_id: UUID) -> None:
         """Remove an existing task."""
 
+        # Remove from UI
+        item = self.lookup[item_id]
+        pos = self.model.find(item)
+        self.model.remove(pos[1])
+
         super().remove(item_id)
 
         self.notify('task_count_all')
@@ -920,10 +925,11 @@ class TaskStore(BaseStore):
     def parent(self, item_id: UUID, parent_id: UUID) -> None:
 
         super().parent(item_id, parent_id)
+
+        # Remove from UI
         item = self.lookup[item_id]
         pos = self.model.find(item)
         self.model.remove(pos[1])
-
 
 
     def unparent(self, item_id: UUID, parent_id: UUID) -> None:
