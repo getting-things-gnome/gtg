@@ -19,7 +19,7 @@
 """Everything related to tags."""
 
 
-from gi.repository import GObject, Gtk, Gio
+from gi.repository import GObject, Gtk, Gio, Gdk
 
 from uuid import uuid4, UUID
 import logging
@@ -246,6 +246,17 @@ class TagStore(BaseStore):
             name = element.get('name')
             color = element.get('color')
             icon = element.get('icon')
+
+            if color:
+                if not color.startswith('#'):
+                    color = '#' + color
+
+                rgb = Gdk.RGBA()
+                rgb.parse(color)
+                red = int(rgb.red * 255)
+                blue = int(rgb.blue * 255)
+                green = int(rgb.green * 255)
+                color = '#{:02x}{:02x}{:02x}'.format(red, blue, green)
 
             tag = Tag(id=tid, name=name)
             tag.color = color
