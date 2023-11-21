@@ -274,9 +274,13 @@ class TagStore(BaseStore):
                 tid = element.get('id')
 
                 try:
-                    parent = self.find(parent_name)
-                    self.parent(tid, parent.id)
-                    log.debug('Added %s as child of %s', tag, parent)
+                    parent_id = self.find(parent_name).id
+                except KeyError:
+                    parent_id = parent_name
+
+                try:
+                    self.parent(tid, parent_id)
+                    log.debug('Added %s as child of %s', tag, parent_name)
                 except KeyError:
                     pass
 
