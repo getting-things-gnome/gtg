@@ -60,10 +60,13 @@ class TaskBox(Gtk.Box):
 
         if value:
             widget = self.expander 
-            self.check.set_margin_start(0)
         else:
             widget = self.check
-            self.expander.set_margin_start(0)
+
+        check_width = 21
+        margin = 6
+
+        indent = margin if value else (check_width + margin)
 
         if self.task.parent:
             parent = self.task
@@ -73,9 +76,9 @@ class TaskBox(Gtk.Box):
                 depth += 1
                 parent = parent.parent
 
-            widget.set_margin_start(6 + (21 * depth))
+            widget.set_margin_start(indent + (21 * depth))
         else:
-            widget.set_margin_start(6)
+            widget.set_margin_start(indent)
         
 
     @GObject.Property(type=bool, default=True)
