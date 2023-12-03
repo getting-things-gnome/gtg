@@ -1,7 +1,7 @@
 # Run unit tests script
 
 name: Unit Tests
-  
+
 on:
   push:
     branches: [ master ]
@@ -22,7 +22,7 @@ jobs:
         sudo apt-get update
         sudo apt install -y libgirepository1.0-dev gir1.2-gtk-4.0 libgtksourceview-5-dev
         pip install --user -e git+https://github.com/getting-things-gnome/liblarch.git#egg=liblarch
-        pip install --user pytest pycairo PyGObject caldav mock lxml
+        pip install --user pytest pycairo PyGObject caldav lxml
     - name: Run unit tests with Pytest
       run: |
         ./run-tests
