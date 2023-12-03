@@ -33,7 +33,7 @@ class TaskBox(Gtk.Box):
 
     task = GObject.Property(type=Task)
 
-    def __init__(self, config):
+    def __init__(self, config, is_actionable=False):
         self.config = config
         super(TaskBox, self).__init__()
 
@@ -47,6 +47,8 @@ class TaskBox(Gtk.Box):
         self.append(self.expander)
         self.append(self.check)
 
+        self.is_actionable = is_actionable
+
 
     @GObject.Property(type=bool, default=True)
     def has_children(self) -> None:
@@ -55,6 +57,9 @@ class TaskBox(Gtk.Box):
 
     @has_children.setter
     def set_has_children(self, value) -> bool:
+
+        if self.is_actionable:
+            value = False
 
         self.expander.set_visible(value)
 
@@ -68,7 +73,7 @@ class TaskBox(Gtk.Box):
 
         indent = margin if value else (check_width + margin)
 
-        if self.task.parent:
+        if self.task.parent and not self.is_actionable:
             parent = self.task
             depth = 0
 
@@ -418,7 +423,7 @@ class TaskPane(Gtk.ScrolledWindow):
     def task_setup_cb(self, factory, listitem, user_data=None):
         """Setup widgets for rows"""
 
-        box = TaskBox(self.app.config)
+        box = TaskBox(self.app.config, self.pane == 'workview')
         label = Gtk.Label() 
         separator = Gtk.Separator() 
         icons = Gtk.Label() 
