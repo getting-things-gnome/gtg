@@ -19,7 +19,7 @@
 from unittest import TestCase
 import configparser
 
-from mock import patch, mock_open, Mock
+from unittest.mock import patch, mock_open, Mock
 
 from GTG.core.config import open_config_file, SectionConfig
 

@@ -11,7 +11,7 @@ from GTG.backends.backend_caldav import (CATEGORIES, CHILDREN_FIELD,
 from GTG.core.datastore import DataStore
 from GTG.core.dates import LOCAL_TIMEZONE, Date
 from GTG.core.task import Task
-from mock import Mock, patch
+from unittest.mock import Mock, patch
 from tests.test_utils import MockTimer
 
 NAMESPACE = 'unittest'
