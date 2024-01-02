@@ -25,7 +25,7 @@ from gettext import gettext as _
 import dbus
 from gi.repository import Gtk, Gio
 
-from GTG.core.task import Task
+from GTG.core.tasks import Task
 from GTG.plugins.hamster.helper import FactBuilder
 
 
