@@ -10,7 +10,7 @@ from gi.repository import Gtk
 from gettext import gettext as _
 from gettext import ngettext
 
-from GTG.core.task import Task
+from GTG.core.tasks import Task
 
 log = logging.getLogger(__name__)
 PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
