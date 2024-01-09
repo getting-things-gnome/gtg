@@ -100,7 +100,7 @@ class PluginAPI():
         """
         Returns a Browser
         """
-        return self.__view_manager.browser
+        return self.browser
 
     def get_menu(self):
         """
@@ -123,7 +123,7 @@ class PluginAPI():
         if self.is_editor():
             return self.__task_id
         else:
-            return self.__view_manager.browser.get_selected_tasks()
+            return self.browser.get_selected_tasks()
 
     def set_active_selection_changed_callback(self, func):
         if func not in self.selection_changed_callback_listeners:
