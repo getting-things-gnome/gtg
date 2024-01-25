@@ -278,17 +278,12 @@ class Gamify:
         # Settings up the menu
         self.add_ui()
 
-        # Connect to the signals
-        self.signal_connect_id = self.plugin_api.get_requester().connect("status-changed",
-                self.on_status_changed)
-
         self.update_date()
         self.update_streak()
         self.analytics_save()
         self.update_widget()
 
     def deactivate(self, plugin_api):
-        self.browser.disconnect(self.signal_connect_id)
         self.pref_dialog.destroy()
         self.remove_ui()
 
