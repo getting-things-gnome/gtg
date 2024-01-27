@@ -246,6 +246,7 @@ class TagStore(BaseStore):
             name = element.get('name')
             color = element.get('color')
             icon = element.get('icon')
+            nonactionable = element.get('nonactionable')
 
             if color:
                 if not color.startswith('#'):
@@ -261,6 +262,7 @@ class TagStore(BaseStore):
             tag = Tag(id=tid, name=name)
             tag.color = color
             tag.icon = icon
+            tag.actionable = not nonactionable
 
             self.add(tag)
 
@@ -306,6 +308,9 @@ class TagStore(BaseStore):
 
             if tag.icon:
                 element.set('icon', tag.icon)
+
+
+            element.set('nonactionable', str(not tag.actionable))
 
             try:
                 element.set('parent', str(parent_map[tag.id]))
