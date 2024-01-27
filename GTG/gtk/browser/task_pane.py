@@ -525,6 +525,10 @@ class TaskPane(Gtk.ScrolledWindow):
         def not_empty(binding, value, user_data=None):
             return len(value) > 0
 
+        def show_start(binding, value, user_data=None):
+            return value and self.pane == 'active'
+
+
         listitem.bindings = [
             item.bind_property('has_children', box, 'has_children', BIND_FLAGS),
 
@@ -534,10 +538,11 @@ class TaskPane(Gtk.ScrolledWindow):
             item.bind_property('is_recurring', recurring_icon, 'visible', BIND_FLAGS),
 
             item.bind_property('has_date_due', due_icon, 'visible', BIND_FLAGS),
-            item.bind_property('has_date_start', start_icon, 'visible', BIND_FLAGS),
+            item.bind_property('has_date_start', start_icon, 'visible', BIND_FLAGS, show_start),
 
             item.bind_property('date_due_str', due, 'label', BIND_FLAGS),
             item.bind_property('date_start_str', start, 'label', BIND_FLAGS),
+            item.bind_property('date_start_str', start, 'visible', BIND_FLAGS, show_start),
 
             item.bind_property('is_active', box, 'is_active', BIND_FLAGS),
             item.bind_property('icons', icons, 'label', BIND_FLAGS),
