@@ -257,7 +257,7 @@ class TagStore(BaseStore):
                 red = int(rgb.red * 255)
                 blue = int(rgb.blue * 255)
                 green = int(rgb.green * 255)
-                color = '#{:02x}{:02x}{:02x}'.format(red, blue, green)
+                color = '#{:02x}{:02x}{:02x}'.format(red, green, blue)
 
             tag = Tag(id=tid, name=name)
             tag.color = color
