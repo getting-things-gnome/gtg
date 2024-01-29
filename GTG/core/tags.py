@@ -262,7 +262,7 @@ class TagStore(BaseStore):
             tag = Tag(id=tid, name=name)
             tag.color = color
             tag.icon = icon
-            tag.actionable = not nonactionable
+            tag.actionable = (nonactionable == 'False')
 
             self.add(tag)
 
