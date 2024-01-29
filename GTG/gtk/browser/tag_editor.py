@@ -249,6 +249,7 @@ class TagEditor(Gtk.Dialog):
             self.tag.name = self.tag_name
 
         self.app.ds.notify_tag_change(self.tag)
+        self.app.browser.sidebar.refresh_tags()
         self.destroy()
 
     # CALLBACKS #####
