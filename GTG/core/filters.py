@@ -54,7 +54,7 @@ class TagEmptyFilter(Gtk.Filter):
             return tag.task_count_closed > 0
 
         elif self.pane == 'workview':
-            return tag.task_count_actionable > 0
+            return tag.task_count_actionable > 0 and tag.actionable
 
         else:
             return True
@@ -85,9 +85,11 @@ class TaskPaneFilter(Gtk.Filter):
             show = task.status is Status.ACTIVE
         elif self.pane == 'workview':
             show = task.is_actionable
+            
             if self.expand:
                 item.set_expanded(True)
                 self.expand = False
+
         elif self.pane == 'closed':
             show = task.status is not Status.ACTIVE
 
