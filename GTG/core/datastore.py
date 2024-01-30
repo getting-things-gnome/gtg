@@ -28,7 +28,7 @@ import random
 import string
 
 from GTG.core.tasks import TaskStore, Filter
-from GTG.core.tags import TagStore
+from GTG.core.tags import TagStore, Tag
 from GTG.core.saved_searches import SavedSearchStore
 from GTG.core import firstrun_tasks
 from GTG.core.dates import Date
@@ -191,6 +191,25 @@ class Datastore:
         print(f'- Tags: {self.tags.count()}')
         print(f'- Saved Searches: {self.saved_searches.count()}')
         print(f'- Tasks: {self.tasks.count()}')
+
+
+    def refresh_task_for_tag(self, tag: Tag) -> None:
+        """Refresh task counts for a tag."""
+
+        try:
+            tag.task_count_open = self.task_count['open'][tag.name]
+        except KeyError:
+            tag.task_count_open = 0
+
+        try:
+            tag.task_count_closed = self.task_count['closed'][tag.name]
+        except KeyError:
+            tag.task_count_closed = 0
+
+        try:
+            tag.task_count_actionable = self.task_count['actionable'][tag.name]
+        except KeyError:
+            tag.task_count_actionable = 0
 
 
     def refresh_task_count(self) -> None:
