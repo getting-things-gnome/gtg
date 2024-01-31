@@ -679,6 +679,13 @@ class TaskPane(Gtk.ScrolledWindow):
         if task.parent:
             self.ds.tasks.unparent(task.id, task.parent.id)
             self.ds.tasks.tree_model.emit('items-changed', 0, 0, 0)
+            self.refresh()
+
+            # Not pretty, but needed to force the update of
+            # the parent task and it's remaining children
+            self.emit('collapse-all')
+            self.emit('expand-all')
+
             return True
         else:
             return False
