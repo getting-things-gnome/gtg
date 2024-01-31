@@ -935,7 +935,10 @@ class TaskStore(BaseStore):
 
         super().unparent(item_id, parent_id)
         item = self.lookup[item_id]
+        parent = self.lookup[parent_id]
+
         self.model.append(item)
+        parent.notify('has_children')
 
 
     def filter(self, filter_type: Filter, arg = None) -> list:
