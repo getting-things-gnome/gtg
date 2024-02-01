@@ -246,7 +246,7 @@ class TagStore(BaseStore):
             name = element.get('name')
             color = element.get('color')
             icon = element.get('icon')
-            nonactionable = element.get('nonactionable')
+            nonactionable = element.get('nonactionable') or 'False'
 
             if color:
                 if not color.startswith('#'):
