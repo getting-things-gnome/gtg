@@ -560,17 +560,29 @@ class MainWindow(Gtk.ApplicationWindow):
         #                                               PANE_STACK_NAMES_MAP_INVERTED['active'])
         # self.stack_switcher.get_stack().set_visible_child_name(view_name)
 
-        def open_task(ds, tid):
-            """ Open the task if loaded. Otherwise ask for next iteration """
-            try:
-                task = ds.tasks.lookup[tid]
-                self.app.open_task(task)
-                return False
-            except KeyError:
-                return True
+        # def open_task(ds, tid):
+        #     """ Open the task if loaded. Otherwise ask for next iteration """
+        #     try:
+        #         task = ds.tasks.lookup[tid]
+        #         self.app.open_task(task)
+        #         return False
+        #     except KeyError:
+        #         return True
 
-        for t in self.config.get("opened_tasks"):
-            GLib.idle_add(open_task, self.app.ds, t)
+        # for t in self.config.get("opened_tasks"):
+        #     GLib.idle_add(open_task, self.app.ds, t)
+
+
+    def restore_editor_windows(self):
+        """Restore editor window for tasks."""
+
+        for tid in self.config.get("opened_tasks"):
+            try:
+                task = self.app.ds.tasks.lookup[tid]
+                self.app.open_task(task)
+            except KeyError:
+                log.warning("Could not restore task with id %s", tid)
+
 
     def refresh_all_views(self, timer):
         self.get_pane().refresh()

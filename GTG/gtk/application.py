@@ -150,6 +150,7 @@ class Application(Gtk.Application):
         try:
             self.init_shared()
             self.browser.present()
+            self.browser.restore_editor_windows() 
 
             log.debug("Application activation finished")
         except Exception as e:
