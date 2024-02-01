@@ -44,8 +44,8 @@ class TaskTitleSorter(Gtk.Sorter):
         a = unwrap(a, Task)
         b = unwrap(b, Task)
 
-        first = a.title[-1]
-        second = b.title[-1]
+        first = a.title[0]
+        second = b.title[0]
 
         if first > second:
             return Gtk.Ordering.LARGER
