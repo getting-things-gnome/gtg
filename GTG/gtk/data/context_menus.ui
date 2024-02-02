@@ -255,11 +255,6 @@
 
   <menu id="sort_menu">
     <item>
-      <attribute name="label" translatable="yes">Sort by Title</attribute>
-      <attribute name="action">win.sort_by_title</attribute>
-    </item>
-
-    <item>
       <attribute name="label" translatable="yes">Sort by Start Date</attribute>
       <attribute name="action">win.sort_by_start</attribute>
     </item>
@@ -277,11 +272,6 @@
     <item>
       <attribute name="label" translatable="yes">Sort by Modified Date</attribute>
       <attribute name="action">win.sort_by_modified</attribute>
-    </item>
-    
-    <item>
-      <attribute name="label" translatable="yes">Sort by Tags</attribute>
-      <attribute name="action">win.sort_by_tags</attribute>
     </item>
   </menu>
 
