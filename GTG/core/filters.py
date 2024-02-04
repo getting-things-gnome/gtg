@@ -72,10 +72,33 @@ class TaskPaneFilter(Gtk.Filter):
         self.expand = False
 
 
+    def expand_tags(self) -> set:
+        """Expand tags to include their children."""
+
+        def get_children(children: set) -> None:
+            for child in children:
+                result.add(child)
+
+                if child.children:
+                    return get_children(child.children)
+
+
+        result = set()
+
+        for tag in self.tags:
+            result.add(tag)
+
+            if tag.children:
+                get_children(tag.children)
+                
+        return result
+
+
     def match_tags(self, task: Task) -> bool:
         """Match selected tags to task tags."""
         
-        return len(self.tags.intersection(set(task.tags))) >= len(self.tags)
+        all_tags = self.expand_tags()
+        return len(all_tags.intersection(set(task.tags))) >= len(self.tags)
 
 
     def do_match(self, item) -> bool:
