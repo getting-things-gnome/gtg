@@ -116,6 +116,7 @@ class SearchTaskFilter(Gtk.Filter):
         self.checks = None
         self.pane = pane
         self.expand = False
+        self.tags = set()
 
 
     def set_query(self, query: str) -> None:
@@ -125,6 +126,12 @@ class SearchTaskFilter(Gtk.Filter):
             self.checks = search.parse_search_query(query)
         except search.InvalidQuery:
             self.checks = None
+
+
+    def match_tags(self, task: Task) -> bool:
+        """Match selected tags to task tags."""
+        
+        return len(self.tags.intersection(set(task.tags))) >= len(self.tags)
 
 
     def do_match(self, item) -> bool:
@@ -141,6 +148,12 @@ class SearchTaskFilter(Gtk.Filter):
             show = task.status is not Status.ACTIVE
 
         if show:
+            if self.tags:
+                current = self.match_tags(task)
+                tag_show = current or any(self.match_tags(c) for c in task.children)
+
+                return tag_show and search.search_filter(task, self.checks)
+
             return search.search_filter(task, self.checks)
         else:
             return False
