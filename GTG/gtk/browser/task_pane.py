@@ -274,24 +274,26 @@ class TaskPane(Gtk.ScrolledWindow):
         """Change tasks filter."""
 
         if self.searching:
-            self.searching = False
-            self.filtered.set_filter(self.task_filter)
+            self.search_filter.tags = tags
+            self.search_filter.changed(Gtk.FilterChange.DIFFERENT)
+        else:
+            self.task_filter.tags = tags
+            self.task_filter.no_tags = False
+            self.task_filter.changed(Gtk.FilterChange.DIFFERENT)
 
-        self.task_filter.tags = tags
-        self.task_filter.no_tags = False
-        self.task_filter.changed(Gtk.FilterChange.DIFFERENT)
         self.set_title()
 
     def set_filter_notags(self, tags=[]) -> None:
         """Change tasks filter."""
 
         if self.searching:
-            self.searching = False
-            self.filtered.set_filter(self.task_filter)
+            self.search_filter.tags = []
+            self.search_filter.changed(Gtk.FilterChange.DIFFERENT)
+        else:
+            self.task_filter.tags = []
+            self.task_filter.no_tags = True
+            self.task_filter.changed(Gtk.FilterChange.DIFFERENT)
 
-        self.task_filter.tags = []
-        self.task_filter.no_tags = True
-        self.task_filter.changed(Gtk.FilterChange.DIFFERENT)
         self.set_title()
 
 
