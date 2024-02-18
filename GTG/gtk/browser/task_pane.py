@@ -649,7 +649,9 @@ class TaskPane(Gtk.ScrolledWindow):
             self.ds.tasks.unparent(task.id, task.parent.id)
         
         self.ds.tasks.parent(task.id, dropped.id)
-        self.ds.tasks.tree_model.emit('items-changed', 0, 0, 0)
+        self.refresh()
+        self.emit('collapse-all')
+        self.emit('expand-all')
 
 
     def on_task_RMB_click(self, gesture, sequence) -> None:
