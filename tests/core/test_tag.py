@@ -18,7 +18,7 @@
 
 from unittest import TestCase
 
-from GTG.core.tag import Tag
+from GTG.core.tags import Tag
 
 
 class TestTag(TestCase):
