@@ -28,17 +28,17 @@ class PathUI(Gtk.Box):
     filesystem explorer to modify that path (also, a label to describe those)
     """
 
-    def __init__(self, req, backend, width):
+    def __init__(self, ds, backend, width):
         """
         Creates the textbox, the button and loads the current path.
 
-        @param req: a Requester
+        @param ds: Datastore
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
         """
         super().__init__()
         self.backend = backend
-        self.req = req
+        self.ds = ds
         self._populate_gtk(width)
 
     def _populate_gtk(self, width):
@@ -47,21 +47,20 @@ class PathUI(Gtk.Box):
         @param width: the width of the Gtk.Label object
         """
         label = Gtk.Label(label=_("Filename:"))
-        label.set_line_wrap(True)
-        label.set_alignment(xalign=0, yalign=0.5)
+        label.set_wrap(True)
+        label.set_xalign(0)
+        label.set_yalign(0.5)
         label.set_size_request(width=width, height=-1)
-        self.pack_start(label, False, True, 0)
-        align = Gtk.Alignment.new(0, 0.5, 1, 0)
-        align.set_padding(0, 0, 10, 0)
-        self.pack_start(align, True, True, 0)
+        self.append(label)
         self.textbox = Gtk.Entry()
+        self.textbox.set_hexpand(True)
         self.textbox.set_text(self.backend.get_parameters()['path'])
         self.textbox.connect('changed', self.on_path_modified)
-        align.add(self.textbox)
+        self.append(self.textbox)
         self.button = Gtk.Button()
         self.button.set_label("Edit")
         self.button.connect('clicked', self.on_button_clicked)
-        self.pack_start(self.button, False, True, 0)
+        self.append(self.button)
 
     def commit_changes(self):
         """Saves the changes to the backend parameter"""
@@ -75,7 +74,7 @@ class PathUI(Gtk.Box):
         @param sender: not used, only here for signal compatibility
         """
         if self.backend.is_enabled() and not self.backend.is_default():
-            self.req.set_backend_enabled(self.backend.get_id(), False)
+            self.ds.set_backend_enabled(self.backend.get_id(), False)
 
     def on_button_clicked(self, sender):
         """Shows the filesystem explorer to choose a new file

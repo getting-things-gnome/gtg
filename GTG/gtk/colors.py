@@ -109,8 +109,7 @@ def background_color(tags, bgcolor=None, galpha_scale=1, use_alpha=True):
         gcolor = RGBA(red, green, blue)
         gcolor.alpha = (1.0 - abs(brightness - target_brightness)) * galpha_scale
 
-        # TODO: Remove GTK3 check on gtk4 port
-        if not use_alpha or Gtk.get_major_version() == 3:
+        if not use_alpha:
             gcolor.red = (1 - gcolor.alpha) * gcolor.red + gcolor.alpha * bgcolor.red
             gcolor.green = (1 - gcolor.alpha) * gcolor.green + gcolor.alpha * bgcolor.green
             gcolor.blue = (1 - gcolor.alpha) * gcolor.blue + gcolor.alpha * bgcolor.blue
@@ -120,13 +119,13 @@ def background_color(tags, bgcolor=None, galpha_scale=1, use_alpha=True):
     return my_color
 
 
-def get_colored_tag_markup(req, tag_name, html=False):
+def get_colored_tag_markup(ds, tag_name, html=False):
     """
     Given a tag name, returns a string containing the markup to color the
     tag name
     if html, returns a string insertable in html
     """
-    tag = req.get_tag(tag_name)
+    tag = ds.tags.find(tag_name)
     if tag is None:
         # no task loaded with that tag, color cannot be taken
         return tag_name
@@ -142,11 +141,11 @@ def get_colored_tag_markup(req, tag_name, html=False):
             return tag_name
 
 
-def get_colored_tags_markup(req, tag_names):
+def get_colored_tags_markup(ds, tag_names):
     """
     Calls get_colored_tag_markup for each tag_name in tag_names
     """
-    tag_markups = [get_colored_tag_markup(req, t) for t in tag_names]
+    tag_markups = [get_colored_tag_markup(ds, t) for t in tag_names]
     tags_txt = ""
     if tag_markups:
         # reduce crashes if applied to an empty list
@@ -165,6 +164,21 @@ def generate_tag_color():
             flag = 1
     used_color.append(my_color)
     return my_color
+
+
+def grgba_to_hex(rgba, ignore_alpha=True):
+    """
+    Simply convert a Gdk.RGBA to a #ffffff style color representation,
+    Gdk.Color used to have this built in, however Gdk.RGBA.to_string
+    gives it in rgb(255, 255, 255) which can't be used in certain
+    cases.
+    """
+    colors = [int(rgba.red * 255), int(rgba.green * 255), int(rgba.blue * 255)]
+    format_string = '#%02x%02x%02x'
+    if not ignore_alpha:
+        colors.append(int(rgba.alpha * 255))
+        format_string += '%02x'
+    return format_string % tuple(colors)
 
 
 def color_add(present_color):

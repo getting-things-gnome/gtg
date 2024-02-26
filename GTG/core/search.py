@@ -247,7 +247,7 @@ def search_filter(task, parameters=None):
     """ Check if task satisfies all search parameters """
 
     if parameters is None or 'q' not in parameters:
-        return False
+        return True
 
     def check_commands(commands_list):
         """ Execute search commands
@@ -256,24 +256,25 @@ def search_filter(task, parameters=None):
 
         def fulltext_search(task, word):
             """ check if task contains the word """
+
             word = word.lower()
-            text = task.get_excerpt(strip_tags=False).lower()
-            title = task.get_title().lower()
+            text = task.excerpt.lower()
+            title = task.title.lower()
 
             return word in text or word in title
 
         value_checks = {
-            'after': lambda t, v: task.get_due_date() > v,
-            'before': lambda t, v: task.get_due_date() < v,
-            'tag': lambda t, v: v in task.get_tags_name(),
+            'after': lambda t, v: task.date_due > v,
+            'before': lambda t, v: task.date_due < v,
+            'tag': lambda t, v: v in [tag.name for tag in t.tags],
             'word': fulltext_search,
-            'today': lambda task, v: task.get_due_date() == Date.today(),
-            'tomorrow': lambda task, v: task.get_due_date() == Date.tomorrow(),
-            'nodate': lambda task, v: task.get_due_date() == Date.no_date(),
-            'now': lambda task, v: task.get_due_date() == Date.now(),
-            'soon': lambda task, v: task.get_due_date() == Date.soon(),
-            'someday': lambda task, v: task.get_due_date() == Date.someday(),
-            'notag': lambda task, v: task.get_tags() == [],
+            'today': lambda task, v: task.date_due == Date.today(),
+            'tomorrow': lambda task, v: task.date_due == Date.tomorrow(),
+            'nodate': lambda task, v: task.date_due == Date.no_date(),
+            'now': lambda task, v: task.date_due == Date.now(),
+            'soon': lambda task, v: task.date_due == Date.soon(),
+            'someday': lambda task, v: task.date_due == Date.someday(),
+            'notag': lambda task, v: task.tags == [],
         }
 
         for command in commands_list:

@@ -23,18 +23,18 @@ class TextUI(Gtk.Box):
     """A widget to display a simple textbox and a label to describe its content
     """
 
-    def __init__(self, req, backend, width, description, parameter_name):
+    def __init__(self, ds, backend, width, description, parameter_name):
         """
         Creates the textbox and the related label. Loads the current
         content.
 
-        @param req: a Requester
+        @param ds: Datastore
         @param backend: a backend object
         @param width: the width of the Gtk.Label object
         """
         super().__init__()
         self.backend = backend
-        self.req = req
+        self.ds = ds
         self.parameter_name = parameter_name
         self.description = description
         self._populate_gtk(width)
@@ -44,19 +44,19 @@ class TextUI(Gtk.Box):
 
         @param width: the width of the Gtk.Label object
         """
+        self.set_spacing(10)
         label = Gtk.Label(label=f"{self.description}:")
-        label.set_line_wrap(True)
-        label.set_alignment(xalign=0, yalign=0.5)
+        label.set_wrap(True)
+        label.set_xalign(0)
+        label.set_yalign(0.5)
         label.set_size_request(width=width, height=-1)
-        self.pack_start(label, False, True, 0)
-        align = Gtk.Alignment.new(0, 0.5, 1, 0)
-        align.set_padding(0, 0, 10, 0)
-        self.pack_start(align, True, True, 0)
+        self.append(label)
         self.textbox = Gtk.Entry()
+        self.textbox.set_hexpand(True)
         backend_parameters = self.backend.get_parameters()[self.parameter_name]
         self.textbox.set_text(backend_parameters)
         self.textbox.connect('changed', self.on_text_modified)
-        align.add(self.textbox)
+        self.append(self.textbox)
 
     def commit_changes(self):
         """Saves the changes to the backend parameter"""
@@ -71,4 +71,4 @@ class TextUI(Gtk.Box):
         @param sender: not used, only here for signal compatibility
         """
         if self.backend.is_enabled() and not self.backend.is_default():
-            self.req.set_backend_enabled(self.backend.get_id(), False)
+            self.ds.set_backend_enabled(self.backend.get_id(), False)

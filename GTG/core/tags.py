@@ -19,11 +19,12 @@
 """Everything related to tags."""
 
 
-from gi.repository import GObject
+from gi.repository import GObject, Gtk, Gio, Gdk
 
 from uuid import uuid4, UUID
 import logging
 import random
+import re
 
 from lxml.etree import Element, SubElement
 from typing import Any, Dict, Set
@@ -33,22 +34,32 @@ from GTG.core.base_store import BaseStore
 log = logging.getLogger(__name__)
 
 
-class Tag2(GObject.Object):
+def extract_tags_from_text(text):
+    """ Given a string, returns a list of the @tags contained in that """
+
+    return re.findall(r'(?:^|[\s])(@[\w\/\.\-\:\&]*\w)', text)
+
+
+class Tag(GObject.Object):
     """A tag that can be applied to a Task."""
 
     __gtype_name__ = 'gtg_Tag'
-    __slots__ = ['id', 'name', 'icon', 'color', 'actionable', 'children']
-
 
     def __init__(self, id: UUID, name: str) -> None:
         self.id = id
-        self.name = name
+        self._name = name
 
-        self.icon = None
-        self.color = None
+        self._icon = None
+        self._color = None
         self.actionable = True
         self.children = []
         self.parent = None
+
+        self._task_count_open = 0
+        self._task_count_actionable = 0
+        self._task_count_closed = 0
+
+        super(Tag, self).__init__()
 
 
     def __str__(self) -> str:
@@ -69,6 +80,93 @@ class Tag2(GObject.Object):
         return self.id == other.id
 
 
+    @GObject.Property(type=str)
+    def name(self) -> str:
+        """Read only property."""
+
+        return self._name
+
+
+    @name.setter
+    def set_name(self, value: str) -> None:
+        self._name = value
+
+
+    @GObject.Property(type=str)
+    def icon(self) -> str:
+        """Read only property."""
+
+        return self._icon
+
+
+    @icon.setter
+    def set_icon(self, value: str) -> None:
+        self._icon = value
+        self.notify('has-icon')
+
+
+    @GObject.Property(type=str)
+    def color(self) -> str:
+        """Read only property."""
+
+        return self._color
+
+
+    @color.setter
+    def set_color(self, value: str) -> None:
+        self._color = value
+        self.notify('has-color')
+
+
+    @GObject.Property(type=bool, default=False)
+    def has_color(self) -> bool:
+
+        return self._color and not self._icon
+
+
+    @GObject.Property(type=bool, default=False)
+    def has_icon(self) -> bool:
+
+        return self._icon
+
+    
+    @GObject.Property(type=int, default=0)
+    def task_count_open(self) -> int:
+
+        return self._task_count_open
+
+
+    @task_count_open.setter
+    def set_task_count_open(self, value: int) -> None:
+        self._task_count_open = value
+
+
+    @GObject.Property(type=int, default=0)
+    def task_count_actionable(self) -> int:
+
+        return self._task_count_actionable
+
+
+    @task_count_actionable.setter
+    def set_task_count_actionable(self, value: int) -> None:
+        self._task_count_actionable = value
+
+
+    @GObject.Property(type=int, default=0)
+    def task_count_closed(self) -> int:
+
+        return self._task_count_closed
+
+
+    @task_count_closed.setter
+    def set_task_count_closed(self, value: int) -> None:
+        self._task_count_closed = value
+
+
+    def __hash__(self):
+        return id(self)
+        
+        
 class TagStore(BaseStore):
     """A tree of tags."""
 
@@ -81,9 +179,27 @@ class TagStore(BaseStore):
 
     def __init__(self) -> None:
         self.used_colors: Set[Color] = set()
-        self.lookup_names: Dict[str, Tag2] = {}
+        self.lookup_names: Dict[str, Tag] = {}
 
         super().__init__()
+
+
+        self.model = Gio.ListStore.new(Tag)
+        self.tree_model = Gtk.TreeListModel.new(self.model, False, False, self.model_expand)
+
+
+    def model_expand(self, item):
+        model = Gio.ListStore.new(Tag)
+
+        if type(item) == Gtk.TreeListRow:
+            item = item.get_item()
+
+        # open the first one
+        if item.children:
+            for child in item.children:
+                model.append(child)
+
+        return Gtk.TreeListModel.new(model, False, False, self.model_expand)
 
 
     def __str__(self) -> str:
@@ -92,13 +208,13 @@ class TagStore(BaseStore):
         return f'Tag Store. Holds {len(self.lookup)} tag(s)'
 
 
-    def find(self, name: str) -> Tag2:
+    def find(self, name: str) -> Tag:
         """Get a tag by name."""
 
         return self.lookup_names[name]
 
 
-    def new(self, name: str, parent: UUID = None) -> Tag2:
+    def new(self, name: str, parent: UUID = None) -> Tag:
         """Create a new tag and add it to the store."""
 
         name = name if not name.startswith('@') else name[1:]
@@ -107,14 +223,12 @@ class TagStore(BaseStore):
             return self.lookup_names[name]
         except KeyError:
             tid = uuid4()
-            tag = Tag2(id=tid, name=name)
+            tag = Tag(id=tid, name=name)
 
             if parent:
                 self.add(tag, parent)
             else:
-                self.data.append(tag)
-                self.lookup[tid] = tag
-                self.lookup_names[name] = tag
+                self.add(tag)
 
             self.emit('added', tag)
             return tag
@@ -132,10 +246,23 @@ class TagStore(BaseStore):
             name = element.get('name')
             color = element.get('color')
             icon = element.get('icon')
+            nonactionable = element.get('nonactionable') or 'False'
 
-            tag = Tag2(id=tid, name=name)
+            if color:
+                if not color.startswith('#'):
+                    color = '#' + color
+
+                rgb = Gdk.RGBA()
+                rgb.parse(color)
+                red = int(rgb.red * 255)
+                blue = int(rgb.blue * 255)
+                green = int(rgb.green * 255)
+                color = '#{:02x}{:02x}{:02x}'.format(red, green, blue)
+
+            tag = Tag(id=tid, name=name)
             tag.color = color
             tag.icon = icon
+            tag.actionable = (nonactionable == 'False')
 
             self.add(tag)
 
@@ -149,9 +276,13 @@ class TagStore(BaseStore):
                 tid = element.get('id')
 
                 try:
-                    parent = self.find(parent_name)
-                    self.parent(tid, parent.id)
-                    log.debug('Added %s as child of %s', tag, parent)
+                    parent_id = self.find(parent_name).id
+                except KeyError:
+                    parent_id = parent_name
+
+                try:
+                    self.parent(tid, parent_id)
+                    log.debug('Added %s as child of %s', tag, parent_name)
                 except KeyError:
                     pass
 
@@ -177,6 +308,9 @@ class TagStore(BaseStore):
 
             if tag.icon:
                 element.set('icon', tag.icon)
+
+
+            element.set('nonactionable', str(not tag.actionable))
 
             try:
                 element.set('parent', str(parent_map[tag.id]))
@@ -210,4 +344,24 @@ class TagStore(BaseStore):
 
         super().add(item, parent_id)
         self.lookup_names[item.name] = item
+
+        if not parent_id:
+            self.model.append(item)
+
         self.emit('added', item)
+
+
+    def parent(self, item_id: UUID, parent_id: UUID) -> None:
+
+        super().parent(item_id, parent_id)
+        item = self.lookup[item_id]
+        pos = self.model.find(item)
+        self.model.remove(pos[1])
+
+
+
+    def unparent(self, item_id: UUID, parent_id: UUID) -> None:
+
+        super().unparent(item_id, parent_id)
+        item = self.lookup[item_id]
+        self.model.append(item)

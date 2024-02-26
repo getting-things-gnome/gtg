@@ -26,7 +26,8 @@ import logging
 
 from gi.repository import Gtk, GLib, Gdk, GObject, GtkSource
 
-from GTG.core.requester import Requester
+from GTG.core.datastore import Datastore
+from GTG.core.tasks import Status
 import GTG.core.urlregex as url_regex
 from webbrowser import open as openurl
 from gettext import gettext as _
@@ -75,10 +76,10 @@ class TaskView(GtkSource.View):
     PROCESSING_DELAY = 250
 
 
-    def __init__(self, req: Requester, clipboard) -> None:
+    def __init__(self, ds: Datastore, task, clipboard, dark) -> None:
         super().__init__()
 
-        self.req = req
+        self.ds = ds
         self.clipboard = clipboard
 
         # The timeout handler
@@ -90,12 +91,12 @@ class TaskView(GtkSource.View):
         # Tags applied to this task
         self.task_tags = set()
 
+        self.task = task
+
         # Callbacks. These need to be set after init
         self.browse_tag_cb = NotImplemented
         self.add_tasktag_cb = NotImplemented
         self.remove_tasktag_cb = NotImplemented
-        self.get_subtasks_cb = NotImplemented
-        self.get_taglist_cb = NotImplemented
         self.new_subtask_cb = NotImplemented
         self.open_task_cb = NotImplemented
         self.delete_subtask_cb = NotImplemented
@@ -112,6 +113,7 @@ class TaskView(GtkSource.View):
         self.clicked_link = None
 
         # Basic textview setup
+        self.add_css_class('taskview')
         self.set_left_margin(20)
         self.set_right_margin(20)
         self.set_wrap_mode(Gtk.WrapMode.WORD)
@@ -144,13 +146,24 @@ class TaskView(GtkSource.View):
             'to_delete': []
         }
 
+        if dark:
+            # TODO: It would be better to avoid hardcoding the style
+            manager = GtkSource.StyleSchemeManager().get_default()
+            scheme = manager.get_scheme('oblivion')
+            self.buffer.set_style_scheme(scheme)
+
         # Signals and callbacks
         self.id_modified = self.buffer.connect('changed', self.on_modified)
-        self.motion_controller = Gtk.EventControllerMotion(widget=self)
-        self.motion_controller.connect('motion', self.on_mouse_move)
-        self.key_controller = Gtk.EventControllerKey(widget=self)
-        self.key_controller.connect('key-pressed', self.on_key_pressed)
-        self.key_controller.connect('key-released', self.on_key_released)
+        motion_controller = Gtk.EventControllerMotion()
+        motion_controller.connect('motion', self.on_mouse_move)
+        self.add_controller(motion_controller)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect('key-pressed', self.on_key_pressed)
+        key_controller.connect('key-released', self.on_key_released)
+        self.add_controller(key_controller)
+        press_gesture = Gtk.GestureSingle(button=0)
+        press_gesture.connect('begin', self.on_single_begin)
+        self.add_controller(press_gesture)
 
 
     def on_modified(self, buffer: Gtk.TextBuffer) -> None:
@@ -253,22 +266,21 @@ class TaskView(GtkSource.View):
             # Remove the -
             delete_end = start.copy()
             delete_end.forward_chars(2)
-            self.buffer.begin_not_undoable_action()
+            self.buffer.begin_irreversible_action()
             self.buffer.delete(start, delete_end)
-            self.buffer.end_not_undoable_action()
+            self.buffer.end_irreversible_action()
 
             # Add new subtask
-            tid = self.new_subtask_cb(text[2:])
-            task = self.req.get_task(tid)
-            status = task.get_status() if task else 'Active'
+            task = self.new_subtask_cb(text[2:])
+            status = task.status if task else Status.ACTIVE
 
             # Add the checkbox
-            self.add_checkbox(tid, start)
+            self.add_checkbox(task.id, start)
             after_checkbox = start.copy()
             after_checkbox.forward_char()
 
             # Add the internal link
-            link_tag = InternalLinkTag(tid, status)
+            link_tag = InternalLinkTag(task.id, status)
             self.table.add(link_tag)
 
             end = start.copy()
@@ -278,11 +290,11 @@ class TaskView(GtkSource.View):
 
             # Add the subtask tag
             start.backward_char()
-            subtask_tag = SubTaskTag(tid)
+            subtask_tag = SubTaskTag(task.id)
             self.table.add(subtask_tag)
             self.buffer.apply_tag(subtask_tag, start, end)
 
-            self.subtasks['tags'].append(tid)
+            self.subtasks['tags'].append(task.id)
             return True
 
         # A subtask already exists
@@ -300,11 +312,11 @@ class TaskView(GtkSource.View):
 
             # Don't auto-remove it
             tid = sub_tag.tid
-            task = self.req.get_task(tid)
-            parents = task.get_parents()
+            task = self.ds.tasks.lookup[tid]
+            parent = task.parent
 
             # Remove if its not a child of this task
-            if not parents or parents[0] != self.tid:
+            if not parent or parent != self.task:
                 log.debug('Task %s is not a subtask of %s', tid, self.tid)
                 log.debug('Removing subtask %s from content', tid)
 
@@ -348,7 +360,7 @@ class TaskView(GtkSource.View):
             self.rename_subtask_cb(tid, text)
 
             # Get the task and instantiate an internal link tag
-            status = task.get_status() if task else 'Active'
+            status = task.status if task else Status.ACTIVE
             link_tag = InternalLinkTag(tid, status)
             self.table.add(link_tag)
 
@@ -375,27 +387,27 @@ class TaskView(GtkSource.View):
     def on_checkbox_toggle(self, tid: uuid4) -> None:
         """Toggle a task status and refresh the subtask tag."""
 
-        task = self.req.get_task(tid)
+        task = self.ds.tasks.lookup[tid]
 
         if not task:
-            log.warn('Failed to toggle status for %s', tid)
+            log.warning('Failed to toggle status for %s', tid)
             return
 
-        task.toggle_status()
+        task.toggle_active()
         self.process()
 
 
     def add_checkbox(self, tid: int, start: Gtk.TextIter) -> None:
         """Add a checkbox for a subtask."""
 
-        task = self.req.get_task(tid)
+        task = self.ds.tasks.lookup[tid]
         checkbox = Gtk.CheckButton.new()
 
-        if task and task.status != task.STA_ACTIVE:
+        if task and task.status != Status.ACTIVE:
             checkbox.set_active(True)
 
         checkbox.connect('toggled', lambda _: self.on_checkbox_toggle(tid))
-        checkbox.set_can_focus(False)
+        checkbox.set_focusable(False)
 
         # Block the modified signal handler while we add the anchor
         # for the checkbox widget
@@ -407,7 +419,6 @@ class TaskView(GtkSource.View):
             self.buffer.apply_tag(self.checkbox_tag, start, end)
 
         self.buffer.set_modified(False)
-        checkbox.show()
 
 
     def detect_tag(self, text: str, start: Gtk.TextIter) -> None:
@@ -427,14 +438,15 @@ class TaskView(GtkSource.View):
             # I find this confusing too :)
             tag_name = match.group(0)
             tag_name = tag_name.replace('@', '')
-            tag_tag = TaskTagTag(tag_name, self.req)
+
+            self.add_tasktag_cb(tag_name)
+            tag_tag = TaskTagTag(tag_name, self.ds)
             self.tags_applied.append(tag_tag)
 
             self.table.add(tag_tag)
             self.buffer.apply_tag(tag_tag, tag_start, tag_end)
             self.task_tags.add(tag_name)
 
-            self.add_tasktag_cb(tag_name)
 
 
     def detect_internal_link(self, text: str, start: Gtk.TextIter) -> None:
@@ -452,7 +464,7 @@ class TaskView(GtkSource.View):
             url_end.forward_chars(match.end())
 
             tid = match.group(0).replace('gtg://', '')
-            task = self.req.get_task(tid)
+            task = self.ds.tasks.lookup[tid]
 
             if task:
                 link_tag = InternalLinkTag(task)
@@ -591,17 +603,33 @@ class TaskView(GtkSource.View):
             except AttributeError:
                 pass
 
+    def on_single_begin(self, gesture, sequence) -> None:
+        """Callback when a mouse button press happens, passed to the
+        relevant custom tags to deal with it"""
+        _, x, y = gesture.get_point(sequence)
+        tx, ty = self.window_to_buffer_coords(Gtk.TextWindowType.WIDGET, x, y)
+        _, titer = self.get_iter_at_location(tx, ty)
+        for tag in titer.get_tags():
+            # In the case of a checkboxtag coming before for example
+            # an internallink, if we call do_clicked on the internallink
+            # the checkbox somehow misses that event and the conflicting internallink
+            # click consequences happen instead.
+            # We should return on encountering a checkbox, this doesn't seem
+            # to break anything
+            if isinstance(tag, CheckboxTag):
+                return
+            if hasattr(tag, "do_clicked"):
+                tag.do_clicked(self, gesture.get_current_button())
+
     def on_mouse_move(self, controller, wx, wy) -> None:
         """Callback when the mouse moves."""
 
         # Get the tag at the X, Y coords of the mosue cursor
-        window = Gtk.Widget.get_window(self)
         x, y = self.window_to_buffer_coords(Gtk.TextWindowType.TEXT, wx, wy)
         tags = self.get_iter_at_location(x, y)[1].get_tags()
 
         # Reset cursor and hover states
-        cursor = Gdk.Cursor.new_from_name(window.get_display(),
-                                          'text')
+        cursor = Gdk.Cursor.new_from_name('text', None)
 
         if self.hovered_tag:
             try:
@@ -615,14 +643,13 @@ class TaskView(GtkSource.View):
         try:
             tag = tags[0]
             tag.set_hover()
-            cursor = Gdk.Cursor.new_from_name(window.get_display(),
-                                              'pointer')
+            cursor = Gdk.Cursor.new_from_name('pointer', None)
             self.hovered_tag = tag
 
         except (AttributeError, IndexError):
             # Not an interactive tag, or no tag at all
             pass
-        window.set_cursor(cursor)
+        self.set_cursor(cursor)
 
 
     def do_populate_popup(self, popup) -> None:
@@ -653,9 +680,8 @@ class TaskView(GtkSource.View):
     def copy_url(self, menu_item, url: str) -> None:
         """Copy url to clipboard."""
 
-        clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-        clipboard.set_text(url, -1)
-        clipboard.store()
+        clipboard = self.get_clipboard()
+        clipboard.set(url)
 
     # --------------------------------------------------------------------------
     # PUBLIC API
@@ -741,14 +767,19 @@ class TaskView(GtkSource.View):
         # Insert subtasks. Remove existing subtasks from the list, we
         # will delete the rest at the end
         for sub in subtasks.copy():
-            self.insert_existing_subtask(*sub)
+            try:
+                _sub = self.ds.tasks.get(sub[0])
+                self.insert_existing_subtask(_sub, sub[1])
 
-            if self.req.has_task(sub[0]):
-                subtasks.remove(sub)
+                if sub[0] in self.ds.tasks.lookup.keys():
+                    subtasks.remove(sub)
+            except KeyError:
+                # The task has been deleted
+                pass
 
         # Remove non-existing subtasks (subtasks that have been deleted)
         for sub in subtasks:
-            start = self.buffer.get_iter_at_line(sub[1])
+            _, start = self.buffer.get_iter_at_line(sub[1])
             end = start.copy()
             end.forward_line()
 
@@ -773,7 +804,7 @@ class TaskView(GtkSource.View):
         # after the title, otherwise add a leading comma to
         # the text since we are appending to the tags in
         # that line
-        first_line = self.buffer.get_iter_at_line(1)
+        _, first_line = self.buffer.get_iter_at_line(1)
         first_line_tags = first_line.get_tags()
         first_line.forward_to_line_end()
 
@@ -810,16 +841,16 @@ class TaskView(GtkSource.View):
         self.buffer.place_cursor(cursor_iter)
 
 
-    def insert_existing_subtask(self, tid: str, line: int = None) -> None:
+    def insert_existing_subtask(self, task, line: int = None) -> None:
         """Insert an existing subtask in the buffer."""
 
         # Check if the task exists first
-        if not self.req.has_task(tid):
+        if task.id not in self.ds.tasks.lookup.keys():
             log.debug('Task %s not found', tid)
             return
 
         if line is not None:
-            start = self.buffer.get_iter_at_line(line)
+            _, start = self.buffer.get_iter_at_line(line)
         else:
             start = self.buffer.get_end_iter()
             self.buffer.insert(start, '\n')
@@ -827,31 +858,30 @@ class TaskView(GtkSource.View):
             line = start.get_line()
 
         # Add subtask name
-        task = self.req.get_task(tid)
-        self.buffer.insert(start, task.get_title())
+        self.buffer.insert(start, task.title)
 
         # Reset iterator
-        start = self.buffer.get_iter_at_line(line)
+        _, start = self.buffer.get_iter_at_line(line)
 
         # Add checkbox
-        self.add_checkbox(tid, start)
+        self.add_checkbox(task.id, start)
 
         # Apply link to subtask text
         end = start.copy()
         end.forward_to_line_end()
 
-        link_tag = InternalLinkTag(tid, task.get_status())
+        link_tag = InternalLinkTag(task.id, task.status)
         self.table.add(link_tag)
         self.buffer.apply_tag(link_tag, start, end)
         self.tags_applied.append(link_tag)
 
         # Apply subtask tag to everything
         start.backward_char()
-        subtask_tag = SubTaskTag(tid)
+        subtask_tag = SubTaskTag(task.id)
         self.table.add(subtask_tag)
         self.buffer.apply_tag(subtask_tag, start, end)
 
-        self.subtasks['tags'].append(tid)
+        self.subtasks['tags'].append(task.id)
 
 
     # --------------------------------------------------------------------------

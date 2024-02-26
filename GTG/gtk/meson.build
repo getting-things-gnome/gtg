@@ -31,16 +31,18 @@ gtg_browser_sources = [
   'browser/__init__.py',
   'browser/adaptive_button.py',
   'browser/backend_infobar.py',
-  'browser/cell_renderer_tags.py',
   'browser/delete_tag.py',
   'browser/delete_task.py',
   'browser/main_window.py',
   'browser/modify_tags.py',
   'browser/simple_color_selector.py',
-  'browser/tag_context_menu.py',
+  'browser/sidebar_context_menu.py',
+  'browser/search_editor.py',
   'browser/tag_editor.py',
-  'browser/treeview_factory.py',
   'browser/quick_add.py',
+  'browser/sidebar.py',
+  'browser/tag_pill.py',
+  'browser/task_pane.py',
 ]
 
 gtg_data_sources = [
@@ -48,14 +50,15 @@ gtg_data_sources = [
   'data/calendar.ui',
   'data/context_menus.ui',
   'data/general_preferences.ui',
-  'data/help_overlay.ui',
   'data/main_window.ui',
   'data/modify_tags.ui',
   'data/plugins.ui',
   'data/preferences.ui',
   'data/style.css',
   'data/tag_editor.ui',
+  'data/search_editor.ui',
   'data/task_editor.ui',
+  'data/recurring_menu.ui'
 ]
 
 gtg_editor_sources = [

@@ -22,6 +22,7 @@ class ExceptionHandlerDialog(Gtk.MessageDialog):
         CONTINUE = enum.auto()
 
     def __init__(self, exception=None, main_msg=None, ignorable: bool = False, context_info: str = None):
+        super().__init__(resizable=False, modal=True, destroy_with_parent=True, message_type=Gtk.MessageType.ERROR)
         self.ignorable = ignorable
 
         formatting = {
@@ -34,20 +35,18 @@ class ExceptionHandlerDialog(Gtk.MessageDialog):
         else:
             title = _("Fatal internal error — GTG")
             desc = _("""GTG encountered an internal fatal error and needs to exit.""")
+
         title = title.format(**formatting)
         desc = desc.format(**formatting)
 
         desc2 = _("""Recently unsaved changes (from the last few seconds) may be lost, so make sure to check your recent changes when launching GTG again afterwards.
-
-Please report the bug in <a href="{url}">our issue tracker</a>, with steps to trigger the problem and the error's details below.""")
+        Please report the bug in <a href="{url}">our issue tracker</a>, with steps to trigger the problem and the error's details below.""")
         desc2 = desc2.format(**formatting)
 
-        super().__init__(None,
-                         Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                         Gtk.MessageType.ERROR,
-                         Gtk.ButtonsType.NONE,
-                         None)
-        self.set_title(title)
+        # You may think that GtkWindow:title is the property you need,
+        # however GtkWindow:title is awkwardly styled on GtkMessageDialog,
+        # and GtkMessageDialog:text is styled like a title.
+        self.props.text = title
         self.set_markup(desc)
         self.props.secondary_text = desc2
         self.props.secondary_use_markup = True
@@ -62,25 +61,19 @@ Please report the bug in <a href="{url}">our issue tracker</a>, with steps to tr
         self._additional_info.set_buffer(Gtk.TextBuffer())
         self._additional_info.set_editable(False)
         self._additional_info.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
-        self._additional_info.props.expand = True
-        self._additional_info.set_border_width(6) # Internal padding around text
-        self._additional_info.get_style_context().add_class("debug_text")
-
-        expander_content = Gtk.ScrolledWindow()
-        expander_content.set_border_width(12) # Outer padding around text
-        expander_content.add(self._additional_info)
-        expander = Gtk.Expander()
-        expander.set_label(_("Details to paste in your bug report"))
-        expander.add(expander_content)
-        self.get_content_area().add(expander)
+        expander_content = Gtk.ScrolledWindow(vexpand=True, min_content_height=90)
+        expander_content.set_child(self._additional_info)
+        self._expander = Gtk.Expander(vexpand=True)
+        self._expander.set_label(_("Details to report"))
+        self._expander.set_child(expander_content)
+        self.get_content_area().append(self._expander)
+        self._expander.bind_property("expanded", self, "resizable",
+                                     GObject.BindingFlags.SYNC_CREATE)
 
         # Prevent the window from becoming too tall, or having a weird aspect ratio:
         expander_content.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         expander_content.props.height_request = 200
         self.props.width_request = 450
-
-        expander.bind_property("expanded", self, "resizable", GObject.BindingFlags.SYNC_CREATE)
-        expander.show_all()
 
         self._exception = exception
         self.context_info = context_info # Also refreshes the text
@@ -209,7 +202,7 @@ def do_error_dialog(exception, context: str = None, ignorable: bool = True, main
     """
     dialog = ExceptionHandlerDialog(exception, main_msg, ignorable, context)
     dialog.connect('response', handle_response)
-    dialog.show_all()
+    dialog.show()
     return dialog
 
 

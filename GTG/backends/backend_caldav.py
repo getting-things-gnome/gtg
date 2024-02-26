@@ -34,7 +34,7 @@ from GTG.backends.generic_backend import GenericBackend
 from GTG.backends.periodic_import_backend import PeriodicImportBackend
 from GTG.core.dates import LOCAL_TIMEZONE, Accuracy, Date
 from GTG.core.interruptible import interruptible
-from GTG.core.task import DisabledSyncCtx, Task
+from GTG.core.tasks import Task, Status
 from vobject import iCalendar
 
 logger = logging.getLogger(__name__)
@@ -107,7 +107,7 @@ class Backend(PeriodicImportBackend):
 
     @interruptible
     def do_periodic_import(self) -> None:
-        with self.datastore.get_backend_mutex():
+        with self.datastore.mutex:
             self._do_periodic_import()
 
     @interruptible
@@ -115,8 +115,8 @@ class Backend(PeriodicImportBackend):
         if self._parameters["is-first-run"] or not self._cache.initialized:
             logger.warning("not loaded yet, ignoring set_task")
             return
-        with self.datastore.get_backend_mutex():
-            return self._set_task(task)
+        with self.datastore.mutex:
+            self.datastore.tasks.add(task)
 
     @interruptible
     def remove_task(self, tid: str) -> None:
@@ -126,8 +126,8 @@ class Backend(PeriodicImportBackend):
         if not tid:
             logger.warning("no task id passed to remove_task call, ignoring")
             return
-        with self.datastore.get_backend_mutex():
-            return self._remove_task(tid)
+        with self.datastore.mutex:
+            return self.datastore.tasks.remove(tid)
 
     #
     # real main methods
@@ -151,10 +151,9 @@ class Backend(PeriodicImportBackend):
         self._cache.initialized = True
 
     def _set_task(self, task: Task) -> None:
-        logger.debug('set_task todo for %r', task.get_uuid())
-        with DisabledSyncCtx(task, sync_on_exit=False):
-            seq_value = SEQUENCE.get_gtg(task, self.namespace)
-            SEQUENCE.write_gtg(task, seq_value + 1, self.namespace)
+        logger.debug('set_task todo for %r', task.id)
+        seq_value = SEQUENCE.get_gtg(task, self.namespace)
+        SEQUENCE.write_gtg(task, seq_value + 1, self.namespace)
         todo, calendar = self._get_todo_and_calendar(task)
         if not calendar:
             logger.info("%r has no calendar to be synced with", task)
@@ -259,7 +258,7 @@ class Backend(PeriodicImportBackend):
         if do_delete:  # the task was missing for a good reason
             counts['deleted'] += 1
             self._cache.del_todo(uid)
-            self.datastore.request_task_deletion(uid)
+            self.datastore.tasks.remove(uid)
 
     @staticmethod
     def _denorm_children_on_vtodos(todos: list):
@@ -298,12 +297,12 @@ class Backend(PeriodicImportBackend):
             uid = UID_FIELD.get_dav(todo)
             self._cache.set_todo(todo, uid)
             # Updating and creating task according to todos
-            task = self.datastore.get_task(uid)
+            task = self.datastore.tasks.lookup[uid]
             if not task:  # not found, creating it
-                task = self.datastore.task_factory(uid)
-                with DisabledSyncCtx(task):
-                    Translator.fill_task(todo, task, self.namespace)
-                    self.datastore.push_task(task)
+                task = Task()
+                task.id = uid
+                Translator.fill_task(todo, task, self.namespace, self.datastore)
+                self.datastore.tasks.add(task)
                 counts['created'] += 1
             else:
                 result = self._update_task(task, todo)
@@ -313,14 +312,13 @@ class Backend(PeriodicImportBackend):
                     logger.warning("Shouldn't be diff for %r", uid)
 
     def _update_task(self, task: Task, todo: iCalendar, force: bool = False):
-        with DisabledSyncCtx(task):
-            if not force:
-                task_seq = SEQUENCE.get_gtg(task, self.namespace)
-                todo_seq = SEQUENCE.get_dav(todo)
-                if task_seq >= todo_seq:
-                    return 'unchanged'
-            Translator.fill_task(todo, task, self.namespace)
-            return 'updated'
+        if not force:
+            task_seq = SEQUENCE.get_gtg(task, self.namespace)
+            todo_seq = SEQUENCE.get_dav(todo)
+            if task_seq >= todo_seq:
+                return 'unchanged'
+        Translator.fill_task(todo, task, self.namespace, self.datastore)
+        return 'updated'
 
     def __sort_todos(self, todos: list, max_depth: int = 500):
         """For a given list of todos, will return first the one without parent
@@ -336,7 +334,7 @@ class Backend(PeriodicImportBackend):
                 parents = PARENT_FIELD.get_dav(todo)
                 if (not parents  # no parent mean no relationship on build
                         or parents[0] in known_todos  # already known parent
-                        or self.datastore.get_task(uid)):  # already known uid
+                        or self.datastore.tasks.lookup[uid]):  # already known uid
                     yield todo
                     known_todos.add(uid)
             if loop >= MAX_CALENDAR_DEPTH:
@@ -345,8 +343,7 @@ class Backend(PeriodicImportBackend):
 
     def _get_calendar_tasks(self, calendar: iCalendar):
         """Getting all tasks that has the calendar tag"""
-        for uid in self.datastore.get_all_tasks():
-            task = self.datastore.get_task(uid)
+        for task in self.datastore.tasks.data:
             if CATEGORIES.has_calendar_tag(task, calendar):
                 yield uid, task
 
@@ -555,11 +552,11 @@ class UTCDateTimeField(DateField):
 
 
 class Status(Field):
-    DEFAULT_STATUS = (Task.STA_ACTIVE, 'NEEDS-ACTION')
-    _status_mapping = ((Task.STA_ACTIVE, 'NEEDS-ACTION'),
-                       (Task.STA_ACTIVE, 'IN-PROCESS'),
-                       (Task.STA_DISMISSED, 'CANCELLED'),
-                       (Task.STA_DONE, 'COMPLETED'))
+    DEFAULT_STATUS = (Status.ACTIVE, 'NEEDS-ACTION')
+    _status_mapping = ((Status.ACTIVE, 'NEEDS-ACTION'),
+                       (Status.ACTIVE, 'IN-PROCESS'),
+                       (Status.DISMISSED, 'CANCELLED'),
+                       (Status.DONE, 'COMPLETED'))
 
     def _translate(self, gtg_value=None, dav_value=None):
         for gtg_status, dav_status in self._status_mapping:
@@ -574,9 +571,9 @@ class Status(Field):
     def get_gtg(self, task: Task, namespace: str = None) -> str:
         active, done = 0, 0
         for subtask in self._browse_subtasks(task):
-            if subtask.get_status() == Task.STA_ACTIVE:
+            if subtask.is_active:
                 active += 1
-            elif subtask.get_status() == Task.STA_DONE:
+            elif subtask.status == Status.DONE:
                 done += 1
             if active and done:
                 return 'IN-PROCESS'
@@ -599,9 +596,9 @@ class PercentComplete(Field):
     def get_gtg(self, task: Task, namespace: str = None) -> str:
         total_cnt, done_cnt = 0, 0
         for subtask in self._browse_subtasks(task):
-            if subtask.get_status() != Task.STA_DISMISSED:
+            if subtask.status != Status.DISMISSED:
                 total_cnt += 1
-                if subtask.get_status() == Task.STA_DONE:
+                if subtask.status == Status.DONE:
                     done_cnt += 1
         if total_cnt:
             return str(int(100 * done_cnt / total_cnt))
@@ -645,7 +642,7 @@ class Categories(Field):
         return self.to_tag(calendar.name, DAV_TAG_PREFIX)
 
     def has_calendar_tag(self, task: Task, calendar: iCalendar) -> bool:
-        return self.get_calendar_tag(calendar) in task.get_tags_name()
+        return self.get_calendar_tag(calendar) in [t.name for t in task.tags]
 
 
 class AttributeField(Field):
@@ -758,10 +755,10 @@ class Description(Field):
                 subtask = task.req.get_task(line[2:-2].strip())
                 if not subtask:
                     continue
-                if subtask.get_status() == Task.STA_DONE:
-                    result += f"[x] {subtask.get_title()}\n"
+                if subtask.status == Status.DONE:
+                    result += f"[x] {subtask.title}\n"
                 else:
-                    result += f"[ ] {subtask.get_title()}\n"
+                    result += f"[ ] {subtask.title}\n"
             else:
                 result += line.strip() + '\n'
         return result.strip()
@@ -849,10 +846,9 @@ class RelatedTo(Field):
 class OrderField(Field):
 
     def get_gtg(self, task: Task, namespace: str = None):
-        parents = task.get_parents()
-        if not parents or not parents[0]:
+        parent = task.parent
+        if not parent:
             return
-        parent = task.req.get_task(parents[0])
         uid = UID_FIELD.get_gtg(task, namespace)
         return parent.get_child_index(uid)
 
@@ -866,7 +862,7 @@ class Recurrence(Field):
     DAV_DAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
 
     def get_gtg(self, task: Task, namespace: str = None) -> tuple:
-        return task.get_recurring(), task.get_recurring_term()
+        return task._is_recurring, task.recurring_term
 
     def get_dav(self, todo=None, vtodo=None) -> tuple:
         if todo:
@@ -975,16 +971,16 @@ class Translator:
         return vcal
 
     @classmethod
-    def fill_task(cls, todo: iCalendar, task: Task, namespace: str):
+    def fill_task(cls, todo: iCalendar, task: Task, namespace: str, datastore):
         nmspc = {'namespace': namespace}
-        with DisabledSyncCtx(task):
-            for field in cls.fields:
-                field.set_gtg(todo, task, **nmspc)
-            task.set_attribute("url", str(todo.url), **nmspc)
-            task.set_attribute("calendar_url", str(todo.parent.url), **nmspc)
-            task.set_attribute("calendar_name", todo.parent.name, **nmspc)
-            if not CATEGORIES.has_calendar_tag(task, todo.parent):
-                task.add_tag(CATEGORIES.get_calendar_tag(todo.parent))
+        for field in cls.fields:
+            field.set_gtg(todo, task, **nmspc)
+        task.set_attribute("url", str(todo.url), **nmspc)
+        task.set_attribute("calendar_url", str(todo.parent.url), **nmspc)
+        task.set_attribute("calendar_name", todo.parent.name, **nmspc)
+        if not CATEGORIES.has_calendar_tag(task, todo.parent):
+            tag = datastore.tags.new(CATEGORIES.get_calendar_tag(todo.parent))
+            task.add_tag(tag)
         return task
 
     @classmethod

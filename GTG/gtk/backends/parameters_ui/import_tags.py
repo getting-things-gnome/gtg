@@ -19,7 +19,8 @@ from functools import reduce
 
 from gi.repository import Gtk
 
-from GTG.core.tag import ALLTASKS_TAG
+
+ALLTASKS_TAG = 'gtg-tags-all'
 
 
 class ImportTagsUI(Gtk.Box):
@@ -28,11 +29,11 @@ class ImportTagsUI(Gtk.Box):
     to let the user change the attached tags (or imported)
     """
 
-    def __init__(self, req, backend, width, title, anybox_text, somebox_text,
+    def __init__(self, ds, backend, width, title, anybox_text, somebox_text,
                  parameter_name):
         """Populates the widgets and refresh the tags to display
 
-        @param req: a requester
+        @param ds: a requester
         @param backend: the backend to configure
         @param width: the length of the radio buttons
         @param title: the text for the label describing what this collection
@@ -44,7 +45,7 @@ class ImportTagsUI(Gtk.Box):
         """
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.backend = backend
-        self.req = req
+        self.ds = ds
         self.title = title
         self.anybox_text = anybox_text
         self.somebox_text = somebox_text
@@ -60,25 +61,25 @@ class ImportTagsUI(Gtk.Box):
         @param width: the length of the radio buttons
         """
         title_label = Gtk.Label()
-        title_label.set_alignment(xalign=0, yalign=0)
+        title_label.set_xalign(0)
+        title_label.set_yalign(0)
         title_label.set_markup(f"<big><b>{self.title}</b></big>")
-        self.pack_start(title_label, True, True, 0)
-        align = Gtk.Alignment.new(0, 0, 1, 0)
-        align.set_padding(0, 0, 10, 0)
-        self.pack_start(align, True, True, 0)
+        self.append(title_label)
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        align.add(vbox)
-        self.all_tags_radio = Gtk.RadioButton(group=None,
+        self.append(vbox)
+        self.all_tags_radio = Gtk.CheckButton(group=None,
                                               label=self.anybox_text)
-        vbox.pack_start(self.all_tags_radio, True, True, 0)
-        self.some_tags_radio = Gtk.RadioButton(group=self.all_tags_radio,
+        vbox.append(self.all_tags_radio)
+        self.some_tags_radio = Gtk.CheckButton(group=self.all_tags_radio,
                                                label=self.somebox_text)
         self.some_tags_radio.set_size_request(width=width, height=-1)
         box = Gtk.Box()
-        vbox.pack_start(box, True, True, 0)
-        box.pack_start(self.some_tags_radio, False, True, 0)
+        box.set_spacing(10)
+        vbox.append(box)
+        box.append(self.some_tags_radio)
         self.tags_entry = Gtk.Entry()
-        box.pack_start(self.tags_entry, True, True, 0)
+        self.tags_entry.set_hexpand(True)
+        box.append(self.tags_entry)
 
     def on_changed(self, radio, data=None):
         """ Signal callback, executed when the user modifies something.
@@ -89,7 +90,7 @@ class ImportTagsUI(Gtk.Box):
         @param data: not used, only here for signal compatibility
         """
         # every change in the config disables the backend
-        self.req.set_backend_enabled(self.backend.get_id(), False)
+        self.ds.set_backend_enabled(self.backend.get_id(), False)
         self._refresh_textbox_state()
 
     def commit_changes(self):

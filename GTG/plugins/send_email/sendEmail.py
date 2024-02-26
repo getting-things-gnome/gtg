@@ -40,7 +40,7 @@ class SendEmailPlugin():
         send_action = Gio.SimpleAction.new("send_as_email", None)
         send_action.connect("activate", self._on_send_activate, plugin_api)
         group.add_action(send_action)
-        plugin_api.get_ui().window.insert_action_group(self.ACTION_GROUP_PREF, group)
+        plugin_api.get_ui().insert_action_group(self.ACTION_GROUP_PREF, group)
 
         self.menu_item = Gio.MenuItem.new(
             _("Send via email"), ".".join([self.ACTION_GROUP_PREF, "send_as_email"])
@@ -51,7 +51,7 @@ class SendEmailPlugin():
         """
         Removes the button when a task is closed.
         """
-        plugin_api.get_ui().window.insert_action_group(self.ACTION_GROUP_PREF, None)
+        plugin_api.get_ui().insert_action_group(self.ACTION_GROUP_PREF, None)
         plugin_api.remove_menu_item(self.menu_item)
 
     def deactivate(self, plugin_api):
@@ -67,14 +67,14 @@ class SendEmailPlugin():
         task = plugin_api.get_ui().get_task()
 
         # Body contains Status Tags, Subtasks and Content.
-        body = _("Status: %s") % (task.get_status()) + \
-            _("\nTags: %s") % (", ".join(task.get_tags_name())) + \
+        body = _("Status: %s") % (task.status) + \
+            _("\nTags: %s") % (", ".join(t.name for t in task.tags)) + \
             _("\nSubtasks: %s") % (
-                "".join(["\n- "+subtask.get_title() for subtask in task.get_subtasks()])) + \
-            _("\nTask content:\n%s") % (task.get_text())
+                "".join(["\n- "+subtask.title for subtask in task.children])) + \
+            _("\nTask content:\n%s") % (task.content)
 
         # Title contains the title and the start and due dates.
-        title = _("Task: %(task_title)s") % {'task_title': task.get_title()}
+        title = _("Task: %(task_title)s") % {'task_title': task.title}
 
         parameters = urllib.parse.urlencode({'subject': title, 'body': body})
         parameters = parameters.replace('+', '%20')

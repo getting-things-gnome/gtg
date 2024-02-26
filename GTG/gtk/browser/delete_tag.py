@@ -18,17 +18,16 @@
 
 
 from gi.repository import Gtk
-from GTG.core.tasks2 import Filter
+from GTG.core.tasks import Filter
 
 from gettext import gettext as _, ngettext
 
 
-class DeleteTagsDialog():
+class DeleteTagsDialog:
 
     MAXIMUM_TAGS_TO_SHOW = 5
 
-    def __init__(self, req, browser):
-        self.req = req
+    def __init__(self, browser):
         self.browser = browser
         self.tags_todelete = []
 
@@ -37,20 +36,28 @@ class DeleteTagsDialog():
         otherwise, we will look which tid is selected"""
 
         for tag in self.tags_todelete:
-            self.req.delete_tag(tag)
-
-            # TODO: New Core
-            the_tag = self.browser.app.ds.tags.find(tag)
-            tasks = self.browser.app.ds.tasks.filter(Filter.TAG, the_tag)
+            tasks = self.browser.app.ds.tasks.filter(Filter.TAG, tag)
 
             for t in tasks:
-                t.remove_tag(tag)
+                t.remove_tag(tag.name)
 
-            self.browser.app.ds.tags.remove(the_tag.id)
+            self.browser.app.ds.tags.remove(tag.id)
 
+        self.browser.app.ds.tasks.notify('task_count_no_tags')
         self.tags_todelete = []
 
-    def delete_tags(self, tags=None):
+    def on_response(self, dialog, response, tagslist, callback):
+        dialog.destroy()
+
+        if response == Gtk.ResponseType.YES:
+            self.on_delete_confirm()
+        elif response == Gtk.ResponseType.REJECT:
+            tagslist = []
+
+        if callback:
+            callback(tagslist)
+
+    def show(self, tags=None, callback=None):
         self.tags_todelete = tags or self.tags_todelete
 
         if not self.tags_todelete:
@@ -86,28 +93,22 @@ class DeleteTagsDialog():
 
         if len(tagslist) == 1:
             # Don't show a bulleted list if there's only one item
-            titles = "".join(tag for tag in tagslist)
+            titles = "".join(tag.name for tag in tagslist)
         else:
-            titles = "".join("\n• " + tag for tag in tagslist)
+            titles = "".join("\n• " + tag.name for tag in tagslist)
 
         # Build and run dialog
         dialog = Gtk.MessageDialog(transient_for=self.browser, modal=True)
         dialog.add_button(cancel_text, Gtk.ResponseType.CANCEL)
 
         delete_btn = dialog.add_button(delete_text, Gtk.ResponseType.YES)
-        delete_btn.get_style_context().add_class("destructive-action")
+        delete_btn.add_css_class("destructive-action")
 
         dialog.props.use_markup = True
-        dialog.props.text = "<span weight=\"bold\">" + label_text + "</span>"
+        # Decrease size of title to workaround not being able to put two texts in GTK4
+        dialog.props.text = "<span size=\"small\" weight=\"bold\">" + label_text + "</span>"
 
         dialog.props.secondary_text = titles + titles_suffix
 
-        response = dialog.run()
-        dialog.destroy()
-
-        if response == Gtk.ResponseType.YES:
-            self.on_delete_confirm()
-        elif response == Gtk.ResponseType.REJECT:
-            tagslist = []
-
-        return tagslist
+        dialog.connect("response", self.on_response, tagslist, callback)
+        dialog.present()

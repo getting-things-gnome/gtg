@@ -49,6 +49,10 @@ class GTGCalendar(GObject.GObject):
 
     def __init_gtk__(self):
         self.__window = self.__builder.get_object("calendar")
+        self.__window.add_shortcut(Gtk.Shortcut.new(
+            Gtk.ShortcutTrigger.parse_string("Escape"),
+            Gtk.CallbackAction.new(self._esc_close)
+        ))
         self.__calendar = self.__builder.get_object("calendar1")
         self.__fuzzydate_btns = self.__builder.get_object("fuzzydate_btns")
         self.__builder.get_object("button_clear").connect(
@@ -59,11 +63,6 @@ class GTGCalendar(GObject.GObject):
             "clicked", lambda w: self.__day_selected(w, "soon"))
         self.__builder.get_object("button_someday").connect(
             "clicked", lambda w: self.  __day_selected(w, "someday"))
-        # allow fast closing by Escape key
-        agr = Gtk.AccelGroup()
-        self.add_accel_group(agr)
-        key, modifier = Gtk.accelerator_parse('Escape')
-        agr.connect(key, modifier, Gtk.AccelFlags.VISIBLE, self._esc_close)
 
     def set_date(self, date, date_kind):
         self.__date_kind = date_kind
@@ -76,70 +75,28 @@ class GTGCalendar(GObject.GObject):
             date = Date.today()
         self.__date = date
         if not date.is_fuzzy():
-            date = date.date()
-            self.__calendar.select_day(date.day)
-            # Calendar use 0..11 for a month so we need -1
-            # We can't use conversion through python's datetime
-            # because it is often an invalid date
-            self.__calendar.select_month(date.month - 1, date.year)
-
-    def __mark_today_in_bold(self):
-        """ Mark today in bold
-
-        If the current showed month is the current month (has the same year
-        and month), then make the current day bold. Otherwise no day should
-        be bold.
-        """
-        today = datetime.date.today()
-
-        # Get the current displayed month
-        # (month must be corrected because calendar is 0-based)
-        year, month, day = self.__calendar.get_date()
-        month += 1
-
-        if today.year == year and today.month == month:
-            self.__calendar.mark_day(today.day)
-        else:
-            # If marked day is 31th, and the next month does not have 31th day,
-            # unmark_day raises a warning. Clear_marks() is clever way how
-            # to let GTK solve it's bussiness.
-            self.__calendar.clear_marks()
-
-    def move_calendar_inside(self, width, height, x, y):
-        """ This method moves the calender inside the screen whenever part of
-        it is displayed outside the screen """
-        screen_width = Gdk.Screen.width()
-        # To display calendar inside the screen when editor window is
-        # outside leftside of the screen
-        if x < width:
-            self.__window.move(2, y - height)
-        # To display calendar inside the screen when editor window is outside
-        # rightside of the screen
-        elif x > (screen_width - 2):
-            self.__window.move(screen_width - width - 2, y - height)
-        else:
-            self.__window.move(x - width, y - height)
+            gtime = GLib.DateTime.new_local(
+                date.date().year, date.date().month, date.date().day, 0, 0, 0
+            )
+            self.__calendar.select_day(gtime)
 
     def show(self):
         self.__window.show()
 
         if self.get_decorated():
-            self.__window.connect("delete-event", self.close_calendar)
+            self.__window.connect("close-request", self.close_calendar)
         else:
-            self.__window_gesture_single = Gtk.GestureSingle(widget=self.__window)
-            self.__window_gesture_single.connect('begin', self.__focus_out)
+            window_gesture_single = Gtk.GestureSingle()
+            window_gesture_single.connect('begin', self.__focus_out)
+            self.__window.add_controller(window_gesture_single)
         self.__sigid = self.__calendar.connect("day-selected",
                                                self.__day_selected,
                                                "RealDate",)
-
-        self.__sigid_month = self.__calendar.connect("month-changed",
-                                                     self.__month_changed)
         # Problem: Gtk.Calendar does not tell you directly if the
         #          "day-selected" signal was caused by the user clicking on
         #          a date, or just browsing the calendar.
         # Solution: we track that in a variable
         self.__is_user_just_browsing_the_calendar = False
-        self.__mark_today_in_bold()
 
     def __focus_out(self, g=None, s=None):
         w = g.get_widget()
@@ -155,9 +112,6 @@ class GTGCalendar(GObject.GObject):
             self.__calendar.disconnect(self.__sigid)
             self.__sigid = None
 
-        if self.__sigid_month is not None:
-            self.__calendar.disconnect(self.__sigid_month)
-            self.__sigid_month = None
         return True
 
     def __day_selected(self, widget, date_type):
@@ -178,17 +132,18 @@ class GTGCalendar(GObject.GObject):
 
     def __from_calendar_date_to_datetime(self, calendar_date):
         """
-        Gtk.Calendar uses a 0-based convention for counting months.
-        The rest of the world, including the datetime module, starts from 1.
+        Gtk.Calendar uses a GLib based convention for counting time.
+        The rest of the world, including the datetime module, doesn't use GLib.
         This is a converter between the two. GTG follows the datetime
         convention.
         """
-        year, month, day = calendar_date
-        return datetime.date(year, month + 1, day)
+        year, month, day = (calendar_date.get_year(),
+                            calendar_date.get_month(),
+                            calendar_date.get_day_of_month())
+        return datetime.date(year, month, day)
 
     def __month_changed(self, widget):
         self.__is_user_just_browsing_the_calendar = True
-        self.__mark_today_in_bold()
 
     def get_selected_date(self):
         return self.__date, self.__date_kind
@@ -196,13 +151,9 @@ class GTGCalendar(GObject.GObject):
     def __getattr__(self, attr):
         return getattr(self.__window, attr)
 
-    def _esc_close(self, widget, event, arg1=None, arg2=None, arg3=None):
+    def _esc_close(self, widget=None, args=None):
         """
         Callback: Close this window when pressing Escape.
-
-        Arguments arg1-arg3 are needed to satisfy callback when closing
-        by Escape
         """
-
         self.close_calendar()
         return True

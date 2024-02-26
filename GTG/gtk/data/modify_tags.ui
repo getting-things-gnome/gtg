@@ -1,67 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
-  <object class="GtkDialog" id="modifytags_dialog">
-    <property name="can_focus">False</property>
-    <property name="border-width">12</property>
+  <requires lib="gtk" version="4.0"/>
+  <template class="ModifyTagsDialog" parent="GtkDialog">
+    <property name="default-widget">modifytags_apply</property>
     <property name="title" translatable="yes">Modify Tags</property>
-    <property name="window_position">center-on-parent</property>
-    <property name="type_hint">dialog</property>
-    <child internal-child="vbox">
+    <property name="modal">True</property>
+    <signal name="response" handler="on_response"/>
+    <child internal-child="content_area">
       <object class="GtkBox" id="modifytags_dialog_vbox">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">6</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox" id="dialog_action_area">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
-            <child>
-              <object class="GtkButton" id="modifytags_cancel">
-                <property name="label" translatable="yes">Cancel</property>
-                <property name="use-action-appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="modifytags_ok">
-                <property name="label" translatable="yes">Apply</property>
-                <property name="use-action-appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="can-default">True</property>
-                <property name="has-default">True</property>
-                <property name="receives-default">False</property>
-                <signal name="activate" handler="on_modifytags_confirm" swapped="no"/>
-                <signal name="clicked" handler="on_modifytags_confirm" swapped="no"/>
-                <style>
-                  <class name="suggested-action"/>
-                </style>
-              </object>
-            </child>
-          </object>
-        </child>
+        <property name="margin-start">5</property>
+        <property name="margin-end">5</property>
+        <property name="margin-top">5</property>
+        <property name="margin-bottom">5</property>
+        <property name="spacing">2</property>
         <child>
           <object class="GtkLabel" id="modifytags_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="label" translatable="yes">Enter the name of the tag(s) you wish to add or remove:</property>
           </object>
         </child>
         <child>
-          <object class="GtkEntry" id="tag_entry">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="is_focus">True</property>
+          <object class="GtkEntry" id="_tag_entry">
             <property name="invisible_char">●</property>
             <property name="activates_default">True</property>
             <property name="text" translatable="yes">TagName</property>
@@ -69,8 +28,6 @@
         </child>
         <child>
           <object class="GtkLabel" id="hint_label">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="label" translatable="yes">Hint: you can add several tags by separating them with
 space. Place '!' before tags you want to remove.</property>
             <attributes>
@@ -79,20 +36,36 @@ space. Place '!' before tags you want to remove.</property>
           </object>
         </child>
         <child>
-          <object class="GtkCheckButton" id="apply_to_subtasks">
+          <object class="GtkCheckButton" id="_apply_to_subtasks_check">
             <property name="label" translatable="yes">Apply to subtasks</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">False</property>
-            <property name="use_action_appearance">False</property>
-            <property name="draw_indicator">True</property>
           </object>
         </child>
       </object>
     </child>
+    <child internal-child="action_area">
+      <object class="GtkBox">
+        <property name="vexpand">True</property>
+        <property name="valign">end</property>
+        <property name="spacing">4</property>
+        <property name="margin-start">4</property>
+        <property name="margin-end">4</property>
+        <property name="margin-top">4</property>
+        <property name="margin-bottom">4</property>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="modifytags_apply">
+        <property name="label" translatable="yes">Apply</property>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="modifytags_cancel">
+        <property name="label" translatable="yes">Cancel</property>
+      </object>
+    </child>
     <action-widgets>
-      <action-widget response="0">modifytags_cancel</action-widget>
-      <action-widget response="0">modifytags_ok</action-widget>
+      <action-widget response="apply">modifytags_apply</action-widget>
+      <action-widget response="cancel">modifytags_cancel</action-widget>
     </action-widgets>
-  </object>
+  </template>
 </interface>

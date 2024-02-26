@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # Getting Things GNOME! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2013 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) The GTG Team
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -15,380 +15,461 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-Contains the Datastore object, which is the manager of all the active backends
-(both enabled and disabled ones)
-"""
 
-from collections import deque
+"""The datastore ties together all the basic type stores and backends."""
+
+import os
 import threading
 import logging
-import uuid
+import shutil
+from datetime import datetime, timedelta
+from time import time
+import random
+import string
 
+from GTG.core.tasks import TaskStore, Filter
+from GTG.core.tags import TagStore, Tag
+from GTG.core.saved_searches import SavedSearchStore
+from GTG.core import firstrun_tasks
+from GTG.core.dates import Date
 from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
-from GTG.core.config import CoreConfig
-from GTG.core import requester
-from GTG.core.search import parse_search_query, search_filter, InvalidQuery
-from GTG.core.tag import Tag, SEARCH_TAG, SEARCH_TAG_PREFIX
-from GTG.core.task import Task
-from GTG.core.treefactory import TreeFactory
-from GTG.core.borg import Borg
+import GTG.core.info as info
+
+from lxml import etree as et
+
+from typing import Optional
 
 
 log = logging.getLogger(__name__)
-TAG_XMLROOT = "tagstore"
 
 
-class DataStore():
-    """
-    A wrapper around all backends that is responsible for keeping the backend
-    instances. It can enable, disable, register and destroy backends, and acts
-    as interface between the backends and GTG core.
-    You should not interface yourself directly with the DataStore: use the
-    Requester instead (which also sends signals as you issue commands).
-    """
+class Datastore:
 
-    def __init__(self, global_conf=CoreConfig()):
-        """
-        Initializes a DataStore object
-        """
-        # dictionary {backend_name_string: Backend instance}
+    #: Amount of backups to keep
+    BACKUPS_NUMBER = 7
+
+
+    def __init__(self) -> None:
+        self.tasks = TaskStore()
+        self.tags = TagStore()
+        self.saved_searches = SavedSearchStore()
+        self.xml_tree = None
+
+        self._mutex = threading.Lock()
         self.backends = {}
-        self.treefactory = TreeFactory()
-        self._tasks = self.treefactory.get_tasks_tree()
-        self.requester = requester.Requester(self, global_conf)
-        self.tagfile_loaded = False
-        self._tagstore = self.treefactory.get_tags_tree(self.requester)
         self._backend_signals = BackendSignals()
-        self.conf = global_conf
-        self.tag_idmap = {}
+
+        # When a backup has to be used, this will be filled with
+        # info on the backup used
+        self.backup_info = {}
 
         # Flag when turned to true, all pending operation should be
         # completed and then GTG should quit
         self.please_quit = False
 
-        # The default backend must be loaded first. This flag turns to True
-        # when the default backend loading has finished.
-        self.is_default_backend_loaded = False
-        self._backend_signals.connect('default-backend-loaded',
-                                      self._activate_non_default_backends)
-        self._backend_mutex = threading.Lock()
+        # Count of tasks for each pane and each tag
+        self.task_count = {
+            'open': {'all': 0, 'untagged': 0},
+            'actionable': {'all': 0, 'untagged': 0},
+            'closed': {'all': 0, 'untagged': 0},
+        }
 
-    # Accessor to embedded objects in DataStore ##############################
-    def get_tagstore(self):
-        """
-        Return the Tagstore associated with this DataStore
-
-        @return GTG.core.tagstore.TagStore: the tagstore object
-        """
-        return self._tagstore
-
-    def get_requester(self):
-        """
-        Return the Requester associate with this DataStore
-
-        @returns GTG.core.requester.Requester: the requester associated with
-                                               this datastore
-        """
-        return self.requester
-
-    def get_tasks_tree(self):
-        """
-        Return the Tree with all the tasks contained in this Datastore
-
-        @returns GTG.core.tree.Tree: a task tree (the main one)
-        """
-        return self._tasks
-
-    # Tags functions ##########################################################
-    def _add_new_tag(self, name, tag, filter_func, parameters, parent_id=None):
-        """ Add tag into a tree """
-        if self._tagstore.has_node(name):
-            raise IndexError(f'tag {name} was already in the datastore')
-
-        self._tasks.add_filter(name, filter_func, parameters=parameters)
-        self._tagstore.add_node(tag, parent_id=parent_id)
-        tag.set_save_callback(self.save)
-
-    def new_tag(self, name, attributes={}, tid=None):
-        """
-        Create a new tag
-
-        @returns GTG.core.tag.Tag: the new tag
-        """
-        parameters = {'tag': name}
-        tag = Tag(name, req=self.requester, attributes=attributes, tid=tid)
-        self._add_new_tag(name, tag, self.treefactory.tag_filter, parameters)
-        return tag
-
-    def new_search_tag(self, name, query, attributes={}, tid=None, save=True):
-        """
-        Create a new search tag
-
-        @returns GTG.core.tag.Tag: the new search tag/None for a invalid query
-        """
-        try:
-            parameters = parse_search_query(query)
-        except InvalidQuery as error:
-            log.warning("Problem with parsing query %r (skipping): %s", query, error.message)
-            return None
-
-        # Create own copy of attributes and add special attributes label, query
-        init_attr = dict(attributes)
-        init_attr["label"] = name
-        init_attr["query"] = query
-
-        name = SEARCH_TAG_PREFIX + name
-        tag = Tag(name, req=self.requester, attributes=init_attr, tid=tid)
-        self._add_new_tag(name, tag, search_filter, parameters,
-                          parent_id=SEARCH_TAG)
-
-        if save:
-            self.save_tagtree()
-
-        return tag
-
-    def remove_tag(self, name):
-        """ Removes a tag from the tagtree """
-        if self._tagstore.has_node(name):
-            self._tagstore.del_node(name)
-            self.save_tagtree()
-        else:
-            raise IndexError(f"There is no tag {name}")
-
-    def rename_tag(self, oldname, newname):
-        """ Give a tag a new name
-
-        This function is quite high-level method. Right now,
-        only renaming search bookmarks are implemented by removing
-        the old one and creating almost identical one with the new name.
-
-        NOTE: Implementation for regular tasks must be much more robust.
-        You have to replace all occurences of tag name in tasks descriptions,
-        their parameters and backend settings (synchronize only certain tags).
-
-        Have a fun with implementing it!
-        """
-
-        tag = self.get_tag(oldname)
-
-        if not tag.is_search_tag():
-            for task_id in tag.get_related_tasks():
-
-                # Store old tag attributes
-                color = tag.get_attribute("color")
-                icon = tag.get_attribute("icon")
-                tid = tag.tid
-
-                my_task = self.get_task(task_id)
-                my_task.rename_tag(oldname, newname)
-
-                # Restore attributes on tag
-                new_tag = self.get_tag(newname)
-                new_tag.tid = tid
-
-                if color:
-                    new_tag.set_attribute("color", color)
-
-                if icon:
-                    new_tag.set_attribute("icon", icon)
-
-            self.remove_tag(oldname)
-            self.save_tagtree()
-
-            return None
-
-        query = tag.get_attribute("query")
-        self.remove_tag(oldname)
-
-        # Make sure the name is unique
-        if newname.startswith('!'):
-            newname = '_' + newname
-
-        label, num = newname, 1
-        while self._tagstore.has_node(SEARCH_TAG_PREFIX + label):
-            num += 1
-            label = newname + " " + str(num)
-
-        self.new_search_tag(label, query, {}, tag.tid)
-
-    def get_tag(self, tagname):
-        """
-        Returns tag object
-
-        @return GTG.core.tag.Tag
-        """
-        if self._tagstore.has_node(tagname):
-            return self._tagstore.get_node(tagname)
-        else:
-            return None
-
-    def load_tag_tree(self, tag_tree):
-        """
-        Loads the tag tree from a xml file
-        """
-
-        for element in tag_tree.iter('tag'):
-            tid = element.get('id')
-            name = element.get('name')
-            color = element.get('color')
-            icon = element.get('icon')
-            parent = element.get('parent')
-            nonactionable = element.get('nonactionable')
-
-            tag_attrs = {}
-
-            if color:
-                tag_attrs['color'] = '#' + color
-
-            if icon:
-                tag_attrs['icon'] = icon
-
-            if nonactionable:
-                tag_attrs['nonactionable'] = nonactionable
-
-            tag = self.new_tag(name, tag_attrs, tid)
-
-            if parent:
-                tag.set_parent(parent)
-
-            # Add to idmap for quick lookup based on ID
-            self.tag_idmap[tid] = tag
-
-        self.tagfile_loaded = True
+        self.data_path = None
+        self._activate_non_default_backends()
 
 
-    def load_search_tree(self, search_tree):
-        """Load saved searches tree."""
-
-        for element in search_tree.iter('savedSearch'):
-            tid = element.get('id')
-            name = element.get('name')
-            color = element.get('color')
-            icon = element.get('icon')
-            query = element.get('query')
-
-            tag_attrs = {}
-
-            if color:
-                tag_attrs['color'] = color
-
-            if icon:
-                tag_attrs['icon'] = icon
-
-            self.new_search_tag(name, query, tag_attrs, tid, False)
+    @property
+    def mutex(self) -> threading.Lock:
+        return self._mutex
 
 
-    def get_tag_by_id(self, tid):
-        """Get a tag by its ID"""
+    def load_data(self, data: et.Element) -> None:
+        """Load data from an lxml element object."""
+
+        self.saved_searches.from_xml(data.find('searchlist'))
+        self.tags.from_xml(data.find('taglist'))
+        self.tasks.from_xml(data.find('tasklist'), self.tags)
+
+        self.refresh_task_count()
+
+
+    def load_file(self, path: str) -> None:
+        """Load data from a file."""
+
+        bench_start = 0
+
+        if log.isEnabledFor(logging.DEBUG):
+            bench_start = time()
+
+        parser = et.XMLParser(remove_blank_text=True, strip_cdata=False)
+
+        with open(path, 'rb') as stream:
+            self.xml_tree = et.parse(stream, parser=parser)
+            self.load_data(self.xml_tree)
+
+        if log.isEnabledFor(logging.DEBUG):
+            log.debug('Processed file %s in %.2fms',
+                      path, (time() - bench_start) * 1000)
+
+        # Store path, so we can call save() on it
+        self.data_path = path
+
+
+    def generate_xml(self) -> et.ElementTree:
+        """Generate lxml element object with all data."""
+
+        root = et.Element('gtgData')
+        root.set('appVersion', info.VERSION)
+        root.set('xmlVersion', '2')
+
+        root.append(self.tags.to_xml())
+        root.append(self.saved_searches.to_xml())
+        root.append(self.tasks.to_xml())
+
+        return et.ElementTree(root)
+
+
+    def write_file(self, path: str) -> None:
+        """Generate and write xml file."""
+
+        tree = self.generate_xml()
+
+        with open(path, 'wb') as stream:
+            tree.write(stream, xml_declaration=True, pretty_print=True,
+                       encoding='UTF-8')
+
+
+    def save(self, path: Optional[str] = None) -> None:
+        """Write GTG data file."""
+
+        path = path or self.data_path
+        temp_file = path + '__'
+        bench_start = 0
 
         try:
-            return self.tag_idmap[tid]
+            os.rename(path, temp_file)
+        except IOError:
+            log.error('Error renaming temp file %r', temp_file)
+
+        if log.isEnabledFor(logging.DEBUG):
+            bench_start = time()
+
+        base_dir = os.path.dirname(path)
+
+        try:
+            os.makedirs(base_dir, exist_ok=True)
+        except IOError as error:
+            log.error("Error while creating directories: %r", error)
+
+        try:
+            self.write_file(path)
+        except (IOError, FileNotFoundError):
+            log.error('Could not write XML file at %r', path)
+            return
+
+
+        if log.isEnabledFor(logging.DEBUG):
+            log.debug('Saved file %s in %.2fms',
+                      path, (time() - bench_start) * 1000)
+
+        try:
+            os.remove(temp_file)
+        except FileNotFoundError:
+            pass
+
+        self.write_backups(path)
+
+
+    def print_info(self) -> None:
+        """Print statistics and information on this datastore."""
+
+        tasks = self.tasks.count()
+        initialized = 'Initialized' if tasks > 0 else 'Empty'
+
+        print(f'Datastore [{initialized}]')
+        print(f'- Tags: {self.tags.count()}')
+        print(f'- Saved Searches: {self.saved_searches.count()}')
+        print(f'- Tasks: {self.tasks.count()}')
+
+
+    def refresh_task_for_tag(self, tag: Tag) -> None:
+        """Refresh task counts for a tag."""
+
+        try:
+            tag.task_count_open = self.task_count['open'][tag.name]
         except KeyError:
+            tag.task_count_open = 0
+
+        try:
+            tag.task_count_closed = self.task_count['closed'][tag.name]
+        except KeyError:
+            tag.task_count_closed = 0
+
+        try:
+            tag.task_count_actionable = self.task_count['actionable'][tag.name]
+        except KeyError:
+            tag.task_count_actionable = 0
+
+
+    def refresh_task_count(self) -> None:
+        """Refresh task count dictionary."""
+
+        def count_tasks(count: dict, tasklist: list):
+            for task in tasklist:
+                count['all'] += 1
+
+                if not task.tags:
+                    count['untagged'] += 1
+
+                for tag in task.tags:
+                    val = count.get(tag.name, 0)
+                    count[tag.name] = val + 1
+
+                if task.children:
+                    count_tasks(count, task.children)
+
+        # Reset task counts
+        self.task_count = {
+            'open': {'all': 0, 'untagged': 0},
+            'actionable': {'all': 0, 'untagged': 0},
+            'closed': {'all': 0, 'untagged': 0},
+        }
+
+        count_tasks(self.task_count['open'], 
+                    self.tasks.filter(Filter.ACTIVE))
+
+        count_tasks(self.task_count['closed'], 
+                    self.tasks.filter(Filter.CLOSED))
+
+        count_tasks(self.task_count['actionable'], 
+                    self.tasks.filter(Filter.ACTIONABLE))
+
+
+    def notify_tag_change(self, tag) -> None:
+        """Notify tasks that this tag has changed."""
+        
+        for task in self.tasks.lookup.values():
+            if tag in task.tags:
+                task.notify('icons')
+                task.notify('row_css')
+                task.notify('tag_colors')
+                task.notify('show_tag_colors')
+
+
+    def first_run(self, path: str) -> et.Element:
+        """Write initial data file."""
+
+        self.xml_tree = firstrun_tasks.generate()
+        self.load_data(self.xml_tree)
+        self.save(path)
+
+
+    def do_first_run_versioning(self, filepath: str) -> None:
+        """If there is an old file around needing versioning, convert it, then rename the old file."""
+
+        old_path = self.find_old_path(DATA_DIR)
+        
+        if old_path is not None:
+            log.warning('Found old file: %r. Running versioning code.', old_path)
+            tree = versioning.convert(old_path, self)
+            self.load_data(tree)
+            self.save(filepath)
+            os.rename(old_path, old_path + '.imported')
+            
+        else:
+            self.first_run(self.data_path)
+
+
+    def find_old_path(self, datadir: str) -> None | str:
+        """Reliably find the old data files."""
+
+        # used by which version?
+        path = os.path.join(datadir, 'gtg_tasks.xml')
+        
+        if os.path.isfile(path):
+            return path
+        
+        # used by (at least) 0.3.1-4
+        path = os.path.join(datadir, 'projects.xml')
+        
+        if os.path.isfile(path):
+            return self.find_old_uuid_path(path)
+
+        return None
+
+
+    def find_old_uuid_path(self, path: str) -> None | str:
+        """Find the first backend entry with module='backend_localfile' and return its path."""
+
+        with open(path, 'r') as stream:
+            xml_tree = et.parse(stream)
+            
+        for backend in xml_tree.findall('backend'):
+            module = backend.get('module')
+            if module == 'backend_localfile':
+                uuid_path = backend.get('path')
+                if os.path.isfile(uuid_path):
+
+                    return uuid_path
+
+        return None
+
+
+    @staticmethod
+    def get_backup_path(path: str, i: int = None) -> str:
+        """Get path of backups which are backup/ directory."""
+
+        dirname, filename = os.path.split(path)
+        backup_file = f"{filename}.bak.{i}" if i else filename
+
+        return os.path.join(dirname, 'backup', backup_file)
+
+
+    def write_backups(self, path: str) -> None:
+        backup_name = self.get_backup_path(path)
+        backup_dir = os.path.dirname(backup_name)
+
+        # Make sure backup dir exists
+        try:
+            os.makedirs(backup_dir, exist_ok=True)
+
+        except IOError:
+            log.error('Backup dir %r cannot be created!', backup_dir)
             return
 
-    def save_tagtree(self):
-        """ Saves the tag tree to an XML file """
+        # Cycle backups
+        for current_backup in range(self.BACKUPS_NUMBER, 0, -1):
+            older = f"{backup_name}.bak.{current_backup}"
+            newer = f"{backup_name}.bak.{current_backup - 1}"
 
-        if not self.tagfile_loaded:
-            return
+            try:
+                shutil.move(newer, older)
+            except FileNotFoundError:
+                pass
 
-        tags = self._tagstore.get_main_view().get_all_nodes()
+        # bak.0 is always a fresh copy of the closed file
+        # so that it's not touched in case of not opening next time
+        bak_0 = f"{backup_name}.bak.0"
+        shutil.copy(path, bak_0)
 
-        for backend in self.backends.values():
-            if backend.get_name() == 'backend_localfile':
-                backend.save_tags(tags, self._tagstore)
+        # Add daily backup
+        today = datetime.today().strftime('%Y-%m-%d')
+        daily_backup = f'{backup_name}.{today}.bak'
+
+        if not os.path.exists(daily_backup):
+            shutil.copy(path, daily_backup)
+
+        self.purge_backups(path)
 
 
-    # Tasks functions #########################################################
-    def get_all_tasks(self):
-        """
-        Returns list of all keys of active tasks
+    @staticmethod
+    def purge_backups(path: str, days: int = 30) -> None:
+        """Remove backups older than X days."""
 
-        @return a list of strings: a list of task ids
-        """
-        return self._tasks.get_main_view().get_all_nodes()
+        now = time()
+        day_in_secs = 86_400
+        basedir = os.path.dirname(path)
 
-    def has_task(self, tid):
-        """
-        Returns true if the tid is among the active or closed tasks for
-        this DataStore, False otherwise.
+        for filename in os.listdir(basedir):
+            filename = os.path.join(basedir, filename)
+            filestamp = os.stat(filename).st_mtime
+            filecompare = now - (days * day_in_secs)
 
-        @param tid: Task ID to search for
-        @return bool: True if the task is present
-        """
-        return self._tasks.has_node(tid)
+            if filestamp < filecompare:
+                os.remove(filename)
 
-    def get_task(self, tid):
-        """
-        Returns the internal task object for the given tid, or None if the
-        tid is not present in this DataStore.
 
-        @param tid: Task ID to retrieve
-        @returns GTG.core.task.Task or None:  whether the Task is present
-        or not
-        """
-        if self.has_task(tid):
-            return self._tasks.get_node(tid)
-        else:
-            # log.error("requested non-existent task %s", tid)
-            # This is not an error: it is normal to request a task which
-            # might not exist yet.
-            return None
+    def find_and_load_file(self, path: str) -> None:
+        """Find an XML file to open
 
-    def task_factory(self, tid, newtask=False):
-        """
-        Instantiates the given task id as a Task object.
+        If file could not be opened, try:
+            - file__
+            - file.bak.0
+            - file.bak.1
+            - .... until BACKUP_NUMBER
 
-        @param tid: a task id. Must be unique
-        @param newtask: True if the task has never been seen before
-        @return Task: a Task instance
-        """
-        return Task(tid, self.requester, newtask)
+        If file doesn't exist, create a new file."""
 
-    def new_task(self):
-        """
-        Creates a blank new task in this DataStore.
-        New task is created in all the backends that collect all tasks (among
-        them, the default backend). The default backend uses the same task id
-        in its own internal representation.
+        files = [
+            path,            # Main file
+            path + '__',     # Temp file
+        ]
 
-        @return: The task object that was created.
-        """
-        task = self.task_factory(str(uuid.uuid4()), True)
-        self._tasks.add_node(task)
-        return task
+        # Add backup files
+        files += [self.get_backup_path(path, i)
+                  for i in range(self.BACKUPS_NUMBER)]
 
-    def push_task(self, task):
-        """
-        Adds the given task object to the task tree. In other words, registers
-        the given task in the GTG task set.
-        This function is used in mutual exclusion: only a backend at a time is
-        allowed to push tasks.
 
-        @param task: A valid task object  (a GTG.core.task.Task)
-        @return bool: True if the task has been accepted
-        """
+        for index, filepath in enumerate(files):
+            try:
+                log.debug('Opening file %s', filepath)
+                self.load_file(filepath)
 
-        def adding(task):
-            self._tasks.add_node(task)
-            task.set_loaded()
-            if self.is_default_backend_loaded:
-                task.sync()
-        if self.has_task(task.get_id()):
-            return False
-        else:
-            # Thread protection
-            adding(task)
-            return True
+                timestamp = os.path.getmtime(filepath)
+                mtime = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')
 
-    ##########################################################################
-    # Backends functions
-    ##########################################################################
+                # This was a backup. We should inform the user
+                if index > 0:
+                    self.backup_info = {
+                        'name': filepath,
+                        'time': mtime
+                    }
+
+                # We could open a file, let's stop this loop
+                break
+
+            except FileNotFoundError:
+                log.debug('File not found: %r. Trying next.', filepath)
+                continue
+
+            except PermissionError:
+                log.debug('Not allowed to open: %r. Trying next.', filepath)
+                continue
+
+            except et.XMLSyntaxError as error:
+                log.debug('Syntax error in %r. %r. Trying next.',
+                          filepath, error)
+                continue
+
+        # We couldn't open any file :(
+        if not self.xml_tree:
+            try:
+                # Try making a new empty file and open it
+                self.first_run(path)
+                self.data_path = path
+
+            except IOError:
+                raise SystemError(f'Could not write a file at {path}')
+
+
+    def purge(self, max_days: int) -> None:
+        """Remove closed tasks and unused tags."""
+
+        log.debug("Deleting old tasks")
+
+        today = Date.today()
+        for task in self.tasks.data:
+            if (today - task.date_closed).days > max_days:
+                self.tasks.remove(task.id)
+
+        log.debug("Deleting unused tags")
+
+        for tag in self.tags.data:
+            count_open = self.task_count['open'].get(tag.name, 0)
+            count_closed = self.task_count['closed'].get(tag.name, 0)
+            customized = tag.color or tag.icon
+
+            if (count_open + count_closed) == 0 and not customized:
+                self.tags.remove(tag.id)
+
+
+    # --------------------------------------------------------------------------
+    # BACKENDS
+    # --------------------------------------------------------------------------
+
     def get_all_backends(self, disabled=False):
-        """
-        returns list of all registered backends for this DataStore.
+        """returns list of all registered backends for this DataStore.
 
         @param disabled: If disabled is True, attaches also the list of
                 disabled backends
@@ -399,6 +480,7 @@ class DataStore():
             if backend.is_enabled() or disabled:
                 result.append(backend)
         return result
+
 
     def get_backend(self, backend_id):
         """
@@ -412,6 +494,7 @@ class DataStore():
             return self.backends[backend_id]
         else:
             return None
+
 
     def register_backend(self, backend_dic):
         """
@@ -434,38 +517,38 @@ class DataStore():
             if backend.get_id() in self.backends:
                 log.error("registering already registered backend")
                 return None
-            # creating the TaskSource which will wrap the backend,
-            # filtering the tasks that should hit the backend.
-            source = TaskSource(requester=self.requester,
-                                backend=backend,
-                                datastore=self)
+
+
+            backend.register_datastore(self)
 
             if first_run:
                 backend.this_is_the_first_run(None)
 
-            self.backends[backend.get_id()] = source
+            self.backends[backend.get_id()] = backend
             # we notify that a new backend is present
             self._backend_signals.backend_added(backend.get_id())
             # saving the backend in the correct dictionary (backends for
             # enabled backends, disabled_backends for the disabled ones)
             # this is useful for retro-compatibility
             if GenericBackend.KEY_ENABLED not in backend_dic:
-                source.set_parameter(GenericBackend.KEY_ENABLED, True)
+                backend.set_parameter(GenericBackend.KEY_ENABLED, True)
             if GenericBackend.KEY_DEFAULT_BACKEND not in backend_dic:
-                source.set_parameter(GenericBackend.KEY_DEFAULT_BACKEND, True)
+                backend.set_parameter(GenericBackend.KEY_DEFAULT_BACKEND, True)
             # if it's enabled, we initialize it
-            if source.is_enabled() and \
-                    (self.is_default_backend_loaded or source.is_default()):
-                source.initialize(connect_signals=False)
+            if backend.is_enabled():
+                self._backend_startup(backend)
+                # backend.initialize()
                 # Filling the backend
                 # Doing this at start is more efficient than
                 # after the GUI is launched
-                source.start_get_tasks()
-            return source
+                # backend.start_get_tasks()
+
+            return backend
         else:
             log.error("Tried to register a backend without a pid")
 
-    def _activate_non_default_backends(self, sender=None):
+
+    def _activate_non_default_backends(self):
         """
         Non-default backends have to wait until the default loads before
         being  activated. This function is called after the first default
@@ -473,14 +556,11 @@ class DataStore():
 
         @param sender: not used, just here for signal compatibility
         """
-        if self.is_default_backend_loaded:
-            log.debug("spurious call")
-            return
 
-        self.is_default_backend_loaded = True
         for backend in self.backends.values():
-            if backend.is_enabled() and not backend.is_default():
+            if backend.is_enabled():
                 self._backend_startup(backend)
+
 
     def _backend_startup(self, backend):
         """
@@ -503,6 +583,7 @@ class DataStore():
                                   args=(self, backend))
         thread.setDaemon(True)
         thread.start()
+
 
     def set_backend_enabled(self, backend_id, state):
         """
@@ -527,12 +608,8 @@ class DataStore():
                 threading.Thread(target=backend.quit,
                                  kwargs={'disable': True}).start()
             elif current_state is False and state is True:
-                if self.is_default_backend_loaded is True:
-                    self._backend_startup(backend)
-                else:
-                    # will be activated afterwards
-                    backend.set_parameter(GenericBackend.KEY_ENABLED,
-                                          True)
+                self._backend_startup(backend)
+
 
     def remove_backend(self, backend_id):
         """
@@ -554,6 +631,7 @@ class DataStore():
             self._backend_signals.backend_removed(backend.get_id())
             del self.backends[backend_id]
 
+
     def backend_change_attached_tags(self, backend_id, tag_names):
         """
         Changes the tags for which a backend should store a task
@@ -564,6 +642,7 @@ class DataStore():
         """
         backend = self.backends[backend_id]
         backend.set_attached_tags(tag_names)
+
 
     def flush_all_tasks(self, backend_id):
         """
@@ -579,312 +658,122 @@ class DataStore():
 
         def _internal_flush_all_tasks():
             backend = self.backends[backend_id]
-            for task_id in self.get_all_tasks():
+            for task in self.tasks.data:
                 if self.please_quit:
                     break
-                backend.queue_set_task(task_id)
+                backend.queue_set_task(task.id)
         t = threading.Thread(target=_internal_flush_all_tasks)
         t.start()
         self.backends[backend_id].start_get_tasks()
 
-    def save(self, quit=False):
-        """
-        Saves the backends parameters.
 
-        @param quit: If quit is true, backends are shut down
-        """
+    # --------------------------------------------------------------------------
+    # TESTING AND UTILS
+    # --------------------------------------------------------------------------
 
-        try:
-            self.start_get_tasks_thread.join()
-        except Exception:
-            pass
+    def fill_with_samples(self, tasks_count: int) -> None:
+        """Fill the Datastore with sample data."""
 
-        # we ask all the backends to quit first.
-        if quit:
-            # we quit backends in parallel
-            threads_dic = {}
+        def random_date(start: datetime = None):
+            start = start or datetime.now()
+            end = start + timedelta(days=random.randint(1, 365 * 5))
 
-            for b in self.get_all_backends():
-                thread = threading.Thread(target=b.quit)
-                threads_dic[b.get_id()] = thread
-                thread.start()
-
-            for backend_id, thread in threads_dic.items():
-                # after 20 seconds, we give up
-                thread.join(20)
-
-                alive = thread.is_alive()
-
-                if alive:
-                    log.error("The %s backend stalled while quitting",
-                              backend_id)
-
-        # we save the parameters
-        for b in self.get_all_backends(disabled=True):
-            config = self.conf.get_backend_config(b.get_name())
+            return start + (end - start)
 
 
-            for key, value in b.get_parameters().items():
-                if key in ["backend", "xmlobject"]:
-                    # We don't want parameters, backend, xmlobject:
-                    # we'll create them at next startup
+        def random_boolean() -> bool:
+            return bool(random.getrandbits(1))
+
+
+        def random_word(length: int) -> str:
+            letters = string.ascii_lowercase
+            return ''.join(random.choice(letters) for _ in range(length))
+
+
+        if tasks_count == 0:
+            return
+
+
+        tags_count = random.randint(tasks_count // 10, tasks_count)
+        search_count = random.randint(0, tasks_count // 10)
+        task_sizes = [random.randint(0, 200) for _ in range(10)]
+        randint = random.randint
+        tag_words = [random_word(randint(2, 14)) for _ in range(tags_count)]
+
+        # Generate saved searches
+        for _ in range(search_count):
+            name = random_word(randint(2, 10))
+            query = random_word(randint(2, 10))
+            self.saved_searches.new(name, query)
+
+        # Generate tags
+        for tag_name in tag_words:
+            tag = self.tags.new(tag_name)
+            tag.actionable = random_boolean()
+            tag.color = self.tags.generate_color()
+
+
+        # Parent the tags
+        for tag in self.tags.data:
+            if bool(random.getrandbits(1)):
+                parent = random.choice(self.tags.data)
+
+                if tag.id == parent.id:
                     continue
 
-                param_type = b.get_parameter_type(key)
-                value = b.cast_param_type_to_string(param_type, value)
-                config.set(str(key), value)
-
-        config.save()
-
-        #  Saving the tagstore
-        self.save_tagtree()
-
-    def request_task_deletion(self, tid):
-        """
-        This is a proxy function to request a task deletion from a backend
-
-        @param tid: the tid of the task to remove
-        """
-        self.requester.delete_task(tid)
-
-    def get_backend_mutex(self):
-        """
-        Returns the mutex object used by backends to avoid modifying a task
-        at the same time.
-
-        @returns: threading.Lock
-        """
-        return self._backend_mutex
+                self.tags.parent(tag.id, parent.id)
 
 
-class TaskSource():
-    """
-    Transparent interface between the real backend and the DataStore.
-    Is in charge of connecting and disconnecting to signals
-    """
+        # Generate tasks
+        for _ in range(tasks_count):
+            title = ''
+            content = ''
+            content_size = random.choice(task_sizes)
 
-    def __init__(self, requester, backend, datastore):
-        """
-        Instantiates a TaskSource object.
+            for _ in range(random.randint(1, 15)):
+                word = random_word(randint(4, 20))
 
-        @param requester: a Requester
-        @param backend:  the backend being wrapped
-        @param datastore: a Datastore
-        """
-        self.backend = backend
-        self.req = requester
-        self.backend.register_datastore(datastore)
-        self.tasktree = datastore.get_tasks_tree().get_main_view()
-        self.to_set = deque()
-        self.to_remove = deque()
-        self.please_quit = False
-        self.task_filter = self.get_task_filter_for_backend()
-        if log.isEnabledFor(logging.DEBUG):
-            self.timer_timestep = 5
-        else:
-            self.timer_timestep = 1
-        self.add_task_handle = None
-        self.set_task_handle = None
-        self.remove_task_handle = None
-        self.to_set_timer = None
+                if word in tag_words:
+                    word = '@' + word
 
-    def start_get_tasks(self):
-        """ Loads all task from the backend and connects its signals
-        afterwards. """
-        self.backend.start_get_tasks()
-        self._connect_signals()
-        if self.backend.is_default():
-            BackendSignals().default_backend_loaded()
+                title += word + ' '
 
-    def get_task_filter_for_backend(self):
-        """
-        Filter that checks if the task should be stored in this backend.
+            task = self.tasks.new(title)
 
-        @returns function: a function that accepts a task and returns
-                 True/False whether the task should be stored or not
-        """
+            for _ in range(random.randint(0, 10)):
+                tag = self.tags.find(random.choice(tag_words))
+                task.add_tag(tag)
 
-        def backend_filter(req, task, parameters):
-            """
-            Filter that checks if two tags sets intersect. It is used to check
-            if a task should be stored inside a backend
-            @param task: a task object
-            @param tags_to_match_set: a *set* of tag names
-            """
-            try:
-                tags_to_match_set = parameters['tags']
-            except KeyError:
-                return []
-            all_tasks_tag = req.get_alltag_tag().get_name()
-            if all_tasks_tag in tags_to_match_set:
-                return True
-            task_tags = set(task.get_tags_name())
-            return task_tags.intersection(tags_to_match_set)
+            if random_boolean():
+                task.toggle_active()
 
-        attached_tags = self.backend.get_attached_tags()
-        return lambda task: backend_filter(self.requester, task,
-                                           {"tags": set(attached_tags)})
+            if random_boolean():
+                task.toggle_dismiss()
 
-    def should_task_id_be_stored(self, task_id):
-        """
-        Helper function:  Checks if a task should be stored in this backend
+            for _ in range(random.randint(0, content_size)):
+                word = random_word(randint(4, 20))
 
-        @param task_id: a task id
-        @returns bool: True if the task should be stored
-        """
-        # task = self.req.get_task(task_id)
-        # FIXME: it will be a lot easier to add, instead,
-        # a filter to a tree and check that this task is well in the tree
-#        return self.task_filter(task)
-        return True
+                if word in tag_words:
+                    word = '@' + word
 
-    def queue_set_task(self, tid, path=None):
-        """
-        Updates the task in the DataStore.  Actually, it adds the task to a
-        queue to be updated asynchronously.
+                content += word + ' '
+                content += '\n' if random_boolean() else ''
 
-        @param task: The Task object to be updated.
-        @param path: its path in TreeView widget => not used there
-        """
-        if self.should_task_id_be_stored(tid):
-            if tid not in self.to_set and tid not in self.to_remove:
-                self.to_set.appendleft(tid)
-                self.__try_launch_setting_thread()
-        else:
-            self.queue_remove_task(tid, path)
+            task.content = content
 
-    def launch_setting_thread(self, bypass_please_quit=False):
-        """
-        Operates the threads to set and remove tasks.
-        Releases the lock when it is done.
+            if random_boolean():
+                task.date_start = random_date()
 
-        @param bypass_please_quit: if True, the self.please_quit
-                                   "quit condition" is ignored. Currently,
-                                   it's turned to true after the quit
-                                   condition has been issued, to execute
-                                   eventual pending operations.
-        """
-        while not self.please_quit or bypass_please_quit:
-            try:
-                tid = self.to_set.pop()
-            except IndexError:
-                break
-            # we check that the task is not already marked for deletion
-            # and that it's still to be stored in this backend
-            # NOTE: no need to lock, we're reading
-            if tid not in self.to_remove and \
-                    self.should_task_id_be_stored(tid) and \
-                    self.req.has_task(tid):
-                task = self.req.get_task(tid)
-                self.backend.queue_set_task(task)
-        while not self.please_quit or bypass_please_quit:
-            try:
-                tid = self.to_remove.pop()
-            except IndexError:
-                break
-            self.backend.queue_remove_task(tid)
-        # we release the weak lock
-        self.to_set_timer = None
+            if random_boolean():
+                task.date_due = Date(random_date())
 
-    def queue_remove_task(self, tid, path=None):
-        """
-        Queues task to be removed.
 
-        @param sender: not used, any value will do
-        @param tid: The Task ID of the task to be removed
-        """
-        if tid not in self.to_remove:
-            self.to_remove.appendleft(tid)
-            self.__try_launch_setting_thread()
+        # Parent the tasks
+        for task in self.tasks.data:
+            if bool(random.getrandbits(1)):
+                parent = random.choice(self.tasks.data)
 
-    def __try_launch_setting_thread(self):
-        """
-        Helper function to launch the setting thread, if it's not running
-        """
-        if self.to_set_timer is None and not self.please_quit:
-            self.to_set_timer = threading.Timer(self.timer_timestep,
-                                                self.launch_setting_thread)
-            self.to_set_timer.setDaemon(True)
-            self.to_set_timer.start()
+                if task.id == parent.id:
+                    continue
 
-    def initialize(self, connect_signals=True):
-        """
-        Initializes the backend and starts looking for signals.
-
-        @param connect_signals: if True, it starts listening for signals
-        """
-        self.backend.initialize()
-        if connect_signals:
-            self._connect_signals()
-
-    def _connect_signals(self):
-        """
-        Helper function to connect signals
-        """
-        if not self.add_task_handle:
-            self.add_task_handle = self.tasktree.register_cllbck(
-                'node-added', self.queue_set_task)
-        if not self.set_task_handle:
-            self.set_task_handle = self.tasktree.register_cllbck(
-                'node-modified', self.queue_set_task)
-        if not self.remove_task_handle:
-            self.remove_task_handle = self.tasktree.register_cllbck(
-                'node-deleted', self.queue_remove_task)
-
-    def _disconnect_signals(self):
-        """
-        Helper function to disconnect signals
-        """
-        if self.add_task_handle:
-            self.tasktree.deregister_cllbck('node-added',
-                                            self.set_task_handle)
-            self.add_task_handle = None
-        if self.set_task_handle:
-            self.tasktree.deregister_cllbck('node-modified',
-                                            self.set_task_handle)
-            self.set_task_handle = None
-        if self.remove_task_handle:
-            self.tasktree.deregister_cllbck('node-deleted',
-                                            self.remove_task_handle)
-            self.remove_task_handle = None
-
-    def sync(self):
-        """
-        Forces the TaskSource to sync all the pending tasks
-        """
-        try:
-            self.to_set_timer.cancel()
-        except Exception:
-            pass
-        try:
-            self.to_set_timer.join(3)
-        except Exception:
-            pass
-        try:
-            self.start_get_tasks_thread.join(3)
-        except Exception:
-            pass
-        self.launch_setting_thread(bypass_please_quit=True)
-
-    def quit(self, disable=False):
-        """
-        Quits the backend and disconnect the signals
-
-        @param disable: if True, the backend is disabled.
-        """
-        self._disconnect_signals()
-        self.please_quit = True
-        self.sync()
-        self.backend.quit(disable)
-
-    def __getattr__(self, attr):
-        """
-        Delegates all the functions not defined here to the real backend
-        (standard python function)
-
-        @param attr: attribute to get
-        """
-        if attr in self.__dict__:
-            return self.__dict__[attr]
-        else:
-            return getattr(self.backend, attr)
+                self.tasks.parent(task.id, parent.id)

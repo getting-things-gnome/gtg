@@ -2,9 +2,26 @@
  * MAIN WINDOW
  * --------------------------------------------------------------------------------
  */
-.menu-disclose {
+.menu-disclose button {
     min-width: 16px;
 }
+
+.task-list {
+    border-top: 1px solid rgb(213, 208, 204);
+}
+
+/* 
+    We have to get move the padding into the boxes 
+    so the background color of the rows reaches all
+    the way to the edges
+*/
+.task-list row {
+    padding: 0;
+}
+
+.task-list row > box {
+    padding: 15px 16px;
+} 
 
 /* --------------------------------------------------------------------------------
  * ERROR HANDLER
@@ -36,8 +53,12 @@
     border-bottom-color: alpha(rgb(0, 0, 0), 0.2);
 }
 
-.recurring-active {
+.recurring-active image {
     color: rgb(52, 130, 224);
+}
+
+.backends-cont {
+  padding: 12px;
 }
 
 /* --------------------------------------------------------------------------------
@@ -61,4 +82,26 @@ textview check {
 
 .icon {
     font-size: 36px;
+}
+
+.hide { opacity: 0.2; }
+
+.color-pill {
+    background: #999; 
+    padding: 0; 
+    min-height: 16px; 
+    min-width: 16px; 
+    border: none;
+}
+
+.arrow-only-expander {
+  border-spacing: 0;
+}
+
+.arrow-only-expander indent {
+  -gtk-icon-size: 0px;
+}
+
+.closed-task {
+    opacity: 0.5;
 }

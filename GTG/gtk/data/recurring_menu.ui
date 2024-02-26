@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <menu id="_menu_model">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Repeat</attribute>
+        <attribute name="action">recurring_menu.is_recurring</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Daily</attribute>
+        <attribute name="action">recurring_menu.recurr_every_day</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Every other day</attribute>
+        <attribute name="action">recurring_menu.recurr_every_otherday</attribute>
+      </item>
+      <submenu>
+        <attribute name="label" translatable="yes">Weekly</attribute>
+        <section>
+          <item>
+            <attribute name="label" translatable="yes">On Monday</attribute>
+            <!-- TRNASLATORS: this is locale dependant and should be the correct full
+            name of the weekday -->
+            <attribute name="target" translatable="yes">Monday</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">On Tuesday</attribute>
+            <attribute name="action">recurring_menu.recurr_week_day</attribute>
+            <attribute name="target" translatable="yes">Tuesday</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">On Wednesday</attribute>
+            <attribute name="action">recurring_menu.recurr_week_day</attribute>
+            <attribute name="target" translatable="yes">Wednesday</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">On Thursday</attribute>
+            <attribute name="action">recurring_menu.recurr_week_day</attribute>
+            <attribute name="target" translatable="yes">Thursday</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">On Friday</attribute>
+            <attribute name="action">recurring_menu.recurr_week_day</attribute>
+            <attribute name="target" translatable="yes">Friday</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">On Saturday</attribute>
+            <attribute name="action">recurring_menu.recurr_week_day</attribute>
+            <attribute name="target" translatable="yes">Saturday</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">On Sunday</attribute>
+            <attribute name="action">recurring_menu.recurr_week_day</attribute>
+            <attribute name="target" translatable="yes">Sunday</attribute>
+          </item>
+        </section>
+        <section>
+          <item>
+            <attribute name="label" translatable="yes">On This Day</attribute>
+            <attribute name="action">recurring_menu.recurr_week_day</attribute>
+            <attribute name="target">THIS</attribute>
+          </item>
+        </section>
+      </submenu>
+      <submenu>
+        <attribute name="label" translatable="yes">Monthly</attribute>
+        <section>
+          <item>
+            <attribute name="custom">_month_calendar</attribute>
+          </item>
+        </section>
+        <section>
+          <item>
+            <attribute name="label" translatable="yes">On This Day</attribute>
+            <attribute name="action">recurring_menu.recurr_month_today</attribute>
+          </item>
+        </section>
+      </submenu>
+      <submenu>
+        <attribute name="label" translatable="yes">Yearly</attribute>
+        <section>
+          <item>
+            <attribute name="custom">_year_calendar</attribute>
+          </item>
+        </section>
+        <section>
+          <item>
+            <attribute name="label" translatable="yes">On This Day</attribute>
+            <attribute name="action">recurring_menu.recurr_year_today</attribute>
+          </item>
+        </section>
+      </submenu>
+    </section>
+  </menu>
+  <template class="RecurringMenu" parent="GtkPopoverMenu">
+    <property name="menu_model">_menu_model</property>
+    <child type="_month_calendar">
+      <object class="GtkCalendar" id="_month_calendar">
+        <!-- without, it covers the section heading -->
+        <property name="margin-top">6</property>
+        <property name="show-heading">False</property>
+        <signal name="day-selected" handler="_on_monthly_selected"/>
+      </object>
+    </child>
+    <child type="_year_calendar">
+      <object class="GtkCalendar" id="_year_calendar">
+        <property name="margin-top">6</property>
+        <signal name="day-selected" handler="_on_yearly_selected"/>
+      </object>
+    </child>
+  </template>
+</interface>

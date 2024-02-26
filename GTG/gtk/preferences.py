@@ -24,37 +24,31 @@ from GTG.core.dirs import UI_DIR
 from GTG.gtk.general_preferences import GeneralPreferences
 
 
-class Preferences():
-    """Preferences is a framework for diplaying and switching
+@Gtk.Template(filename=os.path.join(UI_DIR, "preferences.ui"))
+class Preferences(Gtk.Window):
+    """Preferences  a framework for diplaying and switching
     between indivitual parts of preferences: general, plugins
-    and synchronisation. These will be accessed via get_ui() method"""
+    and synchronisation."""
+    __gtype_name__ = 'Preferences'
 
-    PREFERENCES_UI_FILE = os.path.join(UI_DIR, "preferences.ui")
+    _page_stack = Gtk.Template.Child()
 
-    def __init__(self, req, app):
-        self.req = req
-        self.config = self.req.get_config('browser')
-        builder = Gtk.Builder()
-        builder.add_from_file(self.PREFERENCES_UI_FILE)
-
-        self.window = builder.get_object("Preferences")
-
-        builder.connect_signals(self)
-
-        self.headerbar = builder.get_object("right_header_bar")
-        self.stack = builder.get_object("stack")
+    def __init__(self, app):
+        super().__init__()
+        self.config = app.config
 
         self.pages = {}
-        self.add_page(GeneralPreferences(req, app))
+        self.add_page(GeneralPreferences(app))
 
     def activate(self):
         """ Activate the preferences window."""
         self.pages['general'].activate()
-        self.window.show()
+        self.show()
 
+    @Gtk.Template.Callback()
     def on_close(self, widget, data=None):
         """ Close the preferences dialog."""
-        self.window.hide()
+        self.hide()
         return True
 
     def add_page(self, page):
@@ -62,4 +56,4 @@ class Preferences():
         All children are added using this function from __init__"""
         page_name = page.get_name()
         self.pages[page_name] = page
-        self.stack.add_titled(page.get_ui(), page_name, page.get_title())
+        self._page_stack.add_titled(page, page_name, page.get_title())

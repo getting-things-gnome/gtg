@@ -30,13 +30,14 @@ import threading
 import logging
 
 from GTG.backends.backend_signals import BackendSignals
-from GTG.core.tag import ALLTASKS_TAG
 from GTG.core.dirs import SYNC_DATA_DIR
 from GTG.core.interruptible import _cancellation_point
 from GTG.core.keyring import Keyring
 
 log = logging.getLogger(__name__)
 PICKLE_BACKUP_NBR = 2
+
+ALLTASKS_TAG = 'gtg-tags-all'
 
 
 class GenericBackend():

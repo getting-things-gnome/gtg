@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.36.0 -->
 <interface>
-  <requires lib="gtk+" version="3.22"/>
+  <requires lib="gtk" version="4.0"/>
   <menu id="editor_menu">
     <section id="editor_menu_con_section">
       <item>
@@ -20,370 +19,25 @@
       </item>
     </section>
   </menu>
-  <object class="GtkPopover" id="recurring_popover">
-    <property name="can_focus">False</property>
-    <child>
-      <object class="GtkBox" id="main_bo">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_start">12</property>
-        <property name="margin_end">12</property>
-        <property name="margin_top">12</property>
-        <property name="margin_bottom">12</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkStack" id="main_stack">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="vhomogeneous">False</property>
-            <property name="transition_type">slide-left-right</property>
-            <property name="interpolate_size">True</property>
-            <child>
-              <object class="GtkBox" id="stack_main_box">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkLabel" id="title_label">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Every:</property>
-                    <property name="use_markup">True</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkSeparator" id="title_separator">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="margin_top">6</property>
-                    <property name="margin_bottom">6</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkLabel" id="repeat_label">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="margin_start">5</property>
-                        <property name="label" translatable="yes">Repeat</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkCheckButton" id="repeat_checkbutton">
-                        <property name="visible">True</property>
-                        <property name="hexpand">True</property>
-                        <property name="halign">end</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="tooltip_text" translatable="yes">Tick to activate</property>
-                        <property name="margin_end">5</property>
-                        <property name="use_stock">True</property>
-                        <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="toggle_recurring_status" swapped="no"/>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="margin_top">6</property>
-                    <property name="margin_bottom">6</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkModelButton" id="day_button">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Daily</property>
-                    <signal name="clicked" handler="set_recurring_term_every_day" swapped="no"/>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkModelButton" id="otherday_button">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Every other day</property>
-                    <signal name="clicked" handler="set_recurring_term_every_otherday" swapped="no"/>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkModelButton" id="week_button">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Weekly</property>
-                    <property name="menu_name">page1</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkModelButton" id="month_button">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Monthly</property>
-                    <property name="menu_name">page2</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkModelButton" id="year_button">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Yearly</property>
-                    <property name="menu_name">page3</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="name">page0</property>
-                <property name="title" translatable="yes">Recurring</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox" id="stack_week_box">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkModelButton" id="back_week_button">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Weekly</property>
-                    <property name="menu_name">page0</property>
-                    <property name="inverted">True</property>
-                    <property name="centered">True</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkModelButton" id="mon_button">
-                    <property name="name">Monday</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">On Monday</property>
-                    <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkModelButton" id="tue_button">
-                    <property name="name">Tuesday</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">On Tuesday</property>
-                    <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkModelButton" id="wed_button">
-                    <property name="name">Wednesday</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">On Wednesday</property>
-                    <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkModelButton" id="thu_button">
-                    <property name="name">Thursday</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">On Thursday</property>
-                    <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkModelButton" id="fri_button">
-                    <property name="name">Friday</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">On Friday</property>
-                    <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkModelButton" id="sat_button">
-                    <property name="name">Saturday</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">On Saturday</property>
-                    <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkModelButton" id="sun_button">
-                    <property name="name">Sunday</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">On Sunday</property>
-                    <signal name="clicked" handler="set_recurring_term_week_day" swapped="no"/>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="margin_top">6</property>
-                    <property name="margin_bottom">6</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkModelButton" id="week_today_button">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">On This Day</property>
-                    <signal name="clicked" handler="set_recurring_term_every_week" swapped="no"/>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="name">page1</property>
-                <property name="title" translatable="yes">Weekly</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox" id="stack_month_box">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkModelButton" id="back_month_button">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Monthly</property>
-                    <property name="menu_name">page0</property>
-                    <property name="inverted">True</property>
-                    <property name="centered">True</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkCalendar" id="month_calender">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="month">0</property>
-                    <property name="show_heading">False</property>
-                    <property name="show_day_names">False</property>
-                    <property name="no_month_change">True</property>
-                    <signal name="day-selected" handler="set_recurring_term_calender_month" swapped="no"/>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="margin_top">6</property>
-                    <property name="margin_bottom">6</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkModelButton" id="month_today_button">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">On This Day</property>
-                    <signal name="clicked" handler="set_recurring_term_every_month" swapped="no"/>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="name">page2</property>
-                <property name="title" translatable="yes">Monthly</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox" id="stack_year_box">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkModelButton" id="back_year_button">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">Yearly</property>
-                    <property name="menu_name">page0</property>
-                    <property name="inverted">True</property>
-                    <property name="centered">True</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkCalendar" id="year_calender">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <signal name="day-selected" handler="set_recurring_term_calender_year" swapped="no"/>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="margin_top">6</property>
-                    <property name="margin_bottom">6</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkModelButton" id="year_today_button">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="text" translatable="yes">On This Day</property>
-                    <signal name="clicked" handler="set_recurring_term_every_year" swapped="no"/>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="name">page3</property>
-                <property name="title" translatable="yes">Yearly</property>
-              </packing>
-            </child>
-          </object>
-        </child>
-      </object>
-    </child>
-  </object>
   <object class="GtkListStore" id="tag_store">
     <columns>
-      <!-- column-name gboolean -->
       <column type="gboolean"/>
-      <!-- column-name gchararray -->
       <column type="gchararray"/>
     </columns>
   </object>
-  <object class="GtkWindow" id="TaskEditor">
-    <property name="can_focus">False</property>
+  <template class="TaskEditor" parent="GtkWindow">
     <property name="title" translatable="yes">Task</property>
     <property name="default_width">500</property>
     <property name="default_height">400</property>
-    <property name="type_hint">utility</property>
-    <signal name="configure-event" handler="on_move" swapped="no"/>
-    <child>
+    <signal name="notify::default-width" handler="on_resize" swapped="no"/>
+    <signal name="notify::default-height" handler="on_resize" swapped="no"/>
+    <property name="child">
       <object class="GtkBox" id="main_box">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkBox">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <child>
               <object class="GtkBox" id="task_toolbar_box">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="margin_start">10</property>
                 <property name="margin_end">10</property>
                 <property name="margin_top">5</property>
@@ -392,68 +46,30 @@
                 <child>
                   <object class="GtkButton" id="parent">
                     <property name="label" translatable="yes">Open Parent</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="receives_default">False</property>
-                    <property name="tooltip_text" translatable="yes">Open the parent task (creating a parent if it doesn't have one)</property>
+                    <property name="tooltip_text" translatable="yes">Open the parent task (creating a parent if it doesn&apos;t have one)</property>
                     <property name="action_name">app.editor.show_parent</property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkBox" id="task_options">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkButton" id="add_subtask">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="receives_default">False</property>
                         <property name="tooltip_text" translatable="yes">Insert a subtask in this task</property>
                         <property name="action_name">app.new_subtask</property>
-                        <child>
-                          <object class="GtkImage" id="subtask_image">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="icon_name">format-indent-more-symbolic</property>
-                            <property name="icon_size">2</property>
-                          </object>
-                        </child>
+                        <property name="icon_name">format-indent-more-symbolic</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkMenuButton" id="tags">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="receives_default">False</property>
                         <property name="tooltip_text" translatable="yes">Add tags to this task</property>
-                        <property name="action_name">app.editor.open_tags_popup</property>
+                        <property name="icon-name">user-bookmarks-symbolic</property>
                         <property name="popover">tags_popover</property>
-                        <child>
-                          <object class="GtkImage" id="tags_image">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="icon_name">user-bookmarks-symbolic</property>
-                            <property name="icon_size">2</property>
-                          </object>
-                        </child>
                       </object>
                     </child>
                     <child>
                       <object class="GtkMenuButton" id="set_repeat">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
                         <property name="tooltip_text" translatable="yes">Set this task to repeat</property>
-                        <property name="popover">recurring_popover</property>
-                        <signal name="toggled" handler="on_repeat_icon_toggled" swapped="no"/>
-                        <child>
-                          <object class="GtkImage" id="repeat_icon">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="has_focus">True</property>
-                            <property name="icon_name">view-refresh-symbolic</property>
-                          </object>
-                        </child>
+                        <property name="icon_name">view-refresh-symbolic</property>
                       </object>
                     </child>
                     <style>
@@ -463,14 +79,10 @@
                 </child>
                 <child>
                   <object class="GtkBox" id="start_box">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="margin_start">10</property>
                     <property name="spacing">10</property>
                     <child>
                       <object class="GtkLabel" id="start_label">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Starts on</property>
                         <property name="xalign">0</property>
                         <attributes>
@@ -480,26 +92,52 @@
                     </child>
                     <child>
                       <object class="GtkEntry" id="startdate_entry">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
                         <property name="width_chars">10</property>
                         <signal name="changed" handler="startingdate_changed" swapped="no"/>
-                        <signal name="focus-in-event" handler="show_popover_start" swapped="no"/>
-                        <signal name="focus-out-event" handler="startdate_focus_out" swapped="no"/>
+                        <child>
+                          <object class="GtkPopover" id="start_popover">
+                            <property name="autohide">False</property>
+                            <property name="child">
+                              <object class="GtkBox" id="startdate_box">
+                                <property name="margin_start">6</property>
+                                <property name="margin_end">6</property>
+                                <property name="margin_top">6</property>
+                                <property name="margin_bottom">6</property>
+                                <property name="spacing">6</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkCalendar" id="calendar_start">
+                                    <property name="year">2020</property>
+                                    <property name="day">2</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkButton">
+                                    <property name="label" translatable="yes">Today</property>
+                                    <signal name="clicked" handler="startdate_today" swapped="no"/>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="startdate_clear">
+                                    <property name="label" translatable="yes">Clear</property>
+                                    <property name="focus_on_click">False</property>
+                                    <signal name="clicked" handler="startdate_cleared" swapped="no"/>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
                 </child>
                 <child>
                   <object class="GtkBox" id="end_box">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="margin_start">10</property>
                     <property name="spacing">10</property>
                     <child>
                       <object class="GtkLabel" id="end_label">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Due on</property>
                         <property name="xalign">0</property>
                         <attributes>
@@ -509,26 +147,76 @@
                     </child>
                     <child>
                       <object class="GtkEntry" id="duedate_entry">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
                         <property name="width_chars">10</property>
                         <signal name="changed" handler="duedate_changed" swapped="no"/>
-                        <signal name="focus-in-event" handler="show_popover_due" swapped="no"/>
-                        <signal name="focus-out-event" handler="duedate_focus_out" swapped="no"/>
+                        <child>
+                          <object class="GtkPopover" id="due_popover">
+                            <property name="autohide">False</property>
+                            <property name="child">
+                              <object class="GtkBox" id="duedate_box">
+                                <property name="margin_start">6</property>
+                                <property name="margin_end">6</property>
+                                <property name="margin_top">6</property>
+                                <property name="margin_bottom">6</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkCalendar" id="calendar_due">
+                                    <property name="year">2020</property>
+                                    <property name="day">2</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkBox" id="due_fuzzy">
+                                    <property name="margin_top">8</property>
+                                    <property name="homogeneous">True</property>
+                                    <child>
+                                      <object class="GtkButton" id="due_now">
+                                        <property name="label" translatable="yes">Now</property>
+                                        <property name="focus_on_click">False</property>
+                                        <signal name="clicked" handler="duedate_now_selected" swapped="no"/>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="due_soon">
+                                        <property name="label" translatable="yes">Soon</property>
+                                        <property name="focus_on_click">False</property>
+                                        <signal name="clicked" handler="duedate_soon_selected" swapped="no"/>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="due_someday">
+                                        <property name="label" translatable="yes">Someday</property>
+                                        <property name="focus_on_click">False</property>
+                                        <signal name="clicked" handler="duedate_someday_selected" swapped="no"/>
+                                      </object>
+                                    </child>
+                                    <style>
+                                      <class name="linked"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="duedate_clear">
+                                    <property name="label" translatable="yes">Clear</property>
+                                    <property name="focus_on_click">False</property>
+                                    <property name="margin_top">8</property>
+                                    <signal name="clicked" handler="duedate_cleared" swapped="no"/>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
                 </child>
                 <child>
                   <object class="GtkBox" id="closed_box">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="margin_start">10</property>
                     <property name="spacing">10</property>
                     <child>
                       <object class="GtkLabel" id="closed_label">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Closed on</property>
                         <property name="xalign">0</property>
                         <attributes>
@@ -538,12 +226,29 @@
                     </child>
                     <child>
                       <object class="GtkEntry" id="closeddate_entry">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
                         <property name="width_chars">10</property>
                         <signal name="changed" handler="closeddate_changed" swapped="no"/>
-                        <signal name="focus-in-event" handler="show_popover_closed" swapped="no"/>
-                        <signal name="focus-out-event" handler="closeddate_focus_out" swapped="no"/>
+                        <child>
+                          <object class="GtkPopover" id="closed_popover">
+                            <property name="autohide">False</property>
+                            <property name="child">
+                              <object class="GtkBox" id="closeddate_box">
+                                <property name="margin_start">6</property>
+                                <property name="margin_end">6</property>
+                                <property name="margin_top">6</property>
+                                <property name="margin_bottom">6</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkCalendar" id="calendar_closed">
+                                  </object>
+                                </child>
+                                <style>
+                                  <class name="linked"/>
+                                </style>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
@@ -556,39 +261,28 @@
           <object class="GtkScrolledWindow" id="scrolledtask">
             <property name="width_request">400</property>
             <property name="height_request">300</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <child>
+            <property name="child">
               <object class="GtkTextView" id="textview">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="wrap_mode">word</property>
                 <property name="left_margin">5</property>
                 <property name="right_margin">5</property>
               </object>
-            </child>
+            </property>
           </object>
         </child>
         <child>
           <object class="GtkBox" id="pluginbox">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
           </object>
         </child>
       </object>
-    </child>
+    </property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="title" translatable="yes">Task</property>
-        <property name="show_close_button">True</property>
         <child>
           <object class="GtkButton" id="mark_as_done">
+            <property name="visible">False</property>
             <property name="label" translatable="yes">Mark as Done</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Mark the task as done</property>
             <property name="valign">center</property>
             <property name="action_name">app.mark_as_done</property>
@@ -599,209 +293,45 @@
         </child>
         <child>
           <object class="GtkButton" id="mark_as_undone">
+            <property name="visible">False</property>
             <property name="label" translatable="yes">Mark as Not Done</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Mark the task as to be done</property>
             <property name="valign">center</property>
             <property name="action_name">app.mark_as_done</property>
           </object>
         </child>
-        <child>
+        <child type="end">
           <object class="GtkMenuButton">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Task action menu</property>
             <property name="valign">center</property>
+            <property name="icon_name">view-more-symbolic</property>
             <property name="menu-model">editor_menu</property>
-            <child>
-              <object class="GtkImage" id="menu-icon">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="icon_name">view-more-symbolic</property>
-                <property name="icon_size">1</property>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="pack-type">end</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkPopover" id="closed_popover">
-    <property name="can_focus">False</property>
-    <property name="relative_to">closeddate_entry</property>
-    <property name="modal">False</property>
-    <child>
-      <object class="GtkBox" id="closeddate_box">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_start">12</property>
-        <property name="margin_end">12</property>
-        <property name="margin_top">12</property>
-        <property name="margin_bottom">12</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkCalendar" id="calendar_closed">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-          </object>
-        </child>
-        <style>
-          <class name="linked"/>
-        </style>
-      </object>
-    </child>
-  </object>
-  <object class="GtkPopover" id="due_popover">
-    <property name="can_focus">False</property>
-    <property name="relative_to">duedate_entry</property>
-    <property name="modal">False</property>
-    <child>
-      <object class="GtkBox" id="duedate_box">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_start">12</property>
-        <property name="margin_end">12</property>
-        <property name="margin_top">12</property>
-        <property name="margin_bottom">12</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkCalendar" id="calendar_due">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="year">2020</property>
-            <property name="day">2</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox" id="due_fuzzy">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">8</property>
-            <property name="homogeneous">True</property>
-            <child>
-              <object class="GtkButton" id="due_now">
-                <property name="label" translatable="yes">Now</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="focus_on_click">False</property>
-                <property name="receives_default">True</property>
-                <signal name="clicked" handler="duedate_now_selected" swapped="no"/>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton" id="due_soon">
-                <property name="label" translatable="yes">Soon</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="focus_on_click">False</property>
-                <property name="receives_default">True</property>
-                <signal name="clicked" handler="duedate_soon_selected" swapped="no"/>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton" id="due_someday">
-                <property name="label" translatable="yes">Someday</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="focus_on_click">False</property>
-                <property name="receives_default">True</property>
-                <signal name="clicked" handler="duedate_someday_selected" swapped="no"/>
-              </object>
-            </child>
-            <style>
-              <class name="linked"/>
-            </style>
-          </object>
-        </child>
-        <child>
-          <object class="GtkButton" id="duedate_clear">
-            <property name="label" translatable="yes">Clear</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="focus_on_click">False</property>
-            <property name="receives_default">True</property>
-            <property name="margin_top">8</property>
-            <signal name="clicked" handler="duedate_cleared" swapped="no"/>
           </object>
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkPopover" id="start_popover">
-    <property name="can_focus">False</property>
-    <property name="relative_to">startdate_entry</property>
-    <property name="modal">False</property>
-    <child>
-      <object class="GtkBox" id="startdate_box">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_start">12</property>
-        <property name="margin_end">12</property>
-        <property name="margin_top">12</property>
-        <property name="margin_bottom">12</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkCalendar" id="calendar_start">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="year">2020</property>
-            <property name="day">2</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkButton" id="startdate_clear">
-            <property name="label" translatable="yes">Clear</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="focus_on_click">False</property>
-            <property name="receives_default">True</property>
-            <signal name="clicked" handler="startdate_cleared" swapped="no"/>
-          </object>
-        </child>
-        <style>
-          <class name="linked"/>
-        </style>
-      </object>
-    </child>
-  </object>
-  <object class="GtkPopoverMenu" id="tags_popover">
-    <property name="can_focus">False</property>
-    <property name="relative_to">tags</property>
-    <child>
+  </template>
+  <object class="GtkPopover" id="tags_popover">
+    <signal name="realize" handler="sync_tag_store"/>
+    <property name="child">
       <object class="GtkBox" id="tags_box">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_start">12</property>
-        <property name="margin_end">12</property>
-        <property name="margin_top">8</property>
-        <property name="margin_bottom">8</property>
+        <property name="margin_start">6</property>
+        <property name="margin_end">6</property>
+        <property name="margin_top">2</property>
+        <property name="margin_bottom">2</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkSearchEntry" id="tags_entry">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
             <property name="margin_bottom">10</property>
-            <property name="primary_icon_name">edit-find-symbolic</property>
-            <property name="primary_icon_activatable">False</property>
-            <property name="primary_icon_sensitive">False</property>
             <property name="placeholder_text" translatable="yes">Search</property>
           </object>
         </child>
         <child>
           <object class="GtkScrolledWindow">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="shadow_type">in</property>
+            <property name="has_frame">True</property>
             <property name="min_content_height">200</property>
-            <child>
+            <property name="child">
               <object class="GtkTreeView" id="tags_tree">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="model">tag_store</property>
                 <property name="headers_visible">False</property>
                 <property name="search_column">1</property>
@@ -826,10 +356,10 @@
                   </object>
                 </child>
               </object>
-            </child>
+            </property>
           </object>
         </child>
       </object>
-    </child>
+    </property>
   </object>
 </interface>

@@ -27,7 +27,8 @@ import urllib.parse  # GLibs URI functions not available for some reason
 
 
 from GTG.core.dirs import DATA_DIR
-from GTG.core.datastore2 import Datastore2
+from GTG.core.datastore import Datastore
+from GTG.core.tasks import Filter
 
 from GTG.gtk.browser.delete_task import DeletionUI
 from GTG.gtk.browser.main_window import MainWindow
@@ -36,14 +37,15 @@ from GTG.gtk.editor import text_tags
 from GTG.gtk.preferences import Preferences
 from GTG.gtk.plugins import PluginsDialog
 from GTG.core import clipboard
+from GTG.core.config import CoreConfig
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api import PluginAPI
 from GTG.backends import BackendFactory
-from GTG.core.datastore import DataStore
 from GTG.core.dirs import CSS_DIR
 from GTG.core.dates import Date
 from GTG.gtk.backends import BackendsDialog
 from GTG.gtk.browser.tag_editor import TagEditor
+from GTG.gtk.browser.search_editor import SearchEditor
 from GTG.core.timer import Timer
 from GTG.gtk.errorhandler import do_error_dialog
 
@@ -52,11 +54,8 @@ log = logging.getLogger(__name__)
 
 class Application(Gtk.Application):
 
-    ds: Datastore2 = Datastore2()
+    ds: Datastore = Datastore()
     """Datastore loaded with the default data file"""
-
-    # Requester
-    req = None
 
     # List of opened tasks (task editor windows). Task IDs are keys,
     # while the editors are their values.
@@ -115,30 +114,20 @@ class Application(Gtk.Application):
             data_file = os.path.join(DATA_DIR, 'gtg_data.xml')
             self.ds.find_and_load_file(data_file)
 
-            # TODO: Remove this once the new core is stable
-            self.ds.data_path = os.path.join(DATA_DIR, 'gtg_data2.xml')
-
-            # Register backends
-            datastore = DataStore()
-
             for backend_dic in BackendFactory().get_saved_backends_list():
-                datastore.register_backend(backend_dic)
+                self.ds.register_backend(backend_dic)
 
-            # Save the backends directly to be sure projects.xml is written
-            datastore.save(quit=False)
+            self.config_core = CoreConfig()
+            self.config = self.config_core.get_subconfig('browser')
+            self.config_plugins = self.config_core.get_subconfig('plugins') 
 
-            self.req = datastore.get_requester()
-
-            self.config = self.req.get_config("browser")
-            self.config_plugins = self.req.get_config("plugins")
-
-            self.clipboard = clipboard.TaskClipboard(self.req)
+            self.clipboard = clipboard.TaskClipboard(self.ds)
 
             self.timer = Timer(self.config)
             self.timer.connect('refresh', self.autoclean)
 
-            self.preferences_dialog = Preferences(self.req, self)
-            self.plugins_dialog = PluginsDialog(self.req)
+            self.preferences_dialog = Preferences(self)
+            self.plugins_dialog = PluginsDialog(self.config_plugins)
 
             if self.config.get('dark_mode'):
                 self.toggle_darkmode()
@@ -161,6 +150,7 @@ class Application(Gtk.Application):
         try:
             self.init_shared()
             self.browser.present()
+            self.browser.restore_editor_windows() 
 
             log.debug("Application activation finished")
         except Exception as e:
@@ -246,16 +236,16 @@ class Application(Gtk.Application):
     def init_browser(self):
         # Browser (still hidden)
         if not self.browser:
-            self.browser = MainWindow(self.req, self)
+            self.browser = MainWindow(self)
 
             if self.props.application_id == 'org.gnome.GTGDevel':
-                self.browser.get_style_context().add_class('devel')
+                self.browser.add_css_class('devel')
 
     def init_plugin_engine(self):
         """Setup the plugin engine."""
 
         self.plugin_engine = PluginEngine()
-        plugin_api = PluginAPI(self.req, self)
+        plugin_api = PluginAPI(self)
         self.plugin_engine.register_api(plugin_api)
 
         try:
@@ -271,27 +261,26 @@ class Application(Gtk.Application):
     def init_style(self):
         """Load the application's CSS file."""
 
-        screen = Gdk.Screen.get_default()
+        display = Gdk.Display.get_default()
         provider = Gtk.CssProvider()
-        add_provider = Gtk.StyleContext.add_provider_for_screen
+        add_provider = Gtk.StyleContext.add_provider_for_display
         css_path = os.path.join(CSS_DIR, 'style.css')
 
         provider.load_from_path(css_path)
-        add_provider(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        add_provider(display, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
     def toggle_darkmode(self, state=True):
         """Use dark mode theme."""
 
         settings = Gtk.Settings.get_default()
-        prefs_css = self.preferences_dialog.window.get_style_context()
         settings.set_property("gtk-application-prefer-dark-theme", state)
 
         # Toggle dark mode for preferences and editors
         if state:
-            prefs_css.add_class('dark')
+            self.preferences_dialog.add_css_class('dark')
             text_tags.use_dark_mode()
         else:
-            prefs_css.remove_class('dark')
+            self.preferences_dialog.remove_css_class('dark')
             text_tags.use_light_mode()
 
     def init_actions(self):
@@ -314,8 +303,7 @@ class Application(Gtk.Application):
             ('close', self.close_context, ('app.close', ['Escape'])),
             ('editor.close', self.close_focused_task, ('app.editor.close', ['<ctrl>w'])),
             ('editor.show_parent', self.open_parent_task, None),
-            ('editor.delete', self.delete_editor_task, None),
-            ('editor.open_tags_popup', self.open_tags_popup_in_editor, None),
+            ('editor.delete', self.delete_editor_task, None)
         ]
 
         for action, callback, accel in action_entries:
@@ -328,7 +316,7 @@ class Application(Gtk.Application):
             if accel is not None:
                 self.set_accels_for_action(*accel)
 
-        self.plugins_dialog.dialog.insert_action_group('app', self)
+        self.plugins_dialog.insert_action_group('app', self)
 
     # --------------------------------------------------------------------------
     # ACTIONS
@@ -350,13 +338,8 @@ class Application(Gtk.Application):
     def add_parent(self, param, action):
         """Callback to add a parent to a task"""
         
-        try:
-            if self.browser.have_same_parent():
-                self.browser.on_add_parent()
+        self.browser.on_add_parent()
 
-        # When no task has been selected
-        except IndexError:
-            return
 
     def edit_task(self, param, action):
         """Callback to edit a task."""
@@ -365,10 +348,13 @@ class Application(Gtk.Application):
 
     def mark_as_done(self, param, action):
         """Callback to mark a task as done."""
+
         try:
             self.get_active_editor().change_status()
         except AttributeError:
             self.browser.on_mark_as_done()
+        finally:
+            self.browser.get_pane().refresh()
 
     def dismiss(self, param, action):
         """Callback to mark a task as done."""
@@ -377,6 +363,8 @@ class Application(Gtk.Application):
             self.get_active_editor().toggle_dismiss()
         except AttributeError:
             self.browser.on_dismiss_task()
+        finally:
+            self.browser.get_pane().refresh()
     
     def reopen(self, param, action):
         """Callback to mark task as open."""
@@ -385,6 +373,8 @@ class Application(Gtk.Application):
             self.get_active_editor().reopen()
         except AttributeError:
             self.browser.on_reopen_task()
+        finally:
+            self.browser.get_pane().refresh()
 
     def open_help(self, action, param):
         """Open help callback."""
@@ -403,7 +393,7 @@ class Application(Gtk.Application):
         """Callback to open the preferences dialog."""
 
         self.preferences_dialog.activate()
-        self.preferences_dialog.window.set_transient_for(self.browser)
+        self.preferences_dialog.set_transient_for(self.browser)
 
     def open_about(self, action, param):
         """Callback to open the about dialog."""
@@ -414,7 +404,7 @@ class Application(Gtk.Application):
         """Callback to open the plugins manager dialog."""
 
         self.plugins_dialog.activate()
-        self.plugins_dialog.dialog.set_transient_for(self.browser)
+        self.plugins_dialog.set_transient_for(self.browser)
 
 
     def close_context(self, action, params):
@@ -424,7 +414,7 @@ class Application(Gtk.Application):
         search = self.browser.search_entry.is_focus()
 
         if editor:
-            self.close_task(editor.task.get_id())
+            self.close_task(editor.task.id)
         elif search:
             self.browser.toggle_search(action, params)
 
@@ -434,7 +424,7 @@ class Application(Gtk.Application):
         editor = self.get_active_editor()
 
         if editor:
-            self.close_task(editor.task.get_id())
+            self.close_task(editor.task.id)
 
     def delete_editor_task(self, action, params):
         """Callback to delete the task currently open."""
@@ -442,16 +432,10 @@ class Application(Gtk.Application):
         editor = self.get_active_editor()
         task = editor.task
 
-        if task.is_new():
-            self.close_task(task.get_id())
+        if editor.is_new():
+            self.close_task(task)
         else:
-            self.delete_tasks([task.get_id()], editor.window)
-
-    def open_tags_popup_in_editor(self, action, params):
-        """Callback to open the tags popup in the focused task editor."""
-
-        editor = self.get_active_editor()
-        editor.open_tags_popover()
+            self.delete_tasks([task], editor)
 
     def open_parent_task(self, action, params):
         """Callback to open the parent of the currently open task."""
@@ -470,17 +454,14 @@ class Application(Gtk.Application):
 
         today = Date.today()
         max_days = self.config.get('autoclean_days')
-        closed_tree = self.req.get_tasks_tree(name='inactive')
-
-        closed_tasks = [self.req.get_task(tid) for tid in
-                        closed_tree.get_all_nodes()]
-
+        closed_tasks = self.ds.tasks.filter(Filter.CLOSED)
+        
         to_remove = [t for t in closed_tasks
-                     if (today - t.get_closed_date()).days > max_days]
+                     if (today - t.date_closed).days > max_days]
 
-        [self.req.delete_task(task.get_id())
-         for task in to_remove
-         if self.req.has_task(task.get_id())]
+        for t in to_remove:
+            self.ds.tasks.remove(t.id)
+
 
     def autoclean(self, timer):
         """Run Automatic cleanup of old tasks."""
@@ -495,7 +476,7 @@ class Application(Gtk.Application):
     def open_edit_backends(self, sender=None, backend_id=None):
         """Open the backends dialog."""
 
-        self.backends_dialog = BackendsDialog(self.req)
+        self.backends_dialog = BackendsDialog(self.ds)
         self.backends_dialog.dialog.insert_action_group('app', self)
 
         self.backends_dialog.activate()
@@ -503,23 +484,37 @@ class Application(Gtk.Application):
         if backend_id:
             self.backends_dialog.show_config_for_backend(backend_id)
 
-    def delete_tasks(self, tids, window):
+    def delete_tasks(self, tasks, window):
         """Present the delete task confirmation dialog."""
 
         if not self.delete_task_dialog:
-            self.delete_task_dialog = DeletionUI(self.req, window)
+            self.delete_task_dialog = DeletionUI(window, self.ds)
 
-        tasks_to_delete = self.delete_task_dialog.show(tids)
+        def on_show_async_callback(tasks_to_delete):
+            [self.close_task(task.id) for task in tasks_to_delete
+            if task.id in self.open_tasks]
 
-        [self.close_task(task.get_id()) for task in tasks_to_delete
-         if task.get_id() in self.open_tasks]
+        self.delete_task_dialog.show_async(tasks, on_show_async_callback)
 
     def open_tag_editor(self, tag):
         """Open Tag editor dialog."""
 
-        self.edit_tag_dialog = TagEditor(self.req, self, tag)
+        self.edit_tag_dialog = TagEditor(self, tag)
         self.edit_tag_dialog.set_transient_for(self.browser)
         self.edit_tag_dialog.insert_action_group('app', self)
+
+
+    def open_search_editor(self, search):
+        """Open Saved search editor dialog."""
+
+        self.edit_search_dialog = SearchEditor(self, search)
+        self.edit_search_dialog.set_transient_for(self.browser)
+        self.edit_search_dialog.insert_action_group('app', self)
+
+    def close_search_editor(self):
+        """Close search editor dialog."""
+
+        self.edit_search_dialog = None
 
     def close_tag_editor(self):
         """Close tag editor dialog."""
@@ -548,46 +543,39 @@ class Application(Gtk.Application):
         else:
             [task.reload_editor() for task in self.open_tasks]
 
-    def open_task(self, uid, new=False):
+    def open_task(self, task, new=False):
         """Open the task identified by 'uid'.
 
             If a Task editor is already opened for a given task, we present it.
             Otherwise, we create a new one.
         """
-
-        if uid in self.open_tasks:
-            editor = self.open_tasks[uid]
+        
+        if task.id in self.open_tasks:
+            editor = self.open_tasks[task.id]
             editor.present()
 
         else:
-            task = self.req.get_task(uid)
-            editor = None
+            editor = TaskEditor(app=self, task=task)
+            editor.present()
 
-            if task:
-                editor = TaskEditor(requester=self.req, app=self, task=task,
-                                    thisisnew=new, clipboard=self.clipboard)
+            self.open_tasks[task.id] = editor
 
-                editor.present()
-                self.open_tasks[uid] = editor
+            # Save open tasks to config
+            config_open_tasks = self.config.get("opened_tasks")
 
-                # Save open tasks to config
-                open_tasks = self.config.get("opened_tasks")
+            if task.id not in config_open_tasks:
+                config_open_tasks.append(task.id)
 
-                if uid not in open_tasks:
-                    open_tasks.append(uid)
-
-                self.config.set("opened_tasks", open_tasks)
-
-            else:
-                log.error('Task %s could not be found!', uid)
+            self.config.set("opened_tasks", config_open_tasks)
 
         return editor
+
 
     def get_active_editor(self):
         """Get focused task editor window."""
 
         for editor in self.open_tasks.values():
-            if editor.window.is_active():
+            if editor.is_active():
                 return editor
 
     def close_task(self, tid):
@@ -656,10 +644,6 @@ class Application(Gtk.Application):
 
         self.save_plugin_settings()
         self.ds.save()
-
-        if self.req is not None:
-            # Save data and shutdown datastore backends
-            self.req.save_datastore(quit=True)
 
         Gtk.Application.do_shutdown(self)
 

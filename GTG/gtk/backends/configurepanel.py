@@ -28,7 +28,7 @@ class ConfigurePanel(Gtk.Box):
     A vertical Box that lets you configure a backend
     """
 
-    def __init__(self, backends):
+    def __init__(self, backends, ds):
         """
         Constructor, creating all the gtk widgets
 
@@ -40,7 +40,7 @@ class ConfigurePanel(Gtk.Box):
         self.should_spinner_be_shown = False
         self.task_deleted_handle = None
         self.task_added_handle = None
-        self.req = backends.get_requester()
+        self.ds = ds
         self._create_widgets()
         self._connect_signals()
 
@@ -64,13 +64,12 @@ class ConfigurePanel(Gtk.Box):
         middle.set_spacing(6)
         self._fill_top_box(top)
         self._fill_middle_box(middle)
-        self.pack_start(top, False, True, 0)
-        self.pack_start(middle, False, True, 0)
-        align = Gtk.Alignment.new(0, 0, 1, 0)
-        align.set_padding(10, 0, 0, 0)
-        self.parameters_ui = ParametersUI(self.req)
-        align.add(self.parameters_ui)
-        self.pack_start(align, False, True, 0)
+        self.append(top)
+        self.append(middle)
+        self.parameters_ui = ParametersUI()
+        self.parameters_ui.ds = self.ds
+        self.parameters_ui.set_margin_top(10)
+        self.append(self.parameters_ui)
 
     def _fill_top_box(self, box):
         """ Fill header with service's icon, name, and a spinner
@@ -81,7 +80,9 @@ class ConfigurePanel(Gtk.Box):
         self.image_icon.set_size_request(48, 48)
 
         self.human_name_label = Gtk.Label()
-        self.human_name_label.set_alignment(xalign=0, yalign=0.5)
+        self.human_name_label.set_hexpand(True)
+        self.human_name_label.set_xalign(0)
+        self.human_name_label.set_yalign(0.5)
 
         # FIXME in the newer versions of GTK3 there always be Spinner!
         try:
@@ -91,12 +92,12 @@ class ConfigurePanel(Gtk.Box):
             self.spinner = Gtk.Box()
         self.spinner.connect("show", self.on_spinner_show)
         self.spinner.set_size_request(32, 32)
-        align_spin = Gtk.Alignment.new(1, 0, 0, 0)
-        align_spin.add(self.spinner)
+        self.spinner.set_margin_top(1)
 
-        box.pack_start(self.image_icon, False, True, 0)
-        box.pack_start(self.human_name_label, True, True, 0)
-        box.pack_start(align_spin, False, True, 0)
+        box.set_spacing(10)
+        box.append(self.image_icon)
+        box.append(self.human_name_label)
+        box.append(self.spinner)
 
     def _fill_middle_box(self, box):
         """
@@ -105,23 +106,26 @@ class ConfigurePanel(Gtk.Box):
         @param box: the Gtk.Box to fill
         """
         self.sync_status_label = Gtk.Label()
-        self.sync_status_label.set_alignment(xalign=0.8, yalign=0.5)
+        self.sync_status_label.set_hexpand(True)
+        self.sync_status_label.set_xalign(0.8)
+        self.sync_status_label.set_yalign(0.5)
         self.sync_button = Gtk.Button()
+        self.sync_button.set_hexpand(True)
         self.sync_button.connect("clicked", self.on_sync_button_clicked)
-        box.pack_start(self.sync_status_label, True, True, 0)
-        box.pack_start(self.sync_button, True, True, 0)
+        box.append(self.sync_status_label)
+        box.append(self.sync_button)
 
     def set_backend(self, backend_id):
         """Changes the backend to configure, refreshing this view.
 
         @param backend_id: the id of the backend to configure
         """
-        self.backend = self.dialog.get_requester().get_backend(backend_id)
+        self.backend = self.dialog.ds.get_backend(backend_id)
         self.refresh_title()
         self.refresh_sync_status()
         self.parameters_ui.refresh(self.backend)
-        self.image_icon.set_from_pixbuf(self.dialog.get_pixbuf_from_icon_name(
-                                        self.backend.get_icon(), 48))
+        self.image_icon.set_pixel_size(48)
+        self.image_icon.set_from_icon_name(self.backend.get_icon())
 
     def refresh_title(self, sender=None, data=None):
         """
@@ -176,7 +180,7 @@ class ConfigurePanel(Gtk.Box):
         @param sender: not used, here only for signal callback compatibility
         """
         self.parameters_ui.commit_changes()
-        self.req.set_backend_enabled(self.backend.get_id(),
+        self.ds.set_backend_enabled(self.backend.get_id(),
                                      not self.backend.is_enabled())
 
     def on_sync_started(self, sender, backend_id):
@@ -224,7 +228,6 @@ class ConfigurePanel(Gtk.Box):
         if active:
             if isinstance(self.spinner, Gtk.Spinner):
                 self.spinner.start()
-            self.spinner.show()
         else:
             self.spinner.hide()
             if isinstance(self.spinner, Gtk.Spinner):

@@ -17,7 +17,6 @@
 # -----------------------------------------------------------------------------
 
 from gi.repository import Gtk
-from gi.repository import GdkPixbuf
 
 from GTG.backends import BackendFactory
 
@@ -45,11 +44,10 @@ class BackendsCombo(Gtk.ComboBox):
         self._liststore_init()
         self._renderers_init()
         self.set_size_request(-1, 30)
-        self.show_all()
 
     def _liststore_init(self):
         """Setup the Gtk.ListStore"""
-        self.liststore = Gtk.ListStore(str, str, GdkPixbuf.Pixbuf)
+        self.liststore = Gtk.ListStore(str, str, str)
         self.set_model(self.liststore)
 
     def _renderers_init(self):
@@ -61,7 +59,7 @@ class BackendsCombo(Gtk.ComboBox):
         # Icon renderer
         pixbuf_cell = Gtk.CellRendererPixbuf()
         self.pack_start(pixbuf_cell, False)
-        self.add_attribute(pixbuf_cell, "pixbuf", self.COLUMN_ICON)
+        self.add_attribute(pixbuf_cell, "icon-name", self.COLUMN_ICON)
 
     def refresh(self):
         """
@@ -78,10 +76,9 @@ class BackendsCombo(Gtk.ComboBox):
             # See LP bug #940917 (Izidor)
             if name == "backend_localfile":
                 continue
-            pixbuf = self.dialog.get_pixbuf_from_icon_name(module.Backend.get_icon(), 16)
             self.liststore.append((name,
                                    module.Backend.get_human_default_name(),
-                                   pixbuf))
+                                   module.Backend.get_icon()))
         if backend_types:
             # triggers a "changed" signal, which is used in the AddPanel to
             # refresh the backend description and icon

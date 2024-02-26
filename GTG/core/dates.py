@@ -199,7 +199,7 @@ class Date:
             return self.dt_value
         if self.accuracy is Accuracy.fuzzy:
             now = datetime.now()
-            delta_days = {SOON: 15, SOMEDAY: 365, NODATE: 9999}
+            delta_days = {SOON: 15, SOMEDAY: 9999, NODATE: 9999}
             gtg_date = Date(now + timedelta(delta_days[self.dt_value]))
             if gtg_date.accuracy is wanted_accuracy:
                 return gtg_date.dt_value

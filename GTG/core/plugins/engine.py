@@ -15,7 +15,9 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-import imp
+
+import importlib
+import inspect
 import os
 import logging
 from gi.repository import GLib
@@ -101,15 +103,17 @@ class Plugin():
         """Load the module containing this plugin."""
         try:
             # import the module containing the plugin
-            f, pathname, desc = imp.find_module(self.module_name, module_paths)
-            module = imp.load_module(self.module_name, f, pathname, desc)
-            # find the class object for the actual plugin
-            for key, item in module.__dict__.items():
-                if isinstance(item, type):
-                    self.plugin_class = item
-                    self.class_name = item.__dict__['__module__'].split('.')[1]
-                    break
+            spec = importlib.machinery.PathFinder().find_spec(self.module_name, module_paths)
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+
+            classes = inspect.getmembers(mod, inspect.isclass)
+
+            self.class_name = classes[0][0]
+            self.plugin_class = classes[0][1]
+
         except ImportError as e:
+            print(e)
             # load_module() failed, probably because of a module dependency
             if len(self.module_depends) > 0:
                 self._check_module_depends()

@@ -66,29 +66,32 @@ def plugin_error_short_text(plugin):
 
 def plugin_error_text(plugin):
     """ Generate some helpful text about missing module dependencies. """
+    text = _('System support for plugin status: {}\n')
     if not plugin.error:
-        return GnomeConfig.CANLOAD
+        return text.format(GnomeConfig.CANLOAD)
 
     # describe missing dependencies
-    text = f"<b>{GnomeConfig.CANNOTLOAD}</b>. \n"
+    text = text.format(GnomeConfig.CANNOTLOAD)
     # get lists
     modules = plugin.missing_modules
     dbus = plugin.missing_dbus
 
     # convert to strings
     if modules:
-        modules = "<small><b>%s</b></small>" % ', '.join(modules)
+        modules = ', '.join(modules)
     if dbus:
         ifaces = [f"{a}:{b}" for (a, b) in dbus]
-        dbus = "<small><b>%s</b></small>" % ', '.join(ifaces)
+        dbus = ', '.join(ifaces)
 
     # combine
+    text += '\n'
+    text += _('System doesn\'t support plugin because:\n\n')
     if modules and not dbus:
-        text += '\n'.join((GnomeConfig.MODULEMISSING, modules))
+        text += '\n\n'.join((GnomeConfig.MODULEMISSING, modules))
     elif dbus and not modules:
-        text += '\n'.join((GnomeConfig.DBUSMISSING, dbus))
+        text += '\n\n'.join((GnomeConfig.DBUSMISSING, dbus))
     elif modules and dbus:
-        text += '\n'.join((GnomeConfig.MODULANDDBUS, modules, dbus))
+        text += '\n\n'.join((GnomeConfig.MODULANDDBUS, modules, dbus))
     else:
         text += GnomeConfig.UNKNOWN
 
@@ -117,35 +120,25 @@ def plugin_markup(column, cell, store, iterator, self):
                       store.get_value(iterator, PLUGINS_COL_ACTIVATABLE))
 
 
-class PluginsDialog():
+@Gtk.Template(filename=ViewConfig.PLUGINS_UI_FILE)
+class PluginsDialog(Gtk.Dialog):
     """ Dialog for Plugins configuration """
 
-    def __init__(self, requester):
-        self.req = requester
-        self.config = self.req.get_config("plugins")
-        builder = Gtk.Builder()
+    __gtype_name__ = "PluginsDialog"
 
-        builder.add_from_file(ViewConfig.PLUGINS_UI_FILE)
+    _plugin_tree = Gtk.Template.Child()
+    _plugin_configure_button = Gtk.Template.Child()
 
-        self.dialog = builder.get_object("PluginsDialog")
-        self.dialog.set_title(_("Plugins"))
-        self.plugin_tree = builder.get_object("PluginTree")
-        self.plugin_configure = builder.get_object("plugin_configure")
-        self.plugin_about = builder.get_object("PluginAboutDialog")
-        self.plugin_depends = builder.get_object('PluginDepends')
+    def __init__(self, config):
+        super().__init__()
+        self.config = config
+
+        self.set_title(_("Plugins"))
 
         self.pengine = PluginEngine()
 
         # see constants PLUGINS_COL_* for column meanings
         self.plugin_store = Gtk.ListStore(str, bool, str, str, bool)
-
-        builder.connect_signals({
-                                'on_PluginsDialog_delete_event': self.on_close,
-                                'on_PluginTree_cursor_changed': self.on_plugin_select,
-                                'on_plugin_about': self.on_plugin_about,
-                                'on_plugin_configure': self.on_plugin_configure,
-                                'on_PluginAboutDialog_close': self.on_plugin_about_close,
-                                })
 
     def _init_plugin_tree(self):
         """ Initialize the PluginTree Gtk.TreeView.
@@ -164,7 +157,7 @@ class PluginsDialog():
         column = Gtk.TreeViewColumn(None, renderer, active=PLUGINS_COL_ENABLED,
                                     activatable=PLUGINS_COL_ACTIVATABLE,
                                     sensitive=PLUGINS_COL_ACTIVATABLE)
-        self.plugin_tree.append_column(column)
+        self._plugin_tree.append_column(column)
 
         # plugin name column
         column = Gtk.TreeViewColumn()
@@ -175,11 +168,11 @@ class PluginsDialog():
         column.pack_start(name_renderer, True)
         column.set_cell_data_func(name_renderer, plugin_markup, self)
 
-        self.plugin_tree.append_column(column)
+        self._plugin_tree.append_column(column)
 
         # finish setup
-        self.plugin_tree.set_model(self.plugin_store)
-        self.plugin_tree.set_search_column(2)
+        self._plugin_tree.set_model(self.plugin_store)
+        self._plugin_tree.set_search_column(2)
 
     def _refresh_plugin_store(self):
         """ Refresh status of plugins and put it in a Gtk.ListStore """
@@ -193,15 +186,16 @@ class PluginsDialog():
 
     def activate(self):
         """ Refresh status of plugins and show the dialog """
-        if len(self.plugin_tree.get_columns()) == 0:
+        if len(self._plugin_tree.get_columns()) == 0:
             self._init_plugin_tree()
         else:
             self._refresh_plugin_store()
-        self.dialog.show_all()
+        self.show()
 
+    @Gtk.Template.Callback()
     def on_close(self, widget, data=None):
         """ Close the plugins dialog."""
-        self.dialog.hide()
+        self.hide()
         return True
 
     def on_plugin_toggle(self, widget, path):
@@ -228,6 +222,7 @@ class PluginsDialog():
         self.plugin_store.set_value(iterator, PLUGINS_COL_ENABLED, plugin.enabled)
         self._update_plugin_configure(plugin)
 
+    @Gtk.Template.Callback()
     def on_plugin_select(self, plugin_tree):
         """ Callback when user select/unselect a plugin
 
@@ -241,20 +236,22 @@ class PluginsDialog():
     def _update_plugin_configure(self, plugin):
         """ Enable the button "Configure Plugin" appropriate. """
         configurable = plugin.active and plugin.is_configurable()
-        self.plugin_configure.set_property('sensitive', configurable)
+        self._plugin_configure_button.set_property('sensitive', configurable)
 
+    @Gtk.Template.Callback()
     def on_plugin_configure(self, widget):
         """ Show the dialog for plugin configuration """
-        _, iterator = self.plugin_tree.get_selection().get_selected()
+        _, iterator = self._plugin_tree.get_selection().get_selected()
         if iterator is None:
             return
         plugin_id = self.plugin_store.get_value(iterator, PLUGINS_COL_ID)
         plugin = self.pengine.get_plugin(plugin_id)
-        plugin.instance.configure_dialog(self.dialog)
+        plugin.instance.configure_dialog(self)
 
+    @Gtk.Template.Callback()
     def on_plugin_about(self, widget):
         """ Display information about a plugin. """
-        _, iterator = self.plugin_tree.get_selection().get_selected()
+        _, iterator = self._plugin_tree.get_selection().get_selected()
         if iterator is None:
             return
         plugin_id = self.plugin_store.get_value(iterator, PLUGINS_COL_ID)
@@ -265,21 +262,16 @@ class PluginsDialog():
         # FIXME repair it!
         # FIXME Author is not usually set and is preserved from
         # previous plugin... :/
-        self.plugin_about.set_program_name(plugin.full_name)
-        self.plugin_about.set_version(plugin.version)
         authors = plugin.authors
         if isinstance(authors, str):
             authors = "\n".join(author.strip()
                                 for author in authors.split(','))
             authors = [authors, ]
-        self.plugin_about.set_authors(authors)
-        description = plugin.description.replace(r'\n', "\n")
-        self.plugin_about.set_comments(description)
-        self.plugin_depends.set_label(plugin_error_text(plugin))
-        self.plugin_about.show_all()
-
-    def on_plugin_about_close(self, widget, data=None):
-
-        """ Close the PluginAboutDialog. """
-        self.plugin_about.hide()
-        return True
+        about_dialog = Gtk.AboutDialog(
+            program_name=plugin.full_name,
+            logo_icon_name='system-run-symbolic',
+            version=plugin.version,
+            system_information=plugin_error_text(plugin),
+            comments=plugin.description
+        )
+        about_dialog.present()

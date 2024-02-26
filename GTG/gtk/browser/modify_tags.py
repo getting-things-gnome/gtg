@@ -21,97 +21,97 @@ from gi.repository import Gtk
 
 from gettext import gettext as _
 from GTG.gtk.browser import GnomeConfig
-from GTG.core.tag import parse_tag_list
 
+@Gtk.Template(filename=GnomeConfig.MODIFYTAGS_UI_FILE)
 
-class ModifyTagsDialog():
+class ModifyTagsDialog(Gtk.Dialog):
     """
     Dialog for batch adding/removal of tags
     """
 
-    def __init__(self, tag_completion, req, app):
-        self.req = req
+    __gtype_name__ = "ModifyTagsDialog"
+
+    _tag_entry = Gtk.Template.Child()
+    _apply_to_subtasks_check = Gtk.Template.Child()
+
+    def __init__(self, tag_completion, app):
+        super().__init__()
+
         self.app = app
         self.tasks = []
 
-        self._init_dialog()
-        self.tag_entry.set_completion(tag_completion)
+        self._tag_entry.set_completion(tag_completion)
 
         # Rember values from last time
         self.last_tag_entry = _("NewTag")
         self.last_apply_to_subtasks = False
 
-    def _init_dialog(self):
-        """ Init GtkBuilder .ui file """
-        builder = Gtk.Builder()
-        builder.add_from_file(GnomeConfig.MODIFYTAGS_UI_FILE)
-        builder.connect_signals({
-            "on_modifytags_confirm":
-            self.on_confirm,
-            "on_modifytags_cancel":
-            lambda dialog: dialog.hide,
-        })
 
-        self.tag_entry = builder.get_object("tag_entry")
-        self.apply_to_subtasks = builder.get_object("apply_to_subtasks")
-        self.dialog = builder.get_object("modifytags_dialog")
+    def parse_tag_list(self, text):
+        """ Parse a line of a list of tasks. User can specify if the tag is
+        positive or not by prepending '!'.
+
+        @param  text:  string entry from user
+        @return: list of tupples (tag, is_positive)
+        """
+
+        result = []
+        for tag in text.split():
+            if tag.startswith('!'):
+                tag = tag[1:]
+                is_positive = False
+            else:
+                is_positive = True
+
+            result.append((tag, is_positive))
+        return result
+
 
     def modify_tags(self, tasks):
         """ Show and run dialog for selected tasks """
-        if len(tasks) == 0:
+
+        if not tasks:
             return
 
         self.tasks = tasks
 
-        self.tag_entry.set_text(self.last_tag_entry)
-        self.tag_entry.grab_focus()
-        self.apply_to_subtasks.set_active(self.last_apply_to_subtasks)
+        self._tag_entry.set_text(self.last_tag_entry)
+        self._tag_entry.grab_focus()
+        self._apply_to_subtasks_check.set_active(self.last_apply_to_subtasks)
 
-        self.dialog.run()
-        self.dialog.hide()
+        self.show()
 
-        self.tasks = []
+    @Gtk.Template.Callback()
+    def on_response(self, widget, response):
+        if response == Gtk.ResponseType.APPLY:
+            self.apply_changes()
 
-    def on_confirm(self, widget):
+        self.hide()
+
+    def apply_changes(self):
         """ Apply changes """
-        tags = parse_tag_list(self.tag_entry.get_text())
+
+        tags = self.parse_tag_list(self._tag_entry.get_text())
 
         # If the checkbox is checked, find all subtasks
-        if self.apply_to_subtasks.get_active():
-            for task_id in self.tasks:
-                task = self.req.get_task(task_id)
-                # FIXME: Python not reinitialize the default value of its
-                # parameter therefore it must be done manually. This function
-                # should be refractored # as far it is marked as depricated
-                for subtask in task.get_subtasks():
-                    subtask_id = subtask.get_id()
-                    if subtask_id not in self.tasks:
-                        self.tasks.append(subtask_id)
+        if self._apply_to_subtasks_check.get_active():
+            for task in self.tasks:
+                for subtask in task.children:
+                    if subtask not in self.tasks:
+                        self.tasks.append(subtask)
 
-        for task_id in self.tasks:
-            task = self.req.get_task(task_id)
-            for tag, is_positive in tags:
-                if is_positive:
-                    task.add_tag(tag)
-                else:
-                    task.remove_tag(tag)
-            task.sync()
-
-        # TODO: New Core
-        for tid in self.tasks:
-            t = self.app.ds.tasks.get(tid)
-
+        for task in self.tasks:
             for tag, is_positive in tags:
                 _tag = self.app.ds.tags.new(tag)
 
                 if is_positive:
-                    t.add_tag(_tag)
+                    task.add_tag(_tag)
                 else:
-                    t.remove_tag(_tag)
+                    task.remove_tag(_tag.name)
 
         self.app.ds.save()
+        self.app.ds.tasks.notify('task_count_no_tags')
 
         # Rember the last actions
-        self.last_tag_entry = self.tag_entry.get_text()
-        self.last_apply_to_subtasks = self.apply_to_subtasks.get_active()
-# -----------------------------------------------------------------------------
+        self.last_tag_entry = self._tag_entry.get_text()
+        self.last_apply_to_subtasks = self._apply_to_subtasks_check.get_active()

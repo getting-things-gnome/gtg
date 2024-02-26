@@ -8,7 +8,7 @@ from gi.repository import GObject, GLib, Gtk, Gdk
 log = logging.getLogger(__name__)
 
 
-class AdaptiveFittingWidget(Gtk.Container):
+class AdaptiveFittingWidget(Gtk.BinLayout):
     """
     This widget chooses the biggest but fitting children widgets and displays
     that one. This is useful to switch out between text and an icon in an

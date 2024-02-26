@@ -93,10 +93,15 @@ class ExportPlugin():
 
         self.filename = None
         if saving:
-            self.filename = self.choose_file()
-            if self.filename is None:
-                return
+            def file_chosen_cb(filename):
+                self.filename = filename
+                if self.filename:
+                    self.on_export_start_async_finish(tasks)
+            self.choose_file_async(file_chosen_cb)
+        else:
+            self.on_export_start_async_finish(tasks)
 
+    def on_export_start_async_finish(self, tasks):
         self.save_button.set_sensitive(False)
         self.open_button.set_sensitive(False)
 
@@ -159,6 +164,7 @@ class ExportPlugin():
         builder.add_from_file(builder_file)
 
         self.combo = builder.get_object("export_combo_templ")
+        self.combo.connect("changed", self.on_combo_changed)
         templates_list = Gtk.ListStore(
             GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING,
             GObject.TYPE_STRING)
@@ -168,29 +174,22 @@ class ExportPlugin():
         self.combo.add_attribute(cell, 'text', 1)
 
         self.export_dialog = builder.get_object("export_dialog")
-        self.export_image = builder.get_object("export_image")
+        self.export_picture = builder.get_object("export_picture")
         self.description_label = builder.get_object("label_description")
         self.save_button = builder.get_object("export_btn_save")
+        self.save_button.connect("clicked", lambda widget: self.on_export_start(True))
         self.open_button = builder.get_object("export_btn_open")
+        self.open_button.connect("clicked", lambda widget: self.on_export_start(False))
 
         self.export_all_active = builder.get_object(
-            "export_all_active_rb")
+            "export_all_active_cb")
         self.export_all_active.set_active(True)
         self.export_finished_last_week = builder.get_object(
-            "export_finished_last_week_rb")
+            "export_finished_last_week_cb")
         self.export_all_finished = builder.get_object(
-            "export_all_finished_rb")
+            "export_all_finished_cb")
 
-        builder.connect_signals({
-            "on_export_btn_open_clicked":
-            lambda widget: self.on_export_start(False),
-            "on_export_btn_save_clicked":
-            lambda widget: self.on_export_start(True),
-            "on_export_dialog_delete_event":
-            self._hide_dialog,
-            "on_export_combo_templ_changed":
-            self.on_combo_changed,
-        })
+        self.export_dialog.connect("close-request", self._hide_dialog)
 
     def _gtk_deactivate(self):
         """ Remove Menu item for this plugin """
@@ -201,9 +200,9 @@ class ExportPlugin():
         parent_window = self.plugin_api.get_ui().get_window()
         self.export_dialog.set_transient_for(parent_window)
         self._update_combobox()
-        self.export_dialog.show_all()
+        self.export_dialog.present()
 
-    def _hide_dialog(self, sender=None, data=None):
+    def _hide_dialog(self, sender=None):
 
         """ Hide dialog """
         self.export_dialog.hide()
@@ -244,12 +243,12 @@ class ExportPlugin():
 
         if image:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file(image)
-            width, height = self.export_image.get_size_request()
+            width, height = self.export_picture.get_size_request()
             pixbuf = pixbuf.scale_simple(width, height,
                                          GdkPixbuf.InterpType.BILINEAR)
-            self.export_image.set_from_pixbuf(pixbuf)
+            self.export_picture.set_pixbuf(pixbuf)
         else:
-            self.export_image.clear()
+            self.export_picture.clear()
         self.description_label.set_markup(f"<i>{description}</i>")
 
         # Remember the last selected path
@@ -259,15 +258,15 @@ class ExportPlugin():
     def show_error_dialog(self, message):
         """ Display an error """
         dialog = Gtk.MessageDialog(
-            parent=self.export_dialog,
-            flags=Gtk.DialogFlags.DESTROY_WITH_PARENT,
-            type=Gtk.MessageType.ERROR,
+            transient_for=self.export_dialog,
+            destroy_with_parent=True,
+            message_type=Gtk.MessageType.ERROR,
             buttons=Gtk.ButtonsType.OK,
-            message_format=message)
-        dialog.run()
-        dialog.destroy()
+            text=message)
+        dialog.connect("response", lambda d, r : dialog.destroy())
+        dialog.present()
 
-    def choose_file(self):
+    def choose_file_async(self, callback):
         """ Let user choose a file to save and return its path """
         chooser = Gtk.FileChooserNative.new(
             _("Choose where to save your list"),
@@ -275,15 +274,27 @@ class ExportPlugin():
             Gtk.FileChooserAction.SAVE,
             None,
             None)
-        chooser.set_do_overwrite_confirmation(True)
-        chooser.set_current_folder(get_desktop_dir())
-        response = chooser.run()
-        filename = chooser.get_filename()
-        chooser.destroy()
-        if response == Gtk.ResponseType.ACCEPT:
-            return filename
-        else:
-            return None
+        chooser.set_current_folder(Gio.File.new_for_path(get_desktop_dir()))
+        # GTK FREEZE BUG WORKAROUND:
+        # If we don't use idle_add, on response it immediately crashes.
+        # However if we do, on_filechooser_response gets called an unlimited
+        # amount of times, which is why we have to keep track of
+        # the filenames we have already added to prevent a freeze.
+        # This still pegs a CPU core at 100% however it doesn't block the main loop.
+        self.returned_chooser_filenames = []
+        GLib.idle_add(
+            lambda cb : chooser.connect("response", self.on_filechooser_response, cb),
+            callback
+        )
+        chooser.show()
+
+    def on_filechooser_response(self, chooser, response, callback):
+        filename = chooser.get_file().get_path()
+        if filename not in self.returned_chooser_filenames:
+            chooser.destroy()
+            if response == Gtk.ResponseType.ACCEPT and filename not in self.returned_chooser_filenames:
+                callback(filename)
+            self.returned_chooser_filenames.append(filename)
 
 # Preferences methods #########################################################
     @classmethod

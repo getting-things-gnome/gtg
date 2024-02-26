@@ -1,152 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.36.0 -->
 <interface>
-  <requires lib="gtk+" version="3.22"/>
-  <object class="GtkAccelGroup" id="accelgroup1"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkWindow" id="export_dialog">
-    <property name="can_focus">False</property>
     <property name="title" translatable="yes">Export tasks</property>
-    <property name="window_position">mouse</property>
     <property name="destroy_with_parent">True</property>
-    <signal name="delete-event" handler="on_export_dialog_delete_event" swapped="no"/>
     <child>
       <object class="GtkBox" id="vbox3">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
+        <property name="margin-start">15</property>
+        <property name="margin-end">15</property>
+        <property name="margin-top">15</property>
+        <property name="margin-bottom">15</property>
         <child>
           <object class="GtkBox" id="box11">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="border_width">15</property>
             <property name="spacing">15</property>
             <child>
               <object class="GtkBox" id="vbox111">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="vbox44444444444">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkLabel" id="label1ewegwegewg">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">&lt;b&gt;Which tasks do you want to export?&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkBox" id="vbox1342342243">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkRadioButton" id="export_all_active_rb">
+                          <object class="GtkCheckButton" id="export_all_active_cb">
                             <property name="label" translatable="yes">Active tasks shown in the browser</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
                             <property name="active">True</property>
-                            <property name="draw_indicator">True</property>
-                            <property name="group">export_finished_last_week_rb</property>
+                            <property name="group">export_finished_last_week_cb</property>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
                         </child>
                         <child>
-                          <object class="GtkRadioButton" id="export_all_finished_rb">
+                          <object class="GtkCheckButton" id="export_all_finished_cb">
                             <property name="label" translatable="yes">Completed tasks shown in the browser</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="draw_indicator">True</property>
-                            <property name="group">export_finished_last_week_rb</property>
+                            <property name="group">export_finished_last_week_cb</property>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
                         </child>
                         <child>
-                          <object class="GtkRadioButton" id="export_finished_last_week_rb">
+                          <object class="GtkCheckButton" id="export_finished_last_week_cb">
                             <property name="label" translatable="yes">Tasks finished last week</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="active">True</property>
-                            <property name="draw_indicator">True</property>
                           </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">2</property>
-                          </packing>
                         </child>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkBox" id="vbox1343">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="margin_top">20</property>
                     <property name="orientation">vertical</property>
+                    <property name="spacing">10</property>
                     <child>
                       <object class="GtkLabel" id="label1lalalla">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="halign">start</property>
                         <property name="valign">start</property>
                         <property name="label" translatable="yes">&lt;b&gt;Select a format for your tasks&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkComboBox" id="export_combo_templ">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <signal name="changed" handler="on_export_combo_templ_changed" swapped="no"/>
+                        <property name="halign">start</property>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="padding">10</property>
-                        <property name="position">1</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkLabel" id="label_description">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="halign">start</property>
                         <property name="valign">start</property>
                         <property name="use_markup">True</property>
@@ -155,92 +81,35 @@
                         <property name="wrap_mode">word-char</property>
                         <property name="width_chars">30</property>
                       </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
                     </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
-              <object class="GtkImage" id="export_image">
+              <object class="GtkPicture" id="export_picture">
                 <property name="width_request">300</property>
                 <property name="height_request">350</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkBox" id="buttonbox">
-            <property name="height_request">50</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="border_width">12</property>
             <property name="spacing">23</property>
             <child>
               <object class="GtkButton" id="export_btn_open">
                 <property name="label" translatable="yes">Open</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_export_btn_open_clicked" swapped="no"/>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkButton" id="export_btn_save">
                 <property name="label" translatable="yes">Save</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_export_btn_save_clicked" swapped="no"/>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
         </child>
       </object>
-    </child>
-    <child type="titlebar">
-      <placeholder/>
     </child>
   </object>
 </interface>

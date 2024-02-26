@@ -26,7 +26,7 @@ from lxml import etree as et
 from GTG.core.dates import Date
 from GTG.core.dirs import DATA_DIR
 from GTG.core import xml
-from GTG.core import datastore
+from uuid import uuid4, UUID
 
 from datetime import date
 from typing import Optional, Tuple
@@ -39,7 +39,7 @@ tags_cache = {}
 tid_cache = {}
 
 
-def convert(path: str, ds: datastore) -> et.ElementTree:
+def convert(path: str) -> et.ElementTree:
     """Convert old XML into the new format."""
 
     old_tree = xml.open_file(path, 'project')
@@ -69,7 +69,7 @@ def convert(path: str, ds: datastore) -> et.ElementTree:
         tid_cache[tid] = new_tid
 
     for task in old_tree.iter('task'):
-        new_task = convert_task(task, ds)
+        new_task = convert_task(task)
 
         if new_task is not None:
             tasklist.append(new_task)
@@ -137,18 +137,17 @@ def convert_tags(old_tree: et.Element) -> Tuple[et.Element, et.Element]:
     return taglist, searchlist
 
 
-def convert_task(task: et.Element, ds: datastore) -> Optional[et.Element]:
+def convert_task(task: et.Element) -> Optional[et.Element]:
     """Convert old task XML into the new format."""
-
-    tid = task.attrib['id']
-    real_task = ds.task_factory(tid)
 
     if task is None:
         return
 
+    tid = task.attrib['id']
+
     # Get the old task properties
     # TIDs were stored as UUID, but sometimes they were not present
-    tid = task.get('uuid') or real_task.get_uuid() or tid_cache[tid]
+    tid = task.get('uuid') or uuid4() or tid_cache[tid]
     status = task.get('status')
     title = task.find('title').text
     content = task.find('content')

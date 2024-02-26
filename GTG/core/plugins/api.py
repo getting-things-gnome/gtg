@@ -37,8 +37,7 @@ class PluginAPI():
     """
 
     def __init__(self,
-                 requester,
-                 view_manager,
+                 app,
                  taskeditor=None):
         """
         Construct a PluginAPI object.
@@ -48,25 +47,29 @@ class PluginAPI():
         @param task_id: The Editor, if we are in one
         otherwise.
         """
-        self.__requester = requester
-        self.__view_manager = view_manager
+
+        self.app = app
+        self.ds = app.ds
+        self.browser = app.browser
+        
         self.selection_changed_callback_listeners = []
+
         if taskeditor:
             self.__ui = taskeditor
-            self.__builder = self.__ui.get_builder()
             self.__task_id = taskeditor.get_task()
         else:
-            self.__ui = self.__view_manager.browser
-            self.__builder = self.__ui.get_builder()
+            self.__ui = self.browser
             self.__task_id = None
-            self.__view_manager.browser.selection.connect(
-                "changed", self.__selection_changed)
+            
+            for pane in self.browser.panes.values():
+                pane.task_selection.connect('selection-changed', self.__selection_changed, pane)
+
         self.taskwidget_id = 0
         self.taskwidget_widg = []
 
-    def __selection_changed(self, selection):
+    def __selection_changed(self, model, position, n_items, user_data=None):
         for func in self.selection_changed_callback_listeners:
-            func(selection)
+            func(user_data.get_selection())
 
 # Accessor methods ============================================================
     def is_editor(self):
@@ -85,19 +88,7 @@ class PluginAPI():
         """
         returns a GTG.gtk.manager.Manager
         """
-        return self.__view_manager
-
-    def get_requester(self):
-        """
-        returns a GTG.core.requester.Requester
-        """
-        return self.__requester
-
-    def get_gtk_builder(self):
-        """
-        Returns the gtk builder for the parent window
-        """
-        return self.__builder
+        return self.app
 
     def get_ui(self):
         """
@@ -109,21 +100,21 @@ class PluginAPI():
         """
         Returns a Browser
         """
-        return self.__view_manager.browser
+        return self.browser
 
     def get_menu(self):
         """
         Return the menu entry to the menu of the Task Browser or Task Editor.
         """
-        return self.__builder.get_object('main_menu')
+        return self.__ui.get_menu()
 
     def get_header(self):
         """Return the headerbar of the mainwindow"""
-        return self.__builder.get_object('browser_headerbar')
+        return self.__ui.get_headerbar()
 
     def get_quickadd_pane(self):
         """Return the quickadd pane"""
-        return self.__builder.get_object('quickadd_pane')
+        return self.__ui.get_quickadd_pane()
 
     def get_selected(self):
         """
@@ -132,7 +123,7 @@ class PluginAPI():
         if self.is_editor():
             return self.__task_id
         else:
-            return self.__view_manager.browser.get_selected_tasks()
+            return self.browser.get_selected_tasks()
 
     def set_active_selection_changed_callback(self, func):
         if func not in self.selection_changed_callback_listeners:
@@ -149,9 +140,8 @@ class PluginAPI():
 
         @param item: The Gio.MenuItem that is going to be added.
         """
-        _, _, menu = self.__builder.get_object(
-            'editor_menu' if self.is_editor() else 'main_menu'
-        ).iterate_item_links(0).get_next()
+        # All menu items are added to the first section
+        _, _, menu = self.__ui.get_menu().iterate_item_links(0).get_next()
         menu.append_item(item)
 
     def remove_menu_item(self, item):
@@ -162,10 +152,8 @@ class PluginAPI():
         # you cannot remove items by identity since there values are simply copied
         # when adding a new one. A reliable solution is to instead find the first one
         # with the same label as the given one.
-        _, _, menu = self.__builder.get_object(
-            'editor_menu' if self.is_editor() else 'main_menu'
-        # all menu items are added to the first section
-        ).iterate_item_links(0).get_next()
+        # All menu items are added to the first section
+        _, _, menu = self.get_menu().iterate_item_links(0).get_next()
 
         length = menu.get_n_items()
         i = 0
@@ -189,11 +177,9 @@ class PluginAPI():
 
         @param widget: The Gtk.Widget that is going to be added.
         """
-        vbox = self.__builder.get_object('pluginbox')
+        vbox = self.__ui.get_plugin_box()
         if vbox:
-            vbox.add(widget)
-            vbox.reorder_child(widget, -2)
-            widget.show_all()
+            vbox.append(widget)
             self.taskwidget_id += 1
             self.taskwidget_widg.append(widget)
             return self.taskwidget_id
@@ -207,7 +193,7 @@ class PluginAPI():
         """
         if self.is_editor() and widg_id:
             try:
-                wi = self.__builder.get_object('vbox4')
+                wi = self.__ui.get_plugin_box()
                 if wi and widg_id in self.taskwidget_widg:
                     wi.remove(self.taskwidget_widg.pop(widg_id))
             except Exception:
@@ -223,12 +209,12 @@ class PluginAPI():
         browser = self.get_browser()
 
         # set default bgcolor?
-        if func is None:
-            func = browser.tv_factory.get_task_bg_color
+        # if func is None:
+        #     func = browser.tv_factory.get_task_bg_color
 
-        for pane in browser.vtree_panes.values():
-            pane.set_bg_color(func, 'bg_color')
-            pane.basetree.get_basetree().refresh_all()
+        # for pane in browser.vtree_panes.values():
+        #     pane.set_bg_color(func, 'bg_color')
+        #     pane.basetree.get_basetree().refresh_all()
 
 # file saving/loading =======================================================
     def load_configuration_object(self, plugin_name, filename,

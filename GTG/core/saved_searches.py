@@ -19,7 +19,7 @@
 """Everything related to saved searches."""
 
 
-from gi.repository import GObject
+from gi.repository import GObject, Gio
 
 from uuid import uuid4, UUID
 from typing import Optional
@@ -36,17 +36,49 @@ class SavedSearch(GObject.Object):
     """A saved search."""
 
     __gtype_name__ = 'gtg_SavedSearch'
-    __slots__ = ['id', 'name', 'query', 'icon', 'children']
 
 
     def __init__(self, id: UUID, name: str, query: str) -> None:
         self.id = id
-        self.name = name
-        self.query = query
+        self._name = name
+        self._query = query
+        self._icon = None
 
-        self.icon = None
-        self.children = []
-        self.parent = None
+        super(SavedSearch, self).__init__()
+
+    @GObject.Property(type=str)
+    def name(self) -> str:
+        """Read only property."""
+
+        return self._name
+
+    @name.setter
+    def set_name(self, value: str) -> None:
+        self._name = value
+
+
+    @GObject.Property(type=str)
+    def icon(self) -> str:
+        """Read only property."""
+
+        return self._icon
+
+
+    @icon.setter
+    def set_icon(self, value: str) -> None:
+        self._icon = value
+
+
+    @GObject.Property(type=str)
+    def query(self) -> str:
+        """Read only property."""
+
+        return self._query
+
+
+    @query.setter
+    def set_query(self, value: str) -> None:
+        self._query = value
 
 
     def __str__(self) -> str:
@@ -75,6 +107,11 @@ class SavedSearchStore(BaseStore):
 
     #: Tag to look for in XML
     XML_TAG = 'savedSearch'
+
+    def __init__(self) -> None:
+        super().__init__()
+
+        self.model = Gio.ListStore.new(SavedSearch)
 
 
     def __str__(self) -> str:
@@ -109,41 +146,16 @@ class SavedSearchStore(BaseStore):
             log.debug('Added %s', search)
 
 
-        for element in elements:
-            parent_name = element.get('parent')
-
-            if parent_name and parent_name != 'search':
-                tid = element.get('id')
-
-                parent = self.find(parent_name)
-
-                if parent:
-                    self.parent(tid, parent.id)
-                    log.debug('Added %s as child of %s', element, parent)
-
-
     def to_xml(self) -> Element:
         """Save searches to an LXML element."""
 
         root = Element('searchlist')
-
-        parent_map = {}
-
-        for search in self.data:
-            for child in search.children:
-                parent_map[child.id] = search.name
 
         for search in self.lookup.values():
             element = SubElement(root, self.XML_TAG)
             element.set('id', str(search.id))
             element.set('name', search.name)
             element.set('query', search.query)
-
-            try:
-                element.set('parent', str(parent_map[search.id]))
-            except KeyError:
-                # Toplevel search
-                pass
 
         return root
 
@@ -154,10 +166,17 @@ class SavedSearchStore(BaseStore):
         search_id = uuid4()
         search = SavedSearch(id=search_id, name=name, query=query)
 
-        if parent:
-            self.add(search, parent)
-        else:
-            self.data.append(search)
-            self.lookup[search_id] = search
+        self.data.append(search)
+        self.lookup[search_id] = search
+        self.model.append(search)
 
         return search
+    
+
+    def add(self, item, parent_id: UUID = None) -> None:
+        """Add a tag to the tagstore."""
+
+        super().add(item, parent_id)
+        self.model.append(item)
+
+        self.emit('added', item)

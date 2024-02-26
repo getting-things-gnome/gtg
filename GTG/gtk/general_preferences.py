@@ -22,7 +22,7 @@ It enables user to set the most general settings of GTG."""
 
 import os
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GLib
 
 from GTG.core.dirs import UI_DIR
 from gettext import gettext as _
@@ -32,31 +32,33 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class GeneralPreferences():
+@Gtk.Template(filename=os.path.join(UI_DIR, "general_preferences.ui"))
+class GeneralPreferences(Gtk.ScrolledWindow):
+    __gtype_name__ = 'GeneralPreferences'
 
-    GENERAL_PREFERENCES_UI = os.path.join(UI_DIR, "general_preferences.ui")
-    INVALID_COLOR = Gdk.Color(50000, 0, 0)
+    _preview_button = Gtk.Template.Child()
+    _bg_color_button = Gtk.Template.Child()
+    _font_button = Gtk.Template.Child()
 
-    def __init__(self, req, app):
-        self.req = req
-        self.config = self.req.get_config('browser')
-        builder = Gtk.Builder()
-        builder.add_from_file(self.GENERAL_PREFERENCES_UI)
+    _refresh_time_entry = Gtk.Template.Child()
+    _autoclean_switch = Gtk.Template.Child()
+    _autoclean_days_spin = Gtk.Template.Child()
+    _dark_mode_switch = Gtk.Template.Child()
 
-        self.ui_widget = builder.get_object("general_pref_window")
-        self.preview_button = builder.get_object("preview_button")
-        self.bg_color_button = builder.get_object("bg_color_button")
-        self.font_button = builder.get_object("font_button")
+    def __init__(self, app):
+        super().__init__()
+        self.config = app.config
 
         self.app = app
         self.timer = app.timer
-        self.refresh_time = builder.get_object("time_entry")
-        self.autoclean_enable = builder.get_object("autoclean_enable")
-        self.autoclean_days = builder.get_object("autoclean_days")
-        self.dark_mode = builder.get_object("darkmode_enable")
 
-        self._refresh_preferences_store()
-        builder.connect_signals(self)
+        time_entry_focus_controller = Gtk.EventControllerFocus()
+        time_entry_focus_controller.connect("leave", self.on_leave_time_entry)
+        self._refresh_time_entry.add_controller(time_entry_focus_controller)
+        # setting preference values should not block,
+        # as setting certain preferences depends on the complete initialization
+        # of the app.
+        GLib.idle_add(self._refresh_preferences_store)
 
     # Following 3 methods: get_name, get_title, get_ui are
     # required for all children of stack in Preferences class.
@@ -69,75 +71,51 @@ class GeneralPreferences():
     def get_title(self):
         return _('General')
 
-    def get_ui(self):
-        """
-        This method returns widget displayed in Preferences window.
-        """
-        return self.ui_widget
-
     def activate(self):
         pass
 
     def get_default_editor_font(self):
-        editor_font = self.config.get("font_name")
-        if editor_font == "":
-            try:
-                font = self.ui_widget.get_style_context().get_property(
-                    "font", Gtk.StateFlags.NORMAL)
-                editor_font = font.to_string()
-            except UnicodeError as e:
-                log.warning("Using deprecated but still working font way (%r)",
-                            e)
-                font = self.ui_widget.get_style_context().get_font(
-                    Gtk.StateFlags.NORMAL)
-                editor_font = font.to_string()
+        if not self.config.get("font_name") or not self.config.get("font_size"):
+            editor_font = Gtk.Settings.get_default().get_property("gtk-font-name")
+        else:
+            editor_font = self.config.get("font_name") + " " + str(self.config.get("font_size"))
         return editor_font
 
     def _refresh_preferences_store(self):
         """ Sets the correct value in the preferences checkboxes """
 
         show_preview = self.config.get("contents_preview_enable")
-        self.preview_button.set_active(show_preview)
+        self._preview_button.set_active(show_preview)
 
         bg_color = self.config.get("bg_color_enable")
-        self.bg_color_button.set_active(bg_color)
+        self._bg_color_button.set_active(bg_color)
 
-        self.refresh_time.set_text(self.timer.get_formatted_time())
-        self.refresh_time.modify_fg(Gtk.StateFlags.NORMAL, None)
+        self._refresh_time_entry.set_text(self.timer.get_formatted_time())
 
-        self.font_button.set_font(self.get_default_editor_font())
+        self._font_button.set_font(self.get_default_editor_font())
 
         enable_autoclean = self.config.get("autoclean")
-        self.autoclean_enable.set_active(enable_autoclean)
+        self._autoclean_switch.set_active(enable_autoclean)
 
         autoclean_days = self.config.get("autoclean_days")
-        self.autoclean_days.set_value(autoclean_days)
+        self._autoclean_days_spin.set_value(autoclean_days)
 
         dark_mode = self.config.get("dark_mode")
-        self.dark_mode.set_active(dark_mode)
+        self._dark_mode_switch.set_active(dark_mode)
 
-    def _refresh_task_browser(self):
-        """ Refresh tasks in task browser """
 
-        collapsed = self.config.get("collapsed_tasks")
-        task_tree = self.req.get_tasks_tree(refresh=False).get_basetree()
-        task_tree.refresh_all()
-
-        self.app.browser.restore_collapsed_tasks(collapsed)
-
+    @Gtk.Template.Callback()
     def on_valid_time_check(self, widget):
         """
         This function checks for validity of the user input with
         every new key-stroke from the user by parsing the input.
         """
         try:
-            input_time = self.refresh_time.get_text()
+            input_time = self._refresh_time_entry.get_text()
             self.timer.parse_time(input_time)
-            color = None
+            self._refresh_time_entry.remove_css_class("error")
         except ValueError:
-            color = self.INVALID_COLOR
-
-        self.refresh_time.modify_fg(Gtk.StateFlags.NORMAL, color)
+            self._refresh_time_entry.add_css_class("error")
 
     def on_leave_time_entry(self, widget, data=None):
         """
@@ -146,7 +124,7 @@ class GeneralPreferences():
         sets the time value for the widget.
         """
         try:
-            input_time = self.refresh_time.get_text()
+            input_time = self._refresh_time_entry.get_text()
             correct_time = self.timer.parse_time(input_time)
             self.timer.set_configuration(correct_time)
         except ValueError:
@@ -154,51 +132,50 @@ class GeneralPreferences():
 
         self._refresh_preferences_store()
 
+    @Gtk.Template.Callback()
     def on_preview_toggled(self, widget, state):
         """ Toggle previews in the task view on or off."""
         curstate = self.config.get("contents_preview_enable")
-        if curstate != self.preview_button.get_active():
+        if curstate != self._preview_button.get_active():
             self.config.set("contents_preview_enable", not curstate)
-            self._refresh_task_browser()
 
+    @Gtk.Template.Callback()
     def on_bg_color_toggled(self, widget, state):
         """ Save configuration and refresh nodes to apply the change """
         curstate = self.config.get("bg_color_enable")
-        if curstate != self.bg_color_button.get_active():
+        if curstate != self._bg_color_button.get_active():
             self.config.set("bg_color_enable", not curstate)
-            self._refresh_task_browser()
 
+            for task in self.app.ds.tasks.lookup.values():
+                task.notify('row_css')
+
+    @Gtk.Template.Callback()
     def on_font_change(self, widget):
         """ Set a new font for editor """
-        self.config.set("font_name", self.font_button.get_font())
+        self.config.set("font_name", self._font_button.get_font_family().get_name())
+        self.config.set("font_size", int(self._font_button.get_font_size()/1000))
 
+    @Gtk.Template.Callback()
     def on_autoclean_toggled(self, widget, state):
         """Toggle automatic deletion of old closed tasks."""
 
         self.config.set("autoclean", state)
 
+    @Gtk.Template.Callback()
     def on_autoclean_days_changed(self, widget):
         """Update value for maximum days before removing a task."""
 
         self.config.set("autoclean_days", int(widget.get_value()))
 
+    @Gtk.Template.Callback()
     def on_purge_clicked(self, widget):
         """Purge old tasks immediately."""
 
         self.app.purge_old_tasks(widget)
 
+    @Gtk.Template.Callback()
     def on_dark_mode_toggled(self, widget, state):
         """Toggle darkmode."""
 
         self.config.set("dark_mode", state)
         self.app.toggle_darkmode(state)
-        collapsed = self.config.get("collapsed_tasks")
-
-        # Refresh panes
-        func = self.app.browser.tv_factory.get_task_bg_color
-
-        for pane in self.app.browser.vtree_panes.values():
-            pane.set_bg_color(func, 'bg_color')
-            pane.basetree.get_basetree().refresh_all()
-
-        self.app.browser.restore_collapsed_tasks(collapsed)

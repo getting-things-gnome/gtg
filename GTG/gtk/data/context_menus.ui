@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk" version="4.0"/>
 
   <menu id="closed_task_menu">
     <section>
@@ -228,6 +228,51 @@
     </section>
 
     </section>
+  </menu>
+
+  <menu id="tag_context_menu">
+    <item>
+      <attribute name="label" translatable="yes">Edit...</attribute>
+      <attribute name="action">tags_popup.edit_tag</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Generate Color</attribute>
+      <attribute name="action">tags_popup.generate_tag_color</attribute>
+    </item>
+  </menu>
+
+  <menu id="search_context_menu">
+    <item>
+      <attribute name="label" translatable="yes">Edit...</attribute>
+      <attribute name="action">search_popup.edit_search</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Delete</attribute>
+      <attribute name="action">search_popup.delete_search</attribute>
+    </item>
+  </menu>
+
+
+  <menu id="sort_menu">
+    <item>
+      <attribute name="label" translatable="yes">Sort by Start Date</attribute>
+      <attribute name="action">win.sort_by_start</attribute>
+    </item>
+
+    <item>
+      <attribute name="label" translatable="yes">Sort by Due Date</attribute>
+      <attribute name="action">win.sort_by_due</attribute>
+    </item>
+
+    <item>
+      <attribute name="label" translatable="yes">Sort by Added Date</attribute>
+      <attribute name="action">win.sort_by_added</attribute>
+    </item>
+
+    <item>
+      <attribute name="label" translatable="yes">Sort by Modified Date</attribute>
+      <attribute name="action">win.sort_by_modified</attribute>
+    </item>
   </menu>
 
 </interface>
