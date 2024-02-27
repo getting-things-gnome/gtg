@@ -2,6 +2,10 @@
 data/org.gnome.GTG.appdata.xml.in.in
 data/org.gnome.GTG.desktop.in.in
 
+GTG/__init__.py
+
+# Desktop files:
+
 GTG/plugins/export.gtg-plugin.desktop
 GTG/plugins/send-email.gtg-plugin.desktop
 GTG/plugins/untouched-tasks.gtg-plugin.desktop
@@ -9,33 +13,38 @@ GTG/plugins/urgency-color.gtg-plugin.desktop
 GTG/plugins/hamster.gtg-plugin.desktop
 GTG/plugins/gamify.gtg-plugin.desktop
 
+# GtkBuilder XML UI files:
+
 GTG/gtk/data/backends.ui
 GTG/gtk/data/calendar.ui
 GTG/gtk/data/context_menus.ui
 GTG/gtk/data/general_preferences.ui
-GTG/gtk/data/help_overlay.ui
 GTG/gtk/data/main_window.ui
 GTG/gtk/data/modify_tags.ui
 GTG/gtk/data/tag_editor.ui
 GTG/gtk/data/plugins.ui
 GTG/gtk/data/preferences.ui
+GTG/gtk/data/search_editor.ui
 GTG/gtk/data/task_editor.ui
+GTG/gtk/data/recurring_menu.ui
 GTG/plugins/export/export.ui
+GTG/plugins/gamify/gamify.ui
 GTG/plugins/gamify/prefs.ui
 GTG/plugins/hamster/prefs.ui
 GTG/plugins/untouched_tasks/untouchedTasks.ui
 GTG/plugins/urgency_color/preferences.ui
 
+# Python code files:
+
 GTG/backends/backend_caldav.py
-GTG/backends/backend_localfile.py
 GTG/backends/backend_signals.py
 GTG/backends/generic_backend.py
 GTG/backends/__init__.py
 GTG/backends/periodic_import_backend.py
 GTG/backends/sync_engine.py
+
 GTG/core/info.py.in
 GTG/core/borg.py
-GTG/core/xml.py
 GTG/core/clipboard.py
 GTG/core/config.py
 GTG/core/datastore.py
@@ -49,15 +58,13 @@ GTG/core/networkmanager.py
 GTG/core/plugins/api.py
 GTG/core/plugins/engine.py
 GTG/core/plugins/__init__.py
-GTG/core/requester.py
 GTG/core/search.py
-GTG/core/tag.py
-GTG/core/task.py
+GTG/core/tasks.py
 GTG/core/timer.py
-GTG/core/treefactory.py
 GTG/core/twokeydict.py
 GTG/core/urlregex.py
 GTG/core/watchdog.py
+
 GTG/gtk/application.py
 GTG/gtk/backends/addpanel.py
 GTG/gtk/backends/backendscombo.py
@@ -72,17 +79,18 @@ GTG/gtk/backends/parameters_ui/path.py
 GTG/gtk/backends/parameters_ui/period.py
 GTG/gtk/backends/parameters_ui/text.py
 GTG/gtk/browser/backend_infobar.py
-GTG/gtk/browser/cell_renderer_tags.py
 GTG/gtk/browser/delete_tag.py
 GTG/gtk/browser/delete_task.py
 GTG/gtk/browser/__init__.py
 GTG/gtk/browser/main_window.py
 GTG/gtk/browser/modify_tags.py
 GTG/gtk/browser/quick_add.py
+GTG/gtk/browser/search_editor.py
+GTG/gtk/browser/sidebar.py
+GTG/gtk/browser/sidebar_context_menu.py
 GTG/gtk/browser/simple_color_selector.py
-GTG/gtk/browser/tag_context_menu.py
 GTG/gtk/browser/tag_editor.py
-GTG/gtk/browser/treeview_factory.py
+GTG/gtk/browser/tag_pill.py
 GTG/gtk/colors.py
 GTG/gtk/editor/calendar.py
 GTG/gtk/editor/editor.py
@@ -95,7 +103,7 @@ GTG/gtk/__init__.py
 GTG/gtk/plugins.py
 GTG/gtk/preferences.py
 GTG/gtk/tag_completion.py
-GTG/__init__.py
+
 GTG/plugins/export/export.py
 GTG/plugins/export/export_templates/description_pocketmod.py
 GTG/plugins/export/export_templates/description_sexy.py
@@ -115,6 +123,10 @@ GTG/plugins/urgency_color/urgency_color.py
 GTG/plugins/dev_console.gtg-plugin.desktop
 GTG/plugins/dev_console/console.py
 GTG/plugins/dev_console/utils.py
-GTG/plugins/gamify/gamify.py
 GTG/plugins/gamify/__init__.py
+GTG/plugins/gamify/gamify.py
 GTG/plugins/hamster/hamster.py
+
+# This one is an experimental part of the ListView that is not yet ready:
+# see https://discourse.gnome.org/t/listview-not-rendering-all-the-rows/15473
+#GTG/gtk/browser/task_pane.py
