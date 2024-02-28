@@ -66,7 +66,7 @@ def plugin_error_short_text(plugin):
 
 def plugin_error_text(plugin):
     """ Generate some helpful text about missing module dependencies. """
-    text = _('System support for plugin status: {}\n')
+    text = _('System support status for plugin:\n\n{}\n')
     if not plugin.error:
         return text.format(GnomeConfig.CANLOAD)
 
