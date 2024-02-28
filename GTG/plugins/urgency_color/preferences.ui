@@ -31,7 +31,7 @@
                 <child>
                   <object class="GtkLabel" id="label3">
                     <property name="hexpand">True</property>
-                    <property name="label" translatable="yes">Danger zone span</property>
+                    <property name="label" translatable="yes">Danger zone span:</property>
                   </object>
                 </child>
                 <child>
@@ -52,8 +52,11 @@
             </child>
             <child type="label">
               <object class="GtkLabel" id="label1">
-                <property name="label" translatable="yes">&lt;b&gt;Danger zone&lt;/b&gt;</property>
-                <property name="use_markup">True</property>
+                <property name="label" translatable="yes">Danger zone</property>
+                <attributes>
+                  <attribute name="weight" value="bold"></attribute>
+                  <attribute name="scale" value="1.2"></attribute>
+                </attributes>
               </object>
             </child>
           </object>
@@ -135,8 +138,12 @@
             </child>
             <child type="label">
               <object class="GtkLabel" id="label2">
-                <property name="label" translatable="yes">&lt;b&gt;Urgency level color&lt;/b&gt;</property>
+                <property name="label" translatable="yes">Urgency level color</property>
                 <property name="use_markup">True</property>
+                <attributes>
+                  <attribute name="weight" value="bold"></attribute>
+                  <attribute name="scale" value="1.2"></attribute>
+                </attributes>
               </object>
             </child>
           </object>
