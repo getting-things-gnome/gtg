@@ -473,9 +473,12 @@ class TaskEditor(Gtk.Window):
         if self.task.parent:
             # Translators: Button label to open the parent task
             self.parent_button.set_label(_('Open Parent'))
+            # TODO: preview the parent task's title here:
+            self.parent_button.set_tooltip_markup(_('View the Parent Task'))
         else:
             # Translators: Button label to add an new parent task
             self.parent_button.set_label(_('Add Parent'))
+            self.parent_button.set_tooltip_text(_('Create a New Parent Task'))
 
         # Refreshing the status bar labels and date boxes
         if status in [Status.DISMISSED, Status.DONE]:

@@ -295,6 +295,7 @@
         </child>
         <child type="end">
           <object class="GtkMenuButton" id="main_menu_btn">
+            <property name="tooltip_text" translatable="yes">Open Main Menu</property>
             <property name="receives_default">True</property>
             <property name="menu_model">main_menu</property>
             <property name="icon_name">open-menu-symbolic</property>
@@ -310,6 +311,7 @@
         </child>
         <child type="end">
           <object class="GtkMenuButton" id="sort_menu_btn">
+            <property name="tooltip_text" translatable="yes">Change Sorting</property>
             <property name="receives_default">True</property>
             <property name="menu_model">sort_menu</property>
             <property name="icon_name">view-sort-descending-symbolic</property>

@@ -69,7 +69,7 @@ class DevConsolePlugin():
         self.window = None
         self.terminal = None
 
-        self.menu_item = Gio.MenuItem.new('Developer Console', 'app.plugin.open_console')
+        self.menu_item = Gio.MenuItem.new(_('Developer Console'), 'app.plugin.open_console')
 
         # Set prompt.
         sys.ps1 = ">>> "

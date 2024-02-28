@@ -45,8 +45,8 @@
                 <property name="spacing">5</property>
                 <child>
                   <object class="GtkButton" id="parent">
-                    <property name="label" translatable="yes">Open Parent</property>
-                    <property name="tooltip_text" translatable="yes">Open the parent task (creating a parent if it doesn&apos;t have one)</property>
+                    <property name="label" translatable="no">Add/Open Parent</property>
+                    <property name="tooltip_text" translatable="no">Open the parent task (creating a parent if it doesn&apos;t have one)</property>
                     <property name="action_name">app.editor.show_parent</property>
                   </object>
                 </child>

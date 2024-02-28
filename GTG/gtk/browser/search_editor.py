@@ -79,7 +79,7 @@ class SearchEditor(Gtk.Dialog):
 
     @GObject.Property(type=str, default='')
     def search_query(self):
-        """The (new) name of the search."""
+        """The (new) query for the search."""
 
         return self._search_query
 
@@ -124,16 +124,15 @@ class SearchEditor(Gtk.Dialog):
 
     def _validate_search_name(self):
         """
-        Validates the current search name.
+        Validates the current Saved Search's name.
         Returns true whenever it passes validation, False otherwise.
-        On failure, the widgets are modified accordingly to show the user
-        why it doesn't accept it.
+        On failure, widgets are modified to show why the value is invalid.
         """
 
         if self.search_name == '':
             self._name_entry.add_css_class("error")
             self._name_entry.props.tooltip_text = \
-                _("search name can not be empty")
+                _("The name can not be empty")
             return False
         else:
             self._name_entry.remove_css_class("error")

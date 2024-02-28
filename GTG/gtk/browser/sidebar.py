@@ -20,6 +20,8 @@
 
 from gi.repository import Gtk, GObject, Gdk, Gio
 
+from gettext import gettext as _
+
 from GTG.core.tags import Tag
 from GTG.core.tasks import Task
 from GTG.core.filters import TagEmptyFilter
@@ -82,8 +84,8 @@ class Sidebar(Gtk.ScrolledWindow):
         all_count = str(ds.task_count['open']['all'])
         untag_count = str(ds.task_count['open']['untagged'])
 
-        self.all_btn = self.btn_item('emblem-documents-symbolic', 'All Tasks', 'task_count_all')
-        self.none_btn = self.btn_item('task-past-due-symbolic', 'Tasks with no tags', 'task_count_no_tags')
+        self.all_btn = self.btn_item('emblem-documents-symbolic', _('All Tasks'), 'task_count_all')
+        self.none_btn = self.btn_item('task-past-due-symbolic', _('Tasks With No Tags'), 'task_count_no_tags')
 
         self.general_box.append(self.all_btn)
         self.general_box.append(self.none_btn)
@@ -102,7 +104,7 @@ class Sidebar(Gtk.ScrolledWindow):
         searches_btn_box = Gtk.Box()
         searches_button = Gtk.Button()
         searches_button_label = Gtk.Label()
-        searches_button_label.set_markup('Saved Searches')
+        searches_button_label.set_markup(_('Saved Searches'))
         searches_button_label.set_xalign(0)
         searches_button.get_style_context().add_class('flat')
 
@@ -167,7 +169,7 @@ class Sidebar(Gtk.ScrolledWindow):
         btn_box = Gtk.Box()
         button = Gtk.Button()
         button_label = Gtk.Label()
-        button_label.set_markup('Tags')
+        button_label.set_markup(_('Tags'))
         button_label.set_xalign(0)
         button.get_style_context().add_class('flat')
 

@@ -160,7 +160,7 @@ class TagEditor(Gtk.Dialog):
         if self.tag_name == '':
             self._name_entry.add_css_class("error")
             self._name_entry.props.tooltip_text = \
-                _("Tag name can not be empty")
+                _("The name can not be empty")
             return False
         else:
             self._name_entry.remove_css_class("error")

@@ -4,7 +4,7 @@
   <template class="GamifyPreferences" parent="GtkWindow">
     <property name="default-width">550</property>
     <property name="default-height">500</property>
-    <property name="title" translatable="yes">🗲Gamify Preferences</property>
+    <property name="title" translatable="yes">Gamify Preferences</property>
     <signal name="close-request" handler="on-preferences-closed" swapped="no"/>
     <property name="child">
       <object class="GtkBox" id="main_window_box">
@@ -200,7 +200,7 @@
             </property>
             <child>
               <object class="GtkButton" id="dismiss-new-mapping">
-                <property name="label" translatable="yes">close</property>
+                <property name="label" translatable="yes">Close</property>
                 <signal name="clicked" handler="dismiss-new-mapping" swapped="no"/>
               </object>
             </child>

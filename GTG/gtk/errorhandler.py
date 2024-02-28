@@ -39,8 +39,10 @@ class ExceptionHandlerDialog(Gtk.MessageDialog):
         title = title.format(**formatting)
         desc = desc.format(**formatting)
 
+        # Yes, this line looks weirdly unindented. Leave it like that, or you'll mess up the translatable string:
         desc2 = _("""Recently unsaved changes (from the last few seconds) may be lost, so make sure to check your recent changes when launching GTG again afterwards.
-        Please report the bug in <a href="{url}">our issue tracker</a>, with steps to trigger the problem and the error's details below.""")
+
+Please report the bug in <a href="{url}">our issue tracker</a>, with steps to trigger the problem and the error's details below.""")
         desc2 = desc2.format(**formatting)
 
         # You may think that GtkWindow:title is the property you need,
