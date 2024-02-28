@@ -471,8 +471,17 @@ class TaskEditor(Gtk.Window):
         if self.task.parent:
             # Translators: Button label to open the parent task
             self.parent_button.set_label(_('Open Parent'))
-            # TODO: preview the parent task's title here:
-            self.parent_button.set_tooltip_markup(_('View the Parent Task'))
+            __tip_contents = _('View the Parent Task:')
+            __tip_contents += f'\n<small><i>{self.task.parent.title}</i></small>'
+            __nb_siblings = len(self.task.parent.children) - 1
+            if __nb_siblings > 0:
+                __tip_contents += "\n\n"
+                __tip_contents += ngettext('That parent task also has <b>%(nb)d</b> other child.',
+                                           'That parent task also has <b>%(nb)d</b> other children.',
+                                           __nb_siblings) % {'nb': __nb_siblings}
+
+            self.parent_button.set_tooltip_markup(__tip_contents)
+
         else:
             # Translators: Button label to add an new parent task
             self.parent_button.set_label(_('Add Parent'))
