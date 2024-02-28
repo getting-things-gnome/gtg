@@ -57,7 +57,7 @@
 
       <section>
       <item>
-        <attribute name="label" translatable="yes">Tomorrow</attribute>
+        <attribute name="label" translatable="yes" context="Right-click menu item action to defer the task's start date to the next day">Tomorrow</attribute>
         <attribute name="action">win.start_tomorrow</attribute>
       </item>
 
@@ -129,7 +129,7 @@
       </item>
 
       <item>
-        <attribute name="label" translatable="yes">Tomorrow</attribute>
+        <attribute name="label" translatable="yes" context="Right-click menu item action to defer the task's due date to the next day">Tomorrow</attribute>
         <attribute name="action">win.due_tomorrow</attribute>
       </item>
       </section>
