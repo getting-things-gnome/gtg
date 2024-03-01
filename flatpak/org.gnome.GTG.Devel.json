@@ -1,5 +1,5 @@
 {
-  "app-id": "org.gnome.GTGDevel",
+  "app-id": "org.gnome.GTG.Devel",
   "runtime": "org.gnome.Platform",
   "runtime-version": "40",
   "sdk": "org.gnome.Sdk",
@@ -14,7 +14,7 @@
     "--device=dri",
     "--system-talk-name=org.freedesktop.login1",
     "--talk-name=org.gnome.Hamster",
-    "--own-name=org.gnome.GTGDevel"
+    "--own-name=org.gnome.GTG.Devel"
   ],
   "cleanup": [
     "/include",

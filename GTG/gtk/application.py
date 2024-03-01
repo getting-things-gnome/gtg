@@ -238,7 +238,7 @@ class Application(Gtk.Application):
         if not self.browser:
             self.browser = MainWindow(self)
 
-            if self.props.application_id == 'org.gnome.GTGDevel':
+            if self.props.application_id == 'org.gnome.GTG.Devel':
                 self.browser.add_css_class('devel')
 
     def init_plugin_engine(self):

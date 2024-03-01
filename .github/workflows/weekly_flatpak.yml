@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v4
       with:
-        bundle: org.gnome.GTGDevel.flatpak
-        manifest-path: flatpak/org.gnome.GTG.json
+        bundle: org.gnome.GTG.Devel.flatpak
+        manifest-path: flatpak/org.gnome.GTG.Devel.json
         cache-key: flatpak-builder-${{ github.sha }}
 
