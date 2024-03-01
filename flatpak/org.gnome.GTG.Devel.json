@@ -31,7 +31,7 @@
     "*.pyo"
   ],
   "modules": [
-    "python3-requirements-dev.yaml",
+    "python3-requirements.yaml",
     {
       "name": "gtg",
       "config-opts" : [
