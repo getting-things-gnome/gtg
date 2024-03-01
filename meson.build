@@ -26,7 +26,7 @@ rdnn_name = 'org.gnome.GTG'
 application_id = rdnn_name
 
 if get_option('profile') == 'development'
-  application_id = rdnn_name + 'Devel'
+  application_id = rdnn_name + '.Devel'
 endif
 
 bin_config = configuration_data()
