@@ -24,7 +24,7 @@ from gettext import gettext as _
 
 from uuid import uuid4, UUID
 import logging
-from typing import Callable, Any, Optional
+from typing import Callable, Any, List, Optional, Union
 from enum import Enum
 import re
 import datetime
@@ -635,7 +635,7 @@ class Task(GObject.Object):
 
 
     @property
-    def tag_names(self) -> list[str]:
+    def tag_names(self) -> List[str]:
         return [ t.name for t in self.tags ]
     
 
@@ -646,7 +646,7 @@ class Task(GObject.Object):
         self.attributes[(namespace, att_name)] = val
 
 
-    def get_attribute(self, att_name, namespace="") -> str | None:
+    def get_attribute(self, att_name, namespace="") -> Union[str, None]:
         """Get an attribute."""
 
         return self.attributes.get((namespace, att_name), None)
