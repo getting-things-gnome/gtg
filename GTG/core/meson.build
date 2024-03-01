@@ -1,13 +1,16 @@
-# Find the version number and put it in info.py.
-# Use git --describe if available.
+# Append short commit hash and put it in
+# info.py when using development profile.
+# Use git rev-parse --short HEAD if available.
 
 git = find_program('git', required : false, disabler : true)
-git_description = run_command(git, 'describe', '--dirty')
 
-if not git.found() or git_description.returncode() != 0
-  version = meson.project_version()
+if git.found() and get_option('profile') == 'development'
+    version = meson.project_version() + '-' + run_command(
+            ['git', 'rev-parse', '--short', 'HEAD'],
+            check: true
+        ).stdout().strip()
 else
-  version = git_description.stdout().strip()
+    version = meson.project_version()
 endif
 
 info_config = configuration_data()
