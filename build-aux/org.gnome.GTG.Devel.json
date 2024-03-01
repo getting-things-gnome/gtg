@@ -30,8 +30,21 @@
     "*.pyc",
     "*.pyo"
   ],
+  "add-extensions": {
+    "org.freedesktop.Sdk.Extension.texlive": {
+      "directory": "texlive",
+      "version": "23.08"
+    }
+  },
   "modules": [
     "python3-requirements.yaml",
+    {
+      "name": "extension-points",
+      "buildsystem": "simple",
+      "build-commands": [
+        "mkdir ${FLATPAK_DEST}/texlive"
+      ]
+    },
     {
       "name": "gtg",
       "config-opts" : [
