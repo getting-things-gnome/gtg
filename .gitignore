@@ -20,6 +20,7 @@ build
 _build
 /.local_build/
 builddir/**/*
+.flatpak-builder
 
 # Glade Files
 **/**.glade.h
