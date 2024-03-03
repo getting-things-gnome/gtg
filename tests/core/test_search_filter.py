@@ -26,11 +26,11 @@ d = Date.parse
 
 class FakeTask():
 
-    def __init__(self, title="", body="", tags=[], due_date=""):
+    def __init__(self, title="", body="", tags=[], date_due=""):
         self.title = title
         self.body = body
         self.tags = tags
-        self.due_date = Date.parse(due_date)
+        self.date_due = Date.parse(date_due)
 
     def get_title(self):
         return self.title
@@ -41,8 +41,8 @@ class FakeTask():
     def get_tags_name(self):
         return self.tags
 
-    def get_due_date(self):
-        return self.due_date
+    def get_date_due(self):
+        return self.date_due
 
 
 class TestSearchFilter(TestCase):
@@ -142,7 +142,7 @@ class TestSearchFilter(TestCase):
                                         }))
 
     def test_simple_before(self):
-        v = FakeTask(due_date="2012-02-14")
+        v = FakeTask(date_due="2012-02-14")
 
         self.assertTrue(search_filter(v,
                                       {'q': [("before", True, d('2022-01-01'))
@@ -177,7 +177,7 @@ class TestSearchFilter(TestCase):
                                               )]}))
 
     def test_simple_after(self):
-        t = FakeTask(due_date="2012-06-01")
+        t = FakeTask(date_due="2012-06-01")
 
         self.assertTrue(search_filter(t,
                                       {'q': [("after", True, d('2002-01-01'))]
@@ -193,15 +193,15 @@ class TestSearchFilter(TestCase):
                                              ]}))
 
     def test_dates(self):
-        self.assertTrue(search_filter(FakeTask(due_date="today"),
+        self.assertTrue(search_filter(FakeTask(date_due="today"),
                                       {'q': [("today", True)]}))
-        self.assertTrue(search_filter(FakeTask(due_date="tomorrow"),
+        self.assertTrue(search_filter(FakeTask(date_due="tomorrow"),
                                       {'q': [("tomorrow", True)]}))
-        self.assertTrue(search_filter(FakeTask(due_date=""),
+        self.assertTrue(search_filter(FakeTask(date_due=""),
                                       {'q': [("nodate", True)]}))
-        self.assertTrue(search_filter(FakeTask(due_date="now"),
+        self.assertTrue(search_filter(FakeTask(date_due="now"),
                                       {'q': [("now", True)]}))
-        self.assertTrue(search_filter(FakeTask(due_date="soon"),
+        self.assertTrue(search_filter(FakeTask(date_due="soon"),
                                       {'q': [("soon", True)]}))
-        self.assertTrue(search_filter(FakeTask(due_date="someday"),
+        self.assertTrue(search_filter(FakeTask(date_due="someday"),
                                       {'q': [("someday", True)]}))
