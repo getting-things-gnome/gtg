@@ -166,9 +166,10 @@ class SavedSearchStore(BaseStore):
         search_id = uuid4()
         search = SavedSearch(id=search_id, name=name, query=query)
 
-        self.data.append(search)
-        self.lookup[search_id] = search
-        self.model.append(search)
+        if not self.find(name):
+            self.data.append(search)
+            self.lookup[search_id] = search
+            self.model.append(search)
 
         return search
     
