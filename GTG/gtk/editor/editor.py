@@ -459,15 +459,15 @@ class TaskEditor(Gtk.Window):
         if status == Status.ACTIVE:
             self.donebutton.show()
             self.undonebutton.hide()
-            self.set_dismissable_in_menu(False)
+            self.set_dismissable_in_menu(True)
         elif status == Status.DONE:
             self.donebutton.hide()
             self.undonebutton.show()
-            self.set_dismissable_in_menu(True)
+            self.set_dismissable_in_menu(False)
         else:
             self.donebutton.show()
             self.undonebutton.hide()
-            self.set_dismissable_in_menu(True)
+            self.set_dismissable_in_menu(False)
 
         # Refreshing the parent button
         if self.task.parent:
