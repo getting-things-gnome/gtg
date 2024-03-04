@@ -342,7 +342,7 @@ class TaskEditor(Gtk.Window):
             )
             # this might cause problems with localization if it isn't translated
             # here the same
-            if name == (_("Undismiss") if dismissable else _("Dismiss")):
+            if name == (_("Dismiss") if dismissable else _("Undismiss")):
                 editor_menu_con_sec.remove(i)
                 return
             i += 1
