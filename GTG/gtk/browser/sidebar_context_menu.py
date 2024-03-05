@@ -17,12 +17,12 @@
 # -----------------------------------------------------------------------------
 
 """
-tag_context_menu:
-Implements a context (pop-up) menu for the tag item in the sidebar.
-Right now it is just a void shell It is supposed to become a more generic
-sidebar context for all kind of item displayed there.
+sidebar_context_menu:
+Implements a context (pop-up) menu for the tag or saved search item in the 
+sidebar. It is supposed to be a generic sidebar context for all kind of item 
+displayed there.
 Also, it is supposed to handle more complex menus (with non-std widgets,
-like a color picker)
+like a color picker).
 """
 
 from gi.repository import Gtk, Gio
@@ -33,7 +33,7 @@ from GTG.gtk.browser import GnomeConfig
 
 
 class TagContextMenu(Gtk.PopoverMenu):
-    """Context menu fo the tag i the sidebar"""
+    """Context menu to the tag in the sidebar"""
 
     def __init__(self, ds, app, tag):
         super().__init__(has_arrow=False)
@@ -44,7 +44,8 @@ class TagContextMenu(Gtk.PopoverMenu):
         actions = [
             ("edit_tag", self.on_mi_cc_activate),
             ("generate_tag_color", self.on_mi_ctag_activate),
-            ("delete_tag", lambda w, a, p : self.app.browser.on_delete_tag_activate([self.tag]))
+            ("delete_tag", lambda w, a, p: 
+            	self.app.browser.on_delete_tag_activate([self.tag]))
         ]
 
         for action_disc in actions:
@@ -81,7 +82,7 @@ class TagContextMenu(Gtk.PopoverMenu):
 
 
 class SearchesContextMenu(Gtk.PopoverMenu):
-    """Context menu fo the tag i the sidebar"""
+    """Context menu to the saved search in the sidebar"""
 
     def __init__(self, ds, app, search):
         super().__init__(has_arrow=False)
@@ -91,7 +92,8 @@ class SearchesContextMenu(Gtk.PopoverMenu):
 
         actions = [
             ("edit_search", lambda w, a, p: app.open_search_editor(search)),
-            ("delete_search", lambda w, a, p : ds.saved_searches.remove(self.search.id))
+            ("delete_search", lambda w, a, p: 
+            	ds.saved_searches.remove(self.search.id))
         ]
 
         for action_disc in actions:
