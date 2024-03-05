@@ -25,7 +25,7 @@ from uuid import UUID
 import logging
 
 from lxml.etree import Element
-from typing import List, Any, Dict
+from typing import Any, Dict, List, Optional
 
 
 log = logging.getLogger(__name__)
@@ -55,7 +55,7 @@ class BaseStore(GObject.Object):
         return self.lookup[key]
 
 
-    def add(self, item: Any, parent_id: UUID = None) -> None:
+    def add(self, item: Any, parent_id: Optional[UUID] = None) -> None:
         """Add an existing item to the store."""
 
         if item.id in self.lookup.keys():
@@ -105,7 +105,7 @@ class BaseStore(GObject.Object):
         """Remove an existing item from the store."""
 
         item = self.lookup[item_id]
-        
+
         try:
             parent = item.parent
 
