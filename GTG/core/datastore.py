@@ -222,7 +222,7 @@ class Datastore:
                 if not task.tags:
                     count['untagged'] += 1
 
-                for tag in task.tags:
+                for tag in { t for owned_tag in task.tags for t in [owned_tag] + owned_tag.get_ancestors() }:
                     val = count.get(tag.name, 0)
                     count[tag.name] = val + 1
 
@@ -244,6 +244,17 @@ class Datastore:
 
         count_tasks(self.task_count['actionable'], 
                     self.tasks.filter(Filter.ACTIONABLE))
+
+
+    def refresh_tag_stats(self) -> None:
+        """
+        Refresh the number of tasks for each tag.
+        """
+        self.refresh_task_count()
+        for tag_name in self.tags.get_all_tag_names():
+            tag = self.tags.find(tag_name)
+            self.refresh_task_for_tag(tag)
+            self.notify_tag_change(tag)
 
 
     def notify_tag_change(self, tag) -> None:

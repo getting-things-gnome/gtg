@@ -586,7 +586,6 @@ class Sidebar(Gtk.ScrolledWindow):
 
     def drag_drop(self, target, value, x, y):
         """Callback when dropping onto a target"""
-
         dropped = target.get_widget().props.tag
 
         if not self.check_parent(value, dropped):
@@ -596,7 +595,10 @@ class Sidebar(Gtk.ScrolledWindow):
             self.ds.tags.unparent(value.id, value.parent.id)
         
         self.ds.tags.parent(value.id, dropped.id)
+        self.ds.refresh_tag_stats()
         self.ds.tags.tree_model.emit('items-changed', 0, 0, 0)
+        self.refresh_tags()
+        
 
 
     def drop_enter(self, target, x, y, user_data=None):
@@ -646,7 +648,8 @@ class Sidebar(Gtk.ScrolledWindow):
     def on_toplevel_tag_drop(self, drop_target, tag, x, y):
         if tag.parent:
             self.ds.tags.unparent(tag.id, tag.parent.id)
-
+            self.ds.refresh_tag_stats()
+            self.refresh_tags()
             try:
                 for expander in self.expanders:
                     expander.activate_action('listitem.toggle-expand')
