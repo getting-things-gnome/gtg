@@ -27,7 +27,7 @@ import random
 import re
 
 from lxml.etree import Element, SubElement
-from typing import Any, Dict, Set
+from typing import Any, Dict, List, Set
 
 from GTG.core.base_store import BaseStore
 
@@ -163,6 +163,15 @@ class Tag(GObject.Object):
         self._task_count_closed = value
 
 
+    def get_ancestors(self) -> List['Tag']:
+        """Return all ancestors of this tag"""
+        ancestors = []
+        here = self
+        while here.parent:
+            here = here.parent
+            ancestors.append(here)
+        return ancestors
+
     def __hash__(self):
         return id(self)
         
@@ -207,6 +216,10 @@ class TagStore(BaseStore):
 
         return f'Tag Store. Holds {len(self.lookup)} tag(s)'
 
+    def get_all_tag_names(self) -> List[str]:
+        """Return all tag names."""
+        return list(self.lookup_names.keys())
+    
 
     def find(self, name: str) -> Tag:
         """Get a tag by name."""
