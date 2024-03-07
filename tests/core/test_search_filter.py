@@ -26,10 +26,15 @@ d = Date.parse
 
 class FakeTask():
 
+    class FakeTag:
+        def __init__(self, name: str) -> None:
+            self.name = name
+
     def __init__(self, title="", body="", tags=[], date_due=""):
         self.title = title
         self.body = body
-        self.tags = tags
+        self.excerpt = body[:5]
+        self.tags = set(self.FakeTag(tag) for tag in tags)
         self.date_due = Date.parse(date_due)
 
     def get_title(self):
@@ -48,7 +53,7 @@ class FakeTask():
 class TestSearchFilter(TestCase):
 
     def test_empty(self):
-        self.assertFalse(search_filter(FakeTask()))
+        self.assertTrue(search_filter(FakeTask()))
 
     def test_single_tag(self):
         task = FakeTask(tags=['@a'])
