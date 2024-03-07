@@ -20,7 +20,7 @@ import unittest
 from unittest import TestCase
 
 from GTG.core.tags import extract_tags_from_text
-
+from GTG.gtk.browser.modify_tags import ModifyTagsDialog
 
 class TestExtractTags(TestCase):
     """ extract_tags_from_text """
@@ -75,8 +75,9 @@ class TestExtractTags(TestCase):
         self.assertTags("@home&work", ["@home&work"])
 
 
-@unittest.skip('TODO these need to move now that parse_tag_list is inside'
-               ' ModifyTagsDialog')
+# parse_tag_list was previously a free function
+parse_tag_list = ModifyTagsDialog.parse_tag_list
+
 class TestParseTagList(TestCase):
     """ parse_tag_list """
 
