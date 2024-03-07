@@ -316,8 +316,7 @@ class Task(GObject.Object):
         # Strip subtasks
         txt = SUB_REGEX.sub('', txt)
 
-        # Strip blank lines and set within char limit
-        return f'{txt.strip()[:50]}…'
+        return f'{txt.strip()[:80]}…'
 
 
     def add_tag(self, tag: Tag) -> None:
