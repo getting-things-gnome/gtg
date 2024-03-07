@@ -34,8 +34,7 @@ class TestTask(TestCase):
 
         self.assertEqual(task.title, 'My Title')
 
-    @unittest.skip('The excerpt is shorter after the GTK4 refactor. TODO'
-                   ' investigate and fix the behaviour or the test')
+
     def test_excerpt(self):
         task = Task(id=uuid4(), title='A Task')
 
