@@ -46,11 +46,6 @@ class SavedSearch(GObject.Object):
 
         super().__init__()
 
-    # TODO probably not needed
-    @classmethod
-    def create(cls, name: str, query: str) -> 'SavedSearch':
-        return cls(uuid4(), name, query)
-
     @GObject.Property(type=str)
     def name(self) -> str:
         """Read only property."""
