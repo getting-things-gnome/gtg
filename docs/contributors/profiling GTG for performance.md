@@ -78,4 +78,4 @@ shows what GTG does over time.
 flameprof -o gtg.svg gtg.prof
 ```
 
-![Generated image (not GTG)](https://raw.githubusercontent.com/brendangregg/FlameGraph/master/example-perf.svg)
+![Generated image (not GTG)](https://raw.githubusercontent.com/brendangregg/FlameGraph/main/example-perf.svg)

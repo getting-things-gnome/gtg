@@ -103,7 +103,7 @@ Obviously none of these are great situations to be in, but it happens.
 
 Ideally, commenting out a line of code should be a signal to yourself
 that one of these things has happened, that you probably should ask for help
-before merging it to master, and it should stay in a branch for now.
+before merging it to main, and it should stay in a branch for now.
 
 But that may not always be possible.  So more practically, when
 commenting out code please ALWAYS explain why you commented it out.

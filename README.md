@@ -208,4 +208,4 @@ yelp docs/user_manual/C/index.page
 
 We need help bringing the test suite back online with updated tests (before the badge below can be moved back up in this readme file). Get in touch if you'd like to work on this.
 
-[![Build Status](https://travis-ci.org/getting-things-gnome/gtg.svg?branch=master)](https://travis-ci.org/getting-things-gnome/gtg)
+[![Build Status](https://travis-ci.org/getting-things-gnome/gtg.svg?branch=main)](https://travis-ci.org/getting-things-gnome/gtg)

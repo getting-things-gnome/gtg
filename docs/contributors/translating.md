@@ -61,9 +61,9 @@ Update the repository to get the newest changes:
 
 Create a new branch (assumes that origin is the upstream repository, which is the default if you clone the upstream repository):
 
-    git switch -c my-translation-branch origin/master
+    git switch -c my-translation-branch origin/main
     # If git switch isn't available, use:
-    git branch my-translation-branch origin/master
+    git branch my-translation-branch origin/main
     git checkout my-translation-branch
 
 Add and commit the translation file:
