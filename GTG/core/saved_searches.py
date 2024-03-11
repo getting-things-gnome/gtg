@@ -165,10 +165,24 @@ class SavedSearchStore(BaseStore):
         return root
 
 
-    def add(self, search: SavedSearch) -> None:
-        """Add a search to the store."""
-        
-        super().add(search, None)
-        self.model.append(search)
+    def new(self, name: str, query: str, parent: UUID = None) -> SavedSearch:
+        """Create a new saved search and add it to the store."""
 
-        self.emit('added', search)
+        search_id = uuid4()
+        search = SavedSearch(id=search_id, name=name, query=query)
+
+        if not self.find(name):
+            self.data.append(search)
+            self.lookup[search_id] = search
+            self.model.append(search)
+
+        return search
+    
+
+    def add(self, item, parent_id: UUID = None) -> None:
+        """Add a tag to the tagstore."""
+
+        super().add(item, parent_id)
+        self.model.append(item)
+
+        self.emit('added', item)
