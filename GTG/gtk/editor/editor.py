@@ -877,10 +877,12 @@ class TaskEditor(Gtk.Window):
     def is_new(self) -> bool:
         return (self.task.title == DEFAULT_TITLE 
                 and self.textview.get_text() == '')
-        
+
 
     def destruction(self, _=None):
         """Callback when closing the window."""
+        # process textview to make sure every tag is parsed
+        self.textview.process()
 
         # Save should be also called when buffer is modified
         # self.pengine.onTaskClose(self.plugin_api)
