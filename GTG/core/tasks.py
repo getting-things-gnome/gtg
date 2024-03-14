@@ -752,10 +752,7 @@ class TaskStore(BaseStore):
         task = Task(id=tid, title=title)
         task.date_added = Date.now()
 
-        if parent:
-            self.add(task, parent)
-        else:
-            self.add(task)
+        self.add(task, parent)
 
         return task
 
