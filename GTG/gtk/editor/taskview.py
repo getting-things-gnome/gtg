@@ -168,15 +168,27 @@ class TaskView(GtkSource.View):
 
     def on_modified(self, buffer: Gtk.TextBuffer) -> None:
         """Called every time the text buffer changes."""
-
         if self.timeout:
             GLib.source_remove(self.timeout)
             self.timeout = None
 
-        self.timeout = GLib.timeout_add(self.PROCESSING_DELAY, self.process)
+        def _masked_processing():
+            self.process(mask_current_word=buffer.get_modified())
+        self.timeout = GLib.timeout_add(self.PROCESSING_DELAY, _masked_processing)
 
 
-    def process(self) -> None:
+    @staticmethod
+    def mask_current_word(text:str,cursor_pos:int):
+        """Replace the current word with 'X' characters until the cursor."""
+        chars = list(text)
+        for i in range(cursor_pos-1,-1,-1):
+            if chars[i].isspace():
+                break
+            chars[i]='X'
+        return ''.join(chars)
+
+
+    def process(self,mask_current_word:bool=False) -> None:
         """Process the contents of the text buffer."""
 
         if not self.buffer.props.text:
@@ -202,6 +214,8 @@ class TaskView(GtkSource.View):
         self.subtasks['to_delete'] = self.subtasks['tags'].copy()
 
         # Parse the text line by line until the end of the buffer
+        cursor_iter = self.buffer.get_iter_at_mark(self.buffer.get_insert())
+        cursor_line = cursor_iter.get_line()
         while not start.is_end():
             end = start.copy()
             end.forward_to_line_end()
@@ -219,7 +233,13 @@ class TaskView(GtkSource.View):
             self.detect_subheading(text, start)
             self.detect_url(text, start)
             self.detect_internal_link(text, start)
-            self.detect_tag(text, start)
+
+            # remove current word from the text befor looking for tags
+            if mask_current_word and cursor_line==start.get_line():
+                cur_pos = cursor_iter.get_line_offset()
+                text = TaskView.mask_current_word(text,cur_pos)
+
+            self.detect_tag(text, start) 
 
             start.forward_line()
 
