@@ -41,7 +41,7 @@ class TaskBox(Gtk.Box):
         self.expander.set_margin_end(6)
         self.expander.add_css_class('arrow-only-expander')
 
-        self.check = Gtk.CheckButton() 
+        self.check = Gtk.CheckButton()
         self.check.set_margin_end(6)
 
         self.append(self.expander)
@@ -64,7 +64,7 @@ class TaskBox(Gtk.Box):
         self.expander.set_visible(value)
 
         if value:
-            widget = self.expander 
+            widget = self.expander
         else:
             widget = self.check
 
@@ -84,7 +84,7 @@ class TaskBox(Gtk.Box):
             widget.set_margin_start(indent + (21 * depth))
         else:
             widget.set_margin_start(indent)
-        
+
 
     @GObject.Property(type=bool, default=True)
     def is_active(self) -> None:
@@ -97,7 +97,7 @@ class TaskBox(Gtk.Box):
             self.remove_css_class('closed-task')
         else:
             self.add_css_class('closed-task')
-    
+
 
     @GObject.Property(type=str)
     def row_css(self) -> None:
@@ -115,7 +115,7 @@ class TaskBox(Gtk.Box):
                 return
             except AttributeError:
                 return
-                
+
         val = str.encode(value)
 
         self.provider = Gtk.CssProvider()
@@ -125,9 +125,9 @@ class TaskBox(Gtk.Box):
 
 def unwrap(row, expected_type):
     """Find an item in TreeRow widget (sometimes nested)."""
-    
+
     item = row.get_item()
-    
+
     while type(item) is not expected_type:
         item = item.get_item()
 
@@ -136,7 +136,7 @@ def unwrap(row, expected_type):
 
 class TaskPane(Gtk.ScrolledWindow):
     """The task pane widget"""
-    
+
     def __init__(self, browser, pane):
 
         super(TaskPane, self).__init__()
@@ -148,7 +148,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
         self.set_vexpand(True)
         self.set_hexpand(True)
-        
+
         # -------------------------------------------------------------------------------
         # Title
         # -------------------------------------------------------------------------------
@@ -159,17 +159,17 @@ class TaskPane(Gtk.ScrolledWindow):
         title_box.set_margin_bottom(32)
         title_box.set_margin_start(24)
         title_box.set_margin_end(24)
-        
+
         self.title = Gtk.Label()
         self.title.set_halign(Gtk.Align.START)
         self.title.set_hexpand(True)
         self.title.add_css_class('title-1')
         title_box.append(self.title)
-        
+
         self.sort_btn = Gtk.MenuButton()
         self.sort_btn.set_icon_name('view-more-symbolic')
         self.sort_btn.add_css_class('flat')
-        
+
         title_box.append(self.sort_btn)
 
 
@@ -178,14 +178,14 @@ class TaskPane(Gtk.ScrolledWindow):
         # -------------------------------------------------------------------------------
 
         self.search_filter = SearchTaskFilter(self.ds, pane)
-        self.task_filter = TaskPaneFilter(self.app.ds, pane) 
+        self.task_filter = TaskPaneFilter(self.app.ds, pane)
 
         self.filtered = Gtk.FilterListModel()
         self.filtered.set_model(self.app.ds.tasks.tree_model)
         self.filtered.set_filter(self.task_filter)
 
         self.sort_model = Gtk.TreeListRowSorter()
-        
+
         self.main_sorter = Gtk.SortListModel()
         self.main_sorter.set_model(self.filtered)
         self.main_sorter.set_sorter(self.sort_model)
@@ -234,7 +234,7 @@ class TaskPane(Gtk.ScrolledWindow):
                self.title.set_text(_('Actionable Tasks'))
            if self.pane == 'closed':
                self.title.set_text(_('All Closed Tasks'))
-               
+
         else:
            tags = ', '.join('@' + t.name for t in self.task_filter.tags)
 
@@ -244,7 +244,7 @@ class TaskPane(Gtk.ScrolledWindow):
                self.title.set_text(_('{0} (Actionable)'.format(tags)))
            if self.pane == 'closed':
                self.title.set_text(_('{0} (Closed)'.format(tags)))
-            
+
 
     def set_search_query(self, query) -> None:
         """Change tasks filter."""
@@ -299,7 +299,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
     def refresh(self):
         """Refresh the task filter"""
-        
+
         self.task_filter.changed(Gtk.FilterChange.DIFFERENT)
         self.main_sorter.items_changed(0,0,0)
 
@@ -327,13 +327,13 @@ class TaskPane(Gtk.ScrolledWindow):
 
     def on_listview_activated(self, listview, position, user_data = None):
         """Callback when double clicking on a row."""
-        
+
         self.app.browser.on_edit_active_task()
 
 
     def on_key_released(self, controller, keyval, keycode, state):
         """Callback when a key is released. """
-        
+
         is_enter = keyval in (Gdk.KEY_Return, Gdk.KEY_KP_Enter)
         is_left = keyval == Gdk.KEY_Left
         is_right = keyval == Gdk.KEY_Right
@@ -348,14 +348,14 @@ class TaskPane(Gtk.ScrolledWindow):
 
     def select_last(self) -> None:
         """Select last position in the task list."""
-        
+
         position = self.app.ds.tasks.tree_model.get_n_items()
         self.task_selection.select_item(position - 1, True)
-        
+
 
     def select_task(self, task: Task) -> None:
         """Select a task in the list."""
-        
+
         position = None
 
         for i in range(self.main_sorter.get_n_items()):
@@ -375,7 +375,7 @@ class TaskPane(Gtk.ScrolledWindow):
         selection = self.task_selection.get_selection()
         result, iterator, _ = Gtk.BitsetIter.init_first(selection)
         selected = []
-        
+
         while iterator.is_valid():
             val = iterator.get_value()
 
@@ -383,7 +383,7 @@ class TaskPane(Gtk.ScrolledWindow):
                 selected.append(val)
             else:
                 selected.append(unwrap(self.task_selection.get_item(val), Task))
-                
+
             iterator.next()
 
         return selected
@@ -394,12 +394,12 @@ class TaskPane(Gtk.ScrolledWindow):
 
         selection = self.task_selection.get_selection()
         result, iterator, _ = Gtk.BitsetIter.init_first(selection)
-        
+
         while iterator.is_valid():
             val = iterator.get_value()
             row = self.task_selection.get_item(val)
             row.set_expanded(expand)
-                
+
             iterator.next()
 
 
@@ -412,12 +412,12 @@ class TaskPane(Gtk.ScrolledWindow):
 
     def on_checkbox_toggled(self, button, task=None):
         """Callback when clicking a checkbox."""
-        
+
         if task.status == Status.DISMISSED:
             task.toggle_dismiss()
         else:
             task.toggle_active()
-        
+
         task.notify('is_active')
         self.task_filter.changed(Gtk.FilterChange.DIFFERENT)
 
@@ -426,18 +426,18 @@ class TaskPane(Gtk.ScrolledWindow):
         """Setup widgets for rows"""
 
         box = TaskBox(self.app.config, self.pane == 'workview')
-        label = Gtk.Label() 
-        separator = Gtk.Separator() 
-        icons = Gtk.Label() 
+        label = Gtk.Label()
+        separator = Gtk.Separator()
+        icons = Gtk.Label()
         color = TagPill()
-        due = Gtk.Label() 
-        due_icon = Gtk.Image.new_from_icon_name('alarm-symbolic') 
-        start = Gtk.Label() 
-        start_icon = Gtk.Image.new_from_icon_name('media-playback-start-symbolic') 
-        recurring_icon = Gtk.Label() 
+        due = Gtk.Label()
+        due_icon = Gtk.Image.new_from_icon_name('alarm-symbolic')
+        start = Gtk.Label()
+        start_icon = Gtk.Image.new_from_icon_name('media-playback-start-symbolic')
+        recurring_icon = Gtk.Label()
 
         color.set_size_request(16, 16)
-        
+
         color.set_vexpand(False)
         color.set_valign(Gtk.Align.CENTER)
 
@@ -471,7 +471,7 @@ class TaskPane(Gtk.ScrolledWindow):
         start.set_margin_end(12)
 
         # DnD stuff
-        source = Gtk.DragSource() 
+        source = Gtk.DragSource()
         source.connect('prepare', self.drag_prepare)
         source.connect('drag-begin', self.drag_begin)
         source.connect('drag-end', self.drag_end)
@@ -572,7 +572,7 @@ class TaskPane(Gtk.ScrolledWindow):
         """Callback to prepare for the DnD operation"""
 
         selection = self.get_selection()
-        
+
         if len(selection) > 1:
             data = Gio.ListStore()
             data.splice(0, 0, selection)
@@ -626,14 +626,14 @@ class TaskPane(Gtk.ScrolledWindow):
 
     def check_parent(self, value, target) -> bool:
         """Check to parenting a parent to its own children"""
-        
+
         item = target
         while item.parent:
             if item.parent == value:
                 return False
-            
+
             item = item.parent
-        
+
         return True
 
 
@@ -647,7 +647,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
         if task.parent:
             self.ds.tasks.unparent(task.id, task.parent.id)
-        
+
         self.ds.tasks.parent(task.id, dropped.id)
         self.refresh()
         self.emit('collapse-all')
@@ -657,7 +657,7 @@ class TaskPane(Gtk.ScrolledWindow):
     def on_task_RMB_click(self, gesture, sequence) -> None:
         """Callback when right-clicking on an open task."""
 
-        widget = gesture.get_widget() 
+        widget = gesture.get_widget()
         task = widget.task
 
         if self.get_selected_number() <= 1:
@@ -674,7 +674,7 @@ class TaskPane(Gtk.ScrolledWindow):
         rect = Gdk.Rectangle()
         rect.x = x
         rect.y = y
-        
+
         menu.set_pointing_to(rect)
         menu.popup()
 

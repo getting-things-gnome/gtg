@@ -6,7 +6,7 @@
   <info>
     <link type="guide" xref="index#gtg-further" group="third"/>
 
-      
+
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
 <revision pkgversion="0.4.0" date="2020-06-21" status="candidate"/>
    <credit type="author copyright">
@@ -31,29 +31,28 @@
 
 <item><p><em>How do I save the changes to the task that I just edited?</em></p>
 <p>You do not need to save the changes to the task as <app>GTG</app> does that automatically while you write.</p>
-</item> 
+</item>
 
 <item><p><em>I cannot activate some of the <app>GTG</app> plugins.</em></p>
 <p>Sometimes missing dependencies impede the activation of a plugin. <app>GTG</app> tries to identify and list all of the missing dependencies, in bold, below the deactivated plugin description so that you can install them. See the <link xref="gtg-plugins">Plugins</link> section for details.</p>
-</item> 
+</item>
 
 <item><p><em>Is there a way to set up a "waiting task" in cases where I am waiting for somebody/something else to happen before I can proceed with the task?</em></p>
 <p>Here is a possible workflow:</p>
 <steps>
     <item><p>Set the <gui>Start date</gui> for some time in the future, taking into consideration how long you want to wait.</p></item>
     <item><p>Set the <gui>Due date</gui> to <em style="strong">someday</em>.</p></item>
-    <item><p>Create a special tag such as <code>@wait</code> or <code>@delegate</code> and edit the properties of this tag so that tasks with this tag are not displayed in the <gui>Actionable</gui> view mode.</p></item> 
+    <item><p>Create a special tag such as <code>@wait</code> or <code>@delegate</code> and edit the properties of this tag so that tasks with this tag are not displayed in the <gui>Actionable</gui> view mode.</p></item>
 </steps>
-</item> 
+</item>
 
 <item><p><em>Can I make a backup of my tasks in case my computer crashes?</em></p>
 <p><app>GTG</app> regularly makes several backups of your tasks, tags and projects. If—for some unfathomable reason—<app>GTG</app> is unable to open your data, it will try to restore it from the last seven backup snapshots, if possible. In the worst case, you can restore your files manually, as all of the previous backups are also kept.</p>
 
 <p>See the "<link href="https://github.com/getting-things-gnome/gtg#where-is-my-user-data-and-config-stored">Where is my user data and config stored?</link>" section, in the <app>GTG</app> README file, in our development repository for more information about the location where <app>GTG</app> stores your data and preferences.</p>
-</item> 
+</item>
 
 </list>
 
 
 </page>
-

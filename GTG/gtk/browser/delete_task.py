@@ -58,7 +58,7 @@ class DeletionUI:
             tasklist.append(root)
 
             [self.recursive_list_tasks(tasklist, t)
-             for t in root.children 
+             for t in root.children
              if t not in tasklist]
 
 

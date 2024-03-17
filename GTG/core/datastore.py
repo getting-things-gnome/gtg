@@ -236,13 +236,13 @@ class Datastore:
             'closed': {'all': 0, 'untagged': 0},
         }
 
-        count_tasks(self.task_count['open'], 
+        count_tasks(self.task_count['open'],
                     self.tasks.filter(Filter.ACTIVE))
 
-        count_tasks(self.task_count['closed'], 
+        count_tasks(self.task_count['closed'],
                     self.tasks.filter(Filter.CLOSED))
 
-        count_tasks(self.task_count['actionable'], 
+        count_tasks(self.task_count['actionable'],
                     self.tasks.filter(Filter.ACTIONABLE))
 
 
@@ -259,7 +259,7 @@ class Datastore:
 
     def notify_tag_change(self, tag) -> None:
         """Notify tasks that this tag has changed."""
-        
+
         for task in self.tasks.lookup.values():
             if tag in task.tags:
                 task.notify('icons')
@@ -280,14 +280,14 @@ class Datastore:
         """If there is an old file around needing versioning, convert it, then rename the old file."""
 
         old_path = self.find_old_path(DATA_DIR)
-        
+
         if old_path is not None:
             log.warning('Found old file: %r. Running versioning code.', old_path)
             tree = versioning.convert(old_path, self)
             self.load_data(tree)
             self.save(filepath)
             os.rename(old_path, old_path + '.imported')
-            
+
         else:
             self.first_run(self.data_path)
 
@@ -297,13 +297,13 @@ class Datastore:
 
         # used by which version?
         path = os.path.join(datadir, 'gtg_tasks.xml')
-        
+
         if os.path.isfile(path):
             return path
-        
+
         # used by (at least) 0.3.1-4
         path = os.path.join(datadir, 'projects.xml')
-        
+
         if os.path.isfile(path):
             return self.find_old_uuid_path(path)
 
@@ -315,7 +315,7 @@ class Datastore:
 
         with open(path, 'r') as stream:
             xml_tree = et.parse(stream)
-            
+
         for backend in xml_tree.findall('backend'):
             module = backend.get('module')
             if module == 'backend_localfile':

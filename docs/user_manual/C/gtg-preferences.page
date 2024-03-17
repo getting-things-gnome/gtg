@@ -6,8 +6,8 @@
 
   <info>
     <link type="guide" xref="index#gtg-further" group="first"/>
-     
-     
+
+
       <revision pkgversion="0.4.0" date="2020-05-10" status="candidate"/>
       <revision pkgversion="0.5.0" date="2020-11-15" status="candidate"/>
 
@@ -16,7 +16,7 @@
       <email its:translate="no">daniellevansia@gmail.com</email>
       <years>2020</years>
     </credit>
-   
+
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
 
   </info>
@@ -53,7 +53,7 @@
 <tr>
       <td><p>Dark Mode</p></td>
       <td><p>Turn on Dark Mode for the whole application.</p></td>
-    </tr>    
+    </tr>
 <tr>
       <td><p>Clean up options</p></td>
       <td><p>You can use this option to automatically remove old, closed tasks as well as set the number of days before performing this operation.</p></td>
@@ -103,9 +103,8 @@
       <td><p>метки</p></td>
       <td><p>до</p></td>
       <td><p>отложить</p></td>
-    </tr>        
+    </tr>
 </tbody>
 </table>
 </section>
 </page>
-

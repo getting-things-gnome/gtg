@@ -20,7 +20,7 @@ Define what new GTG functionalities we will envision for 0.3 and decide what oth
 		<addeddate>2020-06-04T23:55:23</addeddate>
 		<modified>2020-06-05T01:32:01</modified>
 		<subtask>3@1</subtask>
-		<content>&lt;tag&gt;@GTG&lt;/tag&gt;, open-source, 
+		<content>&lt;tag&gt;@GTG&lt;/tag&gt;, open-source,
 
 * tag edition dialog
 * printing
@@ -47,7 +47,7 @@ Define what new GTG functionalities we will envision for 0.3 and decide what oth
 		<addeddate>2020-06-04T23:55:23</addeddate>
 		<modified>2020-06-05T09:39:58</modified>
 		<subtask>9@1</subtask>
-		<content>&lt;tag&gt;@GTG&lt;/tag&gt;, 
+		<content>&lt;tag&gt;@GTG&lt;/tag&gt;,
 There used to be a GTG website but it died in an untimely accident. We could consider putting together a new, better-looking website to promote GTG
  &lt;subtask&gt;9@1&lt;/subtask&gt;</content>
 		<task-remote-ids/>
@@ -162,7 +162,7 @@ create some simple and yet nice style for the website
 		<title>Plan the next year and allocate some vacation time</title>
 		<addeddate>2020-06-04T23:33:13</addeddate>
 		<modified>2020-06-05T11:37:38</modified>
-		<content>&lt;tag&gt;@travels&lt;/tag&gt;, &lt;tag&gt;@fun&lt;/tag&gt;, 
+		<content>&lt;tag&gt;@travels&lt;/tag&gt;, &lt;tag&gt;@fun&lt;/tag&gt;,
 
 Have a look at the calendar, to spot where I could have some time to go on holiday</content>
 		<task-remote-ids/>
@@ -262,7 +262,7 @@ Have a look at the calendar, to spot where I could have some time to go on holid
 		<addeddate>2020-06-04T23:44:57</addeddate>
 		<modified>2020-06-05T01:11:56</modified>
 		<subtask>49@1</subtask>
-		<content>&lt;tag&gt;@travels&lt;/tag&gt;, &lt;tag&gt;@friends&lt;/tag&gt;, 
+		<content>&lt;tag&gt;@travels&lt;/tag&gt;, &lt;tag&gt;@friends&lt;/tag&gt;,
  &lt;subtask&gt;49@1&lt;/subtask&gt;</content>
 		<task-remote-ids/>
 	</task>
@@ -296,7 +296,7 @@ Have a look at the calendar, to spot where I could have some time to go on holid
 		<addeddate>2020-06-04T23:37:02</addeddate>
 		<modified>2020-06-05T01:26:21</modified>
 		<subtask>46@1</subtask>
-		<content>&lt;tag&gt;@travels&lt;/tag&gt;, 
+		<content>&lt;tag&gt;@travels&lt;/tag&gt;,
  &lt;subtask&gt;46@1&lt;/subtask&gt;</content>
 		<task-remote-ids/>
 	</task>
@@ -305,7 +305,7 @@ Have a look at the calendar, to spot where I could have some time to go on holid
 		<addeddate>2020-06-05T00:00:02</addeddate>
 		<modified>2020-06-05T09:34:53</modified>
 		<content>I need some new furniture for my apartment, I don't have enough space to put my things!
-@home 
+@home
 @stuff2buy</content>
 		<task-remote-ids/>
 	</task>
@@ -341,7 +341,7 @@ Have a look at the calendar, to spot where I could have some time to go on holid
 		<addeddate>2020-06-04T23:37:00</addeddate>
 		<modified>2020-06-05T10:03:31</modified>
 		<subtask>53@1</subtask>
-		<content>&lt;tag&gt;@travels&lt;/tag&gt;, 
+		<content>&lt;tag&gt;@travels&lt;/tag&gt;,
 
  &lt;subtask&gt;53@1&lt;/subtask&gt;</content>
 		<task-remote-ids/>
@@ -405,7 +405,7 @@ Have a look at the calendar, to spot where I could have some time to go on holid
 		<modified>2020-06-05T09:49:22</modified>
 		<subtask>56862755-348c-428d-b822-b60286370019</subtask>
 		<subtask>9ea28d46-4c78-4e90-9249-20966850c28a</subtask>
-		<content>&lt;tag&gt;@money&lt;/tag&gt;, 
+		<content>&lt;tag&gt;@money&lt;/tag&gt;,
 
  &lt;subtask&gt;56862755-348c-428d-b822-b60286370019&lt;/subtask&gt;
  &lt;subtask&gt;9ea28d46-4c78-4e90-9249-20966850c28a&lt;/subtask&gt;</content>

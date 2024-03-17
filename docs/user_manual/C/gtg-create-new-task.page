@@ -9,7 +9,7 @@
     <link type="seealso" xref="gtg-complete-dismiss-delete-task"/>
     <link type="seealso" xref="gtg-subtasks"/>
     <link type="seealso" xref="gtg-set-task-date"/>
-      
+
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
 <revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
    <credit type="author copyright">
@@ -38,6 +38,5 @@
 </list>
 
   <p>The new task opens on top of the <app>GTG</app> main window or any other tasks that you may have opened.</p>
-  
-</page>
 
+</page>

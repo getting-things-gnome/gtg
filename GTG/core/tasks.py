@@ -108,7 +108,7 @@ class Task(GObject.Object):
         self._is_recurring = False
         self.recurring_term = None
         self.recurring_updated_date = datetime.datetime.now()
-        
+
         self.attributes = {}
 
         self.duplicate_cb = NotImplemented
@@ -162,7 +162,7 @@ class Task(GObject.Object):
         if self.status == Status.ACTIVE:
             for t in self.tags:
                 t.task_count_open -= 1
-            
+
             if self.is_actionable:
                 for t in self.tags:
                     t.task_count_actionable -= 1
@@ -184,10 +184,10 @@ class Task(GObject.Object):
             #   1- It is recurring.
             #   2- It has no parent or no recurring parent.
             #   3- It was directly marked as done (not by propagation from its parent).
-            if (self._is_recurring and not propagated and 
+            if (self._is_recurring and not propagated and
                  not self.is_parent_recurring()):
                 self.duplicate_cb(self)
-            
+
         else:
             self.date_closed = Date.no_date()
 
@@ -197,7 +197,7 @@ class Task(GObject.Object):
         if status == Status.ACTIVE:
             for t in self.tags:
                 t.task_count_open += 1
-            
+
             if self.is_actionable:
                 for t in self.tags:
                     t.task_count_actionable += 1
@@ -206,7 +206,7 @@ class Task(GObject.Object):
             for t in self.tags:
                 t.task_count_closed += 1
 
-            
+
         for child in self.children:
             child.set_status(status, propagated=True)
 
@@ -220,7 +220,7 @@ class Task(GObject.Object):
     def date_due(self, value: Date) -> None:
         self._date_due = value
         self.has_date_due = bool(value)
-        
+
         if value:
             self.date_due_str = self._date_due.to_readable_string()
         else:
@@ -228,9 +228,9 @@ class Task(GObject.Object):
 
         for tag in self.tags:
             if self.is_actionable:
-                tag.task_count_actionable += 1 
+                tag.task_count_actionable += 1
             else:
-                tag.task_count_actionable -= 1 
+                tag.task_count_actionable -= 1
 
         if not value or value.is_fuzzy():
             return
@@ -329,9 +329,9 @@ class Task(GObject.Object):
 
                 if self.status == Status.ACTIVE:
                     tag.task_count_open += 1
-                else: 
+                else:
                     tag.task_count_closed += 1
-                
+
                 if self.is_actionable:
                     tag.task_count_actionable += 1
         else:
@@ -347,9 +347,9 @@ class Task(GObject.Object):
 
                 if self.status == Status.ACTIVE:
                     t.task_count_open -= 1
-                else: 
+                else:
                     t.task_count_closed -= 1
-                
+
                 if self.is_actionable:
                     t.task_count_actionable -= 1
 
@@ -388,7 +388,7 @@ class Task(GObject.Object):
         when creating a new task, the due date is calculated from either the
         current date or the start date, while we get the next occurrence of a
         task not from the current date but from the due date itself.
-        
+
         However when we are retrieving the task from the XML files, we should
         only set the the recurring_term.
 
@@ -460,7 +460,7 @@ class Task(GObject.Object):
 
                 if self._is_recurring:
                     child.date_due = newdate
-        
+
         self.notify('is_recurring')
 
 
@@ -490,9 +490,9 @@ class Task(GObject.Object):
 
     def is_parent_recurring(self):
         """Determine if the parent task is recurring."""
-        
-        return (self.parent and 
-                self.parent.status == Status.ACTIVE 
+
+        return (self.parent and
+                self.parent.status == Status.ACTIVE
                 and self.parent._is_recurring)
 
 
@@ -514,7 +514,7 @@ class Task(GObject.Object):
         """
 
         today = datetime.date.today()
-        
+
         if today <= self.date_due:
             try:
                 nextdate = self.date_due.parse_from_date(self.recurring_term, newtask=False)
@@ -533,7 +533,7 @@ class Task(GObject.Object):
 
                 while next_date < datetime.date.today():
                     next_date = next_date.parse_from_date(self.recurring_term, newtask=False)
-                    
+
                 return next_date
 
             except Exception:
@@ -543,8 +543,8 @@ class Task(GObject.Object):
     # Bind Properties
     #
     # Since PyGobject doesn't support bind_property_full() yet
-    # we can't do complex binds. These props below serve as a 
-    # workaround so that we can use them with the regular 
+    # we can't do complex binds. These props below serve as a
+    # workaround so that we can use them with the regular
     # bind_property().
     # -----------------------------------------------------------------------
 
@@ -630,7 +630,7 @@ class Task(GObject.Object):
 
     @GObject.Property(type=str)
     def tag_colors(self) -> str:
-        return ','.join(t.color for t in self.tags 
+        return ','.join(t.color for t in self.tags
                         if t.color and not t.icon)
 
 
@@ -642,7 +642,7 @@ class Task(GObject.Object):
     @property
     def tag_names(self) -> list[str]:
         return [ t.name for t in self.tags ]
-    
+
 
     def set_attribute(self, att_name, att_value, namespace="") -> None:
         """Set an arbitrary attribute."""
@@ -730,14 +730,14 @@ class TaskStore(BaseStore):
 
     def duplicate_for_recurrent(self, task: Task) -> Task:
         """Duplicate a task for the next ocurrence."""
-        
+
         new_task = self.new(task.title)
         new_task.tags = task.tags
         new_task.content = task.content
         new_task.date_added = task.date_added
         new_task.date_due = task.get_next_occurrence()
 
-        # Only goes through for the first task 
+        # Only goes through for the first task
         if task.parent and task.parent.is_active:
             self.parent(new_task.id, task.parent.id)
 
@@ -747,7 +747,7 @@ class TaskStore(BaseStore):
 
         log.debug("Duplicated task %s as task %s", task.id, new_task.id)
         return new_task
-        
+
 
     def new(self, title: str = None, parent: UUID = None) -> Task:
         """Create a new task and add it to the store."""
@@ -901,7 +901,7 @@ class TaskStore(BaseStore):
 
         if not parent_id:
             self.model.append(item)
-        
+
         item.duplicate_cb = self.duplicate_for_recurrent
         self.notify('task_count_all')
         self.notify('task_count_no_tags')
@@ -1027,7 +1027,7 @@ class TaskStore(BaseStore):
     @GObject.Property(type=str)
     def task_count_no_tags(self) -> str:
         i = 0
-        
+
         for task in self.lookup.values():
             if not task.tags:
                 i += 1

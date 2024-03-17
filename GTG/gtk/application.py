@@ -119,7 +119,7 @@ class Application(Gtk.Application):
 
             self.config_core = CoreConfig()
             self.config = self.config_core.get_subconfig('browser')
-            self.config_plugins = self.config_core.get_subconfig('plugins') 
+            self.config_plugins = self.config_core.get_subconfig('plugins')
 
             self.clipboard = clipboard.TaskClipboard(self.ds)
 
@@ -150,7 +150,7 @@ class Application(Gtk.Application):
         try:
             self.init_shared()
             self.browser.present()
-            self.browser.restore_editor_windows() 
+            self.browser.restore_editor_windows()
 
             log.debug("Application activation finished")
         except Exception as e:
@@ -337,7 +337,7 @@ class Application(Gtk.Application):
 
     def add_parent(self, param, action):
         """Callback to add a parent to a task"""
-        
+
         self.browser.on_add_parent()
 
 
@@ -365,7 +365,7 @@ class Application(Gtk.Application):
             self.browser.on_dismiss_task()
         finally:
             self.browser.get_pane().refresh()
-    
+
     def reopen(self, param, action):
         """Callback to mark task as open."""
 
@@ -455,7 +455,7 @@ class Application(Gtk.Application):
         today = Date.today()
         max_days = self.config.get('autoclean_days')
         closed_tasks = self.ds.tasks.filter(Filter.CLOSED)
-        
+
         to_remove = [t for t in closed_tasks
                      if (today - t.date_closed).days > max_days]
 
@@ -549,7 +549,7 @@ class Application(Gtk.Application):
             If a Task editor is already opened for a given task, we present it.
             Otherwise, we create a new one.
         """
-        
+
         if task.id in self.open_tasks:
             editor = self.open_tasks[task.id]
             editor.present()

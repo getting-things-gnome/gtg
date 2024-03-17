@@ -23,9 +23,9 @@ from gi.repository import Gtk, Gdk, GObject
 
 class TagPill(Gtk.DrawingArea):
     """Color pill widget for tags."""
-    
+
     __gtype_name__ = 'TagPill'
-    
+
     default_color = '#666666'
 
     def __init__(self, radius: int = 5):
@@ -53,7 +53,7 @@ class TagPill(Gtk.DrawingArea):
             for color in value.split(','):
                 rgba = Gdk.RGBA()
                 valid = rgba.parse(color)
-                
+
                 if valid:
                     self.colors.append(rgba)
                 else:
@@ -68,13 +68,13 @@ class TagPill(Gtk.DrawingArea):
         self.queue_draw()
 
 
-    def draw_rect(self, context, x: int, w: int, h: int, 
+    def draw_rect(self, context, x: int, w: int, h: int,
                   color: Gdk.RGBA = None) -> None:
         """Draw a single color rectangle."""
-        
+
         y = 0   # No change in Y axis
         r = self.radius
-        
+
         if color:
             context.set_source_rgba(color.red, color.green, color.blue)
 
@@ -117,7 +117,7 @@ class TagPill(Gtk.DrawingArea):
 
     def do_draw_function(self, area, context, w, h, user_data=None):
         """Drawing callback."""
-        
+
         for i, color in enumerate(self.colors):
             x = i * (16 + 6)
             self.draw_rect(context, x, 16, h, color)

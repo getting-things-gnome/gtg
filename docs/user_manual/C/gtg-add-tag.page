@@ -6,8 +6,8 @@
   <info>
     <link type="guide" xref="gtg-tags" group="third"/>
     <link type="seealso" xref="gtg-tag-color"/>
-    
-      
+
+
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
 <revision pkgversion="0.4.0" date="2020-05-17" status="candidate"/>
    <credit type="author copyright">
@@ -28,11 +28,11 @@
   <title>Adding or Modifying Tags</title>
 
     <p>To add a new tag or modify tags that are already assigned to a selected task, from the <gui>Task Browser</gui>, you can perform one of the following actions:</p>
-  
+
   <list>
       <item><p>Use the <keyseq><key>Ctrl</key><key>T</key></keyseq> keyboard shortcut.</p></item>
       <item><p>Right-click the task and select <gui>Modify Tags...</gui> from the context menu.</p></item>
-  </list> 
+  </list>
 
 <p>Add new tags separated by a space. To remove an already assigned tag, add the “!” sign in front of it.</p>
 

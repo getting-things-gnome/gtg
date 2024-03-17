@@ -19,7 +19,7 @@ Follow the same pull request (PR) process [that is documented here](https://gith
 About a month prior to a release, start reviewing PRs and closed issues to see if the new features affect anything in the user manual. You can review [release milestones](https://github.com/getting-things-gnome/gtg/milestones) to help you view updates in a concise list. Review closed PRs and issues in the milestone for that release. You should look for anything that affects the UI, new plugins or sync services, and new keyboard shortcuts.
 
 ## Creating Pages
-If you want to create a new page, you can use an existing page as a template. This [Mallard walkthrough](http://projectmallard.org/about/learn/tenminutes.html) breaks down the difference between guide and topic pages so that you can better understand the structure of a Mallard help project. 
+If you want to create a new page, you can use an existing page as a template. This [Mallard walkthrough](http://projectmallard.org/about/learn/tenminutes.html) breaks down the difference between guide and topic pages so that you can better understand the structure of a Mallard help project.
 
 When starting a page, ensure you declare the appropriate Mallard namespaces:
 
@@ -32,7 +32,7 @@ When starting a page, ensure you declare the appropriate Mallard namespaces:
 ```
 
 The `info` section contains the revision history. Any time that you update a page, ensure that you add a new line for the revision history. This section also contains links that appear on the bottom of the page (`seealso` links) and links that are used for referencing the page in the `index`. See [Referencing the Index](#indexlinks) for details on adding `index` links. Ensure you add a `credit` block to give yourself credit if you are new to the project. All pages need to have an `include` referencing `legal.xml`.
-```      
+```
 <info>
     <revision pkgversion="0.4.0" date="2020-11-12" status="candidate"/>
     <link type="guide" xref="index#gtg-working-task" group="sixth"/>
@@ -53,18 +53,18 @@ The `info` section contains the revision history. Any time that you update a pag
 
 </info>
 ```
-From here, add a `title`, any number of `section` blocks, and the rest of your content! 
+From here, add a `title`, any number of `section` blocks, and the rest of your content!
 
-<a name="indexlinks"></a> 
+<a name="indexlinks"></a>
 ## Referencing the Index
 Ensure that the `index` is updated to include each page. With Mallard syntax, you need to include a link on each internal page that references where it will be in the index. For example, the page called "Understanding View Modes" contains the following link in the `info` section at the top:
 
 ```
 <link type="guide" xref="index#gtg-task-management" group="third"/>
 ```
- 
+
 This references the id for the Filtering and Organizing Tasks (`gtg-task-management`) section of the `index` where a link to "Understanding View Modes" will be displayed. On the `index`, the section looks like this:
- 
+
  ```
  <section id="gtg-task-management" style="2column">
     <title>Filtering and Organizing Tasks</title>
@@ -76,7 +76,7 @@ This references the id for the Filtering and Organizing Tasks (`gtg-task-managem
 A link to the "Understanding View Modes" page will be listed as the third item.
 
 ## Adding Images
-.png files should be saved to `gtg/docs/user_manual/C/figures/`. On the page where you are inserting the image, use the `figure` tags and include a figure title. You can also add a description in the `desc` tags. 
+.png files should be saved to `gtg/docs/user_manual/C/figures/`. On the page where you are inserting the image, use the `figure` tags and include a figure title. You can also add a description in the `desc` tags.
 
 ```
 <figure>
@@ -86,11 +86,11 @@ A link to the "Understanding View Modes" page will be listed as the third item.
 </figure>
 ```
 
-# Testing and Publishing 
+# Testing and Publishing
 ## Testing the Docs and Troubleshooting
 Always run through and test the docs! Ensure you are able to open each page. One error that can occur is if you forget to close a tag, Yelp will not open the .page file.
 
-To investigate this issue, use the below command and validate the page (replace `*.page` with the page name). You can also run this command (with `*.page`) within the `/gtg/docs/user_manual/C/` directory to validate all .page files in the user manual project. 
+To investigate this issue, use the below command and validate the page (replace `*.page` with the page name). You can also run this command (with `*.page`) within the `/gtg/docs/user_manual/C/` directory to validate all .page files in the user manual project.
 
 ```
 yelp-check validate *.page
@@ -105,9 +105,9 @@ gtg-translate.page:19: parser error : Opening and ending tag mismatch: app line 
 In this example, the opening and ending tags on the `gtg-translate` page do not match on line 19. Ensure that the opening tag on this line has a corresponding ending tag (e.g., `<p>` and `</p>`).
 
 ### xmls Issue
-You may run into an issue when using a table with `ui:expanded="true"` causing the page to not display. 
+You may run into an issue when using a table with `ui:expanded="true"` causing the page to not display.
 
-In this instance, check to see if the page is declaring Mallard UI extension at: `xmlns:ui="http://projectmallard.org/ui/1.0/"`. 
+In this instance, check to see if the page is declaring Mallard UI extension at: `xmlns:ui="http://projectmallard.org/ui/1.0/"`.
 
 Any page that uses this `ui` element should include all of the following schemas:
 ```
@@ -119,7 +119,7 @@ Any page that uses this `ui` element should include all of the following schemas
 ```
 
 ## Updating `meson.build`
-The [meson.build](https://github.com/getting-things-gnome/gtg/blob/master/docs/user_manual/meson.build) file that resides in the `user_manual` folder needs to contain all of the pages and media (e.g., images and videos) contained in the user manual. Ensure that all .page and .png files are listed in the `sources` or `media` sections accordingly. 
+The [meson.build](https://github.com/getting-things-gnome/gtg/blob/master/docs/user_manual/meson.build) file that resides in the `user_manual` folder needs to contain all of the pages and media (e.g., images and videos) contained in the user manual. Ensure that all .page and .png files are listed in the `sources` or `media` sections accordingly.
 ## Building HTML Files
 Use the following command to build an HTML version for use outside of the packaged help project (e.g., in a blog):
 ```

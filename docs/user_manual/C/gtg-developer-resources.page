@@ -5,7 +5,7 @@
 
   <info>
     <link type="guide" xref="index#gtg-further" group="fourth"/>
-    
+
       <revision pkgversion="0.4.0" date="2020-05-10" status="candidate"/>
       <revision pkgversion="0.6.0" date="2021-12-22" status="candidate"/>
    <credit type="author copyright">
@@ -28,4 +28,3 @@
 
 
 </page>
-

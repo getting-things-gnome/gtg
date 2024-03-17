@@ -293,4 +293,3 @@ class AdaptiveFittingWidget(Gtk.BinLayout):
         # We don't have any child properties anyway
         log.debug("Unimplemented child=%r, property_id=%r, value=%r, pspec=%r",
                   child, property_id, value, pspec)
-

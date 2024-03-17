@@ -33,7 +33,7 @@ Enabled=True
 * Dependencies: the python modules that the plugin has as dependencies
 * Dbus-dependencies: the remote dbus objects that the plugin has as dependencies
 
-Note: if the plugin has no dependencies or no dbus-dependencies you don't need to include these lines, all the others are mandatory 
+Note: if the plugin has no dependencies or no dbus-dependencies you don't need to include these lines, all the others are mandatory
 
 
 ## Python code
@@ -46,13 +46,13 @@ A plugin has three mandatory methods:
   * all plugins are deactivated before GTG ends so if you want to save information, this is the place to save it (for example, save the current user settings to a config file)
 * onTaskOpened(plugin_api): this method will initialize the plugin's code for the task editor.
   * There is no deactivate associated with this method, when the tas editor is closed it's object is destroyed so no need to deactivate nothing, when it loads again it will load the plugin code again
- 
+
 * In all three methods the plugin_api (plugin api) is passed. This is the plugin engine's API. This is the object that contains the methods that you can use to interact with GTG. It is a work in progress but many methods are already available. The API documentation will be available real soon.
 
 If a plugin is configurable, in the plugin manager, the preferences button will be enabled and allow the user to interact with those preferences.
 
 * `is_configurable()`: if a plugin is configurable it should have this method and it must `return True`. If the plugin isn't configurable you can `return False` or omit the method (the first option is preferred).
-* `configure_dialog(plugin_apis, plugin_manager_dialog)`: this method loads the dialog for the plugin's configurations. 
+* `configure_dialog(plugin_apis, plugin_manager_dialog)`: this method loads the dialog for the plugin's configurations.
 * Note: only if or after a plugin is selected to be enabled in the plugin manager will the plugin preferences button be enabled.
 
 A python plugin example:
@@ -62,13 +62,13 @@ A python plugin example:
 class Example:
     def __init__(self):
         self.example = "This can initialize a class"
-		
+
     def activate(self, plugin_api):
 	print "the plugin is initialized"
 
     def onTaskOpened(self, plugin_api):
 	print "a task was opened"
-		
+
     def deactivate(self, plugin_api):
         print "the plugin was deactivated"
 ```
