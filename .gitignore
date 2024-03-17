@@ -36,6 +36,3 @@ flatpak/bundles
 
 # src/ usually has development version of liblarch
 src/
-
-# Python virtual environments
-venv*/
