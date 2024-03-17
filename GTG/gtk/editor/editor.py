@@ -900,6 +900,9 @@ class TaskEditor(Gtk.Window):
         except KeyError:
             log.debug('Task %s was already removed from the open list', tid)
 
+        # Refresh current pane in case task needs to be added to/removed from it
+        self.app.browser.get_pane().refresh()
+
 
     def get_task(self):
         return self.task
