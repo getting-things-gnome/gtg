@@ -25,8 +25,11 @@ import re
 from typing import Optional
 
 from gi.repository import GObject, Gtk, Gdk, Gio, GLib
+from webbrowser import open as openurl
+from textwrap import dedent
 
 from GTG.core import info
+from GTG.core.system_info import SystemInfo
 from GTG.backends.backend_signals import BackendSignals
 from GTG.core.dirs import ICONS_DIR
 from GTG.core.search import parse_search_query, InvalidQuery
@@ -319,50 +322,74 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         Show the about dialog
         """
-        # These lines should be in info.py, but due to their dynamic nature
-        # there'd be no way to show them translated in Gtk's About dialog:
 
-        translated_copyright = _("Copyright © 2008-%d the GTG contributors.") \
-            % datetime.date.today().year
+        # Create `GtkButton`s and add to size group
+        def create_uri_button(string=None, uri=None):
+            btn = Gtk.Button.new_with_mnemonic(string)
+            btn.connect("clicked", lambda _: openurl(uri))
+            btn.set_tooltip_text(uri)
+            size_group.add_widget(btn)
+            return btn
 
-        ohstats_url = '<a href="https://www.openhub.net/p/gtg/contributors">OpenHub</a>'
-        ghstats_url = \
-            '<a href="https://github.com/getting-things-gnome/gtg/graphs/contributors">GitHub</a>'
+        ohstats_url = f'<a href="{info.OPENHUB_URL}">OpenHub</a>'
+        ghstats_url = '<a href="https://github.com/getting-things-gnome/gtg/graphs/contributors">GitHub</a>'
 
-        UNITED_AUTHORS_OF_GTGETTON = [
-            # GTK prefixes the first line with "Created by ",
-            # but we can't split the string because it would cause trouble for some languages.
-            _("GTG was made by many contributors around the world."),
-            _("The GTG project is maintained/administered by:"),
-            info.AUTHORS_MAINTAINERS,
-            _("This release was brought to you by the efforts of these people:"),
-            info.AUTHORS_RELEASE_CONTRIBUTORS,
-            _("Many others contributed to GTG over the years.\n" \
-              "You can see them on {OH_stats} and {GH_stats}.").format(
-                  OH_stats=ohstats_url, GH_stats=ghstats_url),
-            "\n"]
+        UNITED_AUTHORS_OF_GTGETTON = dedent(
+            _(
+                """\
+        Many others contributed to GTG over the years.
+        You can find them on {OH_stats} and {GH_stats}."""
+            ).format(OH_stats=ohstats_url, GH_stats=ghstats_url)
+        )
 
         self.about.set_transient_for(self)
+        self.about.set_modal(True)
         self.about.set_program_name(info.NAME)
-        self.about.set_website(info.URL)
         self.about.set_logo_icon_name(self.app.props.application_id)
-        self.about.set_website_label(_("GTG website"))
         self.about.set_version(info.VERSION)
 
         # This line translated in info.py works, as it has no strings replacements
         self.about.set_comments(_(info.SHORT_DESCRIPTION))
 
-        self.about.set_copyright(translated_copyright)
+        self.about.set_copyright(info.COPYRIGHT)
         self.about.set_license_type(Gtk.License.GPL_3_0)
 
-        self.about.set_authors(UNITED_AUTHORS_OF_GTGETTON)
+        self.about.set_authors([info.AUTHORS])
         self.about.set_artists(info.ARTISTS)
         self.about.set_documenters(info.DOCUMENTERS)
 
+        self.about.set_system_information(SystemInfo().get_system_info())
+
+        self.about.add_credit_section(
+            _("Maintained/Administered by"), info.AUTHORS_MAINTAINERS
+        )
+
+        authors = info.AUTHORS_RELEASE_CONTRIBUTORS
+        authors.append(UNITED_AUTHORS_OF_GTGETTON)
+
+        self.about.add_credit_section(
+            _("Contributed by"), info.AUTHORS_RELEASE_CONTRIBUTORS
+        )
+
         # Translators for a particular language should put their names here.
-        # Please keep the width at 80 chars max, as GTK3's About dialog won't wrap text.
+        # Please keep the width at 80 chars max, as GTK4's About dialog won't wrap text.
         # GtkAboutDialog will detect if “translator-credits” is untranslated and auto-hide the tab.
         self.about.set_translator_credits(_("translator-credits"))
+
+        # Retrieve the `GtkBox` within GtkDialog,
+        # and create `GtkSizeGroup` to group buttons
+        about_box = self.about.get_first_child()
+        size_group = Gtk.SizeGroup.new(Gtk.SizeGroupMode.HORIZONTAL)
+
+        # Create new `GtkBox` to add button links
+        uri_box = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, 6)
+        uri_box.set_halign(Gtk.Align.CENTER)
+        uri_box.append(create_uri_button(_("_Website"), info.URL))
+        uri_box.append(create_uri_button(_("_Dev Chatroom"), info.CHAT_URL))
+        uri_box.append(create_uri_button(_("_GitHub"), info.SOURCE_CODE_URL))
+
+        about_box.append(uri_box)
+
 
     def _init_signal_connections(self):
         """

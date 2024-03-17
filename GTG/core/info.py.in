@@ -30,41 +30,60 @@ from gettext import gettext as _
 # These variables get used by main_window.py to set the About dialog's metadata.
 # Translator credits are set dynamically in main_window.py, not hardcoded.
 NAME = "Getting Things GNOME!"
+AUTHORS = _("GTG contributors")
+COPYRIGHT = _(f"Copyright © 2008-%d {AUTHORS}") \
+                % date.today().year
 SHORT_DESCRIPTION = _("""A personal productivity tool for GNOME,
 inspired by the GTD methodology.""") # A manual line break looks better in the About dialog.
 URL = "https://wiki.gnome.org/Apps/GTG"
-TRANSLATE_URL = "https://github.com/getting-things-gnome/gtg/"
+CHAT_URL = "https://matrix.to/#/#gtg:gnome.org"
+SOURCE_CODE_URL = "https://github.com/getting-things-gnome/gtg/"
+OPENHUB_URL = "https://www.openhub.net/p/gtg/contributors"
 REPORT_BUG_URL = "https://github.com/getting-things-gnome/gtg/issues/"
 EMAIL = "gtg-contributors@lists.launchpad.net"
 VERSION = '@VCS_TAG@'
 
-AUTHORS_MAINTAINERS = """
-• Diego Garcia Gangl
-• Jean-François Fortin Tam
-"""
+AUTHORS_MAINTAINERS = [
+    "Diego Garcia Gangl",
+    "Jean-François Fortin Tam",
+]
+
 # Per-release stats generated as per the "release process and checklist.md" file.
 # Including contributors with 2 or more commits.
-# No need to add extra line breaks between commas, Python/GTK handles them.
-# Don't indend lines inside a multi-line string, or it'll show in the About dialog.
-AUTHORS_RELEASE_CONTRIBUTORS = """
-• "Neui"
-• Mohieddine Drissi
-• "odoood"
-• Diego Garcia Gangl
-• Jean-François Fortin Tam
-• Jacob Anderson
-• Raidro Manchester
-• Daniel Koć
-• François Schmidts
-• Sebastian Grabowski
-• Fridolin Weisser
-• Tommy Priest 
-• Laurent Combe
-• Smitty
-• Tiziana Sellitto
-• "unsupported-transceiver"
-"""
+AUTHORS_RELEASE_CONTRIBUTORS = [
+    "Neui",
+    "Mohieddine Drissi",
+    "“odoood”",
+    "Diego Garcia Gangl",
+    "Jean-François Fortin Tam",
+    "Jacob Anderson",
+    "Raidro Manchester",
+    "Daniel Koć",
+    "François Schmidts",
+    "Sebastian Grabowski",
+    "Fridolin Weisser",
+    "Tommy Priest",
+    "Laurent Combe",
+    "Smitty",
+    "Tiziana Sellitto",
+    "“unsupported-transceiver”",
+]
 
-ARTISTS = ["Diego Garcia Gangl (2021 logo)", "Tobias Bernard (2021 logo)", "Kalle Persson (2009 logo)", "Bertrand Rousseau (UX)", "Jean-François Fortin Tam (UX)"]
+ARTISTS = [
+    "Diego Garcia Gangl (2021 logo)",
+    "Tobias Bernard (2021 logo)",
+    "Kalle Persson (2009 logo)",
+    "Bertrand Rousseau (UX)",
+    "Jean-François Fortin Tam (UX)"
+]
+
+DOCUMENTERS = [
+    "Danielle Vansia",
+    "Radina Matic",
+    "Jean-François Fortin Tam"
+]
+
+AUTHORS_MAINTAINERS.sort()
+AUTHORS_RELEASE_CONTRIBUTORS.sort()
 ARTISTS.sort()
-DOCUMENTERS = [ "Danielle Vansia", "Radina Matic", "Jean-François Fortin Tam"]
+DOCUMENTERS.sort()

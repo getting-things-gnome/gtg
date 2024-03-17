@@ -20,7 +20,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         sudo apt-get update
-        sudo apt install -y meson gettext itstool libgirepository1.0-dev gir1.2-gtk-4.0 libgtksourceview-5-dev
+        sudo apt install -y meson gettext itstool libgirepository1.0-dev gir1.2-gtk-4.0 libgtksourceview-5-dev libportal-dev
         pip install --user -e git+https://github.com/getting-things-gnome/liblarch.git#egg=liblarch
         pip install --user pytest pycairo PyGObject caldav lxml
     - name: Build and install GTG
