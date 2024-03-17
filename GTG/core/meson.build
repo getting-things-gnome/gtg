@@ -48,6 +48,7 @@ gtg_core_sources = [
   'datastore.py',
   'filters.py',
   'sorters.py',
+  'system_info.py',
 ]
 
 gtg_core_plugin_sources = [

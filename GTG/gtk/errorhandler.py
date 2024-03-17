@@ -12,6 +12,7 @@ import logging
 import configparser
 
 from GTG.core import info
+from GTG.core.system_info import SystemInfo
 
 log = logging.getLogger(__name__)
 
@@ -115,58 +116,9 @@ Please report the bug in <a href="{url}">our issue tracker</a>, with steps to tr
         if self._context_info is not None:
             text = text + "**Context:** " + self._context_info + "\n\n"
         text = text + "```python-traceback\n" + body + "```\n\n"
-        text = text + _collect_versions()
+        text = text + SystemInfo().get_system_info(report=True)
 
         self._additional_info.get_buffer().set_text(text)
-
-
-def _collect_versions() -> str:
-    """
-    Collect version information of various components,
-    and lay it out in markdown format to facilitate bug reports.
-    """
-    def t2v(version_tuple) -> str:
-        """Version tuple to a string."""
-        return '.'.join(map(str, version_tuple))
-    python_version = sys.version.replace('\n', '  ')
-    gtk_version = (Gtk.get_major_version(),
-                   Gtk.get_minor_version(),
-                   Gtk.get_micro_version())
-    versions = f"""**Software versions:**
-* {info.NAME} {info.VERSION}
-* {platform.python_implementation()} {python_version}
-* GTK {t2v(gtk_version)}, GLib {t2v(GLib.glib_version)}
-* PyGLib {t2v(GLib.pyglib_version)}, PyGObject {t2v(GObject.pygobject_version)}
-* {platform.platform()}"""
-
-    flatpak_info = _collect_flatpak_info()
-    if flatpak_info is not None:
-        versions += f"""
-* Flatpak {flatpak_info.get('Instance.flatpak-version')}
-* Flatpak runtime: {flatpak_info.get('Application.runtime')} ({flatpak_info.get('Instance.runtime-commit')})
-* Flatpak app: {flatpak_info.get('Application.name')} ({flatpak_info.get('Instance.app-commit')})"""
-
-    return versions
-
-
-def _collect_flatpak_info() -> Optional[dict]:
-    """
-    Collect all kinds of information easily available when running inside
-    the flatpak environment.
-    Returns None if not running in a flatpak.
-    """
-    try:
-        fconfig = configparser.ConfigParser(interpolation=None)
-        if fconfig.read('/.flatpak-info') == []:
-            return None
-        d = {}
-        for section in fconfig.sections():
-            for option in fconfig[section]:
-                d[f'{section}.{option}'] = fconfig[section][option]
-        return d
-    except Exception as e:  # Just in case
-        log.exception("Exception occurred while trying to collcet flatpak info")
-        return None
 
 
 def _format_exception(exception: Exception) -> str:
