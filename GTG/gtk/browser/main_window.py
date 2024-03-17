@@ -1036,7 +1036,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # Changing the start date of a task may take it out of the current pane
         # (e.g. setting the start date of an Actionable task to tomorrow)
         # See #1039
-        self.get_pane().task_filter.changed(Gtk.FilterChange.DIFFERENT)
+        self.get_pane().refresh()
 
     def update_start_to_next_day(self, day_number):
         """Update start date to N days from today."""
@@ -1049,7 +1049,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # Changing the start date of a task may take it out of the current pane
         # (e.g. setting the start date of an Actionable task to tomorrow)
         # See #1039
-        self.get_pane().task_filter.changed(Gtk.FilterChange.DIFFERENT)
+        self.get_pane().refresh()
 
 
     def on_mark_as_started(self, action, param):
