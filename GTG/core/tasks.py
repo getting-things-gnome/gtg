@@ -353,16 +353,21 @@ class Task(GObject.Object):
                 if self.is_actionable:
                     t.task_count_actionable -= 1
 
-                self.content = (self.content.replace(f'{tag_name}\n\n', '')
-                                            .replace(f'{tag_name},', '')
-                                            .replace(f'{tag_name}', ''))
+                # remove the tag and the unnecessary empty lines
+                # if this is the only tag in the list of tags at the beginning
+                self.content = re.sub(r'\A@'+tag_name+'\n\n','',self.content)
+
+                # remove the tag and the corresponding separators
+                # if it is not the last element in a list of tags
+                self.content = re.sub(r'\B@'+tag_name+',','',self.content)
+
+                # remove every other instance of the tag
+                self.content = re.sub(r'\B@'+tag_name+r'\b(?!-)','',self.content)
 
 
     def rename_tag(self, old_tag_name: str, new_tag_name: str) -> None:
         """Replace a tag's name in the content."""
-
-        self.content = (self.content.replace(f'@{old_tag_name}', 
-                                             f'@{new_tag_name}'))
+        self.content = re.sub(r'\B@'+old_tag_name+r'\b(?!-)','@'+new_tag_name,self.content)
 
 
     @property
