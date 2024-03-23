@@ -939,6 +939,9 @@ class TaskStore(BaseStore):
         item = self.lookup[item_id]
         parent = self.lookup[parent_id]
 
+        # remove inline references to the former subtask
+        parent.content = re.sub(r'\{\!\s*'+item_id+'\s*\!\}','',parent.content)
+
         self.model.append(item)
         parent.notify('has_children')
 
