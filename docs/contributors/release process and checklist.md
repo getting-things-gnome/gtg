@@ -13,7 +13,7 @@
 
 Tip: You can prepare the release commit in advance by setting both the authorship and commit date to the future planned release date and time, and keeping the commit sitting in your personal fork's branch, with a command such as: `GIT_AUTHOR_DATE='the date and time' GIT_COMMITTER_DATE='the date and time' git commit` (note that if you rebase the branch, you should also reuse that `GIT_COMMITTER_DATE` environment variable, otherwise your resulting rebased commit will have the rebase time set as the new commit date).
 
-Git accepts various dates formats (including ISO 8601), see its [documentation on date formats](https://github.com/git/git/blob/master/Documentation/date-formats.txt).
+Git accepts various dates formats (including ISO 8601), see its [documentation on date formats](https://github.com/git/git/blob/main/Documentation/date-formats.txt).
 
 
 # Release tagging (usually done by maintainers)

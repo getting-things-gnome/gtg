@@ -13,7 +13,7 @@ The user manual is written in American English and can be translated to other la
 The best way to get started is to actually use the app. Test new features, become familiar with the UI and the names of each feature (Taskview, Task Editor, etc.), and think about how documentation can help make the user's experience even better. As a potential first-time user, review the documentation while you are using the app. If something seems confusing, or you think that you can improve what is written, then that is a good place to start!
 
 ## Submitting PRs
-Follow the same pull request (PR) process [that is documented here](https://github.com/getting-things-gnome/gtg/blob/master/docs/contributors/git%20workflow%20tips.md). Remember to use good, concise commit messages so that it is clear what you are updating. If your updates are due to an enhancement or bug that has an existing issue number, ensure that you reference that item in your PR.
+Follow the same pull request (PR) process [that is documented here](https://github.com/getting-things-gnome/gtg/blob/main/docs/contributors/git%20workflow%20tips.md). Remember to use good, concise commit messages so that it is clear what you are updating. If your updates are due to an enhancement or bug that has an existing issue number, ensure that you reference that item in your PR.
 
 # Updating the User Manual for a Release
 About a month prior to a release, start reviewing PRs and closed issues to see if the new features affect anything in the user manual. You can review [release milestones](https://github.com/getting-things-gnome/gtg/milestones) to help you view updates in a concise list. Review closed PRs and issues in the milestone for that release. You should look for anything that affects the UI, new plugins or sync services, and new keyboard shortcuts.
@@ -119,7 +119,7 @@ Any page that uses this `ui` element should include all of the following schemas
 ```
 
 ## Updating `meson.build`
-The [meson.build](https://github.com/getting-things-gnome/gtg/blob/master/docs/user_manual/meson.build) file that resides in the `user_manual` folder needs to contain all of the pages and media (e.g., images and videos) contained in the user manual. Ensure that all .page and .png files are listed in the `sources` or `media` sections accordingly. 
+The [meson.build](https://github.com/getting-things-gnome/gtg/blob/main/docs/user_manual/meson.build) file that resides in the `user_manual` folder needs to contain all of the pages and media (e.g., images and videos) contained in the user manual. Ensure that all .page and .png files are listed in the `sources` or `media` sections accordingly. 
 ## Building HTML Files
 Use the following command to build an HTML version for use outside of the packaged help project (e.g., in a blog):
 ```

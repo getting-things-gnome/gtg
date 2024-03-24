@@ -4,19 +4,19 @@ There are three levels of insanity: contributors (anyone), developers (addicts!)
 
 You don't need to be a "developer" or "maintainer" to contribute to the project.
 
-* With decentralized version control systems like Git, you don't need direct commit access to the main master branch to land your patches; you tell us about your plans/ideas and then work on them on your own branch, then simply ask for your branch to be reviewed when it's ready; if it indeed improves things and respects the standards mentioned in our coding style document, then it can get merged fairly quickly.
+* With decentralized version control systems like Git, you don't need direct commit access to the main main branch to land your patches; you tell us about your plans/ideas and then work on them on your own branch, then simply ask for your branch to be reviewed when it's ready; if it indeed improves things and respects the standards mentioned in our coding style document, then it can get merged fairly quickly.
 
 * If you end up doing this so often and with such high quality contributions that we can't be bothered to review your changes anymore, then we'll be happy to give you developer "direct commit" access.
 
 * Maintainers are pretty much the same thing as regular developers, just that they have administrative rights over the project's infrastructure (boring stuff, really). Pretty much nobody needs to be a maintainer/administrator, except those who intend to stick around for years and have a gluttony for pain.
 
-So if you simply want to contribute to the project, get started with [CONTRIBUTING.md](https://github.com/getting-things-gnome/gtg/blob/master/CONTRIBUTING.md) and read the contents of the docs/contributors/ folder.
+So if you simply want to contribute to the project, get started with [CONTRIBUTING.md](https://github.com/getting-things-gnome/gtg/blob/main/CONTRIBUTING.md) and read the contents of the docs/contributors/ folder.
 
 # Abilities of GTG developers (a.k.a. frequent contributors)
 
 GTG developers are frequent contributors who have requested more hands-on project management powers and responsibilities, such as:
 
- * "direct commit" access to the main "master" branch (and any other branch) of GTG;
+ * "direct commit" access to the main "main" branch (and any other branch) of GTG;
  * full admin powers on the bugs database (assigning, targetting, changing statuses, etc.);
  * ability to make releases;
  * ability to review and approve/reject merge requests from contributors and developers;
@@ -27,7 +27,7 @@ GTG developers are frequent contributors who have requested more hands-on projec
 
 You are contributing more and more to GTG and you think that having those superpowers would improve your ability to help the project move faster? Then find one of the GTG maintainers and ask them.
 
-Of course, we have to know you and trust you for your contributions. If you contribute code, we should have confidence that you are now a GTG master and that you've fully understood our coding rules. It usually means that your latest patches were all merged without any need to resubmit them.
+Of course, we have to know you and trust you for your contributions. If you contribute code, we should have confidence that you are now a GTG main and that you've fully understood our coding rules. It usually means that your latest patches were all merged without any need to resubmit them.
 
 Also, it has to make sense for you.
 

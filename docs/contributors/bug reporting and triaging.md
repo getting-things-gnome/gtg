@@ -19,7 +19,7 @@ Below are some clarifications on how we use it.
 
 First, see the dynamic [list of issue labels](https://github.com/getting-things-gnome/gtg/labels) and their descriptions. They serve to indicate statuses, components, priorities, etc. They are mostly self-explanatory, and that page allows you to easily click and search for related issues.
 
-In particular, "[low-hanging-fruit](https://github.com/getting-things-gnome/gtg/labels/low-hanging-fruit)" and "[patch-or-wont-happen](https://github.com/getting-things-gnome/gtg/labels/patch-or-wont-happen)" are labels that indicate issues that require new contributors to step in, or the issue is unlikely to get fixed. See [CONTRIBUTING.md](https://github.com/getting-things-gnome/gtg/blob/master/CONTRIBUTING.md) for an explanation and tips to get started.
+In particular, "[low-hanging-fruit](https://github.com/getting-things-gnome/gtg/labels/low-hanging-fruit)" and "[patch-or-wont-happen](https://github.com/getting-things-gnome/gtg/labels/patch-or-wont-happen)" are labels that indicate issues that require new contributors to step in, or the issue is unlikely to get fixed. See [CONTRIBUTING.md](https://github.com/getting-things-gnome/gtg/blob/main/CONTRIBUTING.md) for an explanation and tips to get started.
 
 ## "Priority" labels
 

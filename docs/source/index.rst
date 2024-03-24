@@ -14,7 +14,7 @@ Contents
 ========
 
 * `User level documentation: <http://www.gtgnome.net/html/user_manual/>`_
-* `Documentation for developers: <https://github.com/getting-things-gnome/gtg/tree/master/docs/contributors/>`_
+* `Documentation for developers: <https://github.com/getting-things-gnome/gtg/tree/main/docs/contributors/>`_
 
 Man pages
 =========
