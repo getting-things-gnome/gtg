@@ -44,7 +44,7 @@ class SavedSearch(GObject.Object):
         self._query = query
         self._icon = None
 
-        super(SavedSearch, self).__init__()
+        super().__init__()
 
     @GObject.Property(type=str)
     def name(self) -> str:

@@ -47,7 +47,8 @@ class ModifyTagsDialog(Gtk.Dialog):
         self.last_apply_to_subtasks = False
 
 
-    def parse_tag_list(self, text):
+    @staticmethod
+    def parse_tag_list(text):
         """ Parse a line of a list of tasks. User can specify if the tag is
         positive or not by prepending '!'.
 

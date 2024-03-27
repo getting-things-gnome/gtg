@@ -16,10 +16,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+import unittest
 from unittest import TestCase
 
-from GTG.core.tag import extract_tags_from_text, parse_tag_list
-
+from GTG.core.tags import extract_tags_from_text
+from GTG.gtk.browser.modify_tags import ModifyTagsDialog
 
 class TestExtractTags(TestCase):
     """ extract_tags_from_text """
@@ -73,6 +74,9 @@ class TestExtractTags(TestCase):
     def test_accepts_ampersand_in_tag(self):
         self.assertTags("@home&work", ["@home&work"])
 
+
+# parse_tag_list was previously a free function
+parse_tag_list = ModifyTagsDialog.parse_tag_list
 
 class TestParseTagList(TestCase):
     """ parse_tag_list """
