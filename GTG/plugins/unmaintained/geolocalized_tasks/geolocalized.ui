@@ -438,7 +438,7 @@
                         <property name="visible">True</property>
                         <property name="margin-start">4</property>
                         <property name="margin-end">4</property>
-                        <property name="label" translatable="yes">&lt;small&gt;Distance in kilometers from 
+                        <property name="label" translatable="yes">&lt;small&gt;Distance in kilometers from
                           the current location.&lt;/small&gt;</property>
                           <property name="use_markup">True</property>
                         </object>

@@ -9,8 +9,8 @@
       <link type="seealso" xref="gtg-caldav"/>
 
       <revision pkgversion="0.3.1" date="2013-06-18" status="outdated"/>
-      <revision pkgversion="0.4.0" date="2020-05-20" status="outdated"/>      
-      <revision pkgversion="0.6.0" date="2022-01-17" status="candidate"/>		
+      <revision pkgversion="0.4.0" date="2020-05-20" status="outdated"/>
+      <revision pkgversion="0.6.0" date="2022-01-17" status="candidate"/>
 
    <credit type="author copyright">
       <name>Radina Matic</name>
@@ -33,12 +33,12 @@
 <section id="built-in-sync">
 <title>Built-In Synchronization Services</title>
 
-<p>Synchronization Services allow <app>GTG</app> to synchronize (meaning to have access or to import) tasks or other items like notes from other services.</p> 
+<p>Synchronization Services allow <app>GTG</app> to synchronize (meaning to have access or to import) tasks or other items like notes from other services.</p>
 
 <p>In GTG, there can be different types of synchronization:</p>
 <list>
       <item><p><em>Read-only synchronization</em>: The primary goal is to track things (for example, the bugs assigned to you on a bug tracking system). You cannot directly mark the task as resolved in <app>GTG</app>, but when you mark the associated bug as fixed on the bug tracking system, it will show up as such in <app>GTG</app>. Read-only also means that if you open one of the imported tasks and change the title, description, or tags, those changes are visible only to you and will be lost when the associated task is modified on the originating service. You are free to set any other field (start/due dates, subtasks, etc.), and with those field your changes will be preserved. This is useful to add personal annotations to imported tasks.</p></item>
-      <item><p><em>Import synchronization</em>: This is similar to read-only synchronization; however, you are free to change any field you want. Keep in mind that all the changes you make will be visible only on your computer. <app>GTG</app> will also make sure that no task is imported twice.</p></item> 
+      <item><p><em>Import synchronization</em>: This is similar to read-only synchronization; however, you are free to change any field you want. Keep in mind that all the changes you make will be visible only on your computer. <app>GTG</app> will also make sure that no task is imported twice.</p></item>
       <item><p><em>Full synchronization</em>: This provides the full read/write synchronization between <app>GTG</app> and the service. </p></item>
 </list>
 
@@ -58,4 +58,3 @@
 </section>
 
 </page>
-

@@ -129,7 +129,7 @@ class Tag(GObject.Object):
 
         return self._icon
 
-    
+
     @GObject.Property(type=int, default=0)
     def task_count_open(self) -> int:
 
@@ -174,8 +174,8 @@ class Tag(GObject.Object):
 
     def __hash__(self):
         return id(self)
-        
-        
+
+
 class TagStore(BaseStore):
     """A tree of tags."""
 
@@ -219,7 +219,7 @@ class TagStore(BaseStore):
     def get_all_tag_names(self) -> List[str]:
         """Return all tag names."""
         return list(self.lookup_names.keys())
-    
+
 
     def find(self, name: str) -> Tag:
         """Get a tag by name."""
@@ -340,7 +340,7 @@ class TagStore(BaseStore):
             r = random.randint(0, 255)
             g = random.randint(0, 255)
             b = random.randint(0, 255)
-             
+
             return f'#{r:02x}{g:02x}{b:02x}'
 
         color = rand_color()

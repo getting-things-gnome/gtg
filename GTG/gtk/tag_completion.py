@@ -111,7 +111,7 @@ class TagCompletion(Gtk.EntryCompletion):
 
     def _try_delete(self, name):
         """ Delete an item if it is in the list """
-        
+
         for row in self.tags:
             if row[0] == name:
                 self.tags.remove(row.iter)

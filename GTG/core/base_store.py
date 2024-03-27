@@ -105,7 +105,7 @@ class BaseStore(GObject.Object):
         """Remove an existing item from the store."""
 
         item = self.lookup[item_id]
-        
+
         try:
             parent = item.parent
 

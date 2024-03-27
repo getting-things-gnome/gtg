@@ -410,5 +410,5 @@ def generate() -> etree.Element:
         tag_tag = etree.SubElement(taglist, 'tag')
         tag_tag.set('id', tid)
         tag_tag.set('name', tag)
-        
+
     return etree.ElementTree(root)

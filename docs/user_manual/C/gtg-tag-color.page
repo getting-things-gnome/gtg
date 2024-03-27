@@ -6,7 +6,7 @@
   <info>
     <link type="guide" xref="gtg-tags" group="third"/>
     <link type="seealso" xref="gtg-add-tag"/>
-          
+
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
       <revision pkgversion="0.6.0" date="2022-01-06" status="candidate"/>
@@ -31,11 +31,11 @@
 
 <list>
       <item><p>To change the tag name, type a new name in the <gui>Name</gui> field.</p></item>
-      <item><p>Select a tag color from one of the predefined colors. To add your own color, in the <gui>Pick a Color</gui> pop-up, click the <gui>+</gui> under <gui>Custom</gui>. Then, click <gui>Select</gui> to confirm your color choice. To remove a selected color, click the trash icon next to the color.</p> 
+      <item><p>Select a tag color from one of the predefined colors. To add your own color, in the <gui>Pick a Color</gui> pop-up, click the <gui>+</gui> under <gui>Custom</gui>. Then, click <gui>Select</gui> to confirm your color choice. To remove a selected color, click the trash icon next to the color.</p>
       	<note style="tip"><p>You can also generate a random color for your tag. You can do this directly from the <gui>Tag Editor</gui> by choosing <em style="strong">Random</em>. You can also select and right-click a tag in the <gui>Sidebar</gui>. Then, select the <gui>Generate Color</gui> option from the context menu.</p></note></item>
       <item><p>Select an icon on the left. To remove an icon, click the trash can symbol under the selected icon button.
-</p></item> 
-<item><p>You also have the option to show or hide tasks with a certain tag from the <gui>Actionable</gui> view mode. Enable or disable the <gui>Actionable</gui> toggle. This option is very useful if you have a tag such as "someday" that you use for tasks that you would like to complete at some point in the future but are not particularly urgent at this time.</p></item> 
+</p></item>
+<item><p>You also have the option to show or hide tasks with a certain tag from the <gui>Actionable</gui> view mode. Enable or disable the <gui>Actionable</gui> toggle. This option is very useful if you have a tag such as "someday" that you use for tasks that you would like to complete at some point in the future but are not particularly urgent at this time.</p></item>
 </list>
 
 <note style="important"><p>When personalizing tags, note that <app>GTG</app> displays only an icon <em style="strong">OR</em> a colored square next to a tag in the <gui>Sidebar</gui> — not both at the same time. If you select a color for a tag, you can enable the corresponding tasks to be highlighted by that color in the <gui>Taskview</gui>. See <link xref="gtg-preferences">Preferences</link> for more information.</p></note>
@@ -45,5 +45,5 @@
   <desc> </desc>
  <media type="image" mime="image/png" src="figures/edit_tag.png"/>
 </figure>
- 
+
 </page>

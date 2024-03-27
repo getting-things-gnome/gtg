@@ -5,7 +5,7 @@
 
   <info>
     <link type="guide" xref="index#gtg-task-management" group="first"/>
-      
+
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-17" status="candidate"/>
        <revision pkgversion="0.4.0" date="2020-11-15" status="candidate"/>
@@ -27,7 +27,7 @@
   <title>Tagging Tasks</title>
 
   <p>A tag is a simple word that begins with the <em style="strong">@</em> sign.</p>
-  
+
   <p>When you type a word beginning with <em style="strong">@</em>, it is displayed with yellow highlighting, which is the indicator that <app>GTG</app> considers the word to be a tag. You have the option to associate tags with custom colors. Tags are displayed with any associated custom color in the <gui>Task Editor</gui>. See <link xref="gtg-tag-color">Editing Tag Properties</link> for more information. You can select a tag while working in the <gui>Task Editor</gui> to view all other associated tasks in the <gui>Task Browser</gui>.</p>
 
 <figure>
@@ -38,6 +38,6 @@
   <p>You can use tags to sort your tasks. Tags are viewable in the <gui>Sidebar</gui>. You can enable the <gui>Sidebar</gui> from the <gui>Main Menu</gui> on the <gui>Headerbar</gui>. This displays all of the tags that you have created. When a tag is selected, all tasks that are associated with that tag are displayed. A task can have an unlimited number of tags.</p>
 
 <p>See the following sections for information on how to create and personalize tags.</p>
- 
+
   <links type="topic" groups="first second" style="2column"/>
 </page>

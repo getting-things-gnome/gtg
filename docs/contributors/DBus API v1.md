@@ -2,7 +2,7 @@ This was originally in the wiki at Apps/gtg/dbus
 That page was written by Luca Invernizzi on 2010-02-27.
 
 # Interacting with Getting Things GNOME! via dbus
-If you are on this page, you're probably interested in integrating some uber-cool software with GTG. 
+If you are on this page, you're probably interested in integrating some uber-cool software with GTG.
 First of all, kudos for that. It's good karma.
 
 ## Python
@@ -15,7 +15,7 @@ import dbus
 bus = dbus.SessionBus()
 obj = bus.get_object("org.GTG", "/org/GTG")
 gtg = dbus.Interface(obj, "org.GTG")
-for t in gtg.get_tasks(): 
+for t in gtg.get_tasks():
     print t
     print t["title"]
 ```
@@ -29,12 +29,12 @@ import dbus
 bus = dbus.SessionBus()
 obj = bus.get_object("org.GTG", "/org/GTG")
 gtg = dbus.Interface(obj, "org.GTG")
-for tid in gtg.get_task_ids("Active, Dismissed"): 
+for tid in gtg.get_task_ids("Active, Dismissed"):
     #the task id is a string which identifies the task
     print tid
     #if you want to get task properties, you need to do
     task = gtg.get_task(tid)
-    #the task object is a simple dictionary (print it 
+    #the task object is a simple dictionary (print it
     #  to see the key values)
     print task["title"]
     # once you modify that dictionary, you can feed it back to
@@ -60,7 +60,7 @@ for t in gtg.get_tasks(): print t
 
 for t in gtg.get_tasks_filtered([], ["Active"], False, False):
   print t["id"], t["title"], t["tags"]
-  
+
 for t in gtg.get_task_ids_filtered([], ["Active"], False, False):
   print t
 

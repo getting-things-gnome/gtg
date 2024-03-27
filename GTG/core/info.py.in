@@ -58,7 +58,7 @@ AUTHORS_RELEASE_CONTRIBUTORS = """
 • François Schmidts
 • Sebastian Grabowski
 • Fridolin Weisser
-• Tommy Priest 
+• Tommy Priest
 • Laurent Combe
 • Smitty
 • Tiziana Sellitto

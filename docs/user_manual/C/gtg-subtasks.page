@@ -9,7 +9,7 @@
     <link type="seealso" xref="gtg-edit-task"/>
     <link type="seealso" xref="gtg-complete-dismiss-delete-task"/>
     <link type="seealso" xref="gtg-set-task-date"/>
-      
+
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
       <revision pkgversion="0.5.0" date="2020-11-15" status="candidate"/>
@@ -30,7 +30,7 @@
   </info>
 
   <title>Creating and Managing Subtasks</title>
-  
+
 <p>Often, in order to accomplish a certain task, you first need to accomplish another, prerequisite task. <app>GTG</app> calls this prerequisite task a <em style="strong">subtask</em>. You can insert as many subtasks as you need for each task.</p>
 
  <section id="gtg-create-new-subtask">
@@ -41,10 +41,10 @@
  <list>
       <item><p>Start a new line in the <gui>Task Editor</gui> window with a dash (-) and a space. Then, type the subtask's title.</p></item>
       <item><p>Click the <media type="image" src="figures/insert_subtask_icon.png"/> button in the <gui>Task Editor</gui> toolbar.</p></item>
-      <item><p>Use the <keyseq><key>Ctrl</key><key>Shift</key><key>N</key></keyseq> keyboard shortcut.</p></item>  
+      <item><p>Use the <keyseq><key>Ctrl</key><key>Shift</key><key>N</key></keyseq> keyboard shortcut.</p></item>
 </list>
 
-<p>The subtask title displays with a check box and is underlined. Click the link to open the subtask in a separate <gui>Task Editor</gui> window. The parent task window closes after the subtask is opened.</p>  
+<p>The subtask title displays with a check box and is underlined. Click the link to open the subtask in a separate <gui>Task Editor</gui> window. The parent task window closes after the subtask is opened.</p>
 <note style="tip"><p>When editing a subtask, you can click the <gui>Open Parent</gui> button in the <gui>Task Editor</gui> toolbar to view and edit the subtask's parent.</p></note>
 <note style="tip"><p>You can mark a subtask as complete while in the parent task by selecting the check box next to the subtask title. Finished subtasks are displayed with strikethrough text in the <gui>Task Editor</gui>.</p></note>
 
@@ -56,17 +56,17 @@
 
 <p>You can reorganize tasks and subtasks by dragging and dropping tasks in the <gui>Task Browser</gui> to achieve the hierarchy and order that you require. Keep in mind that subtasks follow the below rules.</p>
 <list>
- 	<item><p>A subtask's due date can never be after its parent's due date. If a subtask's due date is changed to be a date after the parent task's due date, then the parent task's due date is updated to match the subtask.</p></item> 
- 	<item><p>Subtasks inherit start and due dates as well as any tags assigned to the parent task <em style="strong">at the time that the subtask is created</em>. You can individually edit these characteristics as well as make bulk updates for both tasks and subtasks.</p></item> 
+ 	<item><p>A subtask's due date can never be after its parent's due date. If a subtask's due date is changed to be a date after the parent task's due date, then the parent task's due date is updated to match the subtask.</p></item>
+ 	<item><p>Subtasks inherit start and due dates as well as any tags assigned to the parent task <em style="strong">at the time that the subtask is created</em>. You can individually edit these characteristics as well as make bulk updates for both tasks and subtasks.</p></item>
  	<item><p>When you mark a parent task as done, its subtasks will also be marked as done.</p></item>
  </list>
- 
+
  <note style="tip"><p>The number of subtasks that are associated with a parent task are listed next to the parent task in the <gui>Task Browser</gui>. You can also expand and collapse parent tasks to view associated subtasks in the <gui>Task Browser</gui>.</p></note>
- 
-<note style="tip"><p>In the <gui>Task Browser</gui>, you also have the ability to add a parent task to an existing subtask by right-clicking that subtask and selecting <em style="strong">Add a Parent task...</em> from the context menu.</p></note> 
+
+<note style="tip"><p>In the <gui>Task Browser</gui>, you also have the ability to add a parent task to an existing subtask by right-clicking that subtask and selecting <em style="strong">Add a Parent task...</em> from the context menu.</p></note>
 
 </section>
- 
+
   <section id="gtg-edit-delete-subtask">
    <title>Editing, Dismissing, and Deleting Subtasks</title>
 

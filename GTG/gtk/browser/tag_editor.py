@@ -245,7 +245,7 @@ class TagEditor(Gtk.Dialog):
 
             for t in self.app.ds.tasks.lookup.values():
                 t.rename_tag(self.tag.name, self.tag_name)
-                
+
             self.tag.name = self.tag_name
 
         self.app.ds.refresh_task_count()
@@ -274,7 +274,7 @@ class TagEditor(Gtk.Dialog):
         c.red, c.green, c.blue, c.alpha = 1.0, 1.0, 1.0, 1.0
         c.parse('#' + color)
         self.tag_rgba = c
-        
+
     @Gtk.Template.Callback('activate_color')
     def _activate_color(self, widget: GObject.Object):
         """

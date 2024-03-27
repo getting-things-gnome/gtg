@@ -262,5 +262,3 @@ whether they add subtasks or tags. See the modules `text_tags.py` and
 | `SubtaskTag`        | A `sub` tag and a `{! subtask !}` tag in content  |
 | `TaskTagTag`        | A `tag` in the task `tags`, and in `taglist`      |
 | `TitleTag`          | The `title` tag inside `task` 					  |
-
-

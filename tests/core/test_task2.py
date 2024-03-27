@@ -640,5 +640,3 @@ class TestTask2(TestCase):
         task_store.sort(tasks, key='title')
         expected = [task1, task2, task4]
         self.assertEqual(tasks, expected)
-
-
