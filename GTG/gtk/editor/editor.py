@@ -864,15 +864,6 @@ class TaskEditor(Gtk.Window):
             elif focus == self.closed_entry:
                 self.show_popover_closed()
 
-    # We define dummy variable for when close is called from a callback
-    def close(self, action=None, param=None):
-
-        # We should also destroy the whole taskeditor object.
-        if self:
-            self.destruction()
-            super().close()
-            self = None
-
 
     def is_new(self) -> bool:
         return (self.task.title == DEFAULT_TITLE 
