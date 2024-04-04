@@ -18,11 +18,11 @@
 
 """ The main window for GTG, listing tags, and open and closed tasks """
 
-import threading
 import datetime
 import logging
 import ast
 import re
+from typing import Optional
 
 from gi.repository import GObject, Gtk, Gdk, Gio, GLib
 
@@ -41,7 +41,7 @@ from GTG.gtk.browser.task_pane import TaskPane
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
 from GTG.core.dates import Date
-from GTG.core.tasks import Filter, Status
+from GTG.core.tasks import Filter, Status, Task
 from GTG.gtk.browser.adaptive_button import AdaptiveFittingWidget # Register type
 
 log = logging.getLogger(__name__)
@@ -1141,8 +1141,8 @@ class MainWindow(Gtk.ApplicationWindow):
         self.calendar.set_title(_("Set Start Date"))
 
         # Get task from task name
-        task = self.req.get_task(self.get_selected_tasks()[0])
-        date = task.get_start_date()
+        task = self.get_pane().get_selection()[0]
+        date = task.date_start
         self.calendar.set_date(date, GTGCalendar.DATE_KIND_START)
         self.calendar.show()
 
@@ -1152,12 +1152,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self.calendar.set_title(_("Set Due Date"))
 
         # Get task from task name
-        task = self.req.get_task(self.get_selected_tasks()[0])
+        task = self.get_pane().get_selection()[0]
 
-        if not task.get_due_date():
-            date = task.get_start_date()
+        if not task.date_due:
+            date = task.date_start
         else:
-            date = task.get_due_date()
+            date = task.date_due
 
         self.calendar.set_date(date, GTGCalendar.DATE_KIND_DUE)
         self.calendar.show()
@@ -1189,15 +1189,15 @@ class MainWindow(Gtk.ApplicationWindow):
         self.update_toggle_recurring()
 
     def on_date_changed(self, calendar):
-        # Get tasks' list from task names' list
-        tasks = [self.req.get_task(task) for task in self.get_selected_tasks()]
+        tasks = self.get_pane().get_selection()
         date, date_kind = calendar.get_selected_date()
         if date_kind == GTGCalendar.DATE_KIND_DUE:
             for task in tasks:
-                task.set_due_date(date)
+                task.date_due = date
         elif date_kind == GTGCalendar.DATE_KIND_START:
             for task in tasks:
-                task.set_start_date(date)
+                task.date_start = date
+        self.get_pane().refresh()
 
     def on_modify_tags(self, action, params):
         """Open modify tags dialog for selected tasks."""
@@ -1381,40 +1381,40 @@ class MainWindow(Gtk.ApplicationWindow):
         return self.req.get_tasks_tree(name=self.get_selected_pane(),
                                        refresh=refresh)
 
-    def get_selected_task(self, tv=None):
+    def get_selected_task(self, tree_view: str = '') -> Optional[Task]:
         """
         Returns the'uid' of the selected task, if any.
         If multiple tasks are selected, returns only the first and
         takes care of selecting only that (unselecting the others)
 
-        @param tv: The tree view to find the selected task in. Defaults to
-            the task_tview.
+        @param tree_view: The tree view to find the selected task in.
+                          Defaults to the task_tview.
         """
-        ids = self.get_selected_tasks(tv)
-        if len(ids) > 0:
+        ids = self.get_selected_tasks(tree_view)
+        if ids:
             # FIXME: we should also unselect all the others
             return ids[0]
         else:
             return None
 
-    def get_selected_tasks(self, tv=None):
+    def get_selected_tasks(self, tree_view: str = ''):
         """
         Returns a list of 'uids' of the selected tasks, and the corresponding
         iters
 
-        @param tv: The tree view to find the selected task in. Defaults to
-            the task_tview.
+        @param tree_view: The tree view to find the selected task in.
+                          Defaults to the task_tview.
         """
 
         selected = []
-        if tv:
-            selected = self.vtree_panes[tv].get_selected_nodes()
+        if tree_view:
+            selected = self.panes[tree_view].get_selected_nodes()
         else:
             current_pane = self.get_selected_pane()
-            selected = self.vtree_panes[current_pane].get_selected_nodes()
-            for i in self.vtree_panes:
-                if len(selected) == 0:
-                    selected = self.vtree_panes[i].get_selected_nodes()
+            selected = self.panes[current_pane].get_selected_nodes()
+            for i in self.panes:
+                if not selected:
+                    selected = self.panes[i].get_selected_nodes()
         return selected
 
     # If nospecial=True, only normal @tag are considered
