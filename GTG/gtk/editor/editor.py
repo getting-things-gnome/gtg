@@ -544,7 +544,7 @@ class TaskEditor(Gtk.Window):
                                "Completed %(days)d days early", abs_delay) % \
                     {'days': abs_delay}
         else:
-            due_date = self.task.get_due_date()
+            due_date = self.task.date_due
             result = due_date.days_left()
             if due_date.is_fuzzy():
                 txt = ""
