@@ -209,10 +209,8 @@ class TaskEditor(Gtk.Window):
             if sub.id not in self.textview.subtasks['tags']:
                 self.textview.insert_existing_subtask(sub)
 
-        # if thisisnew:
-        #     self.textview.select_title()
-        # else:
-            # self.task.set_to_keep()
+        if self.is_new():
+            self.textview.select_title()
 
         self.textview.buffer.end_irreversible_action()
 
