@@ -46,4 +46,5 @@ jobs:
     - name: Run unit tests with Pytest
       run: |
         export PYTHONPATH=${PWD}/inst/lib/python3.9/site-packages
-        pytest
+        # Provide a fake display server, for tests that need one
+        xvfb-run pytest

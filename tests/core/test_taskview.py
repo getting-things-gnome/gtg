@@ -16,9 +16,14 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+import os
+import pytest
 import re
+from uuid import uuid4
 from unittest import TestCase
-from GTG.gtk.editor.taskview import TAG_REGEX
+from GTG.core.datastore import Datastore
+from GTG.core.tasks import Task
+from GTG.gtk.editor.taskview import TaskView, TAG_REGEX
 
 
 class TestTaskView(TestCase):
@@ -41,3 +46,15 @@ class TestTaskView(TestCase):
         matches = re.findall(TAG_REGEX, content)
 
         self.assertEqual([], matches)
+
+    def test_get_title(self):
+        task_title = 'Very important task'
+        task = Task(id = uuid4(), title=task_title)
+        view = TaskView(Datastore(), task, None, False)
+        view.refresh_cb = lambda x: x # Refresh CB that does nothing
+        view.set_text_from_task()
+        view.detect_title()
+
+        view_title = view.get_title()
+
+        self.assertEqual(view_title, task_title)

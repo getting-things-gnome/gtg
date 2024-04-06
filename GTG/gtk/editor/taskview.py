@@ -165,6 +165,38 @@ class TaskView(GtkSource.View):
         press_gesture.connect('begin', self.on_single_begin)
         self.add_controller(press_gesture)
 
+    def set_text_from_task(self) -> None:
+        """Sets the text of the view, from the text of the task"""
+        # Insert text and tags as a non_undoable action, otherwise
+        # the user can CTRL+Z even this inserts.
+        self.buffer.begin_irreversible_action()
+        self.buffer.set_text(f"{self.task.title}\n")
+
+        if self.task.content:
+            self.insert(self.task.content)
+
+            # Insert any remaining tags
+            if self.task.tags:
+                tag_names = [t.name for t in self.task.tags]
+                self.insert_tags(tag_names)
+        else:
+            # If not text, we insert tags
+            if self.task.tags:
+                tag_names = [t.name for t in self.task.tags]
+                self.insert_tags(tag_names)
+                start = self.buffer.get_end_iter()
+                self.buffer.insert(start, '\n')
+
+        # Insert subtasks if they weren't inserted in the text
+        subtasks = self.task.children
+        for sub in subtasks:
+            if sub.id not in self.subtasks['tags']:
+                self.insert_existing_subtask(sub)
+
+        if self.task.is_new():
+            self.select_title()
+
+        self.buffer.end_irreversible_action()
 
     def on_modified(self, buffer: Gtk.TextBuffer) -> None:
         """Called every time the text buffer changes."""

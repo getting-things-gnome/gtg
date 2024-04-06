@@ -295,6 +295,10 @@ class Task(GObject.Object):
         self._date_modified = Date(value)
 
 
+    def is_new(self) -> bool:
+        return self.title == DEFAULT_TITLE and not self.content
+
+
     @GObject.Property(type=str)
     def title(self) -> str:
         return self.raw_title
@@ -753,7 +757,7 @@ class TaskStore(BaseStore):
         return new_task
 
 
-    def new(self, title: str = None, parent: Optional[UUID] = None) -> Task:
+    def new(self, title: str = '', parent: Optional[UUID] = None) -> Task:
         """Create a new task and add it to the store."""
 
         tid = uuid4()
