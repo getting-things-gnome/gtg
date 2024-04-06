@@ -39,7 +39,7 @@ from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.editor.recurring_menu import RecurringMenu
 from GTG.gtk.editor.taskview import TaskView
 from GTG.gtk.colors import rgb_to_hex
-from GTG.core.tasks import Task, Status, DEFAULT_TITLE
+from GTG.core.tasks import Task, Status
 
 
 log = logging.getLogger(__name__)
@@ -148,21 +148,9 @@ class TaskEditor(Gtk.Window):
                 provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
             )
 
-        # self.textview.browse_tag_cb = app.select_tag
-        # self.textview.new_subtask_cb = self.new_subtask
-        # self.textview.get_subtasks_cb = task.get_children
-        # self.textview.delete_subtask_cb = self.remove_subtask
-        # self.textview.rename_subtask_cb = self.rename_subtask
-        # self.textview.open_subtask_cb = self.open_subtask
-        # self.textview.save_cb = self.light_save
-        # self.textview.add_tasktag_cb = self.tag_added
-        # self.textview.remove_tasktag_cb = self.tag_removed
-        # self.textview.refresh_cb = self.refresh_editor
-        # self.textview.get_tagslist_cb = task.get_tags_name
-        # self.textview.tid = task.id
-
         self.textview.browse_tag_cb = app.select_tag
         self.textview.new_subtask_cb = self.new_subtask
+        # self.textview.get_subtasks_cb = task.get_children
         self.textview.delete_subtask_cb = self.remove_subtask
         self.textview.rename_subtask_cb = self.rename_subtask
         self.textview.open_subtask_cb = self.open_subtask
@@ -170,6 +158,7 @@ class TaskEditor(Gtk.Window):
         self.textview.add_tasktag_cb = self.tag_added
         self.textview.remove_tasktag_cb = self.tag_removed
         self.textview.refresh_cb = self.refresh_editor
+        # self.textview.get_tagslist_cb = task.get_tags_name
         self.textview.tid = task.id
 
         # Voila! it's done
@@ -178,40 +167,7 @@ class TaskEditor(Gtk.Window):
         textview_focus_controller.connect("leave", self.on_textview_focus_out)
         self.textview.add_controller(textview_focus_controller)
 
-        tags = task.tags
-        text = self.task.content
-        title = self.task.title
-
-        # Insert text and tags as a non_undoable action, otherwise
-        # the user can CTRL+Z even this inserts.
-        self.textview.buffer.begin_irreversible_action()
-        self.textview.buffer.set_text(f"{title}\n")
-
-        if text:
-            self.textview.insert(text)
-
-            # Insert any remaining tags
-            if tags:
-                tag_names = [t.name for t in tags]
-                self.textview.insert_tags(tag_names)
-        else:
-            # If not text, we insert tags
-            if tags:
-                tag_names = [t.name for t in tags]
-                self.textview.insert_tags(tag_names)
-                start = self.textview.buffer.get_end_iter()
-                self.textview.buffer.insert(start, '\n')
-
-        # Insert subtasks if they weren't inserted in the text
-        subtasks = task.children
-        for sub in subtasks:
-            if sub.id not in self.textview.subtasks['tags']:
-                self.textview.insert_existing_subtask(sub)
-
-        if self.is_new():
-            self.textview.select_title()
-
-        self.textview.buffer.end_irreversible_action()
+        self.textview.set_text_from_task()
 
         # Connect search field to tags popup
         self.tags_tree.set_search_entry(self.tags_entry)
@@ -872,8 +828,7 @@ class TaskEditor(Gtk.Window):
 
 
     def is_new(self) -> bool:
-        return (self.task.title == DEFAULT_TITLE
-                and self.textview.get_text() == '')
+        return self.task.is_new()
 
 
     def destruction(self, _=None):
