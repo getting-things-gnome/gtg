@@ -214,7 +214,7 @@ class TestTask(TestCase):
 
         # Test changing parent's due (None or nodate)
         task2.date_due = random_date
-        task1.date_due = None
+        task1.date_due = Date.no_date()
         self.assertEqual(task2.date_due, random_date)
 
 

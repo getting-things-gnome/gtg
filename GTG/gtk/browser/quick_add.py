@@ -61,7 +61,7 @@ def parse(text: str) -> Dict:
         'title': '',
         'tags': set(),
         'start': None,
-        'due': None,
+        'due': Date.no_date(),
         'recurring': None
     }
 
