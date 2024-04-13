@@ -414,7 +414,7 @@ class Task(GObject.Object):
             Return a tuple of (bool, Date)
             """
             if recurring_term is None:
-                return False, None
+                return False, Date.no_date()
 
             try:
                 # If a start date is already set,
@@ -429,7 +429,7 @@ class Task(GObject.Object):
                 return True, newdate
 
             except ValueError:
-                return False, None
+                return False, Date.no_date()
 
         self._is_recurring = recurring
 
