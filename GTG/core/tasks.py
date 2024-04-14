@@ -307,16 +307,19 @@ class Task(GObject.Object):
 
     @GObject.Property(type=str)
     def excerpt(self) -> str:
-        if not self.content:
-            return ''
-
         # Strip tags
         txt = TAG_REGEX.sub('', self.content)
 
         # Strip subtasks
         txt = SUB_REGEX.sub('', txt)
 
-        return f'{txt.strip()[:80]}…'
+        # Strip whitespace
+        txt = txt.strip()
+
+        if not txt:
+            return ''
+
+        return f'{txt[:80]}…'
 
 
     def add_tag(self, tag: Tag) -> None:
