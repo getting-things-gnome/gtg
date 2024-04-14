@@ -571,6 +571,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.main_hpanes.set_position(sidebar_width)
         self.main_hpanes.connect('notify::position', self.on_sidebar_width)
 
+        sort_mode = self.config.get('sort_mode')
+        self.set_sorter(sort_mode.capitalize())
+
         pane_name = self.config.get('view')
         self.set_pane(pane_name)
 
@@ -1239,43 +1242,49 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_sort_start(self, action, params) -> None:
         """Callback when changing task sorting."""
 
-        self.get_pane().set_sorter('Start')
+        self.set_sorter('Start')
+        self.config.set('sort_mode', 'start')
 
 
     def on_sort_due(self, action, params) -> None:
         """Callback when changing task sorting."""
-
-        self.get_pane().set_sorter('Due')
+        
+        self.set_sorter('Due')
+        self.config.set('sort_mode', 'due')
 
 
     def on_sort_added(self, action, params) -> None:
         """Callback when changing task sorting."""
-
-        self.get_pane().set_sorter('Added')
+        
+        self.set_sorter('Added')
+        self.config.set('sort_mode', 'added')
 
 
     def on_sort_title(self, action, params) -> None:
         """Callback when changing task sorting."""
-
-        self.get_pane().set_sorter('Title')
-
+        
+        self.set_sorter('Title')
+        self.config.set('sort_mode', 'title')
+        
 
     def on_sort_modified(self, action, params) -> None:
         """Callback when changing task sorting."""
-
-        self.get_pane().set_sorter('Modified')
-
-
-    def on_sort_added(self, action, params) -> None:
-        """Callback when changing task sorting."""
-
-        self.get_pane().set_sorter('Added')
+        
+        self.set_sorter('Modified')
+        self.config.set('sort_mode', 'modified')
 
 
     def on_sort_tags(self, action, params) -> None:
         """Callback when changing task sorting."""
 
-        self.get_pane().set_sorter('Tags')
+        self.set_sorter('Tags')
+        self.config.set('sort_mode', 'tags')
+
+
+    def set_sorter(self, value: str) -> None:
+        """Set sorter for current task pane."""
+
+        self.get_pane().set_sorter(value)
 
 
     def close_all_task_editors(self, task_id):
