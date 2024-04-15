@@ -43,7 +43,7 @@ log = logging.getLogger(__name__)
 # REGEXES
 # ------------------------------------------------------------------------------
 
-TAG_REGEX = re.compile(r'^\B\@\w+(\-\w+)*\,*')
+TAG_LINE_REGEX = re.compile(r'^\B\@\w+(\-\w+)*\,*.*')
 SUB_REGEX = re.compile(r'\{\!.+\!\}')
 
 
@@ -308,7 +308,7 @@ class Task(GObject.Object):
     @GObject.Property(type=str)
     def excerpt(self) -> str:
         # Strip tags
-        txt = TAG_REGEX.sub('', self.content)
+        txt = TAG_LINE_REGEX.sub('', self.content)
 
         # Strip subtasks
         txt = SUB_REGEX.sub('', txt)
