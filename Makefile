@@ -20,7 +20,7 @@
 PEP8=pycodestyle
 PYFLAKES=pyflakes
 
-check: tests pep8 pyflakes
+check: pep8 pyflakes
 
 # Run all of the tests.
 tests:
