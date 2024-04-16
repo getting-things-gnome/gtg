@@ -282,6 +282,8 @@ class Sidebar(Gtk.ScrolledWindow):
 
         expander.set_margin_end(6)
         expander.add_css_class('arrow-only-expander')
+        expander.set_indent_for_icon(True)
+        expander.set_indent_for_depth(True)
         icon.set_margin_end(6)
         color.set_margin_end(6)
         color.set_size_request(16, 16)
@@ -375,30 +377,14 @@ class Sidebar(Gtk.ScrolledWindow):
             item.bind_property('task_count_open', open_count_label, 'label', BIND_FLAGS),
             item.bind_property('task_count_actionable', actionable_count_label, 'label', BIND_FLAGS),
             item.bind_property('task_count_closed', closed_count_label, 'label', BIND_FLAGS),
+
+            item.bind_property('children_count',expander,'hide-expander',BIND_FLAGS, lambda _,x: x==0),
         ]
         
         self.browser.bind_property('is_pane_open', open_count_label, 'visible', BIND_FLAGS)
         self.browser.bind_property('is_pane_actionable', actionable_count_label, 'visible', BIND_FLAGS)
         self.browser.bind_property('is_pane_closed', closed_count_label, 'visible', BIND_FLAGS)
         
-
-        if item.parent:
-            parent = item
-            depth = 0
-
-            while parent.parent:
-                depth += 1
-                parent = parent.parent
-
-            box.set_margin_start((18 * depth) + 16)
-        else:
-            box.set_margin_start(18)
-
-        if not item.children:
-            expander.set_visible(False)
-        else:
-            expander.set_visible(True)
-
 
     def tags_unbind_cb(self, signallistitem, listitem, user_data=None) -> None:
         """Clean up bindings made in tags_bind_cb"""
