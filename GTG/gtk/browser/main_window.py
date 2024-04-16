@@ -571,6 +571,9 @@ class MainWindow(Gtk.ApplicationWindow):
         self.main_hpanes.set_position(sidebar_width)
         self.main_hpanes.connect('notify::position', self.on_sidebar_width)
 
+        pane_name = self.config.get('view')
+        self.set_pane(pane_name)
+
         # Callbacks for sorting and restoring previous state
         # model = self.vtree_panes['active'].get_model()
         # model.connect('sort-column-changed', self.on_sort_column_changed)
@@ -1321,7 +1324,7 @@ class MainWindow(Gtk.ApplicationWindow):
         """ Callback for pane switching.
         No reset of filters, allows trigger refresh on last tag filtering.
         """
-        current_pane = self.get_selected_pane()
+        current_pane = self.get_selected_pane(old_names=False)
         self.config.set('view', current_pane)
 
         # HACK: We expand all the tasks in the open tab
@@ -1375,12 +1378,22 @@ class MainWindow(Gtk.ApplicationWindow):
 
         return bool(selected)
 
-    def get_selected_pane(self):
+
+    def set_pane(self, name: str) -> None:
+        """Set the selected pane by name."""
+
+        self.stack_switcher.get_stack().set_visible_child_name(name)
+
+
+    def get_selected_pane(self, old_names: bool = True) -> str:
         """ Get the selected pane in the stack switcher """
 
         current = self.stack_switcher.get_stack().get_visible_child_name()
 
-        return PANE_STACK_NAMES_MAP[current]
+        if old_names:
+            return PANE_STACK_NAMES_MAP[current]
+        else:
+            return current
 
 
     def get_pane(self):
