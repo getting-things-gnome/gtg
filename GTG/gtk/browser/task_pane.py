@@ -40,6 +40,8 @@ class TaskBox(Gtk.Box):
         self.expander = Gtk.TreeExpander()
         self.expander.set_margin_end(6)
         self.expander.add_css_class('arrow-only-expander')
+        self.expander.set_indent_for_icon(True)
+        self.expander.set_indent_for_depth(True)
 
         self.check = Gtk.CheckButton() 
         self.check.set_margin_end(6)
@@ -60,30 +62,6 @@ class TaskBox(Gtk.Box):
 
         if self.is_actionable:
             value = False
-
-        self.expander.set_visible(value)
-
-        if value:
-            widget = self.expander 
-        else:
-            widget = self.check
-
-        check_width = 21
-        margin = 6
-
-        indent = margin if value else (check_width + margin)
-
-        if self.task.parent and not self.is_actionable:
-            parent = self.task
-            depth = 0
-
-            while parent.parent:
-                depth += 1
-                parent = parent.parent
-
-            widget.set_margin_start(indent + (21 * depth))
-        else:
-            widget.set_margin_start(indent)
         
 
     @GObject.Property(type=bool, default=True)
@@ -533,6 +511,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
         listitem.bindings = [
             item.bind_property('has_children', box, 'has_children', BIND_FLAGS),
+            item.bind_property('has_children', expander, 'hide-expander', BIND_FLAGS,lambda _,x: not x),
 
             item.bind_property('title', label, 'label', BIND_FLAGS),
             item.bind_property('excerpt', box, 'tooltip-text', BIND_FLAGS),

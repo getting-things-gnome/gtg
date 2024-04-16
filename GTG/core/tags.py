@@ -80,6 +80,13 @@ class Tag(GObject.Object):
         return self.id == other.id
 
 
+    @GObject.Property(type=int)
+    def children_count(self) -> str:
+        """Read only property."""
+
+        return len(self.children)
+
+
     @GObject.Property(type=str)
     def name(self) -> str:
         """Read only property."""
@@ -362,6 +369,7 @@ class TagStore(BaseStore):
             self.model.append(item)
 
         self.emit('added', item)
+        if parent_id: self.lookup[parent_id].notify('children_count')
 
 
     def parent(self, item_id: UUID, parent_id: UUID) -> None:
@@ -370,6 +378,7 @@ class TagStore(BaseStore):
         item = self.lookup[item_id]
         pos = self.model.find(item)
         self.model.remove(pos[1])
+        if parent_id: self.lookup[parent_id].notify('children_count')
 
 
 
@@ -378,3 +387,4 @@ class TagStore(BaseStore):
         super().unparent(item_id, parent_id)
         item = self.lookup[item_id]
         self.model.append(item)
+        if parent_id: self.lookup[parent_id].notify('children_count')

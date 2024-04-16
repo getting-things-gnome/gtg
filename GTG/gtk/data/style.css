@@ -98,10 +98,6 @@ textview check {
   border-spacing: 0;
 }
 
-.arrow-only-expander indent {
-  -gtk-icon-size: 0px;
-}
-
 .closed-task {
     opacity: 0.5;
 }
