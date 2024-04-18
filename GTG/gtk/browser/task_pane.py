@@ -355,7 +355,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
     def select_task(self, task: Task) -> None:
         """Select a task in the list."""
-        
+
         position = None
 
         for i in range(self.main_sorter.get_n_items()):
@@ -365,7 +365,7 @@ class TaskPane(Gtk.ScrolledWindow):
                 position = i
                 break
 
-        if position:
+        if position is not None:
             self.task_selection.select_item(position, True)
 
 
