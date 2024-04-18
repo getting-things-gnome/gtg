@@ -343,7 +343,7 @@ class TaskPane(Gtk.ScrolledWindow):
                 position = i
                 break
 
-        if position:
+        if position is not None:
             self.task_selection.select_item(position, True)
 
 
