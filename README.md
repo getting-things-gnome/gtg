@@ -159,6 +159,29 @@ No data should be lost since it is just re-generateable build files.
 [pudb]: https://pypi.org/project/pudb/
 [gtk-interactive]: https://developer.gnome.org/gtk3/stable/gtk-running.html#interactive-debugging
 
+## Setting up a development environment
+
+Now that you have installed all the dependencies and know how to run the tests,
+it's possible that you would like to make code changes and submit them for
+review.
+
+We use [pre-commit](https://pre-commit.com) to run some checks that ensure that
+our codebase is clean and consistent.
+
+Install it with `pip install pre-commit`, and install the pre-commit hooks with
+`pre-commit install`.
+
+The checks will now run every time you make a commit, and fix files if
+necessary. It's generally a good idea to always run them, but you can also
+bypass them by running `git commit --no-verify`, if necessary.
+
+The CI system runs the checks on each commit to master, and on each pull
+request. If you want to make sure they pass before opening your PR, you can run
+them locally with `pre-commit run --all-files`.
+
+For more guidelines about contributing, see
+[CONTRIBUTING.md](./CONTRIBUTING.md).
+
 # "Where is my user data and config stored?"
 
 It depends:
