@@ -23,9 +23,9 @@ from GTG.core.tasks import Task
 
 def unwrap(row, expected_type):
     """Find an item in TreeRow widget (sometimes nested)."""
-    
+
     item = row
-    
+
     while type(item) is not expected_type:
         item = item.get_item()
 
@@ -40,7 +40,7 @@ class TaskTitleSorter(Gtk.Sorter):
 
 
     def do_compare(self, a, b) -> Gtk.Ordering:
-        
+
         a = unwrap(a, Task)
         b = unwrap(b, Task)
 
@@ -63,7 +63,7 @@ class TaskDueSorter(Gtk.Sorter):
 
 
     def do_compare(self, a, b) -> Gtk.Ordering:
-        
+
         a = unwrap(a, Task)
         b = unwrap(b, Task)
 
@@ -86,7 +86,7 @@ class TaskStartSorter(Gtk.Sorter):
 
 
     def do_compare(self, a, b) -> Gtk.Ordering:
-        
+
         a = unwrap(a, Task)
         b = unwrap(b, Task)
 
@@ -109,7 +109,7 @@ class TaskModifiedSorter(Gtk.Sorter):
 
 
     def do_compare(self, a, b) -> Gtk.Ordering:
-        
+
         a = unwrap(a, Task)
         b = unwrap(b, Task)
 
@@ -133,14 +133,14 @@ class TaskTagSorter(Gtk.Sorter):
 
     def get_first_letter(self, tags) -> str:
         """Get first letter of the first tag in a set of tags."""
-        
+
         # Fastest way to get the first item
         # on a set in Python
         for t in tags:
             return t.name[0]
 
     def do_compare(self, a, b) -> Gtk.Ordering:
-        
+
         a = unwrap(a, Task)
         b = unwrap(b, Task)
 
@@ -170,7 +170,7 @@ class TaskAddedSorter(Gtk.Sorter):
 
 
     def do_compare(self, a, b) -> Gtk.Ordering:
-        
+
         a = unwrap(a, Task)
         b = unwrap(b, Task)
 
@@ -183,4 +183,3 @@ class TaskAddedSorter(Gtk.Sorter):
             return Gtk.Ordering.SMALLER
         else:
             return Gtk.Ordering.EQUAL
-

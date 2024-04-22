@@ -108,4 +108,3 @@ class TestSavedSearch(TestCase):
         xml_root = store.to_xml()
 
         self.assertEqual(len(xml_root), 2)
-

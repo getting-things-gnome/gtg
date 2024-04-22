@@ -172,7 +172,7 @@ class SavedSearchStore(BaseStore):
             self.model.append(search)
 
         return search
-    
+
 
     def add(self, item, parent_id: UUID = None) -> None:
         """Add a tag to the tagstore."""

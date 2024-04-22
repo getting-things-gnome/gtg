@@ -14,11 +14,11 @@ GTG uses the bus name '''`org.gnome.GTG`''' on the session bus. Trying to access
 ## Object Paths
 Every Task and Tag in GTG can be accessed directly on the bus by its own ''object path''—there is no need to call any method like `get_task()` on the server.
 
-|  '''Path''' | '''Interfaces''' ¹ | '''Object''' | 
+|  '''Path''' | '''Interfaces''' ¹ | '''Object''' |
 |-------------|---------------------|--------------|
-|  `/org/gnome/GTG/Server` |  `org.gnome.GTG.Server`  | The GTG! daemon  | 
-|  `/org/gnome/GTG/Tag/[uuid]` |   `org.gnome.GTG.Tag` <br> `org.freedesktop.DBus.Properties`²  | Individual tags by UUID³  | 
-|  `/org/gnome/GTG/Task/[uuid]` |  `org.gnome.GTG.Task` <br> `org.freedesktop.DBus.Properties`²  | Individual tasks by UUID³  | 
+|  `/org/gnome/GTG/Server` |  `org.gnome.GTG.Server`  | The GTG! daemon  |
+|  `/org/gnome/GTG/Tag/[uuid]` |   `org.gnome.GTG.Tag` <br> `org.freedesktop.DBus.Properties`²  | Individual tags by UUID³  |
+|  `/org/gnome/GTG/Task/[uuid]` |  `org.gnome.GTG.Task` <br> `org.freedesktop.DBus.Properties`²  | Individual tasks by UUID³  |
 
 Notes:
 
@@ -34,7 +34,7 @@ This is a standard interface that is [described in the DBus specification](http:
 In GTG!, the interface is extended with ''one'' extra method named `List`:
 ```
 org.freedesktop.DBus.Properties.List (in STRING interface_name,
-                                      out ARRAY<STRING> props); 
+                                      out ARRAY<STRING> props);
 ```
 
 `List` is a faster alternative to `GetAll` that avoids a `Get` of ''every'' property. That can be slow, especially where some properties are computed instead of stored in variables.

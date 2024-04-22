@@ -9,7 +9,7 @@
       <link type="seealso" xref="gtg-sync"/>
       <link type="seealso" xref="gtg-add-sync"/>
 
-      
+
       <revision pkgversion="0.6.0" date="2022-01-21" status="candidate"/>
    <credit type="author copyright">
       <name>Danielle Vansia</name>
@@ -28,8 +28,8 @@
 
   <title>CalDAV: Calendar Synchronization Service</title>
 
-  <p>CalDAV is a calendaring protocol that allows a client to access items from a server. Many calendar and task services (often included in groupware packages) provide this feature. <app>GTG</app> provides support for this standard to be able to manage all your tasks in one place. The options and required fields for the CalDAV Sync Service are described below. Once you have filled in all of the required information, click <em style="strong">Enable syncing</em> to start importing your CalDAV items.</p> 
-  
+  <p>CalDAV is a calendaring protocol that allows a client to access items from a server. Many calendar and task services (often included in groupware packages) provide this feature. <app>GTG</app> provides support for this standard to be able to manage all your tasks in one place. The options and required fields for the CalDAV Sync Service are described below. Once you have filled in all of the required information, click <em style="strong">Enable syncing</em> to start importing your CalDAV items.</p>
+
 	<note style="tip"><p>If you do not see CalDAV as an option in the dropdown on the Synchornization Services window, then you may not have the necessary dependency (the <code>python-caldav</code> module) installed. You can install this with <code>pip install caldav</code>.</p></note>
 	<note style="important"><p>Tasks need to be tagged in <app>GTG</app> with <code>DAV_[CALENDAR_NAME]</code> to be synced.</p></note>
 
@@ -49,7 +49,7 @@
 <item>
      <title><em style="strong">Service URL</em></title>
      <p>Enter the URL for the service you are looking to connect. You may need to refer to your service provider's CalDAV-related documentation to obtain this URL.</p></item></terms>
-     
+
 <note style="important"><p>The CalDAV provider might give you a URL for a specific calendar, but actually send the todos from all calendars. In this case, the CalDAV backend will end up syncing all calendars.</p></note>
 
 

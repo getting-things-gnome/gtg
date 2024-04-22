@@ -10,8 +10,8 @@
     border-top: 1px solid rgb(213, 208, 204);
 }
 
-/* 
-    We have to get move the padding into the boxes 
+/*
+    We have to get move the padding into the boxes
     so the background color of the rows reaches all
     the way to the edges
 */
@@ -21,7 +21,7 @@
 
 .task-list row > box {
     padding: 15px 16px;
-} 
+}
 
 /* --------------------------------------------------------------------------------
  * ERROR HANDLER
@@ -87,10 +87,10 @@ textview check {
 .hide { opacity: 0.2; }
 
 .color-pill {
-    background: #999; 
-    padding: 0; 
-    min-height: 16px; 
-    min-width: 16px; 
+    background: #999;
+    padding: 0;
+    min-height: 16px;
+    min-width: 16px;
     border: none;
 }
 

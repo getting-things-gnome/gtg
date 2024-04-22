@@ -19,4 +19,3 @@ jobs:
         bundle: org.gnome.GTG.Devel.flatpak
         manifest-path: build-aux/org.gnome.GTG.Devel.json
         cache-key: flatpak-builder-${{ github.sha }}
-

@@ -121,7 +121,7 @@ consider doing it like this:
     # never be None, so this *should* always work.  I can't reproduce the
     # crash so can't tell what makes x None.  Leaving it disabled for now
     # until someone can reproduce it and investigate.  (LP: #12345)
-    # 
+    #
     # foo.animate(x)
 
 Avoid committing commented out code (or print statements) used for debugging.

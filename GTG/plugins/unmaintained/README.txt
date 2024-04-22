@@ -5,7 +5,7 @@ up to fix and support them.
 If you are interested in taking over one of these, let us know in the bug
 tracker!
 
---- 
+---
 
 "Bugzilla" plugin dependencies:
   * python3-bugz
@@ -18,4 +18,3 @@ which supports indicators:
 
 "Tomboy/Gnote" plugin needs a running instance of Tomboy or Gnote.
   * python3-dbus
-

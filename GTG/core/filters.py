@@ -26,9 +26,9 @@ from GTG.core import search
 
 def unwrap(row, expected_type):
     """Find an item in TreeRow widget (sometimes nested)."""
-    
+
     item = row.get_item()
-    
+
     while type(item) is not expected_type:
         item = item.get_item()
 
@@ -58,7 +58,7 @@ class TagEmptyFilter(Gtk.Filter):
 
         else:
             return True
-            
+
 
 class TaskPaneFilter(Gtk.Filter):
     __gtype_name__ = 'TaskPaneFilter'
@@ -90,13 +90,13 @@ class TaskPaneFilter(Gtk.Filter):
 
             if tag.children:
                 get_children(tag.children)
-                
+
         return result
 
 
     def match_tags(self, task: Task) -> bool:
         """Match selected tags to task tags."""
-        
+
         all_tags = self.expand_tags()
         return len(all_tags.intersection(set(task.tags))) >= len(self.tags)
 
@@ -108,7 +108,7 @@ class TaskPaneFilter(Gtk.Filter):
             show = task.status is Status.ACTIVE
         elif self.pane == 'workview':
             show = task.is_actionable
-            
+
             if self.expand:
                 item.set_expanded(True)
                 self.expand = False
@@ -144,7 +144,7 @@ class SearchTaskFilter(Gtk.Filter):
 
     def set_query(self, query: str) -> None:
         self.query = query
-        
+
         try:
             self.checks = search.parse_search_query(query)
         except search.InvalidQuery:
@@ -153,7 +153,7 @@ class SearchTaskFilter(Gtk.Filter):
 
     def match_tags(self, task: Task) -> bool:
         """Match selected tags to task tags."""
-        
+
         return len(self.tags.intersection(set(task.tags))) >= len(self.tags)
 
 

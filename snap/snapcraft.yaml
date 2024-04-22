@@ -15,7 +15,7 @@ apps:
     common-id: org.gnome.GTG
     plugs: [network]
     slots: [dbus-service]
- 
+
 slots:
   dbus-service:
     interface: dbus
@@ -47,7 +47,7 @@ parts:
   liblarch:
     source: https://github.com/getting-things-gnome/liblarch
     source-tag: v3.2.0
-    source-type: git    
+    source-type: git
     plugin: python
     build-environment:
       - SNAPCRAFT_PYTHON_INTERPRETER: python3.8

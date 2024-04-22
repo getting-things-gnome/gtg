@@ -58,25 +58,25 @@ If a bug is assigned to you, be sure to reply as quickly as possible. If you can
 This list serves mostly for historical purposes, and to explain what we don't/can't do anymore.
 
 * **New**: this is replaced by the "Open" status in GitHub, which does not distinguish between "New", "Confirmed", or "Triaged".
-  
+
   > "the bug has not been accepted or clarified enough. Maybe you just have to wait. If you want that specific bug to be confirmed, you might help by adding a precise way to reproduce the bug or, if it's a feature request, by clarifying the feature (mockups, use cases). If this is a feature request which is not clear, we usually set the Importance to Wishlist and leave the status to New."
 
 * **Confirmed**: the closest approximation is the "reproducible-in-git" status we use to indicate whether the bug has been tested to affect the latest development version. If we can't reproduce the bug, then it would be tagged "needinfo".
-  
+
   > "the bug has been accepted as a bug we want to see fixed. It doesn't mean that we plan to work on it soon. See the importance field for that. It also doesn't mean that we agreed on a solution (even if the original bug describes a particular solution). It only means that we acknowledge that there is a problem that need to be addressed. If you work on one of those bug in your branch, you have no guarantee that it will be accepted."
 
 * **Triaged**: much like "confirmed", this does not make much sense in this day and age. We either leave a bug/feature ticket open, or we close it.
-  
+
   > "the bug has been accepted and a particular solution reached the consensus. This solution should be described in the main summary of the bug. Solving a Triaged bug is just a matter of coding according to the bug description. No further reading nor discussion should be needed. If the proposed solution implies a modification of the core UI (not plugin), it should have been approved by Bertrand, our UI manager."
 
 * **In progress**: this is replaced by "assigning" issues to people. If nobody is assigned, and there is no mention of someone working on it in a branch, assume nobody is working on it.
-  
+
   > "someone is actively working on that bug (see the assigned to field). Also use this status if the bug is fixed in your branch and then do a merge request a link the branch to that bug."
 
 * **Fix Committed**: with GitHub, we just close the tickets and target them to the next release's milestone to indicate things that have been resolved.
-  
+
   > "The bug has been fixed in the trunk (not in your branch). When changing to this status, always add the revision number that fixes that particular bug. You also have to be sure that the bug is targeted for the next release. Indeed, if the fix is in the trunk, it will be in the next release. Don't forget to do that! Also, every Fix Committed bug should be assigned to someone. If multiple people have worked to fix a bug, use the last one that will commit the fix."
 
 * **Fix Released**: unfortunately, GitHub does not have this notion of half-open tickets. Tickets are either open or closed, and when a release comes out then all the issues that were targeted to it can be considered "released".
-  
+
   > "On a given release, all the Fix Committed bugs are switched to that state."

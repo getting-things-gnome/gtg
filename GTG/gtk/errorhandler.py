@@ -220,4 +220,3 @@ def restore_excepthook() -> bool:
         return False
     sys.excepthook = original_excepthook
     original_excepthook = None
-

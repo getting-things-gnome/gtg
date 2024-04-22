@@ -18,8 +18,8 @@
 
 """
 sidebar_context_menu:
-Implements a context (pop-up) menu for the tag or saved search item in the 
-sidebar. It is supposed to be a generic sidebar context for all kind of item 
+Implements a context (pop-up) menu for the tag or saved search item in the
+sidebar. It is supposed to be a generic sidebar context for all kind of item
 displayed there.
 Also, it is supposed to handle more complex menus (with non-std widgets,
 like a color picker).
@@ -44,7 +44,7 @@ class TagContextMenu(Gtk.PopoverMenu):
         actions = [
             ("edit_tag", self.on_mi_cc_activate),
             ("generate_tag_color", self.on_mi_ctag_activate),
-            ("delete_tag", lambda w, a, p: 
+            ("delete_tag", lambda w, a, p:
             	self.app.browser.on_delete_tag_activate([self.tag]))
         ]
 
@@ -92,7 +92,7 @@ class SearchesContextMenu(Gtk.PopoverMenu):
 
         actions = [
             ("edit_search", lambda w, a, p: app.open_search_editor(search)),
-            ("delete_search", lambda w, a, p: 
+            ("delete_search", lambda w, a, p:
             	ds.saved_searches.remove(self.search.id))
         ]
 

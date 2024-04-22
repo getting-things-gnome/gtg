@@ -239,7 +239,7 @@ class TaskView(GtkSource.View):
                 cur_pos = cursor_iter.get_line_offset()
                 text = TaskView.mask_current_word(text,cur_pos)
 
-            self.detect_tag(text, start) 
+            self.detect_tag(text, start)
 
             start.forward_line()
 

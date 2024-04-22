@@ -45,4 +45,3 @@ gnome.yelp('gtg',
     'figures/workview.png',
   ]
 )
-

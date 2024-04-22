@@ -6,7 +6,7 @@
 
   <info>
     <link type="guide" xref="index#gtg-task-management" group="second"/>
-      
+
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-16" status="candidate"/>
       <revision pkgversion="0.5.0" date="2020-11-15" status="candidate"/>
@@ -27,7 +27,7 @@
 
   <title>Using the Quick Add Entry</title>
 
-  <p>The <gui>Quick Add Entry</gui> is the fastest way to create a new task. The <gui>Quick Add Entry</gui> field is located below the <gui>Task Browser</gui>.</p> 
+  <p>The <gui>Quick Add Entry</gui> is the fastest way to create a new task. The <gui>Quick Add Entry</gui> field is located below the <gui>Task Browser</gui>.</p>
 
 <section id="quick-add-task">
 <title>Create a New Task Using the Quick Add Entry</title>
@@ -42,7 +42,7 @@
 </section>
 
 <section id="quick-add-dates">
-<title>Adding Dates and Tags to Tasks Using the Quick Add Entry</title> 
+<title>Adding Dates and Tags to Tasks Using the Quick Add Entry</title>
 
 <p>You can also create a task in the <gui>Quick Add Entry</gui> and at the same time specify its tags, start date, and due date. Follow the below syntax to add these options.</p>
 
@@ -56,7 +56,7 @@
 </section>
 
 <section id="quick-set-repeating">
-<title>Set Repeating Tasks Using the Quick Add Entry</title> 
+<title>Set Repeating Tasks Using the Quick Add Entry</title>
 
 <p>The <gui>Quick Add Entry</gui> is the fastest way to set a task to repeat with the <em style="strong">every:</em> keyword.</p>
 
@@ -91,5 +91,5 @@
      <p>Creates a new task with the title <em>call mum about the broken @phone</em>, with the tags <em>family</em> and <em>phone</em>, with the due date of <em>next Sunday</em>, and the start date <em>tomorrow</em>.</p></item>
 </terms>
 
-</section>    
+</section>
 </page>

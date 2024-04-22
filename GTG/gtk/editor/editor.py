@@ -299,7 +299,7 @@ class TaskEditor(Gtk.Window):
 
         self.tag_store.clear()
         used = set()
-        
+
         for used_tag in self.task.tags:
             # First parameter marks the tag as used
             self.tag_store.append((True, used_tag.name))
@@ -308,7 +308,7 @@ class TaskEditor(Gtk.Window):
         for tag_name in self.ds.tags.lookup_names.keys():
             if tag_name not in used:
                 self.tag_store.append((False, tag_name))
-            
+
 
     def sync_repeat_button(self, object=None, pspec=None):
         if self.recurring_menu.is_task_recurring:
@@ -575,7 +575,7 @@ class TaskEditor(Gtk.Window):
         textview = self.textview
         task_text = task.content
         task_title = task.title
-        
+
         textview.set_text(f"{task_title}\n")
 
         if task_text:
@@ -716,7 +716,7 @@ class TaskEditor(Gtk.Window):
 
         task = self.ds.tasks.lookup[tid]
         self.app.open_task(task)
-        
+
         if task.parent:
             self.app.close_task(task.parent.id)
 
@@ -725,19 +725,19 @@ class TaskEditor(Gtk.Window):
             self.app.ds.tasks.parent(self.task.id, tid)
 
             return self.app.ds.tasks.lookup[tid]
-        
+
         elif title and not tid:
             t = self.app.ds.tasks.new(title, self.task.id)
             tid = t.id
             self.app.ds.tasks.refresh_lookup_cache()
 
             return t
-        
+
         elif title and tid:
             t = self.app.ds.tasks.new(title, self.task.id)
             t.id = tid
             self.app.ds.tasks.refresh_lookup_cache()
-            
+
             return t
 
     def remove_subtask(self, tid):
@@ -873,7 +873,7 @@ class TaskEditor(Gtk.Window):
 
 
     def is_new(self) -> bool:
-        return (self.task.title == DEFAULT_TITLE 
+        return (self.task.title == DEFAULT_TITLE
                 and self.textview.get_text() == '')
 
 

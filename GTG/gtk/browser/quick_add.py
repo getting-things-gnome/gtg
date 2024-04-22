@@ -113,4 +113,3 @@ def parse(text: str) -> Dict:
 
     result['title'] = text
     return result
-

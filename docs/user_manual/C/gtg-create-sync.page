@@ -4,8 +4,8 @@
       id="gtg-create-sync">
 
   <info>
-    
-  
+
+
 
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-10" status="outdated"/>
@@ -24,7 +24,7 @@
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude"/>
 
   </info>
- 
+
   <title>Create Your Own Sync Service</title>
 
 <p>Here are some resources in case you are interested in making your own Sync Service for <app>GTG</app>:</p>
@@ -34,4 +34,3 @@
 <p><link href="https://github.com/getting-things-gnome/gtg/blob/master/docs/contributors/DBus%20API%20v1.md">DBus</link></p>
 
 </page>
-

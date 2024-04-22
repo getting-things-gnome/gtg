@@ -5,7 +5,7 @@ and support them.
 If you are interested in taking over one of these, let us know in the bug
 tracker!
 
---- 
+---
 
 Evolution synchronization service has dependencies:
   * python3-evolution
@@ -27,4 +27,3 @@ version of Tweety library.
 
 Remember the Milk synchronization service is shipped with a library for RTM api. It has an external dependency:
   * python3-dateutil
-

@@ -6,7 +6,7 @@
   <info>
     <link type="guide" xref="index#getting-started" group="first"/>
     <link type="seealso" xref="gtg-shortcut-keys"/>
-    
+
       <revision pkgversion="0.3.1" date="2013-06-18" status="candidate"/>
       <revision pkgversion="0.4.0" date="2020-05-10" status="candidate"/>
       <revision pkgversion="0.6.0" date="2021-12-22" status="candidate"/>
@@ -27,7 +27,7 @@
   </info>
 
   <title>Overview of the Main User Interface</title>
-  <p>Create, view, and maintain your tasks from the Main Window. Window sections and elements are described below.</p> 
+  <p>Create, view, and maintain your tasks from the Main Window. Window sections and elements are described below.</p>
 <figure>
   <title><app>GTG</app> Main Window</title>
   <desc> </desc>
@@ -65,7 +65,6 @@
     <p>Quickly create a task from this field. See <link xref="gtg-quickadd">Using the Quick Add Entry</link>.</p>
   </item>
   </terms>
-  
+
 
 </page>
-

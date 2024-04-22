@@ -45,14 +45,14 @@ class SearchBox(Gtk.Box):
 
 def unwrap(row, expected_type):
     """Find an item in TreeRow widget (sometimes nested)."""
-    
+
     item = row.get_item()
-    
+
     while type(item) is not expected_type:
         item = item.get_item()
 
     return item
-    
+
 
 # Shorthands
 BIND_FLAGS = GObject.BindingFlags.DEFAULT | GObject.BindingFlags.SYNC_CREATE
@@ -61,7 +61,7 @@ signal_block = GObject.signal_handler_block
 
 class Sidebar(Gtk.ScrolledWindow):
     """The sidebar widget"""
-    
+
     def __init__(self, app, ds: Datastore, browser):
 
         super(Sidebar, self).__init__()
@@ -97,7 +97,7 @@ class Sidebar(Gtk.ScrolledWindow):
 
         self.general_box.select_row(self.general_box.get_row_at_index(0))
         self.box_handle = self.general_box.connect('row-selected', self.on_general_box_selected)
-        
+
         # -------------------------------------------------------------------------------
         # Saved Searches Section
         # -------------------------------------------------------------------------------
@@ -144,7 +144,7 @@ class Sidebar(Gtk.ScrolledWindow):
         self.filtered_tags = Gtk.FilterListModel()
         self.filtered_tags.set_model(ds.tags.tree_model)
         self.filtered_tags.set_filter(self.tags_filter)
-        
+
         self.tag_selection = Gtk.MultiSelection.new(self.filtered_tags)
         self.tag_handle = self.tag_selection.connect('selection-changed', self.on_tag_selected)
 
@@ -199,21 +199,21 @@ class Sidebar(Gtk.ScrolledWindow):
 
     def refresh_tags(self) -> None:
         """Refresh tags list."""
-        
+
         self.filtered_tags.items_changed(0, 0, 0)
         self.tags_filter.changed(Gtk.FilterChange.DIFFERENT)
 
 
     def change_pane(self, pane: str) -> None:
         """Change pane for the tag list."""
-        
+
         self.tags_filter.pane = pane
         self.tags_filter.changed(Gtk.FilterChange.DIFFERENT)
-        
+
 
     def on_tag_RMB_click(self, gesture, sequence) -> None:
         """Callback when right-clicking on a tag."""
-        
+
         menu = TagContextMenu(self.ds, self.app, gesture.get_widget().tag)
         menu.set_parent(gesture.get_widget())
         menu.set_halign(Gtk.Align.START)
@@ -308,7 +308,7 @@ class Sidebar(Gtk.ScrolledWindow):
 
 
         # Drag ...
-        source = Gtk.DragSource() 
+        source = Gtk.DragSource()
         source.connect('prepare', self.prepare)
         source.connect('drag-begin', self.drag_begin)
         source.connect('drag-end', self.drag_end)
@@ -380,21 +380,21 @@ class Sidebar(Gtk.ScrolledWindow):
 
             item.bind_property('children_count',expander,'hide-expander',BIND_FLAGS, lambda _,x: x==0),
         ]
-        
+
         self.browser.bind_property('is_pane_open', open_count_label, 'visible', BIND_FLAGS)
         self.browser.bind_property('is_pane_actionable', actionable_count_label, 'visible', BIND_FLAGS)
         self.browser.bind_property('is_pane_closed', closed_count_label, 'visible', BIND_FLAGS)
-        
+
 
     def tags_unbind_cb(self, signallistitem, listitem, user_data=None) -> None:
         """Clean up bindings made in tags_bind_cb"""
         for binding in listitem.bindings:
             binding.unbind()
- 
+
 
     def unselect_tags(self) -> None:
         """Clear tags selection"""
-        
+
         with signal_block(self.tag_selection, self.tag_handle):
             self.tag_selection.unselect_all()
 
@@ -426,7 +426,7 @@ class Sidebar(Gtk.ScrolledWindow):
             self.app.browser.get_pane().set_filter_tags()
         elif index == 1:
             self.app.browser.get_pane().set_filter_notags()
-            
+
 
     def on_search_selected(self, model, position, user_data=None):
         """Callback when selecting a saved search"""
@@ -445,15 +445,15 @@ class Sidebar(Gtk.ScrolledWindow):
         selection = self.tag_selection.get_selection()
         result, iterator, _ = Gtk.BitsetIter.init_first(selection)
         selected = []
-        
+
         while iterator.is_valid():
             val = iterator.get_value()
             item = unwrap(self.tag_selection.get_item(val), Tag)
             selected.append(item.name if names_only else item)
             iterator.next()
-        
+
         return selected
-        
+
 
     def on_tag_selected(self, model, position, n_items, user_data=None):
         """Callback when selecting one or more tags"""
@@ -469,14 +469,14 @@ class Sidebar(Gtk.ScrolledWindow):
         """Callback for clicking on the tags title button (revealer)."""
 
         self.revealer.set_reveal_child(not self.revealer.get_reveal_child())
-        
+
 
     def on_search_reveal(self, event) -> None:
         """Callback for clicking on the search title button (revealer)."""
 
         self.searches_revealer.set_reveal_child(not self.searches_revealer.get_reveal_child())
-        
-        
+
+
     def searches_setup_cb(self, factory, listitem, user_data=None) -> None:
         """Setup for a row in the saved searches listview"""
 
@@ -559,14 +559,14 @@ class Sidebar(Gtk.ScrolledWindow):
 
     def check_parent(self, value, target) -> bool:
         """Check to parenting a parent to its own children"""
-        
+
         item = target
         while item.parent:
             if item.parent == value:
                 return False
-            
+
             item = item.parent
-        
+
         return True
 
 
@@ -579,12 +579,12 @@ class Sidebar(Gtk.ScrolledWindow):
 
         if value.parent:
             self.ds.tags.unparent(value.id, value.parent.id)
-        
+
         self.ds.tags.parent(value.id, dropped.id)
         self.ds.refresh_tag_stats()
         self.ds.tags.tree_model.emit('items-changed', 0, 0, 0)
         self.refresh_tags()
-        
+
 
 
     def drop_enter(self, target, x, y, user_data=None):
@@ -625,11 +625,11 @@ class Sidebar(Gtk.ScrolledWindow):
 
     def notify_task(self, task: Task) -> None:
         """Notify that tasks props have changed."""
-        
+
         task.notify('row_css')
         task.notify('icons')
         task.notify('tag_colors')
-        
+
 
     def on_toplevel_tag_drop(self, drop_target, tag, x, y):
         if tag.parent:
@@ -642,7 +642,7 @@ class Sidebar(Gtk.ScrolledWindow):
                     expander.activate_action('listitem.toggle-expand')
             except RuntimeError:
                 pass
-                
+
             self.ds.tags.tree_model.emit('items-changed', 0, 0, 0)
             return True
         else:

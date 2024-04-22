@@ -518,7 +518,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_save_search(self, action, param):
         query = self.search_entry.get_text()
-        name = re.sub(r'!(?=\w)+', '', query) 
+        name = re.sub(r'!(?=\w)+', '', query)
 
         self.app.ds.saved_searches.new(name, query)
 
@@ -800,9 +800,9 @@ class MainWindow(Gtk.ApplicationWindow):
             tasks = self.get_pane().get_selection()
             for t in tasks:
                 self.app.open_task(t)
-            
+
             return
-            
+
         tags = self.sidebar.selected_tags(names_only=True)
         data = quick_add.parse(text)
 
@@ -1002,20 +1002,20 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_add_parent(self, widget=None):
         selection = self.get_pane().get_selection()
-        
+
         if not selection:
             return
-        
+
         parent = selection[0].parent
 
         # Check all tasks have the same parent
         if any(t.parent != parent for t in selection):
             return
-        
+
         if parent:
             if parent.status == Status.ACTIVE:
                 new_parent = self.app.ds.tasks.new(parent=parent.id)
-                
+
                 for task in selection:
                     self.app.ds.tasks.refresh_lookup_cache()
                     self.app.ds.tasks.unparent(task.id, parent.id)
@@ -1026,7 +1026,7 @@ class MainWindow(Gtk.ApplicationWindow):
             for task in selection:
                 self.app.ds.tasks.refresh_lookup_cache()
                 self.app.ds.tasks.parent(task.id, new_parent.id)
-        
+
             self.app.open_task(new_parent)
             self.get_pane().refresh()
 
@@ -1237,43 +1237,43 @@ class MainWindow(Gtk.ApplicationWindow):
         """Callback when changing task sorting."""
 
         self.get_pane().set_sorter('Start')
-        
+
 
     def on_sort_due(self, action, params) -> None:
         """Callback when changing task sorting."""
-        
+
         self.get_pane().set_sorter('Due')
-        
+
 
     def on_sort_added(self, action, params) -> None:
         """Callback when changing task sorting."""
-        
+
         self.get_pane().set_sorter('Added')
-        
+
 
     def on_sort_title(self, action, params) -> None:
         """Callback when changing task sorting."""
-        
+
         self.get_pane().set_sorter('Title')
-        
+
 
     def on_sort_modified(self, action, params) -> None:
         """Callback when changing task sorting."""
-        
+
         self.get_pane().set_sorter('Modified')
-        
+
 
     def on_sort_added(self, action, params) -> None:
         """Callback when changing task sorting."""
-        
+
         self.get_pane().set_sorter('Added')
-        
+
 
     def on_sort_tags(self, action, params) -> None:
         """Callback when changing task sorting."""
-        
+
         self.get_pane().set_sorter('Tags')
-        
+
 
     def close_all_task_editors(self, task_id):
         """ Including editors of subtasks """
@@ -1328,12 +1328,12 @@ class MainWindow(Gtk.ApplicationWindow):
         #       so their subtasks "exist" when switching
         #       to actionable
         self.stack_switcher.get_stack().get_first_child().get_first_child().emit('expand-all')
-        
+
         self.get_pane().set_filter_tags(set(self.sidebar.selected_tags()))
         self.sidebar.change_pane(current_pane)
         self.get_pane().sort_btn.set_popover(None)
         self.get_pane().sort_btn.set_popover(self.sort_menu)
-        
+
         if search_query := self.search_entry.get_text():
             self.get_pane().set_search_query(search_query)
 
@@ -1385,24 +1385,24 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def get_pane(self):
         """Get the selected pane."""
-        
+
         return self.stack_switcher.get_stack().get_visible_child().get_first_child()
- 
-    
+
+
     @GObject.Property(type=bool, default=True)
     def is_pane_open(self) -> bool:
         return self.get_selected_pane() == 'active'
-    
+
 
     @GObject.Property(type=bool, default=False)
     def is_pane_actionable(self) -> bool:
         return self.get_selected_pane() == 'workview'
-    
-    
+
+
     @GObject.Property(type=bool, default=False)
     def is_pane_closed(self) -> bool:
         return self.get_selected_pane() == 'closed'
-        
+
 
     def get_selected_tree(self, refresh: bool = False):
         return self.req.get_tasks_tree(name=self.get_selected_pane(),

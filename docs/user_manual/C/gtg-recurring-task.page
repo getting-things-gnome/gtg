@@ -26,12 +26,12 @@
 
   <title>Using Recurring/Repeating Tasks</title>
 
-  <p>Repeating tasks are the tasks that must be done many times, in a fixed period (day, week, month, year). By making a task repeat, the due date will hold the date by which the task must be completed. If a start date is set, the first occurrence of that task will begin from that start date.</p> 
+  <p>Repeating tasks are the tasks that must be done many times, in a fixed period (day, week, month, year). By making a task repeat, the due date will hold the date by which the task must be completed. If a start date is set, the first occurrence of that task will begin from that start date.</p>
 
 <section id="set-recurring-tasks">
 <title>Setting a Task to Repeat</title>
 
-<p>You can set a task to repeat using one of the following methods:</p> 
+<p>You can set a task to repeat using one of the following methods:</p>
 
 <list>
   <item><p>The <gui>Quick Add Entry</gui> is the fastest way. Use the keyword <em style="strong">every</em> when creating the task. See the Valid Recurring Terms section below for the valid syntax.</p></item>
