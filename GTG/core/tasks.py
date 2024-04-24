@@ -699,6 +699,7 @@ class TaskStore(BaseStore):
 
         self.model = Gio.ListStore.new(Task)
         self.tree_model = Gtk.TreeListModel.new(self.model, False, False, self.model_expand)
+        self.tid_to_subtask_model = dict()
 
 
     def model_expand(self, item):
@@ -712,6 +713,7 @@ class TaskStore(BaseStore):
             for child in item.children:
                 model.append(child)
 
+        self.tid_to_subtask_model[item.id] = model
         return Gtk.TreeListModel.new(model, False, False, self.model_expand)
 
 
@@ -893,6 +895,37 @@ class TaskStore(BaseStore):
 
         return root
 
+
+    def _remove_from_parent_model(self,task_id: UUID) -> None:
+        """
+        Remove the task indicated by task_id from the model of its parent's subtasks.
+        This is required to trigger a GUI update.
+        """
+        item = self.lookup[task_id]
+        if item.parent is None:
+            return
+        if item.parent.id not in self.tid_to_subtask_model:
+            return
+        model = self.tid_to_subtask_model[item.parent.id]
+        pos = model.find(item)
+        if pos[0]: model.remove(pos[1])
+
+
+    def _append_to_parent_model(self,task_id: UUID) -> None:
+        """
+        Appends the task indicated by task_id to the model of its parent's subtasks.
+        This is required to trigger a GUI update.
+        """
+        item = self.lookup[task_id]
+        if item.parent is None:
+            return
+        if item.parent.id not in self.tid_to_subtask_model:
+            return
+        model = self.tid_to_subtask_model[item.parent.id]
+        pos = model.find(item)
+        if not pos[0]: model.append(item)
+
+
     def add(self, item: Any, parent_id: UUID = None) -> None:
         """Add a task to the taskstore."""
 
@@ -900,6 +933,9 @@ class TaskStore(BaseStore):
 
         if not parent_id:
             self.model.append(item)
+        else:
+            self._append_to_parent_model(item.id)
+            self.lookup[parent_id].notify('has_children')
 
         item.duplicate_cb = self.duplicate_for_recurrent
         self.notify('task_count_all')
@@ -913,8 +949,12 @@ class TaskStore(BaseStore):
 
         # Remove from UI
         item = self.lookup[item_id]
-        pos = self.model.find(item)
-        self.model.remove(pos[1])
+        if item.parent is not None:
+            self._remove_from_parent_model(item.id)
+            item.parent.notify('has_children')
+        else:
+            pos = self.model.find(item)
+            self.model.remove(pos[1])
 
         super().remove(item_id)
 
@@ -924,23 +964,38 @@ class TaskStore(BaseStore):
 
     def parent(self, item_id: UUID, parent_id: UUID) -> None:
 
-        super().parent(item_id, parent_id)
+        item = self.lookup[item_id]
 
         # Remove from UI
-        item = self.lookup[item_id]
-        pos = self.model.find(item)
-        self.model.remove(pos[1])
+        if item.parent is not None:
+            self._remove_from_parent_model(item_id)
+            item.parent.notify('has_children')
+        else:
+            pos = self.model.find(item)
+            self.model.remove(pos[1])
+
+        super().parent(item_id, parent_id)
+
+        # Add back to UI
+        self._append_to_parent_model(item_id)
+        item.parent.notify('has_children')
 
 
     def unparent(self, item_id: UUID, parent_id: UUID) -> None:
 
-        super().unparent(item_id, parent_id)
         item = self.lookup[item_id]
         parent = self.lookup[parent_id]
+
+        # Remove from UI
+        self._remove_from_parent_model(item_id)
+        item.parent.notify('has_children')
+
+        super().unparent(item_id, parent_id)
 
         # remove inline references to the former subtask
         parent.content = re.sub(r'\{\!\s*'+str(item_id)+r'\s*\!\}','',parent.content)
 
+        # Add back to UI
         self.model.append(item)
         parent.notify('has_children')
 
