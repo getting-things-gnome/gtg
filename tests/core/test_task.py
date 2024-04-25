@@ -35,7 +35,7 @@ class TestTask(TestCase):
         self.assertEqual(task.title, 'My Title')
 
 
-    def test_excerpt(self):
+    def test_excerpt_normal(self):
         task = Task(id=uuid4(), title='A Task')
 
         self.assertEqual(task.excerpt, '')
@@ -49,6 +49,38 @@ class TestTask(TestCase):
                     'extra text for padding. I cou…')
 
         self.assertEqual(task.excerpt, expected)
+
+
+    def test_excerpt_empty_task(self):
+        task = Task(id=uuid4(), title='A Task')
+
+        self.assertEqual(task.excerpt, '')
+
+        task.content = ''
+
+        self.assertEqual(task.excerpt, '')
+
+
+    def test_excerpt_only_tags(self):
+        task = Task(id=uuid4(), title='A Task')
+
+        self.assertEqual(task.excerpt, '')
+
+        task.content = '@sometag, @someother'
+
+        self.assertEqual(task.excerpt, '')
+
+
+    def test_excerpt_only_whitespace(self):
+        task = Task(id=uuid4(), title='A Task')
+
+        self.assertEqual(task.excerpt, '')
+
+        task.content = ('     '
+                        ''
+                        '   ')
+
+        self.assertEqual(task.excerpt, '')
 
 
     def test_toggle_active_single(self):
