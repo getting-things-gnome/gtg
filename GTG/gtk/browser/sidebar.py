@@ -74,6 +74,12 @@ class Sidebar(Gtk.ScrolledWindow):
         wrap_box.set_vexpand(True)
         wrap_box.set_hexpand(True)
 
+        # Create an invisible dummy button to catch focus in some edge cases
+        self.dummy = Gtk.Button()
+        self.dummy.set_size_request(0, 0)
+        self.dummy.add_css_class('dummy')
+        wrap_box.append(self.dummy)
+
         # -------------------------------------------------------------------------------
         # General Filters
         # -------------------------------------------------------------------------------
