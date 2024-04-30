@@ -10,6 +10,16 @@
     border-top: 1px solid rgb(213, 208, 204);
 }
 
+.dummy {
+  background: transparent;
+  border: none;
+  color: transparent;
+  font-size: 0.001px;
+  margin: -100px;
+  opacity: 0;
+  padding: 0;
+}
+
 /*
     We have to get move the padding into the boxes
     so the background color of the rows reaches all
