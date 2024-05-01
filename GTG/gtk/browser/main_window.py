@@ -571,11 +571,18 @@ class MainWindow(Gtk.ApplicationWindow):
         self.main_hpanes.set_position(sidebar_width)
         self.main_hpanes.connect('notify::position', self.on_sidebar_width)
 
-        sort_mode = self.config.get('sort_mode')
-        self.set_sorter(sort_mode.capitalize())
-
         pane_name = self.config.get('view')
         self.set_pane(pane_name)
+
+        match pane_name:
+            case 'actionable_view':
+                sort_mode = self.config.get('sort_mode_active')
+            case 'closed_view':
+                sort_mode = self.config.get('sort_mode_closed')
+            case _:
+                sort_mode = self.config.get('sort_mode_open')
+
+        self.set_sorter(sort_mode.capitalize())
 
         # Callbacks for sorting and restoring previous state
         # model = self.vtree_panes['active'].get_model()
@@ -1232,6 +1239,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 task.date_start = date
         self.get_pane().refresh()
 
+
     def on_modify_tags(self, action, params):
         """Open modify tags dialog for selected tasks."""
 
@@ -1243,42 +1251,54 @@ class MainWindow(Gtk.ApplicationWindow):
         """Callback when changing task sorting."""
 
         self.set_sorter('Start')
-        self.config.set('sort_mode', 'start')
+        self.store_sorting('start')
 
 
     def on_sort_due(self, action, params) -> None:
         """Callback when changing task sorting."""
-        
+
         self.set_sorter('Due')
-        self.config.set('sort_mode', 'due')
+        self.store_sorting('due')
 
 
     def on_sort_added(self, action, params) -> None:
         """Callback when changing task sorting."""
-        
+
         self.set_sorter('Added')
-        self.config.set('sort_mode', 'added')
+        self.store_sorting('added')
 
 
     def on_sort_title(self, action, params) -> None:
         """Callback when changing task sorting."""
-        
+
         self.set_sorter('Title')
-        self.config.set('sort_mode', 'title')
-        
+        self.store_sorting('title')
+
 
     def on_sort_modified(self, action, params) -> None:
         """Callback when changing task sorting."""
-        
+
         self.set_sorter('Modified')
-        self.config.set('sort_mode', 'modified')
+        self.store_sorting('modified')
 
 
     def on_sort_tags(self, action, params) -> None:
         """Callback when changing task sorting."""
 
         self.set_sorter('Tags')
-        self.config.set('sort_mode', 'tags')
+        self.store_sorting('tags')
+
+
+    def store_sorting(self, mode: str) -> None:
+        """Store sorting mode."""
+
+        match self.get_selected_pane():
+            case 'actionable':
+                self.config.set('sort_mode_active', mode)
+            case 'closed':
+                self.config.set('sort_mode_closed', mode)
+            case _:
+                self.config.set('sort_mode_open', mode)
 
 
     def set_sorter(self, value: str) -> None:
