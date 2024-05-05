@@ -80,7 +80,7 @@ class TaskPaneFilter(Gtk.Filter):
                 result.add(child)
 
                 if child.children:
-                    return get_children(child.children)
+                    get_children(child.children)
 
 
         result = set()
