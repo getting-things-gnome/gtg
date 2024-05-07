@@ -314,7 +314,7 @@ class TagStore(BaseStore):
 
         parent_map = {}
 
-        for tag in self.data:
+        for tag in self.lookup.values():
             for child in tag.children:
                 parent_map[child.id] = tag.id
 
