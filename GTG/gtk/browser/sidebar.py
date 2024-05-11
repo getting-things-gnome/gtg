@@ -146,7 +146,7 @@ class Sidebar(Gtk.ScrolledWindow):
         # -------------------------------------------------------------------------------
         # Tags Section
         # -------------------------------------------------------------------------------
-        self.tags_filter = TagEmptyFilter(ds, 'open')
+        self.tags_filter = TagEmptyFilter(ds, 'open_view')
         self.filtered_tags = Gtk.FilterListModel()
         self.filtered_tags.set_model(ds.tags.tree_model)
         self.filtered_tags.set_filter(self.tags_filter)

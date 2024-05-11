@@ -42,19 +42,20 @@ class TagEmptyFilter(Gtk.Filter):
         super(TagEmptyFilter, self).__init__()
         self.ds = ds
         self.pane = pane
+        self.show_zero = True
 
 
     def do_match(self, item) -> bool:
         tag = unwrap(item, Tag)
 
-        if self.pane == 'open':
-            return tag.task_count_open > 0
+        if self.pane == 'open_view':
+            return self.show_zero or tag.task_count_open > 0
 
-        elif self.pane == 'closed':
-            return tag.task_count_closed > 0
+        elif self.pane == 'closed_view':
+            return self.show_zero or tag.task_count_closed > 0
 
-        elif self.pane == 'workview':
-            return tag.task_count_actionable > 0 and tag.actionable
+        elif self.pane == 'actionable_view':
+            return (self.show_zero or tag.task_count_actionable > 0) and tag.actionable
 
         else:
             return True
