@@ -763,6 +763,11 @@ class TaskStore(BaseStore):
 
         self.add(task, parent)
 
+        # add the tags of the parent
+        if parent is not None:
+            for tag in self.lookup[parent].tags:
+                task.add_tag(tag)
+
         return task
 
 
