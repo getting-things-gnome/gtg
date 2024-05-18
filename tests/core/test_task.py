@@ -430,7 +430,7 @@ class TestTask(TestCase):
         task_store.from_xml(parsed_xml, None)
         self.assertEqual(task_store.count(), 4)
         self.assertEqual(task_store.count(root_only=True), 1)
-        self.assertEqual(len(task_store.get(str(TASK_ID_1)).children), 2)
+        self.assertEqual(len(task_store.get(TASK_ID_1).children), 2)
 
 
     def test_xml_load_bad(self):
@@ -478,7 +478,7 @@ class TestTask(TestCase):
         </tasklist>
         ''')
 
-        with self.assertRaises(KeyError):
+        with self.assertRaises(ValueError):
             task_store.from_xml(parsed_xml, None)
 
 

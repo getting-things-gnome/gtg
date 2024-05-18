@@ -753,7 +753,7 @@ class TaskStore(BaseStore):
         return new_task
 
 
-    def new(self, title: str = None, parent: UUID = None) -> Task:
+    def new(self, title: str = None, parent: Optional[UUID] = None) -> Task:
         """Create a new task and add it to the store."""
 
         tid = uuid4()
@@ -777,7 +777,7 @@ class TaskStore(BaseStore):
         elements = list(xml.iter(self.XML_TAG))
 
         for element in elements:
-            tid = element.get('id')
+            tid = UUID(element.get('id'))
             title = element.find('title').text
             status = element.get('status')
 
@@ -841,11 +841,11 @@ class TaskStore(BaseStore):
 
         # All tasks have been added, now we parent them
         for element in elements:
-            parent_tid = element.get('id')
+            parent_tid = UUID(element.get('id'))
             subtasks = element.find('subtasks')
 
             for sub in subtasks.findall('sub'):
-                self.parent(sub.text, parent_tid)
+                self.parent(UUID(sub.text), parent_tid)
 
 
     def to_xml(self) -> Element:
@@ -934,7 +934,7 @@ class TaskStore(BaseStore):
         if not pos[0]: model.append(item)
 
 
-    def add(self, item: Any, parent_id: UUID = None) -> None:
+    def add(self, item: Any, parent_id: Optional[UUID] = None) -> None:
         """Add a task to the taskstore."""
 
         super().add(item, parent_id)
