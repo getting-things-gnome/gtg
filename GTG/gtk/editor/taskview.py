@@ -21,7 +21,7 @@
 
 import re
 from time import time
-from uuid import uuid4
+from uuid import uuid4, UUID
 import logging
 
 from gi.repository import Gtk, GLib, Gdk, GObject, GtkSource
@@ -417,7 +417,7 @@ class TaskView(GtkSource.View):
         self.process()
 
 
-    def add_checkbox(self, tid: int, start: Gtk.TextIter) -> None:
+    def add_checkbox(self, tid: UUID, start: Gtk.TextIter) -> None:
         """Add a checkbox for a subtask."""
 
         task = self.ds.tasks.lookup[tid]
@@ -483,7 +483,7 @@ class TaskView(GtkSource.View):
             url_start.forward_chars(match.start())
             url_end.forward_chars(match.end())
 
-            tid = match.group(0).replace('gtg://', '')
+            tid = UUID(match.group(0).replace('gtg://', ''))
             task = self.ds.tasks.lookup[tid]
 
             if task:
@@ -769,7 +769,7 @@ class TaskView(GtkSource.View):
             # Find the subtasks and store their lines
             if line.lstrip().startswith('{!'):
                 # Get the Task ID
-                tid = line.replace('{! ', '').replace(' !}', '').strip()
+                tid = UUID(line.replace('{! ', '').replace(' !}', '').strip())
 
                 # Remember there's a line for the title at the top
                 real_index = index + 1

@@ -49,7 +49,7 @@ class BaseStore(GObject.Object):
         raise NotImplemented
 
 
-    def get(self, key: str) -> Any:
+    def get(self, key: UUID) -> Any:
         """Get an item by id."""
 
         return self.lookup[key]
