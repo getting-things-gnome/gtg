@@ -52,10 +52,11 @@ configure_file(
   configuration: wrapper_config,
 )
 
+dep_gtk4 = dependency('gtk4', version: '>= 4.10')
+
 # Check for some runtime dependencies so they are displayed with an "NO"
 # when building which could give the user an idea what could be missing.
 dep_glib = dependency('glib-2.0', required: false)
-dep_gtk = dependency('gtk+-3.0', required: false)
 dep_libsecret = dependency('libsecret-1', required: false)
 dep_gtksourceview = dependency('gtksourceview-4', required: false)
 
