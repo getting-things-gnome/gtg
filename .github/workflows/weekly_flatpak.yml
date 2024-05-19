@@ -8,7 +8,9 @@ name: Weekly Development Flatpak
 jobs:
   flatpak:
     name: "Flatpak"
-    runs-on: ubuntu-latest
+    # Need to specify 24.04 until it becomes stable and we can use "latest"
+    # again
+    runs-on: ubuntu-24.04
     container:
       image: bilelmoussaoui/flatpak-github-actions:gnome-nightly
       options: --privileged

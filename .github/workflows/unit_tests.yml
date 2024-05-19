@@ -9,13 +9,16 @@ on:
     branches: [ master ]
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.8
+
+    # The minimum supported Python version is actually 3.8, but it's not
+    # available on GitHub's ubuntu-24.04 images.
+    - name: Set up Python 3.9
       uses: actions/setup-python@v5
       with:
-        python-version: "3.8"
+        python-version: "3.9"
 
     # Note: we could try and cache the pre-commit environment
     # See the pre-commit docs at https://pre-commit.com/#github-actions-example
@@ -42,5 +45,5 @@ jobs:
 
     - name: Run unit tests with Pytest
       run: |
-        export PYTHONPATH=${PWD}/inst/lib/python3.8/site-packages
+        export PYTHONPATH=${PWD}/inst/lib/python3.9/site-packages
         pytest
