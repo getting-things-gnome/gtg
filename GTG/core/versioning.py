@@ -25,7 +25,6 @@ from uuid import uuid4
 from lxml import etree as et
 from GTG.core.dates import Date
 from GTG.core.dirs import DATA_DIR
-from uuid import uuid4, UUID
 
 from datetime import date
 from typing import Optional, Tuple

@@ -153,7 +153,7 @@ class Application(Gtk.Application):
             self.browser.restore_editor_windows()
 
             log.debug("Application activation finished")
-        except Exception as e:
+        except Exception:
             log.exception("Exception during activation")
             dialog = do_error_dialog(self._exception, "Activation", ignorable=False)
             dialog.set_application(self)  # Keep application alive to show it
@@ -185,7 +185,7 @@ class Application(Gtk.Application):
                     log.info("Unknown task to open: %s", file.get_uri())
 
             log.debug("Application opening finished")
-        except Exception as e:
+        except Exception:
             log.exception("Exception during opening")
             dialog = do_error_dialog(self._exception, "Opening", ignorable=False)
             dialog.set_application(self)  # Keep application alive to show it

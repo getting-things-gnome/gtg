@@ -16,7 +16,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from gi.repository import Gdk, Gtk
+from gi.repository import Gdk
 from functools import reduce
 import random
 

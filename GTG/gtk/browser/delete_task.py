@@ -20,7 +20,6 @@
 from gi.repository import Gtk
 
 from gettext import gettext as _, ngettext
-from GTG.gtk import ViewConfig
 
 
 class DeletionUI:

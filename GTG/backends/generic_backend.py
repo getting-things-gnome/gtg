@@ -418,7 +418,7 @@ class GenericBackend():
                 the_list = [the_list]
             return the_list
         else:
-            raise NotImplemented(f"I don't know what type is '{param_type}'")
+            raise NotImplementedError(f"I don't know what type is '{param_type}'")
 
     def cast_param_type_to_string(self, param_type, param_value):
         """

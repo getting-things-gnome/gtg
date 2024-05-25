@@ -28,7 +28,6 @@ like a color picker).
 from gi.repository import Gtk, Gio
 
 from gettext import gettext as _
-from GTG.gtk.colors import generate_tag_color, color_add, color_remove
 from GTG.gtk.browser import GnomeConfig
 
 

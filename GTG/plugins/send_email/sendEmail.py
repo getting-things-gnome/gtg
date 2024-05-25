@@ -20,7 +20,6 @@
 """
 
 from gi.repository import Gio
-from gi.repository import Gtk
 import urllib.request
 import urllib.parse
 import urllib.error

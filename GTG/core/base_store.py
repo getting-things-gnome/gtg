@@ -46,7 +46,7 @@ class BaseStore(GObject.Object):
     # --------------------------------------------------------------------------
 
     def new(self) -> Any:
-        raise NotImplemented
+        raise NotImplementedError
 
 
     def get(self, key: UUID) -> Any:
@@ -170,11 +170,11 @@ class BaseStore(GObject.Object):
     # --------------------------------------------------------------------------
 
     def from_xml(self, xml: Element) -> Any:
-        raise NotImplemented
+        raise NotImplementedError
 
 
     def to_xml(self) -> Element:
-        raise NotImplemented
+        raise NotImplementedError
 
 
     # --------------------------------------------------------------------------

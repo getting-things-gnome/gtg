@@ -20,12 +20,11 @@
 This module contains the TagEditor class which is a window that allows the
 user to edit a tag properties.
 """
-from gi.repository import GObject, Gtk, Gdk, GdkPixbuf, GLib
+from gi.repository import GObject, Gtk, Gdk, GLib
 
 import logging
-import random
 from gettext import gettext as _
-from GTG.gtk.colors import color_add, color_remove, RGBA, rgb_to_hex, random_color
+from GTG.gtk.colors import color_add, color_remove, rgb_to_hex
 from GTG.gtk.browser import GnomeConfig
 
 log = logging.getLogger(__name__)

@@ -165,7 +165,7 @@ class SectionConfig():
         if value is None and default_value is None:
             raise ValueError(
                 'No valid configuration value or default value was '
-                'found for %s in %s'.format(option, self._section_name))
+                f'found for {option} in {self._section_name}')
         elif value is None:
             return default_value
         else:

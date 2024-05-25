@@ -18,7 +18,7 @@
 
 import datetime
 
-from gi.repository import GObject, GLib, Gdk, Gtk
+from gi.repository import GObject, GLib, Gtk
 
 from GTG.gtk.editor import GnomeConfig
 from GTG.core.dates import Date

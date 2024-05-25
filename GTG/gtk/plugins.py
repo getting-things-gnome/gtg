@@ -20,7 +20,6 @@
 
 from gi.repository import Gtk, Pango
 
-from GTG.core import info
 from GTG.core.plugins import GnomeConfig
 from GTG.core.plugins.engine import PluginEngine
 from gettext import gettext as _

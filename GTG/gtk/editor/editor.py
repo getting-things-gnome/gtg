@@ -28,9 +28,9 @@ import os
 import time
 from gettext import gettext as _, ngettext
 
-from gi.repository import Gdk, Gtk, GLib, Pango
+from gi.repository import Gdk, Gtk, GLib
 from gi.repository.GObject import signal_handler_block
-from GTG.core.dates import Accuracy, Date
+from GTG.core.dates import Date
 from GTG.core.dirs import UI_DIR
 from GTG.core.plugins.api import PluginAPI
 from GTG.core.plugins.engine import PluginEngine
@@ -38,7 +38,6 @@ from GTG.gtk.editor import GnomeConfig
 from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.editor.recurring_menu import RecurringMenu
 from GTG.gtk.editor.taskview import TaskView
-from GTG.gtk.tag_completion import tag_filter
 from GTG.gtk.colors import rgb_to_hex
 from GTG.core.tasks import Task, Status, DEFAULT_TITLE
 
@@ -430,7 +429,7 @@ class TaskEditor(Gtk.Window):
         if size:
             try:
                 self.set_default_size(int(size[0]), int(size[1]))
-            except ValueError as e:
+            except ValueError:
                 log.warning('Invalid size configuration for task %s: %s',
                             self.task.id, size)
 

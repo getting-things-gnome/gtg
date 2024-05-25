@@ -22,7 +22,7 @@ It enables user to set the most general settings of GTG."""
 
 import os
 
-from gi.repository import Gtk, Gdk, GLib
+from gi.repository import Gtk, GLib
 
 from GTG.core.dirs import UI_DIR
 from gettext import gettext as _
