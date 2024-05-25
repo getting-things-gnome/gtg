@@ -15,8 +15,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from datetime import date
-import gi
 import os
 import platform
 import importlib

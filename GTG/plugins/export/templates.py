@@ -27,7 +27,7 @@ import threading
 from GTG.core.dirs import plugin_configuration_dir
 
 from Cheetah.Template import Template as CheetahTemplate
-from gi.repository import GObject, GLib
+from gi.repository import GLib
 
 TEMPLATE_PATHS = [
     os.path.join(plugin_configuration_dir('export'), "export_templates"),

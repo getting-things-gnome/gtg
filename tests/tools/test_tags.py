@@ -16,7 +16,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import unittest
 from unittest import TestCase
 
 from GTG.core.tags import extract_tags_from_text

@@ -32,7 +32,6 @@ from GTG.core import info
 from GTG.core.system_info import SystemInfo
 from GTG.backends.backend_signals import BackendSignals
 from GTG.core.dirs import ICONS_DIR
-from GTG.core.search import parse_search_query, InvalidQuery
 from gettext import gettext as _
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser import quick_add
@@ -45,7 +44,6 @@ from GTG.gtk.editor.calendar import GTGCalendar
 from GTG.gtk.tag_completion import TagCompletion
 from GTG.core.dates import Date
 from GTG.core.tasks import Filter, Status, Task
-from GTG.gtk.browser.adaptive_button import AdaptiveFittingWidget # Register type
 
 log = logging.getLogger(__name__)
 PANE_STACK_NAMES_MAP = {

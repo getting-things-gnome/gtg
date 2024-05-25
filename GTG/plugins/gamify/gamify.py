@@ -4,7 +4,6 @@ from datetime import date
 from collections import defaultdict
 import logging
 
-from gi.repository import Gio
 from gi.repository import Gtk
 
 from gettext import gettext as _

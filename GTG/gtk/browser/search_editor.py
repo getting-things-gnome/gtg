@@ -20,10 +20,9 @@
 This module contains the SearchEditor class which is a window that allows the
 user to edit a saved search properties.
 """
-from gi.repository import GObject, Gtk, Gdk, GdkPixbuf, GLib
+from gi.repository import GObject, Gtk, GLib
 
 import logging
-import random
 from gettext import gettext as _
 from GTG.gtk.browser import GnomeConfig
 

@@ -18,7 +18,7 @@
 
 """Filters for tags and tasks"""
 
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk
 from GTG.core.tags import Tag
 from GTG.core.tasks import Task, Status
 from GTG.core import search

@@ -17,10 +17,9 @@
 # -----------------------------------------------------------------------------
 
 from unittest import TestCase
-from uuid import uuid4
 
 from GTG.core.tags import Tag, TagStore
-from lxml.etree import Element, SubElement, XML
+from lxml.etree import XML
 
 
 class TestTagStore(TestCase):

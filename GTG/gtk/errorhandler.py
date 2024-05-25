@@ -1,15 +1,12 @@
 
-from gi.repository import GObject, GLib, Gtk
+from gi.repository import GObject, Gtk
 from gettext import gettext as _
-from typing import Optional
 import traceback
 import sys
 import os
-import platform
 import functools
 import enum
 import logging
-import configparser
 
 from GTG.core import info
 from GTG.core.system_info import SystemInfo
