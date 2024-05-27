@@ -547,6 +547,21 @@ class MainWindow(Gtk.ApplicationWindow):
             except IndexError:
                 print(f"Invalid liblarch path {path}")
 
+
+    def restore_tag_selection(self) -> None:
+        """Restore tag selection from config."""
+
+        # NOTE: This needs to run after MainWindow has been initialized
+        # otherwise tag filtering will throw an error
+
+        selected_tag = self.config.get('selected_tag')
+
+        if not selected_tag:
+            return
+
+        self.sidebar.select_tag(selected_tag)
+
+
     def restore_state_from_conf(self):
         # NOTE: for the window state to be restored, this must
         # be called **before** the window is realized. The size
@@ -581,6 +596,7 @@ class MainWindow(Gtk.ApplicationWindow):
                 sort_mode = self.config.get('sort_mode_open')
 
         self.set_sorter(sort_mode.capitalize())
+
 
         # Callbacks for sorting and restoring previous state
         # model = self.vtree_panes['active'].get_model()
