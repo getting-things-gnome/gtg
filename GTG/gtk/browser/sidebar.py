@@ -480,6 +480,13 @@ class Sidebar(Gtk.ScrolledWindow):
         self.app.browser.get_pane().emit('expand-all')
         self.app.browser.get_pane().set_filter_tags(set(self.selected_tags()))
 
+        tags = self.selected_tags(names_only=True)
+
+        if tags:
+            self.browser.config.set("selected_tag", tags[0])
+        else:
+            self.browser.config.set("selected_tag", '')
+
 
     def on_tag_reveal(self, event) -> None:
         """Callback for clicking on the tags title button (revealer)."""
