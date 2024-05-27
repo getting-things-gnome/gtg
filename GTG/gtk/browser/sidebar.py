@@ -445,6 +445,16 @@ class Sidebar(Gtk.ScrolledWindow):
         self.app.browser.get_pane().set_search_query(item.query)
 
 
+    def select_tag(self, name: str, unselect_rest: bool = True) -> None:
+        """Select a tag by name."""
+
+        for i in range(self.tag_selection.get_n_items()):
+            item = unwrap(self.tag_selection.get_item(i), Tag)
+
+            if item.name == name:
+                self.tag_selection.select_item(i, unselect_rest)
+
+
     def selected_tags(self, names_only: bool = False) -> list:
         """Get a list of selected tags"""
 
