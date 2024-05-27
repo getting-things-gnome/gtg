@@ -237,6 +237,7 @@ class Application(Gtk.Application):
         # Browser (still hidden)
         if not self.browser:
             self.browser = MainWindow(self)
+            self.browser.restore_tag_selection()
 
             if self.props.application_id == 'org.gnome.GTG.Devel':
                 self.browser.add_css_class('devel')
