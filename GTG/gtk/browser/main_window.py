@@ -210,6 +210,7 @@ class MainWindow(Gtk.ApplicationWindow):
             ('change_tags', self.on_modify_tags, ('win.change_tags', ['<ctrl>T'])),
             ('focus_sidebar', self.focus_sidebar, ('win.focus_sidebar', ['<ctrl>B'])),
             ('search', self.toggle_search, ('win.search', ['<ctrl>F'])),
+            ('close_search', self.dismiss_search, ('win.close_search', ['Escape'])),
             ('focus_quickentry', self.focus_quickentry, ('win.focus_quickentry', ['<ctrl>L'])),
             ('delete_task', self.on_delete_tasks, ('win.delete_task', ['<ctrl>Delete'])),
             ('help_overlay', None, ('win.show-help-overlay', ['<ctrl>question'])),
@@ -483,14 +484,19 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_search_toggled(self, widget=None):
         if self.searchbar.get_search_mode():
-            self.search_button.set_active(False)
-            self.searchbar.set_search_mode(False)
-            self.search_entry.set_text('')
+            self.dismiss_search(None, None)
         else:
             self.search_button.set_active(True)
             self.searchbar.set_search_mode(True)
             self.search_entry.grab_focus()
 
+
+    def dismiss_search(self, action, param):
+        """Callback to dismiss the search bar."""
+
+        self.search_button.set_active(False)
+        self.searchbar.set_search_mode(False)
+        self.search_entry.set_text('')
 
 
     def do_search(self):
