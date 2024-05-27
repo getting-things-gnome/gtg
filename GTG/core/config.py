@@ -53,6 +53,7 @@ DEFAULTS = {
         'sort_mode_open': 'title',
         'sort_mode_active': 'title',
         'sort_mode_closed': 'title',
+        'selected_tag': '',
     },
     'tag_editor': {
         "custom_colors": [],
