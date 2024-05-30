@@ -19,25 +19,32 @@
 """Base for all store classes."""
 
 
-from gi.repository import GObject
+from gi.repository import GObject # type: ignore[import-untyped]
 
 from uuid import UUID
 import logging
 
-from lxml.etree import Element
-from typing import Any, Dict, List, Optional
+from lxml.etree import _Element
+from typing import Any, Dict, List, Optional, TypeVar, Generic, Protocol, TypeAlias
 
 
 log = logging.getLogger(__name__)
 
+S = TypeVar('S',bound='Storeable')
 
-class BaseStore(GObject.Object):
+class Storeable(Protocol[S]):
+    id: UUID
+    parent: Optional[S]
+    children: List[S]
+
+
+class BaseStore(GObject.Object,Generic[S]):
     """Base class for data stores."""
 
 
     def __init__(self) -> None:
-        self.lookup: Dict[UUID, Any] = {}
-        self.data: List[Any] = []
+        self.lookup: Dict[UUID, S] = {}
+        self.data: List[S] = []
 
         super().__init__()
 
@@ -45,17 +52,17 @@ class BaseStore(GObject.Object):
     # BASIC MANIPULATION
     # --------------------------------------------------------------------------
 
-    def new(self) -> Any:
+    def new(self) -> S:
         raise NotImplementedError
 
 
-    def get(self, key: UUID) -> Any:
+    def get(self, key: UUID) -> S:
         """Get an item by id."""
 
         return self.lookup[key]
 
 
-    def add(self, item: Any, parent_id: Optional[UUID] = None) -> None:
+    def add(self, item: S, parent_id: Optional[UUID] = None) -> None:
         """Add an existing item to the store."""
 
         if item.id in self.lookup.keys():
@@ -169,11 +176,11 @@ class BaseStore(GObject.Object):
     # SERIALIZING
     # --------------------------------------------------------------------------
 
-    def from_xml(self, xml: Element) -> Any:
+    def from_xml(self, xml: _Element) -> None:
         raise NotImplementedError
 
 
-    def to_xml(self) -> Element:
+    def to_xml(self) -> _Element:
         raise NotImplementedError
 
 

@@ -183,7 +183,7 @@ class Tag(GObject.Object):
         return id(self)
 
 
-class TagStore(BaseStore):
+class TagStore(BaseStore[Tag]):
     """A tree of tags."""
 
     __gtype_name__ = 'gtg_TagStore'

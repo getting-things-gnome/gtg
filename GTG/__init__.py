@@ -16,7 +16,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gi
+import gi # type: ignore[import-untyped]
 
 
 def gi_version_requires():
