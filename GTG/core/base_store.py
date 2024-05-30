@@ -25,7 +25,7 @@ from uuid import UUID
 import logging
 
 from lxml.etree import _Element
-from typing import Any, Dict, List, Optional, TypeVar, Generic, Protocol, TypeAlias
+from typing import Any, Dict, List, Optional, TypeVar, Generic, Protocol
 
 
 log = logging.getLogger(__name__)
