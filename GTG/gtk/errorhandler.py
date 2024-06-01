@@ -7,6 +7,7 @@ import os
 import functools
 import enum
 import logging
+import queue
 
 from GTG.core import info
 from GTG.core.system_info import SystemInfo
@@ -144,17 +145,53 @@ def handle_response(dialog: ExceptionHandlerDialog, response: int):
         log.info("Unhandled response: %r, interpreting as continue instead", response)
     dialog.close()
 
+    # Discard dialog from the queue, now that it has been closed
+    exception_dialog_queue.get()
 
-def do_error_dialog(exception, context: str = None, ignorable: bool = True, main_msg=None):
+    # Another exception happened while the dialog was opened
+    # Open the dialog for that new exception
+    if not exception_dialog_queue.empty():
+        next_dialog = exception_dialog_queue.get()
+        next_dialog.show()
+
+
+# Queue of ExceptionHandlerDialogs to be shown
+# Since GTG keeps running while the dialog is shown, it's possible that
+# another exception will be thrown. Its dialog needs to be opened when the first
+# one closes.
+# Capping the size of the queue, to avoid trying to queue an infinite number of
+# dialogs. This has happened in #1093.
+exception_dialog_queue = queue.Queue(maxsize=5)
+
+
+def do_error_dialog(exception, context: str = None, ignorable: bool = True, main_msg=None) -> None:
+    """Show (and return) the error dialog.
+
+    It does NOT block execution, but should lock the UI (by being a modal dialog).
+
+    Only show one exception dialog at a time, to avoid creating an infinity of
+    them in a loop (see #1093)
+    If an exception happens while the dialog is active for a previous
+    exception, add the new one to the exception queue. Its dialog will open when
+    the previous one gets closed.
     """
-    Show (and return) the error dialog.
-    It does NOT block execution, but should lock the UI
-    (by being a modal dialog).
-    """
+    # If the queue is empty, we just show the dialog
+    # It it's not, it means that a dialog is already being shown. In that case,
+    # the response handler of the current dialog will show the next one.
+    need_to_show_dialog = exception_dialog_queue.empty()
+
     dialog = ExceptionHandlerDialog(exception, main_msg, ignorable, context)
     dialog.connect('response', handle_response)
-    dialog.show()
-    return dialog
+
+    try:
+        exception_dialog_queue.put_nowait(dialog)
+    except queue.Full:
+        log.warning("Caught %s (%s) but not showing dialog for it because too"
+                    " many exceptions are happening.",
+                    type(exception).__name__, exception)
+
+    if need_to_show_dialog:
+        dialog.show()
 
 
 def errorhandler(func, context: str = None, ignorable: bool = True, reraise: bool = True):

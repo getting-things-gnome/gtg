@@ -35,7 +35,7 @@ class TaskBox(Gtk.Box):
 
     def __init__(self, config, is_actionable=False):
         self.config = config
-        super(TaskBox, self).__init__()
+        super().__init__()
 
         self.expander = Gtk.TreeExpander()
         self.expander.set_margin_end(6)

@@ -17,6 +17,7 @@
 # -----------------------------------------------------------------------------
 
 """ The main window for GTG, listing tags, and open and closed tasks """
+from __future__ import annotations
 
 import datetime
 import logging
@@ -113,19 +114,14 @@ class MainWindow(Gtk.ApplicationWindow):
         self.sidebar = Sidebar(app, app.ds, self)
         self.sidebar_vbox.append(self.sidebar)
 
-        self.panes = {
-            'active': None,
-            'workview': None,
-            'closed': None,
+        self.panes: dict[str, TaskPane] = {
+            'active': TaskPane(self, 'active'),
+            'workview': TaskPane(self, 'workview'),
+            'closed': TaskPane(self, 'closed')
         }
 
-        self.panes['active'] = TaskPane(self, 'active')
         self.open_pane.append(self.panes['active'])
-
-        self.panes['workview'] = TaskPane(self, 'workview')
         self.actionable_pane.append(self.panes['workview'])
-
-        self.panes['closed'] = TaskPane(self, 'closed')
         self.closed_pane.append(self.panes['closed'])
 
         self._init_context_menus()
