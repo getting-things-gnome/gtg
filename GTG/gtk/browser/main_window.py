@@ -638,8 +638,13 @@ class MainWindow(Gtk.ApplicationWindow):
                 log.warning("Could not restore task with id %s", tid)
 
 
-    def refresh_all_views(self, timer):
-        self.get_pane().refresh()
+    def refresh_all_views(self, timer = None) -> None:
+        """Refresh all taskpanes."""
+
+        for page in self.stack_switcher.get_stack().get_pages():
+            pane = page.get_child().get_first_child()
+            pane.refresh()
+
 
     def find_value_in_treestore(self, store, treeiter, value):
         """Search for value in tree store recursively."""
