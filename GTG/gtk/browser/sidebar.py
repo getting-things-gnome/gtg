@@ -411,6 +411,7 @@ class Sidebar(Gtk.ScrolledWindow):
         with signal_block(self.searches_selection, self.search_handle):
             search_id = self.searches_selection.get_selected()
             self.searches_selection.unselect_item(search_id)
+            self.app.browser.get_pane().set_search_query('')
 
 
     def unselect_general_box(self) -> None:
