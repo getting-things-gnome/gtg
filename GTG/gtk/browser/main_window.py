@@ -167,7 +167,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # This needs to be called again after setting everything up,
         # so the buttons start disabled
-        self.on_cursor_changed()
+        self.on_selection_changed()
 
 # INIT HELPER FUNCTIONS #######################################################
     def _init_context_menus(self):
@@ -399,6 +399,10 @@ class MainWindow(Gtk.ApplicationWindow):
         # Store window position
         self.connect('notify::default-width', self.on_window_resize)
         self.connect('notify::default-height', self.on_window_resize)
+
+        for p in PANE_STACK_NAMES_MAP.keys():
+            pane = self.stack_switcher.get_stack().get_child_by_name(p).get_first_child()
+            pane.task_selection.connect('selection-changed', self.on_selection_changed)
 
         # # Active tasks TreeView
         # tsk_treeview_btn_press = self.on_task_treeview_click_begin
@@ -693,16 +697,19 @@ class MainWindow(Gtk.ApplicationWindow):
         self.about.hide()
         return True
 
-    def on_cursor_changed(self, widget=None):
-        """Callback when the treeview's cursor changes."""
 
-        ...
-        # if self.has_any_selection():
-        #     self.defer_btn.set_sensitive(True)
-        #     self.defer_menu_btn.set_sensitive(True)
-        # else:
-        #     self.defer_btn.set_sensitive(False)
-        #     self.defer_menu_btn.set_sensitive(False)
+    def on_selection_changed(self, position=None, n_items=None, user_data=None) -> None:
+        """Callback when selection changes."""
+
+        pane = self.get_pane()
+
+        if pane.get_selected_number():
+            self.defer_btn.set_sensitive(True)
+            self.defer_menu_btn.set_sensitive(True)
+        else:
+            self.defer_btn.set_sensitive(False)
+            self.defer_menu_btn.set_sensitive(False)
+
 
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
