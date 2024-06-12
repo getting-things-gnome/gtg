@@ -217,6 +217,11 @@ class Sidebar(Gtk.ScrolledWindow):
         self.tags_filter.changed(Gtk.FilterChange.DIFFERENT)
 
 
+    @GObject.Signal
+    def selection_changed(self) -> None:
+        """Selection of tags or searches has changed."""
+
+
     def on_tag_RMB_click(self, gesture, sequence) -> None:
         """Callback when right-clicking on a tag."""
 
@@ -433,6 +438,8 @@ class Sidebar(Gtk.ScrolledWindow):
         elif index == 1:
             self.app.browser.get_pane().set_filter_notags()
 
+        self.emit('selection_changed')
+
 
     def on_search_selected(self, model, position, user_data=None):
         """Callback when selecting a saved search"""
@@ -443,6 +450,7 @@ class Sidebar(Gtk.ScrolledWindow):
         item = model.get_item(position)
         self.app.browser.get_pane().emit('expand-all')
         self.app.browser.get_pane().set_search_query(item.query)
+        self.emit('selection_changed')
 
 
     def select_tag(self, name: str, unselect_rest: bool = True) -> None:
@@ -453,7 +461,6 @@ class Sidebar(Gtk.ScrolledWindow):
 
             if item.name == name:
                 self.tag_selection.select_item(i, unselect_rest)
-
 
     def selected_tags(self, names_only: bool = False) -> list:
         """Get a list of selected tags"""
@@ -486,6 +493,8 @@ class Sidebar(Gtk.ScrolledWindow):
             self.browser.config.set("selected_tag", tags[0])
         else:
             self.browser.config.set("selected_tag", '')
+
+        self.emit('selection_changed')
 
 
     def on_tag_reveal(self, event) -> None:
