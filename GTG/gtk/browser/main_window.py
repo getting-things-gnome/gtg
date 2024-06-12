@@ -406,6 +406,8 @@ class MainWindow(Gtk.ApplicationWindow):
             pane = self.stack_switcher.get_stack().get_child_by_name(p).get_first_child()
             pane.task_selection.connect('selection-changed', self.on_selection_changed)
 
+        self.sidebar.connect('selection_changed', self.on_sidebar_select_changed)
+
         # # Active tasks TreeView
         # tsk_treeview_btn_press = self.on_task_treeview_click_begin
         # active_pane_gesture_single = Gtk.GestureSingle(
@@ -708,6 +710,17 @@ class MainWindow(Gtk.ApplicationWindow):
         """
         self.about.hide()
         return True
+
+
+    def on_sidebar_select_changed(self, widget=None) -> None:
+        """Callback when the sidebar selection changes. """
+
+        for p in PANE_STACK_NAMES_MAP.keys():
+            pane = self.stack_switcher.get_stack().get_child_by_name(p).get_first_child()
+            pane.task_selection.unselect_all()
+
+        # This isn't called automatically for some reason
+        self.on_selection_changed()
 
 
     def on_selection_changed(self, position=None, n_items=None, user_data=None) -> None:
