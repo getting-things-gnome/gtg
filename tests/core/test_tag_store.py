@@ -57,7 +57,7 @@ class TestTagStore(TestCase):
         <taglist>
             <tag id="e2503866-3ebb-4ede-9e72-ff0afa1c2e74" name="to_pay"/>
             <tag id="df4db599-63f8-4fc8-9f3d-5454dcadfd78" name="money" icon="😗️"/>
-            <tag id="ef4db599-73f8-4fc8-9f3d-5454dcadfd78" name="errands" color="767BDC" parent="money"/>
+            <tag id="ef4db599-73f8-4fc8-9f3d-5454dcadfd78" name="errands" color="767BDC" parent="df4db599-63f8-4fc8-9f3d-5454dcadfd78"/>
         </taglist>
             ''')
 

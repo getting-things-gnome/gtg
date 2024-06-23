@@ -19,15 +19,15 @@
 """Everything related to tags."""
 
 
-from gi.repository import GObject, Gtk, Gio, Gdk
+from gi.repository import GObject, Gtk, Gio, Gdk # type: ignore[import-untyped]
 
 from uuid import uuid4, UUID
 import logging
 import random
 import re
 
-from lxml.etree import Element, SubElement
-from typing import Any, Dict, List, Set
+from lxml.etree import Element, SubElement, _Element
+from typing import Any, Dict, List, Set, Optional
 
 from GTG.core.base_store import BaseStore
 
@@ -49,10 +49,10 @@ class Tag(GObject.Object):
         self.id = id
         self._name = name
 
-        self._icon = None
-        self._color = None
+        self._icon: Optional[str] = None
+        self._color: Optional[str] = None
         self.actionable = True
-        self.children = []
+        self.children: List[Tag] = []
         self.parent = None
 
         self._task_count_open = 0
@@ -81,7 +81,7 @@ class Tag(GObject.Object):
 
 
     @GObject.Property(type=int)
-    def children_count(self) -> str:
+    def children_count(self) -> int:
         """Read only property."""
 
         return len(self.children)
@@ -100,7 +100,7 @@ class Tag(GObject.Object):
 
 
     @GObject.Property(type=str)
-    def icon(self) -> str:
+    def icon(self) -> Optional[str]:
         """Read only property."""
 
         return self._icon
@@ -113,7 +113,7 @@ class Tag(GObject.Object):
 
 
     @GObject.Property(type=str)
-    def color(self) -> str:
+    def color(self) -> Optional[str]:
         """Read only property."""
 
         return self._color
@@ -128,13 +128,13 @@ class Tag(GObject.Object):
     @GObject.Property(type=bool, default=False)
     def has_color(self) -> bool:
 
-        return self._color and not self._icon
+        return (self._color is not None) and (self._icon is None)
 
 
     @GObject.Property(type=bool, default=False)
     def has_icon(self) -> bool:
 
-        return self._icon
+        return self._icon is not None
 
 
     @GObject.Property(type=int, default=0)
@@ -172,7 +172,7 @@ class Tag(GObject.Object):
 
     def get_ancestors(self) -> List['Tag']:
         """Return all ancestors of this tag"""
-        ancestors = []
+        ancestors: List[Tag] = []
         here = self
         while here.parent:
             here = here.parent
@@ -194,7 +194,7 @@ class TagStore(BaseStore[Tag]):
 
 
     def __init__(self) -> None:
-        self.used_colors: Set[Color] = set()
+        self.used_colors: Set[str] = set()
         self.lookup_names: Dict[str, Tag] = {}
 
         super().__init__()
@@ -234,7 +234,7 @@ class TagStore(BaseStore[Tag]):
         return self.lookup_names[name]
 
 
-    def new(self, name: str, parent: UUID = None) -> Tag:
+    def new(self, name: str, parent: Optional[UUID] = None) -> Tag:
         """Create a new tag and add it to the store."""
 
         name = name if not name.startswith('@') else name[1:]
@@ -254,7 +254,7 @@ class TagStore(BaseStore[Tag]):
             return tag
 
 
-    def from_xml(self, xml: Element) -> None:
+    def from_xml(self, xml: _Element) -> None:
         """Load searches from an LXML element."""
 
         elements = list(xml.iter(self.XML_TAG))
@@ -279,7 +279,7 @@ class TagStore(BaseStore[Tag]):
                 green = int(rgb.green * 255)
                 color = '#{:02x}{:02x}{:02x}'.format(red, green, blue)
 
-            tag = Tag(id=tid, name=name)
+            tag = Tag(id=UUID(tid), name=str(name))
             tag.color = color
             tag.icon = icon
             tag.actionable = (nonactionable == 'False')
@@ -290,24 +290,25 @@ class TagStore(BaseStore[Tag]):
 
 
         for element in elements:
-            parent_name = element.get('parent')
+            child_id: UUID = UUID(element.get('id'))
+            hex_parent_id: Optional[str] = element.get('parent')
+            if hex_parent_id is None:
+                continue
 
-            if parent_name:
-                tid = element.get('id')
+            try:
+                parent_id: UUID = UUID(hex_parent_id)
+            except ValueError:
+                log.debug('Malformed parent UUID: %s', tag, hex_parent_id)
+                continue
 
-                try:
-                    parent_id = self.find(parent_name).id
-                except KeyError:
-                    parent_id = parent_name
-
-                try:
-                    self.parent(tid, parent_id)
-                    log.debug('Added %s as child of %s', tag, parent_name)
-                except KeyError:
-                    pass
+            try:
+                self.parent(child_id, parent_id)
+                log.debug('Added %s as child of %s', tag, hex_parent_id)
+            except KeyError:
+                log.debug('Failed to add %s as child of %s', tag, hex_parent_id)
 
 
-    def to_xml(self) -> Element:
+    def to_xml(self) -> _Element:
         """Save searches to an LXML element."""
 
         root = Element('taglist')
@@ -359,7 +360,7 @@ class TagStore(BaseStore[Tag]):
         return color
 
 
-    def add(self, item: Any, parent_id: UUID = None) -> None:
+    def add(self, item: Tag, parent_id: Optional[UUID] = None) -> None:
         """Add a tag to the tagstore."""
 
         super().add(item, parent_id)

@@ -824,7 +824,7 @@ class TaskStore(BaseStore):
             if taglist is not None:
                 for t in taglist.iter('tag'):
                     try:
-                        tag = tag_store.get(t.text)
+                        tag = tag_store.get(UUID(t.text))
                         task.add_tag(tag)
                     except KeyError:
                         pass
