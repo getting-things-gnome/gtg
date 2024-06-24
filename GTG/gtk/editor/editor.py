@@ -285,7 +285,7 @@ class TaskEditor(Gtk.Window):
     def show_popover_closed(self, _=None):
         """Open the closed date calendar popup."""
 
-        closed_date = self.task.date_closed
+        closed_date = self.task.date_closed.date()
 
         with signal_handler_block(self.closed_calendar, self.closed_handle):
             gtime = GLib.DateTime.new_local(closed_date.year, closed_date.month, closed_date.day, 0, 0, 0)
