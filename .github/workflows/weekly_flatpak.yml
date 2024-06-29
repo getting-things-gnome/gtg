@@ -12,11 +12,11 @@ jobs:
     # again
     runs-on: ubuntu-24.04
     container:
-      image: bilelmoussaoui/flatpak-github-actions:gnome-nightly
+      image: bilelmoussaoui/flatpak-github-actions:gnome-46
       options: --privileged
     steps:
-    - uses: actions/checkout@v2
-    - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v4
+    - uses: actions/checkout@v4
+    - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
       with:
         bundle: org.gnome.GTG.Devel.flatpak
         manifest-path: build-aux/org.gnome.GTG.Devel.json
