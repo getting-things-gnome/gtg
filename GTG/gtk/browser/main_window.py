@@ -22,6 +22,7 @@ import datetime
 import logging
 import ast
 import re
+from uuid import UUID
 from typing import Optional
 
 from gi.repository import GObject, Gtk, Gdk, Gio, GLib
@@ -638,7 +639,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         for tid in self.config.get("opened_tasks"):
             try:
-                task = self.app.ds.tasks.lookup[tid]
+                task = self.app.ds.tasks.lookup[UUID(tid)]
                 self.app.open_task(task)
             except KeyError:
                 log.warning("Could not restore task with id %s", tid)
