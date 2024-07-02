@@ -24,7 +24,7 @@ from gettext import gettext as _
 
 from uuid import uuid4, UUID
 import logging
-from typing import Callable, Any, List, Optional, Set, Dict, Tuple
+from typing import Callable, Any, List, Optional, Set, Dict, Tuple, Union
 from enum import Enum
 import re
 import datetime
@@ -1027,7 +1027,7 @@ class TaskStore(BaseStore):
         parent.notify('has_children')
 
 
-    def filter(self, filter_type: Filter, arg: Tag | List[Tag] | None = None) -> List[Task]:
+    def filter(self, filter_type: Filter, arg: Union[Tag,List[Tag],None] = None) -> List[Task]:
         """Filter tasks according to a filter type."""
 
         def filter_tag(tag: Tag) -> List[Task]:
