@@ -19,18 +19,18 @@
 """Everything related to tasks."""
 
 
-from gi.repository import GObject, Gio, Gtk, Gdk
+from gi.repository import GObject, Gio, Gtk, Gdk # type: ignore[import-untyped]
 from gettext import gettext as _
 
 from uuid import uuid4, UUID
 import logging
-from typing import Callable, Any, List, Optional, Union
+from typing import Callable, Any, List, Optional, Set, Dict, Tuple
 from enum import Enum
 import re
 import datetime
 from operator import attrgetter
 
-from lxml.etree import Element, SubElement, CDATA
+from lxml.etree import Element, _Element, SubElement, CDATA
 
 from GTG.core.base_store import BaseStore
 from GTG.core.tags import Tag, TagStore
@@ -87,10 +87,10 @@ class Task(GObject.Object):
         self.id = id
         self.raw_title = title.strip('\t\n')
         self.content =  ''
-        self.tags = set()
-        self.children = []
+        self.tags: Set[Tag] = set()
+        self.children: List[Task] = []
         self.status = Status.ACTIVE
-        self.parent = None
+        self.parent: Optional[Task] = None
 
         self._date_added = Date.no_date()
         self._date_due = Date.no_date()
@@ -106,12 +106,14 @@ class Task(GObject.Object):
         self._is_active = True
 
         self._is_recurring = False
-        self.recurring_term = None
+        self.recurring_term: Optional[str] = None
         self.recurring_updated_date = datetime.datetime.now()
 
-        self.attributes = {}
+        self.attributes: Dict[Tuple[str,str],str] = {}
 
-        self.duplicate_cb = NotImplemented
+        def default_duplicate_cb(t: Task):
+            raise NotImplementedError
+        self.duplicate_cb: Callable[[Task],Task] = default_duplicate_cb
 
         super(Task, self).__init__()
 
@@ -305,7 +307,7 @@ class Task(GObject.Object):
 
 
     @title.setter
-    def title(self, value) -> None:
+    def set_title(self, value) -> None:
         self.raw_title = value.strip('\t\n') or _('(no title)')
 
 
@@ -387,7 +389,7 @@ class Task(GObject.Object):
         self._date_modified = Date(datetime.datetime.now())
 
 
-    def set_recurring(self, recurring: bool, recurring_term: str = None, newtask=False):
+    def set_recurring(self, recurring: bool, recurring_term: Optional[str] = None, newtask=False):
         """Sets a task as recurring or not, and its recurring term.
 
         Like anything related to dates, repeating tasks are subtle and complex
@@ -625,13 +627,14 @@ class Task(GObject.Object):
 
 
     @GObject.Property(type=str)
-    def row_css(self) -> str:
+    def row_css(self) -> Optional[str]:
         for tag in self.tags:
             if tag.color:
                 color = Gdk.RGBA()
                 color.parse(tag.color)
                 color.alpha = 0.1
                 return '* { background:' + color.to_string() + '; }'
+        return None
 
 
     @GObject.Property(type=str)
@@ -641,7 +644,7 @@ class Task(GObject.Object):
 
 
     @GObject.Property(type=bool, default=False)
-    def show_tag_colors(self) -> str:
+    def show_tag_colors(self) -> bool:
         return any(t.color and not t.icon for t in self.tags)
 
 
@@ -657,7 +660,7 @@ class Task(GObject.Object):
         self.attributes[(namespace, att_name)] = val
 
 
-    def get_attribute(self, att_name, namespace="") -> Union[str, None]:
+    def get_attribute(self, att_name, namespace="") -> Optional[str]:
         """Get an attribute."""
 
         return self.attributes.get((namespace, att_name), None)
@@ -706,7 +709,7 @@ class TaskStore(BaseStore):
 
         self.model = Gio.ListStore.new(Task)
         self.tree_model = Gtk.TreeListModel.new(self.model, False, False, self.model_expand)
-        self.tid_to_subtask_model = dict()
+        self.tid_to_subtask_model: Dict[UUID,Gio.ListStore] = dict()
 
 
     def model_expand(self, item):
@@ -775,24 +778,34 @@ class TaskStore(BaseStore):
         return task
 
 
-    def from_xml(self, xml: Element, tag_store: TagStore) -> None:
+    def from_xml(self, xml: _Element, tag_store: TagStore) -> None:
         """Load up tasks from a lxml object."""
 
         elements = list(xml.iter(self.XML_TAG))
 
         for element in elements:
             tid = UUID(element.get('id'))
-            title = element.find('title').text
+            title_element = element.find('title')
+            assert title_element is not None, 'Title element not found for task '+str(tid)
+            assert title_element.text is not None, 'Title text not found for task '+str(tid)
+            title = title_element.text
             status = element.get('status')
 
             task = Task(id=tid, title=title)
 
             dates = element.find('dates')
+            assert dates is not None, 'Dates element not found in task '+str(tid)
 
-            modified = dates.find('modified').text
+            modified_element = dates.find('modified')
+            assert modified_element is not None, 'Modified element not found in task '+str(tid)
+            assert modified_element.text is not None, 'Modified text not found in task '+str(tid)
+            modified = modified_element.text
             task.date_modified = Date(datetime.datetime.fromisoformat(modified))
 
-            added = dates.find('added').text
+            added_element = dates.find('added')
+            assert added_element is not None, 'Added element not found in task '+str(tid)
+            assert added_element.text is not None, 'Added text not found in task '+str(tid)
+            added = added_element.text
             task.date_added = Date(datetime.datetime.fromisoformat(added))
 
             if status == 'Done':
@@ -801,11 +814,10 @@ class TaskStore(BaseStore):
                 task.status = Status.DISMISSED
 
             # Dates
-            try:
-                closed = Date.parse(dates.find('done').text)
+            done_element = dates.find('done')
+            if done_element is not None and done_element.text is not None:
+                closed = Date.parse(done_element.text)
                 task.date_closed = closed
-            except AttributeError:
-                pass
 
             fuzzy_due_date = Date.parse(dates.findtext('fuzzyDue'))
             due_date = Date.parse(dates.findtext('due'))
@@ -834,7 +846,9 @@ class TaskStore(BaseStore):
                         pass
 
             # Content
-            content = element.find('content').text or ''
+            content_element = element.find('content')
+            assert content_element is not None, 'Content element not found in task '+str(tid)
+            content = content_element.text or ''
             content = content.replace(']]&gt;', ']]>')
             task.content = content
 
@@ -847,12 +861,13 @@ class TaskStore(BaseStore):
         for element in elements:
             parent_tid = UUID(element.get('id'))
             subtasks = element.find('subtasks')
+            assert subtasks is not None, 'Subtasks element not found in task '+str(tid)
 
             for sub in subtasks.findall('sub'):
                 self.parent(UUID(sub.text), parent_tid)
 
 
-    def to_xml(self) -> Element:
+    def to_xml(self) -> _Element:
         """Serialize the taskstore into a lxml element."""
 
         root = Element('tasklist')
@@ -1012,10 +1027,10 @@ class TaskStore(BaseStore):
         parent.notify('has_children')
 
 
-    def filter(self, filter_type: Filter, arg = None) -> list:
+    def filter(self, filter_type: Filter, arg: Tag | List[Tag] | None = None) -> List[Task]:
         """Filter tasks according to a filter type."""
 
-        def filter_tag(tag: str) -> list:
+        def filter_tag(tag: Tag) -> List[Task]:
             """Filter tasks that only have a specific tag."""
 
             output = []
@@ -1053,8 +1068,8 @@ class TaskStore(BaseStore):
             return [t for t in self.lookup.values() if t.parent]
 
         elif filter_type == Filter.TAG:
-            if type(arg) == list:
-                output = []
+            if isinstance(arg,list):
+                output: List[Task] = []
 
                 for t in arg:
                     if output:
@@ -1065,8 +1080,11 @@ class TaskStore(BaseStore):
 
                 return output
 
-            else:
+            elif isinstance(arg,Tag):
                 return filter_tag(arg)
+            else:
+                log.debug('Unexpected arg to filter by: '+str(arg))
+                return []
 
 
     def filter_custom(self, key: str, condition: Callable) -> list:
@@ -1075,8 +1093,8 @@ class TaskStore(BaseStore):
         return [t for t in self.lookup.values() if condition(getattr(t, key))]
 
 
-    def sort(self, tasks: list = None,
-             key: str = None, reverse: bool = False) -> None:
+    def sort(self, tasks: Optional[List[Task]] = None,
+             key: Optional[str] = None, reverse: bool = False) -> None:
         """Sort a list of tasks in-place."""
 
         tasks = tasks or self.data
