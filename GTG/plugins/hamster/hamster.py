@@ -16,6 +16,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+import logging
 import datetime
 import os
 import time
@@ -28,6 +29,7 @@ from gi.repository import Gtk, Gio
 from GTG.core.tasks import Task
 from GTG.plugins.hamster.helper import FactBuilder
 
+log = logging.getLogger(__name__)
 
 class HamsterPlugin():
     PLUGIN_NAMESPACE = 'hamster-plugin'
@@ -150,8 +152,13 @@ class HamsterPlugin():
     # Plugin api methods ###
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
-        self.hamster = dbus.SessionBus().get_object('org.gnome.Hamster',
-                                                    '/org/gnome/Hamster')
+
+        try:
+            self.hamster = dbus.SessionBus().get_object('org.gnome.Hamster',
+                                                        '/org/gnome/Hamster')
+        except dbus.exceptions.DBusException:
+            log.error('Hamster plugin failed to activate. Is Hamster installed?')
+            return
 
         # add button
         if plugin_api.is_browser():
