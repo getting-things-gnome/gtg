@@ -928,7 +928,6 @@ class MainWindow(Gtk.ApplicationWindow):
                 selected_tag = self.req.get_tag(selected_tags[0])
                 self.tagpopup.set_tag(selected_tag)
                 model, titer = self.tagtreeview.get_selection().get_selected()
-                rect = self.tagtreeview.get_cell_area(model.get_path(titer), None)
                 self.show_popup_at_tree_cursor(self.tagpopup, self.tagtreeview)
             else:
                 self.reset_cursor()

@@ -155,15 +155,12 @@ def get_colored_tags_markup(ds, tag_names):
 
 def generate_tag_color():
 
-    maxvalue = 1.0
-    flag = 0
-    while(flag == 0):
+    while True:
         rgba = random_color()
         my_color = rgb_to_hex(rgba)
         if my_color not in used_color:
-            flag = 1
-    used_color.append(my_color)
-    return my_color
+            used_color.append(my_color)
+            return my_color
 
 
 def grgba_to_hex(rgba, ignore_alpha=True):

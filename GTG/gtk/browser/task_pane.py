@@ -21,7 +21,9 @@
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 from GTG.core.tasks import Task, Status
 from GTG.core.filters import TaskPaneFilter, SearchTaskFilter
-from GTG.core.sorters import *
+from GTG.core.sorters import (TaskAddedSorter, TaskDueSorter,
+                              TaskModifiedSorter, TaskStartSorter,
+                              TaskTagSorter, TaskTitleSorter)
 from GTG.gtk.browser.tag_pill import TagPill
 from gettext import gettext as _
 

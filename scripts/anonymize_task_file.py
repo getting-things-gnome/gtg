@@ -35,7 +35,6 @@ def anonymize(filename, outputfile):
 
     for task in tasks:
         textnode = task.getElementsByTagName("title")[0].childNodes[0]
-        nodevalue = textnode.nodeValue
         replaced_title = re.sub('[^ \n\t]', 'm', textnode.nodeValue)
         textnode.nodeValue = "%s %s" % (task.getAttribute('id'),
                                         replaced_title)

@@ -99,7 +99,6 @@ class GTGCalendar(GObject.GObject):
         self.__is_user_just_browsing_the_calendar = False
 
     def __focus_out(self, g=None, s=None):
-        w = g.get_widget()
         # We should only close if the pointer click is out of the calendar !
         p = self.__window.get_window().get_pointer()
         s = self.__window.get_size()

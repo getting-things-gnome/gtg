@@ -266,7 +266,7 @@ class Gamify:
         # Init the preference dialog
         try:
             self.pref_dialog = GamifyPreferences(self, self.plugin_api)
-        except:
+        except Exception:
             self.configureable = False
             log.debug('Cannot load preference dialog widget')
 

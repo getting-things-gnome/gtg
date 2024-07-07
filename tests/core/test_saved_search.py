@@ -102,8 +102,8 @@ class TestSavedSearch(TestCase):
     def test_xml_write_simple(self):
 
         store = SavedSearchStore()
-        search1 = store.add(SavedSearch(uuid4(), 'Some @tag', 'Looking for some tag'))
-        search2 = store.add(SavedSearch(uuid4(), 'Some @other @tag', 'Looking for more'))
+        store.add(SavedSearch(uuid4(), 'Some @tag', 'Looking for some tag'))
+        store.add(SavedSearch(uuid4(), 'Some @other @tag', 'Looking for more'))
 
         xml_root = store.to_xml()
 

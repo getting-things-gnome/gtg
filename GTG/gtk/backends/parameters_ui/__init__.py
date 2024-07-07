@@ -23,8 +23,6 @@ built for them: it should play along the lines of the separation between GTG
 server and client
 """
 
-import functools
-
 from gi.repository import Gtk
 
 from GTG.backends.generic_backend import GenericBackend
