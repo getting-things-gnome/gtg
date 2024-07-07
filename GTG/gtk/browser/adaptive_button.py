@@ -41,10 +41,10 @@ class AdaptiveFittingWidget(Gtk.BinLayout):
         """The natural height the widget claims to have"""
 
     def __init__(self, *args, **kwargs):
-        self._children: List[ChildItem] = []
+        self._children: List[self.ChildItem] = []
         """Child widgets to consider together with internal bookkeeping data"""
 
-        self._child_to_draw: Optional[ChildItem] = None
+        self._child_to_draw: Optional[self.ChildItem] = None
         """Current child to draw"""
 
         self._draw_smallest_child_if_smaller: bool = True

@@ -52,7 +52,7 @@ class RecurringMenu(Gtk.PopoverMenu):
             ('recurr_year_today', self._on_recurr_year_today, None),
         ]:
             # is property action (property name instead of callback)
-            if type(action_disc[1]) == str:
+            if isinstance(action_disc[1], str):
                 self.install_property_action('.'.join([prefix, action_disc[0]]), action_disc[1])
             else:
                 self.install_action('.'.join([prefix, action_disc[0]]), action_disc[2], action_disc[1])

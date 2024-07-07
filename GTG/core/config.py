@@ -138,9 +138,9 @@ class SectionConfig():
         default_type = type(default_value)
         if default_type in (list, tuple):
             return self._getlist
-        elif default_type == int:
+        elif default_type is int:
             return self._section.getint
-        elif default_type == bool:
+        elif default_type is bool:
             return self._section.getboolean
         else:
             return self._section.get

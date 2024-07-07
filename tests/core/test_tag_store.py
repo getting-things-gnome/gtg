@@ -81,7 +81,7 @@ class TestTagStore(TestCase):
 
     def test_xml_write_simple(self):
         store = TagStore()
-        tag = store.new('My_tag')
+        store.new('My_tag')
         tag2 = store.new('My_tag2')
         tag3 = store.new('My_tag3', tag2.id)
 
@@ -95,7 +95,7 @@ class TestTagStore(TestCase):
 
     def test_xml_write_tree(self):
         store = TagStore()
-        tag = store.new('My_tag')
+        store.new('My_tag')
         tag2 = store.new('My_tag2')
         tag3 = store.new('My_tag3', tag2.id)
 

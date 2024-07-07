@@ -56,7 +56,6 @@ class TaskClipboard():
                 if hasattr(ta, 'is_subtask'):
                     is_subtask = True
                     tid = ta.child
-                    tas = self.ds.tasks.lookup[tid]
                     self.content.append(['subtask', tid])
             if not is_subtask:
                 if end_line.get_line() < stop.get_line():

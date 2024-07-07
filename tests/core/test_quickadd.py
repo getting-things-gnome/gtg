@@ -149,6 +149,7 @@ class TestQuickAddParse(TestCase):
         self.assertEqual(expected1, parse(text1))
         self.assertEqual(expected1, parse(text2))
         self.assertEqual(expected1, parse(text3))
+        self.assertEqual(expected2, parse(text4))
         self.assertEqual(expected3, parse(text5))
 
 
@@ -186,6 +187,7 @@ class TestQuickAddParse(TestCase):
         self.assertEqual(expected1, parse(text1))
         self.assertEqual(expected1, parse(text2))
         self.assertEqual(expected1, parse(text3))
+        self.assertEqual(expected2, parse(text4))
         self.assertEqual(expected3, parse(text5))
 
 

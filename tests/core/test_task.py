@@ -279,7 +279,7 @@ class TestTask(TestCase):
         store = TaskStore()
 
         root_task = store.new('My Root Task')
-        child_task = store.new('My Child Task', root_task.id)
+        store.new('My Child Task', root_task.id)
 
         self.assertEqual(store.count(), 2)
         self.assertEqual(store.count(root_only=True), 1)
@@ -570,7 +570,7 @@ class TestTask(TestCase):
         task1 = task_store.new('My Task')
         task2 = task_store.new('My Other Task')
         task3 = task_store.new('My Other Other Task')
-        task4 = task_store.new('My Other Other Other Task')
+        task_store.new('My Other Other Other Task')
 
         tag1 = Tag(id=uuid4(), name='A Tag')
         tag2 = Tag(id=uuid4(), name='Another Tag')
@@ -599,7 +599,7 @@ class TestTask(TestCase):
     def test_filter_custom(self):
         task_store = TaskStore()
 
-        task1 = task_store.new('My Task')
+        task_store.new('My Task')
         task2 = task_store.new('My Other Task')
 
         filtered = task_store.filter_custom('title', lambda t: 'Other' in t)
@@ -643,18 +643,6 @@ class TestTask(TestCase):
         self.assertEqual(task_store.data, expected)
 
 
-    def test_simple_reverse_sort(self):
-        task_store = TaskStore()
-
-        task1 = task_store.new('1. My Task')
-        task2 = task_store.new('2. My Other Task')
-
-        # Simple sort
-        task_store.sort(key='title',reverse=True)
-        expected = [task2, task1]
-        self.assertEqual(task_store.data, expected)
-
-
     def test_nested_sort(self):
         task_store = TaskStore()
 
@@ -680,7 +668,7 @@ class TestTask(TestCase):
 
         task1 = task_store.new('1. My Task')
         task2 = task_store.new('2. My Other Task')
-        task3 = task_store.new('3. My Other Other Task')
+        task_store.new('3. My Other Other Task')
         task4 = task_store.new('4. My Other Other Other Task')
 
         tasks = [task2, task4, task1]

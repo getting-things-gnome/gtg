@@ -94,7 +94,7 @@ class TomboyPlugin():
             iter_start = self.textview.buff.get_iter_at_child_anchor(anchor)
             iter_end = iter_start.copy()
             iter_end.forward_char()
-            if type(widgets) == list and len(widgets) != 0:
+            if isinstance(widgets, list) and len(widgets) != 0:
                 # the anchor still contains a widget.
                 widget = widgets[0]
                 self.textview.buff.delete(iter_start, iter_end)

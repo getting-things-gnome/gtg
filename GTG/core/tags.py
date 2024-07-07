@@ -27,7 +27,7 @@ import random
 import re
 
 from lxml.etree import Element, SubElement, _Element
-from typing import Any, Dict, List, Set, Optional
+from typing import Dict, List, Set, Optional
 
 from GTG.core.base_store import BaseStore
 
@@ -370,7 +370,8 @@ class TagStore(BaseStore[Tag]):
             self.model.append(item)
 
         self.emit('added', item)
-        if parent_id: self.lookup[parent_id].notify('children_count')
+        if parent_id:
+            self.lookup[parent_id].notify('children_count')
 
 
     def parent(self, item_id: UUID, parent_id: UUID) -> None:
@@ -379,7 +380,8 @@ class TagStore(BaseStore[Tag]):
         item = self.lookup[item_id]
         pos = self.model.find(item)
         self.model.remove(pos[1])
-        if parent_id: self.lookup[parent_id].notify('children_count')
+        if parent_id:
+            self.lookup[parent_id].notify('children_count')
 
 
 
@@ -388,4 +390,5 @@ class TagStore(BaseStore[Tag]):
         super().unparent(item_id, parent_id)
         item = self.lookup[item_id]
         self.model.append(item)
-        if parent_id: self.lookup[parent_id].notify('children_count')
+        if parent_id:
+            self.lookup[parent_id].notify('children_count')

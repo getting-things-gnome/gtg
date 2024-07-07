@@ -935,7 +935,8 @@ class TaskStore(BaseStore):
             return
         model = self.tid_to_subtask_model[item.parent.id]
         pos = model.find(item)
-        if pos[0]: model.remove(pos[1])
+        if pos[0]:
+            model.remove(pos[1])
 
 
     def _append_to_parent_model(self,task_id: UUID) -> None:
@@ -950,7 +951,8 @@ class TaskStore(BaseStore):
             return
         model = self.tid_to_subtask_model[item.parent.id]
         pos = model.find(item)
-        if not pos[0]: model.append(item)
+        if not pos[0]:
+            model.append(item)
 
 
     def add(self, item: Any, parent_id: Optional[UUID] = None) -> None:

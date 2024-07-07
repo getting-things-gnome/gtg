@@ -84,8 +84,8 @@ Please report the bug in <a href="{url}">our issue tracker</a>, with steps to tr
         return self._context_info
 
     @context_info.setter
-    def context_info(self, info, refresh: bool = True):
-        self._context_info = str(info) if info != None else None
+    def context_info(self, context_info, refresh: bool = True):
+        self._context_info = str(context_info) if context_info is not None else None
         if refresh:
             self._update_additional_info()
 

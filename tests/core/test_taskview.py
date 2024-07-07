@@ -16,8 +16,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import os
-import pytest
 import re
 from uuid import uuid4
 from unittest import TestCase
