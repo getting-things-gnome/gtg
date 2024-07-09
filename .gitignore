@@ -34,6 +34,10 @@ flatpak/cache
 flatpak/.flatpak-builder
 flatpak/bundles
 
+# Snap files and remote-build logs
+getting-things-gnome_*.snap
+snapcraft-getting-things-gnome-*.txt
+
 # src/ usually has development version of liblarch
 src/
 
