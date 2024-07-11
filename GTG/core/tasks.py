@@ -1035,14 +1035,8 @@ class TaskStore(BaseStore):
 
             output = []
 
-            for t in self.data:
-                tags = [_tag for _tag in t.tags]
-
-                # Include the tag's children
-                for _tag in t.tags:
-                    for child in _tag.children:
-                        tags.append(child)
-
+            for t in self.lookup.values():
+                tags = { matching_tag for own_tag in t.tags for matching_tag in own_tag.get_matching_tags() }
                 if tag in tags:
                     output.append(t)
 
