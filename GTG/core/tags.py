@@ -179,6 +179,15 @@ class Tag(GObject.Object):
             ancestors.append(here)
         return ancestors
 
+
+    def get_matching_tags(self) -> List['Tag']:
+        """Return the tag with its descendants."""
+        matching = [self]
+        for c in self.children:
+            matching += c.get_matching_tags()
+        return matching
+
+
     def __hash__(self):
         return id(self)
 
