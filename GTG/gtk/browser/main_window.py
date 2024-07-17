@@ -401,7 +401,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.connect('notify::default-height', self.on_window_resize)
 
         for p in PANE_STACK_NAMES_MAP.keys():
-            pane = self.stack_switcher.get_stack().get_child_by_name(p).get_first_child()
+            pane = self.get_pane_by_name(p)
             pane.task_selection.connect('selection-changed', self.on_selection_changed)
 
         self.sidebar.connect('selection_changed', self.on_sidebar_select_changed)
@@ -1459,8 +1459,15 @@ class MainWindow(Gtk.ApplicationWindow):
             return current
 
 
+    def get_pane_by_name(self, name: str) -> TaskPane:
+        """Get a task pane by name."""
+
+        return self.stack_switcher.get_stack().get_child_by_name(name).get_first_child()
+
+
     def get_pane(self):
         """Get the selected pane."""
+
 
         return self.stack_switcher.get_stack().get_visible_child().get_first_child()
 
