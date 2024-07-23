@@ -563,7 +563,10 @@ class Task(GObject.Object):
 
     @GObject.Property(type=bool, default=False)
     def has_date_due(self) -> bool:
-        return self._has_date_due
+        if not self._has_date_due and self.parent:
+            return self.parent._has_date_due
+        else:
+            return self._has_date_due
 
 
     @has_date_due.setter
@@ -593,7 +596,10 @@ class Task(GObject.Object):
 
     @GObject.Property(type=str)
     def date_due_str(self) -> str:
-        return self._date_due_str
+        if not self._date_due_str and self.parent:
+            return self.parent._date_due_str
+        else:
+            return self._date_due_str
 
 
     @date_due_str.setter
