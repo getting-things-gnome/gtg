@@ -51,6 +51,11 @@
     <update_contact>nekohayo+gtg@gmail.com</update_contact>
 
     <releases>
+        <!-- Snapshot version is shown as the version of the weekly flatpak -->
+        <!-- It needs a timestamp or date attribute, otherwise flatpak-builder ignores it -->
+        <!-- So we set the date attribute, to any day after the last stable release -->
+        <release version="0.7-dev" date="2022-03-03" type="snapshot"/>
+
         <release version="0.6" date="2022-03-02" type="stable">
             <url>https://fortintam.com/blog/gtg-0-6-released</url>
         </release>

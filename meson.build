@@ -1,5 +1,5 @@
 project('gtg',
-  version: '0.6.0',
+  version: '0.7-dev',
   meson_version: '>= 0.51.0'
 )
 
@@ -25,7 +25,7 @@ pythondir = python3.get_path('purelib')
 rdnn_name = 'org.gnome.GTG'
 application_id = rdnn_name
 
-if get_option('profile') == 'development'
+if get_option('profile') == 'development' or get_option('profile') == 'flatpak_snapshot'
   application_id = rdnn_name + '.Devel'
 endif
 
