@@ -3,7 +3,8 @@ option(
   type: 'combo',
   choices: [
     'default',
-    'development'
+    'development',
+    'flatpak'
   ],
   value: 'default',
   description: 'Changes App ID'
