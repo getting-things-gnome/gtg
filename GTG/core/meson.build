@@ -1,14 +1,19 @@
-# Append short commit hash and put it in
-# info.py when using development profile.
-# Use git rev-parse --short HEAD if available.
-
 git = find_program('git', required : false, disabler : true)
 
 if git.found() and get_option('profile') == 'development'
-    version = meson.project_version() + '-' + run_command(
+    base_version = meson.project_version()
+    commit = run_command(
             ['git', 'rev-parse', '--short', 'HEAD'],
             check: true
         ).stdout().strip()
+    version = base_version + '-' + commit
+elif get_option('profile') == 'flatpak_snapshot'
+    base_version = meson.project_version()
+    date = run_command(
+            ['date', '--utc', '+%Y%m%d'],
+            check: true
+        ).stdout().strip()
+    version = base_version + '-' + date
 else
     version = meson.project_version()
 endif
