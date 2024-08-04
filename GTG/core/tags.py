@@ -205,6 +205,7 @@ class TagStore(BaseStore[Tag]):
     def __init__(self) -> None:
         self.used_colors: Set[str] = set()
         self.lookup_names: Dict[str, Tag] = {}
+        self.tid_to_children_model: Dict[UUID,Gio.ListStore] = dict()
 
         super().__init__()
 
@@ -224,6 +225,7 @@ class TagStore(BaseStore[Tag]):
             for child in item.children:
                 model.append(child)
 
+        self.tid_to_children_model[item.id] = model
         return Gtk.TreeListModel.new(model, False, False, self.model_expand)
 
 
@@ -369,35 +371,101 @@ class TagStore(BaseStore[Tag]):
         return color
 
 
+    def _remove_from_parent_model(self,tag_id: UUID) -> None:
+        """
+        Remove the tag indicated by tag_id from the model of its parent's children.
+        This is required to trigger a GUI update.
+        """
+        item = self.lookup[tag_id]
+        if item.parent is None:
+            return
+        if item.parent.id not in self.tid_to_children_model:
+            return
+        model = self.tid_to_children_model[item.parent.id]
+        pos = model.find(item)
+        if pos[0]: model.remove(pos[1])
+
+
+    def _append_to_parent_model(self,tag_id: UUID) -> None:
+        """
+        Appends the tag indicated by tag_id to the model of its parent's children.
+        This is required to trigger a GUI update.
+        """
+        item = self.lookup[tag_id]
+        if item.parent is None:
+            return
+        if item.parent.id not in self.tid_to_children_model:
+            return
+        model = self.tid_to_children_model[item.parent.id]
+        pos = model.find(item)
+        if not pos[0]: model.append(item)
+
+
     def add(self, item: Tag, parent_id: Optional[UUID] = None) -> None:
         """Add a tag to the tagstore."""
 
         super().add(item, parent_id)
         self.lookup_names[item.name] = item
 
+        # Update UI
         if not parent_id:
             self.model.append(item)
+        else:
+            self._append_to_parent_model(item.id)
 
         self.emit('added', item)
         if parent_id:
             self.lookup[parent_id].notify('children_count')
 
 
+    def remove(self, item_id: UUID) -> None:
+        """Remove an existing tag."""
+
+        item = self.lookup[item_id]
+        parent = item.parent
+
+        # Remove from UI
+        if item.parent is not None:
+            self._remove_from_parent_model(item.id)
+        else:
+            pos = self.model.find(item)
+            self.model.remove(pos[1])
+
+        super().remove(item_id)
+        if parent: self.lookup[parent.id].notify('children_count')
+
+
     def parent(self, item_id: UUID, parent_id: UUID) -> None:
 
-        super().parent(item_id, parent_id)
         item = self.lookup[item_id]
-        pos = self.model.find(item)
-        self.model.remove(pos[1])
-        if parent_id:
-            self.lookup[parent_id].notify('children_count')
 
+        # Remove from UI
+        if item.parent is not None:
+            old_parent = item.parent
+            self._remove_from_parent_model(item_id)
+            self.lookup[old_parent.id].notify('children_count')
+        else:
+            pos = self.model.find(item)
+            self.model.remove(pos[1])
+
+        super().parent(item_id, parent_id)
+
+        # Add back to UI
+        self._append_to_parent_model(item_id)
+        self.lookup[parent_id].notify('children_count')
 
 
     def unparent(self, item_id: UUID, parent_id: UUID) -> None:
 
+        item = self.lookup[item_id]
+
+        # Remove from UI
+        self._remove_from_parent_model(item_id)
+
         super().unparent(item_id, parent_id)
+
+        # Add back to UI
         item = self.lookup[item_id]
         self.model.append(item)
-        if parent_id:
-            self.lookup[parent_id].notify('children_count')
+
+        self.lookup[parent_id].notify('children_count')
