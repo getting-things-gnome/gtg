@@ -19,13 +19,13 @@
 """Everything related to saved searches."""
 
 
-from gi.repository import GObject, Gio
+from gi.repository import GObject, Gio # type: ignore[import-untyped]
 
 from uuid import uuid4, UUID
 from typing import Optional
 import logging
 
-from lxml.etree import Element, SubElement
+from lxml.etree import Element, _Element, SubElement
 
 from GTG.core.base_store import BaseStore
 
@@ -42,7 +42,7 @@ class SavedSearch(GObject.Object):
         self.id = id
         self._name = name
         self._query = query
-        self._icon = None
+        self._icon : Optional[str] = None
 
         super().__init__()
 
@@ -58,7 +58,7 @@ class SavedSearch(GObject.Object):
 
 
     @GObject.Property(type=str)
-    def icon(self) -> str:
+    def icon(self) -> Optional[str]:
         """Read only property."""
 
         return self._icon
@@ -126,19 +126,21 @@ class SavedSearchStore(BaseStore):
         for search in self.data:
             if search.name == name:
                 return search
+        return None
 
 
-    def from_xml(self, xml: Element) -> None:
+    def from_xml(self, xml: _Element) -> None:
         """Load searches from an LXML element."""
 
         elements = list(xml.iter(self.XML_TAG))
 
-        # Do parent searches first
         for element in elements:
 
-            search_id = element.get('id')
+            search_id = UUID(element.get('id'))
             name = element.get('name')
+            assert name is not None, "Missing 'name' property for saved search "+str(search_id)
             query = element.get('query')
+            assert query is not None, "Missing 'query' property for saved search "+str(search_id)
 
             search = SavedSearch(id=search_id, name=name, query=query)
 
@@ -146,7 +148,7 @@ class SavedSearchStore(BaseStore):
             log.debug('Added %s', search)
 
 
-    def to_xml(self) -> Element:
+    def to_xml(self) -> _Element:
         """Save searches to an LXML element."""
 
         root = Element('searchlist')
@@ -160,7 +162,7 @@ class SavedSearchStore(BaseStore):
         return root
 
 
-    def new(self, name: str, query: str, parent: UUID = None) -> SavedSearch:
+    def new(self, name: str, query: str, parent: Optional[UUID] = None) -> SavedSearch:
         """Create a new saved search and add it to the store."""
 
         search_id = uuid4()
@@ -174,8 +176,8 @@ class SavedSearchStore(BaseStore):
         return search
 
 
-    def add(self, item, parent_id: UUID = None) -> None:
-        """Add a tag to the tagstore."""
+    def add(self, item, parent_id: Optional[UUID] = None) -> None:
+        """Add a saved search to the store."""
 
         super().add(item, parent_id)
         self.model.append(item)
