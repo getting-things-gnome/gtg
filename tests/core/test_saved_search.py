@@ -17,7 +17,7 @@
 # -----------------------------------------------------------------------------
 
 from unittest import TestCase
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 from GTG.core.saved_searches import SavedSearch, SavedSearchStore
 from lxml.etree import XML
@@ -96,7 +96,7 @@ class TestSavedSearch(TestCase):
         store.from_xml(xml_doc)
         self.assertEqual(store.count(), 4)
 
-        self.assertEqual(store.lookup['4796b97b-3690-4e74-a056-4153061958df'].query, 'urgent')
+        self.assertEqual(store.lookup[UUID('4796b97b-3690-4e74-a056-4153061958df')].query, 'urgent')
 
 
     def test_xml_write_simple(self):
