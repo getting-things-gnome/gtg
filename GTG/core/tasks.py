@@ -564,7 +564,7 @@ class Task(GObject.Object):
     @GObject.Property(type=bool, default=False)
     def has_date_due(self) -> bool:
         if not self._has_date_due and self.parent:
-            return self.parent._has_date_due
+            return self.parent.has_date_due
         else:
             return self._has_date_due
 
