@@ -35,10 +35,12 @@ from GTG.core.dates import Date
 from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
 import GTG.core.info as info
+import GTG.core.dirs as dirs
+import GTG.core.versioning as versioning
 
 from lxml import etree as et
 
-from typing import Optional
+from typing import Optional, Dict
 
 
 log = logging.getLogger(__name__)
@@ -54,15 +56,15 @@ class Datastore:
         self.tasks = TaskStore()
         self.tags = TagStore()
         self.saved_searches = SavedSearchStore()
-        self.xml_tree = None
+        self.xml_tree: Optional[et._ElementTree] = None
 
         self._mutex = threading.Lock()
-        self.backends = {}
+        self.backends: Dict[str,GenericBackend] = {}
         self._backend_signals = BackendSignals()
 
         # When a backup has to be used, this will be filled with
         # info on the backup used
-        self.backup_info = {}
+        self.backup_info: Dict[str,str] = {}
 
         # Flag when turned to true, all pending operation should be
         # completed and then GTG should quit
@@ -75,7 +77,7 @@ class Datastore:
             'closed': {'all': 0, 'untagged': 0},
         }
 
-        self.data_path = None
+        self.data_path: Optional[str] = None
         self._activate_non_default_backends()
 
 
@@ -84,12 +86,20 @@ class Datastore:
         return self._mutex
 
 
-    def load_data(self, data: et.Element) -> None:
+    def load_data(self, data: et._ElementTree) -> None:
         """Load data from an lxml element object."""
 
-        self.saved_searches.from_xml(data.find('searchlist'))
-        self.tags.from_xml(data.find('taglist'))
-        self.tasks.from_xml(data.find('tasklist'), self.tags)
+        searches_xml = data.find('searchlist')
+        tags_xml = data.find('taglist')
+        tasks_xml = data.find('tasklist')
+
+        assert searches_xml is not None, "Missing 'searchlist' tag in xml file."
+        assert tags_xml is not None, "Missing 'taglist' tag in xml file."
+        assert tasks_xml is not None, "Missing 'tasklist' tag in xml file."
+
+        self.saved_searches.from_xml(searches_xml)
+        self.tags.from_xml(tags_xml)
+        self.tasks.from_xml(tasks_xml, self.tags)
 
         self.refresh_task_count()
 
@@ -97,7 +107,7 @@ class Datastore:
     def load_file(self, path: str) -> None:
         """Load data from a file."""
 
-        bench_start = 0
+        bench_start = 0.0
 
         if log.isEnabledFor(logging.DEBUG):
             bench_start = time()
@@ -106,6 +116,7 @@ class Datastore:
 
         with open(path, 'rb') as stream:
             self.xml_tree = et.parse(stream, parser=parser)
+            assert isinstance(self.xml_tree, et._ElementTree), 'Parsing should return an _ElementTree object'
             self.load_data(self.xml_tree)
 
         if log.isEnabledFor(logging.DEBUG):
@@ -116,7 +127,7 @@ class Datastore:
         self.data_path = path
 
 
-    def generate_xml(self) -> et.ElementTree:
+    def generate_xml(self) -> et._ElementTree:
         """Generate lxml element object with all data."""
 
         root = et.Element('gtgData')
@@ -144,8 +155,9 @@ class Datastore:
         """Write GTG data file."""
 
         path = path or self.data_path
+        assert path is not None, "Failed to determine save location."
         temp_file = path + '__'
-        bench_start = 0
+        bench_start = 0.0
 
         try:
             os.rename(path, temp_file)
@@ -268,7 +280,7 @@ class Datastore:
                 task.notify('show_tag_colors')
 
 
-    def first_run(self, path: str) -> et.Element:
+    def first_run(self, path: str) -> None:
         """Write initial data file."""
 
         self.xml_tree = firstrun_tasks.generate()
@@ -279,16 +291,17 @@ class Datastore:
     def do_first_run_versioning(self, filepath: str) -> None:
         """If there is an old file around needing versioning, convert it, then rename the old file."""
 
-        old_path = self.find_old_path(DATA_DIR)
+        old_path = self.find_old_path(dirs.DATA_DIR)
 
         if old_path is not None:
             log.warning('Found old file: %r. Running versioning code.', old_path)
-            tree = versioning.convert(old_path, self)
+            tree = versioning.convert(old_path)
             self.load_data(tree)
             self.save(filepath)
             os.rename(old_path, old_path + '.imported')
 
         else:
+            assert self.data_path is not None, "Save location not set."
             self.first_run(self.data_path)
 
 
@@ -319,16 +332,16 @@ class Datastore:
         for backend in xml_tree.findall('backend'):
             module = backend.get('module')
             if module == 'backend_localfile':
-                uuid_path = backend.get('path')
+                uuid_path: Optional[str] = backend.get('path')
+                assert uuid_path is not None, "Missing 'path' propoerty in backend."
                 if os.path.isfile(uuid_path):
-
                     return uuid_path
 
         return None
 
 
     @staticmethod
-    def get_backup_path(path: str, i: int = None) -> str:
+    def get_backup_path(path: str, i: Optional[int] = None) -> str:
         """Get path of backups which are backup/ directory."""
 
         dirname, filename = os.path.split(path)
@@ -685,7 +698,7 @@ class Datastore:
     def fill_with_samples(self, tasks_count: int) -> None:
         """Fill the Datastore with sample data."""
 
-        def random_date(start: datetime = None):
+        def random_date(start: Optional[datetime] = None):
             start = start or datetime.now()
             end = start + timedelta(days=random.randint(1, 365 * 5))
 
