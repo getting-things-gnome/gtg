@@ -20,7 +20,7 @@ Information where various resources like config, icons, etc. are stored
 """
 import os
 
-from gi.repository import GLib
+from gi.repository import GLib # type: ignore[import-untyped]
 
 # Folder where core GTG data is stored like services information, tags, etc
 DATA_DIR = os.path.join(GLib.get_user_data_dir(), 'gtg')
