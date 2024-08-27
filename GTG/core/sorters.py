@@ -31,13 +31,45 @@ def unwrap(row, expected_type):
 
     return item
 
+class ReversibleSorter(Gtk.Sorter):
 
-class TaskTitleSorter(Gtk.Sorter):
+    def __init__(self) -> None:
+        self._reverse: bool = False
+        super().__init__()
+
+
+    @property
+    def reverse(self) -> bool:
+        return self._reverse
+
+
+    @reverse.setter
+    def reverse(self, value: bool) -> None:
+        self._reverse = value
+        self.changed(Gtk.SorterChange.INVERTED)
+
+
+    def reversible_compare(self, first, second) -> Gtk.Ordering:
+        """Compare for reversible sorters."""
+
+        if self._reverse:
+            if first < second:
+                return Gtk.Ordering.LARGER
+            elif first > second:
+                return Gtk.Ordering.SMALLER
+            else:
+                return Gtk.Ordering.EQUAL
+        else:
+            if first > second:
+                return Gtk.Ordering.LARGER
+            elif first < second:
+                return Gtk.Ordering.SMALLER
+            else:
+                return Gtk.Ordering.EQUAL
+
+
+class TaskTitleSorter(ReversibleSorter):
     __gtype_name__ = 'TaskTitleSorter'
-
-    def __init__(self):
-        super(TaskTitleSorter, self).__init__()
-
 
     def do_compare(self, a, b) -> Gtk.Ordering:
 
@@ -47,20 +79,11 @@ class TaskTitleSorter(Gtk.Sorter):
         first = a.title[0]
         second = b.title[0]
 
-        if first > second:
-            return Gtk.Ordering.LARGER
-        elif first < second:
-            return Gtk.Ordering.SMALLER
-        else:
-            return Gtk.Ordering.EQUAL
+        return self.reversible_compare(first, second)
 
 
-class TaskDueSorter(Gtk.Sorter):
+class TaskDueSorter(ReversibleSorter):
     __gtype_name__ = 'DueSorter'
-
-    def __init__(self):
-        super(TaskDueSorter, self).__init__()
-
 
     def do_compare(self, a, b) -> Gtk.Ordering:
 
@@ -70,20 +93,11 @@ class TaskDueSorter(Gtk.Sorter):
         first = a.date_due
         second = b.date_due
 
-        if first > second:
-            return Gtk.Ordering.LARGER
-        elif first < second:
-            return Gtk.Ordering.SMALLER
-        else:
-            return Gtk.Ordering.EQUAL
+        return self.reversible_compare(first, second)
 
 
-class TaskStartSorter(Gtk.Sorter):
+class TaskStartSorter(ReversibleSorter):
     __gtype_name__ = 'StartSorter'
-
-    def __init__(self):
-        super(TaskStartSorter, self).__init__()
-
 
     def do_compare(self, a, b) -> Gtk.Ordering:
 
@@ -93,20 +107,11 @@ class TaskStartSorter(Gtk.Sorter):
         first = a.date_start
         second = b.date_start
 
-        if first > second:
-            return Gtk.Ordering.LARGER
-        elif first < second:
-            return Gtk.Ordering.SMALLER
-        else:
-            return Gtk.Ordering.EQUAL
+        return self.reversible_compare(first, second)
 
 
-class TaskModifiedSorter(Gtk.Sorter):
+class TaskModifiedSorter(ReversibleSorter):
     __gtype_name__ = 'ModifiedSorter'
-
-    def __init__(self):
-        super(TaskModifiedSorter, self).__init__()
-
 
     def do_compare(self, a, b) -> Gtk.Ordering:
 
@@ -116,20 +121,11 @@ class TaskModifiedSorter(Gtk.Sorter):
         first = a.date_modified
         second = b.date_modified
 
-        if first > second:
-            return Gtk.Ordering.LARGER
-        elif first < second:
-            return Gtk.Ordering.SMALLER
-        else:
-            return Gtk.Ordering.EQUAL
+        return self.reversible_compare(first, second)
 
 
-class TaskTagSorter(Gtk.Sorter):
+class TaskTagSorter(ReversibleSorter):
     __gtype_name__ = 'TagSorter'
-
-    def __init__(self):
-        super(TaskTagSorter, self).__init__()
-
 
     def get_first_letter(self, tags) -> str:
         """Get first letter of the first tag in a set of tags."""
@@ -154,20 +150,11 @@ class TaskTagSorter(Gtk.Sorter):
         else:
             second = 'zzzzzzz'
 
-        if first > second:
-            return Gtk.Ordering.LARGER
-        elif first < second:
-            return Gtk.Ordering.SMALLER
-        else:
-            return Gtk.Ordering.EQUAL
+        return self.reversible_compare(first, second)
 
 
-class TaskAddedSorter(Gtk.Sorter):
+class TaskAddedSorter(ReversibleSorter):
     __gtype_name__ = 'AddedSorter'
-
-    def __init__(self):
-        super(TaskAddedSorter, self).__init__()
-
 
     def do_compare(self, a, b) -> Gtk.Ordering:
 
@@ -177,9 +164,4 @@ class TaskAddedSorter(Gtk.Sorter):
         first = a.date_added
         second = b.date_added
 
-        if first > second:
-            return Gtk.Ordering.LARGER
-        elif first < second:
-            return Gtk.Ordering.SMALLER
-        else:
-            return Gtk.Ordering.EQUAL
+        return self.reversible_compare(first, second)
