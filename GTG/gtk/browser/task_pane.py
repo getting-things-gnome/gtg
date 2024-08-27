@@ -165,6 +165,7 @@ class TaskPane(Gtk.ScrolledWindow):
         self.filtered.set_filter(self.task_filter)
 
         self.sort_model = Gtk.TreeListRowSorter()
+        self.sort_model.set_sorter(TaskTitleSorter())
 
         self.main_sorter = Gtk.SortListModel()
         self.main_sorter.set_model(self.filtered)
@@ -303,6 +304,12 @@ class TaskPane(Gtk.ScrolledWindow):
             sorter = TaskTitleSorter()
 
         self.sort_model.set_sorter(sorter)
+
+
+    def set_sort_order(self, reverse: bool) -> None:
+        """Set order for the sorter."""
+
+        self.sort_model.get_sorter().reverse = reverse
 
 
     def on_listview_activated(self, listview, position, user_data = None):

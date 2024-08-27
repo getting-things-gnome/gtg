@@ -226,6 +226,14 @@
       <attribute name="label" translatable="yes">Sort by Tags</attribute>
       <attribute name="action">win.sort_by_tags</attribute>
     </item>
+    <item>
+      <attribute name="label" translatable="yes">Ascending Order</attribute>
+      <attribute name="action">win.sort_asc</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Descending Order</attribute>
+      <attribute name="action">win.sort_desc</attribute>
+    </item>
   </menu>
 
 

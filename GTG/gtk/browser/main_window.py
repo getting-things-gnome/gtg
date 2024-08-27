@@ -248,6 +248,8 @@ class MainWindow(Gtk.ApplicationWindow):
             ('sort_by_modified', self.on_sort_modified, None),
             ('sort_by_added', self.on_sort_added, None),
             ('sort_by_tags', self.on_sort_tags, None),
+            ('sort_asc', self.on_sort_order_asc, None),
+            ('sort_desc', self.on_sort_order_desc, None),
         ]
 
         for action, callback, accel in action_entries:
@@ -1340,6 +1342,18 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.config.set('sort_mode_closed', mode)
             case _:
                 self.config.set('sort_mode_open', mode)
+
+
+    def on_sort_order_asc(self, action, params) -> None:
+        """Set ascending order for current sorter."""
+
+        self.get_pane().set_sort_order(reverse=False)
+
+
+    def on_sort_order_desc(self, action, params) -> None:
+        """Set descending order for current sorter."""
+
+        self.get_pane().set_sort_order(reverse=True)
 
 
     def set_sorter(self, value: str) -> None:
