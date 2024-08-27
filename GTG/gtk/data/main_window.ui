@@ -197,43 +197,48 @@
   </menu>
 
   <menu id="sort_menu">
-    <item>
-      <attribute name="label" translatable="yes">Sort by Title</attribute>
-      <attribute name="action">win.sort_by_title</attribute>
-    </item>
+  <section>
+      <item>
+        <attribute name="label" translatable="yes">Sort by Title</attribute>
+        <attribute name="action">win.sort_by_title</attribute>
+      </item>
 
-    <item>
-      <attribute name="label" translatable="yes">Sort by Start Date</attribute>
-      <attribute name="action">win.sort_by_start</attribute>
-    </item>
+      <item>
+        <attribute name="label" translatable="yes">Sort by Start Date</attribute>
+        <attribute name="action">win.sort_by_start</attribute>
+      </item>
 
-    <item>
-      <attribute name="label" translatable="yes">Sort by Due Date</attribute>
-      <attribute name="action">win.sort_by_due</attribute>
-    </item>
+      <item>
+        <attribute name="label" translatable="yes">Sort by Due Date</attribute>
+        <attribute name="action">win.sort_by_due</attribute>
+      </item>
 
-    <item>
-      <attribute name="label" translatable="yes">Sort by Added Date</attribute>
-      <attribute name="action">win.sort_by_added</attribute>
-    </item>
+      <item>
+        <attribute name="label" translatable="yes">Sort by Added Date</attribute>
+        <attribute name="action">win.sort_by_added</attribute>
+      </item>
 
-    <item>
-      <attribute name="label" translatable="yes">Sort by Modified Date</attribute>
-      <attribute name="action">win.sort_by_modified</attribute>
-    </item>
+      <item>
+        <attribute name="label" translatable="yes">Sort by Modified Date</attribute>
+        <attribute name="action">win.sort_by_modified</attribute>
+      </item>
 
-    <item>
-      <attribute name="label" translatable="yes">Sort by Tags</attribute>
-      <attribute name="action">win.sort_by_tags</attribute>
-    </item>
-    <item>
-      <attribute name="label" translatable="yes">Ascending Order</attribute>
-      <attribute name="action">win.sort_asc</attribute>
-    </item>
-    <item>
-      <attribute name="label" translatable="yes">Descending Order</attribute>
-      <attribute name="action">win.sort_desc</attribute>
-    </item>
+      <item>
+        <attribute name="label" translatable="yes">Sort by Tags</attribute>
+        <attribute name="action">win.sort_by_tags</attribute>
+      </item>
+    </section>
+
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Ascending Order</attribute>
+        <attribute name="action">win.sort_asc</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Descending Order</attribute>
+        <attribute name="action">win.sort_desc</attribute>
+      </item>
+    </section>
   </menu>
 
 
