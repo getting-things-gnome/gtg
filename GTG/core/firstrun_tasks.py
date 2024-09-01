@@ -20,6 +20,8 @@
 
 Tasks should serve as a quick tutorial how GTG works """
 
+from typing import List, TypedDict
+
 from gettext import gettext as _
 from GTG.core.tags import extract_tags_from_text
 from GTG.core.dates import Date
@@ -47,9 +49,18 @@ task_ids = [
 # Date for modified and added tags
 today = str(Date.today())
 
+
+class TaskData(TypedDict):
+    title: str
+    id: str
+    subtasks: List[str]
+    added: str
+    modified: str
+    content: str
+
 # Initial tasks
 # flake8: noqa: E501
-tasks = [
+tasks : List[TaskData] = [
     {
         'title': _("Getting Started with GTG (read me first)"),
         'id': task_ids[0],
@@ -339,7 +350,7 @@ tasks = [
 ]
 
 
-def skeleton() -> etree.Element:
+def skeleton() -> etree._Element:
     """Generate root XML tag and basic subtags."""
 
     root = etree.Element('gtgData')
@@ -353,13 +364,15 @@ def skeleton() -> etree.Element:
     return root
 
 
-def generate() -> etree.Element:
+def generate() -> etree._ElementTree:
     """Generate the XML tree with first run tasks."""
 
     # Create an empty XML tree first
     root = skeleton()
     taskslist = root.find('tasklist')
+    assert taskslist is not None, "Missing tasklist in generated skeleton."
     taglist = root.find('taglist')
+    assert taglist is not None, "Missing taglist in generated skeleton."
 
     # Fill tasks
     for task in tasks:
