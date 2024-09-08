@@ -102,13 +102,11 @@
         <!-- without, it covers the section heading -->
         <property name="margin-top">6</property>
         <property name="show-heading">False</property>
-        <signal name="day-selected" handler="_on_monthly_selected"/>
       </object>
     </child>
     <child type="_year_calendar">
       <object class="GtkCalendar" id="_year_calendar">
         <property name="margin-top">6</property>
-        <signal name="day-selected" handler="_on_yearly_selected"/>
       </object>
     </child>
   </template>
