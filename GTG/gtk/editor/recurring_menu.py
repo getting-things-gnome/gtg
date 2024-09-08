@@ -20,6 +20,7 @@ import os
 from gettext import gettext as _
 from datetime import datetime
 from gi.repository import Gtk, Gio, GLib, GObject
+from gi.repository.GObject import signal_handler_block
 from GTG.core.dirs import UI_DIR
 
 
@@ -65,6 +66,9 @@ class RecurringMenu(Gtk.PopoverMenu):
         self._selected_recurring_term = self.task.recurring_term
 
         self._is_header_menu_item_shown = False
+
+        self._mhandler = self._month_calendar.connect('day-selected',self._on_monthly_selected)
+        self._yhandler = self._year_calendar.connect('day-selected',self._on_yearly_selected)
 
         self._update_header()
         self._update_calendar()
@@ -200,47 +204,49 @@ class RecurringMenu(Gtk.PopoverMenu):
         Update the calendar widgets with the correct date of the recurring
         task, if set.
         """
-        self._month_calendar.set_property('month', 0)
-        if self._is_term_set():
-            need_month_hack = False
-            if self._selected_recurring_term in ('month', 'year'):
-                # Recurring monthly/yearly from 'today'
-                d = self.task.recurring_updated_date.date()
-                need_month_hack = self._set_selected_term == 'month'
-            elif self._selected_recurring_term.isdigit():
-                if len(self._selected_recurring_term) <= 2:
-                    # Recurring monthly from selected date
-                    d = datetime.strptime(f'{self._selected_recurring_term}', '%d')
-                    need_month_hack = True
+        m_cal, y_cal = self._month_calendar, self._year_calendar
+        with signal_handler_block(m_cal, self._mhandler), signal_handler_block(y_cal, self._yhandler):
+            self._month_calendar.set_property('month', 0)
+            if self._is_term_set():
+                need_month_hack = False
+                if self._selected_recurring_term in ('month', 'year'):
+                    # Recurring monthly/yearly from 'today'
+                    d = self.task.recurring_updated_date.date()
+                    need_month_hack = self._set_selected_term == 'month'
+                elif self._selected_recurring_term.isdigit():
+                    if len(self._selected_recurring_term) <= 2:
+                        # Recurring monthly from selected date
+                        d = datetime.strptime(f'{self._selected_recurring_term}', '%d')
+                        need_month_hack = True
+                    else:
+                        # Recurring yearly from selected date
+                        val = f'{self._selected_recurring_term[:2:]}-{self._selected_recurring_term[2::]}'
+                        d = datetime.strptime(val, '%m-%d')
+
+                    d = d.replace(year=datetime.today().year)  # Don't be stuck at 1900
+
                 else:
-                    # Recurring yearly from selected date
-                    val = f'{self._selected_recurring_term[:2:]}-{self._selected_recurring_term[2::]}'
-                    d = datetime.strptime(val, '%m-%d')
+                    return
 
-                d = d.replace(year=datetime.today().year)  # Don't be stuck at 1900
-
-            else:
-                return
-
-            if update_monthly:
-                self._month_calendar.set_property('day', d.day)
-            if need_month_hack:
-                # Don't show that we're secretly staying on January since it has
-                # 31 days
-                month = datetime.today().month
-                year = datetime.today().year
-                while True:
-                    try:
-                        d = d.replace(month=month, year=year)
-                        break
-                    except ValueError:  # day is out of range for month
-                        month += 1
-                        if month == 13:
-                            month = 1
-                            year += 1
-            if update_yearly:
-                gtime = GLib.DateTime.new_local(d.year, d.month, d.day, 0, 0, 0)
-                self._year_calendar.select_day(gtime)
+                if update_monthly:
+                    self._month_calendar.set_property('day', d.day)
+                if need_month_hack:
+                    # Don't show that we're secretly staying on January since it has
+                    # 31 days
+                    month = datetime.today().month
+                    year = datetime.today().year
+                    while True:
+                        try:
+                            d = d.replace(month=month, year=year)
+                            break
+                        except ValueError:  # day is out of range for month
+                            month += 1
+                            if month == 13:
+                                month = 1
+                                year += 1
+                if update_yearly:
+                    gtime = GLib.DateTime.new_local(d.year, d.month, d.day, 0, 0, 0)
+                    self._year_calendar.select_day(gtime)
 
     def _on_recurr_every_day(self, widget, action_name, param: None):
         self._set_selected_term('day')
@@ -267,12 +273,10 @@ class RecurringMenu(Gtk.PopoverMenu):
         self._set_selected_term('year')
         self.set_property('is-task-recurring', True)
 
-    @Gtk.Template.Callback()
     def _on_monthly_selected(self, widget):
         self._set_selected_term(str(self._month_calendar.props.day))
         self.set_property('is-task-recurring', True)
 
-    @Gtk.Template.Callback()
     def _on_yearly_selected(self, widget):
         date_string = self._year_calendar.get_date().format(
             r'%m%d'
