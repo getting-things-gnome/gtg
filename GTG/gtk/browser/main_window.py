@@ -94,6 +94,8 @@ class MainWindow(Gtk.ApplicationWindow):
     defer_menu_btn = Gtk.Template.Child()
     defer_menu_days_section = Gtk.Template.Child()
 
+    sort_btn = Gtk.Template.Child('sort_menu_btn')
+
     headerbar = Gtk.Template.Child('browser_headerbar')
     main_menu_btn = Gtk.Template.Child()
     main_menu = Gtk.Template.Child()
@@ -1348,18 +1350,29 @@ class MainWindow(Gtk.ApplicationWindow):
         """Set ascending order for current sorter."""
 
         self.get_pane().set_sort_order(reverse=False)
+        self.change_sort_icon('ASC')
 
 
     def on_sort_order_desc(self, action, params) -> None:
         """Set descending order for current sorter."""
 
         self.get_pane().set_sort_order(reverse=True)
+        self.change_sort_icon('DESC')
 
 
     def set_sorter(self, value: str) -> None:
         """Set sorter for current task pane."""
 
         self.get_pane().set_sorter(value)
+
+
+    def change_sort_icon(self, order: str) -> None:
+        """Change icon for sorting menu button."""
+
+        if order == 'ASC':
+            self.sort_btn.set_icon_name('view-sort-ascending-symbolic')
+        elif order == 'DESC':
+            self.sort_btn.set_icon_name('view-sort-descending-symbolic')
 
 
     def close_all_task_editors(self, task_id):
