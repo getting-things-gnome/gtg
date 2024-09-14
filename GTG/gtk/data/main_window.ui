@@ -200,32 +200,38 @@
   <section>
       <item>
         <attribute name="label" translatable="yes">Sort by Title</attribute>
-        <attribute name="action">win.sort_by_title</attribute>
+        <attribute name="target">Title</attribute>
+        <attribute name="action">win.sort</attribute>
       </item>
 
       <item>
         <attribute name="label" translatable="yes">Sort by Start Date</attribute>
-        <attribute name="action">win.sort_by_start</attribute>
+        <attribute name="target">Start</attribute>
+        <attribute name="action">win.sort</attribute>
       </item>
 
       <item>
         <attribute name="label" translatable="yes">Sort by Due Date</attribute>
-        <attribute name="action">win.sort_by_due</attribute>
+        <attribute name="target">Due</attribute>
+        <attribute name="action">win.sort</attribute>
       </item>
 
       <item>
         <attribute name="label" translatable="yes">Sort by Added Date</attribute>
-        <attribute name="action">win.sort_by_added</attribute>
+        <attribute name="target">Added</attribute>
+        <attribute name="action">win.sort</attribute>
       </item>
 
       <item>
         <attribute name="label" translatable="yes">Sort by Modified Date</attribute>
-        <attribute name="action">win.sort_by_modified</attribute>
+        <attribute name="target">Modified</attribute>
+        <attribute name="action">win.sort</attribute>
       </item>
 
       <item>
         <attribute name="label" translatable="yes">Sort by Tags</attribute>
-        <attribute name="action">win.sort_by_tags</attribute>
+        <attribute name="target">Tags</attribute>
+        <attribute name="action">win.sort</attribute>
       </item>
     </section>
 

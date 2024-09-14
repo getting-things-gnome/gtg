@@ -243,13 +243,6 @@ class MainWindow(Gtk.ApplicationWindow):
             ('recurring_month', self.on_set_recurring_every_month, None),
             ('recurring_year', self.on_set_recurring_every_year, None),
             ('recurring_toggle', self.on_toggle_recurring, None),
-            ('sort_by_start', self.on_sort_start, None),
-            ('sort_by_due', self.on_sort_due, None),
-            ('sort_by_added', self.on_sort_added, None),
-            ('sort_by_title', self.on_sort_title, None),
-            ('sort_by_modified', self.on_sort_modified, None),
-            ('sort_by_added', self.on_sort_added, None),
-            ('sort_by_tags', self.on_sort_tags, None),
             ('sort_asc', self.on_sort_order_asc, None),
             ('sort_desc', self.on_sort_order_desc, None),
         ]
@@ -264,6 +257,17 @@ class MainWindow(Gtk.ApplicationWindow):
 
             if accel is not None:
                 self.app.set_accels_for_action(*accel)
+            
+
+        # Stateful actions from now on
+        sort_variant = GLib.Variant.new_string('Title')
+        sort_action = Gio.SimpleAction.new_stateful('sort', 
+                                                    sort_variant.get_type(), 
+                                                    sort_variant)
+ 
+        sort_action.connect('change-state', self.on_sort)
+        self.add_action(sort_action)
+
 
     def _init_icon_theme(self):
         """
@@ -1292,46 +1296,13 @@ class MainWindow(Gtk.ApplicationWindow):
         self.modifytags_dialog.modify_tags(tasks)
 
 
-    def on_sort_start(self, action, params) -> None:
-        """Callback when changing task sorting."""
+    def on_sort(self, action, value) -> None:
+        
+        action.set_state(value)
+        value_str = value.get_string()
 
-        self.set_sorter('Start')
-        self.store_sorting('start')
-
-
-    def on_sort_due(self, action, params) -> None:
-        """Callback when changing task sorting."""
-
-        self.set_sorter('Due')
-        self.store_sorting('due')
-
-
-    def on_sort_added(self, action, params) -> None:
-        """Callback when changing task sorting."""
-
-        self.set_sorter('Added')
-        self.store_sorting('added')
-
-
-    def on_sort_title(self, action, params) -> None:
-        """Callback when changing task sorting."""
-
-        self.set_sorter('Title')
-        self.store_sorting('title')
-
-
-    def on_sort_modified(self, action, params) -> None:
-        """Callback when changing task sorting."""
-
-        self.set_sorter('Modified')
-        self.store_sorting('modified')
-
-
-    def on_sort_tags(self, action, params) -> None:
-        """Callback when changing task sorting."""
-
-        self.set_sorter('Tags')
-        self.store_sorting('tags')
+        self.set_sorter(value_str)
+        self.store_sorting(value_str.lower())
 
 
     def store_sorting(self, mode: str) -> None:
