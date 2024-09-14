@@ -238,11 +238,13 @@
     <section>
       <item>
         <attribute name="label" translatable="yes">Ascending Order</attribute>
-        <attribute name="action">win.sort_asc</attribute>
+        <attribute name="target">ASC</attribute>
+        <attribute name="action">win.sort_order</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Descending Order</attribute>
-        <attribute name="action">win.sort_desc</attribute>
+        <attribute name="target">DESC</attribute>
+        <attribute name="action">win.sort_order</attribute>
       </item>
     </section>
   </menu>
