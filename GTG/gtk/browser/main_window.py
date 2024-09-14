@@ -243,8 +243,6 @@ class MainWindow(Gtk.ApplicationWindow):
             ('recurring_month', self.on_set_recurring_every_month, None),
             ('recurring_year', self.on_set_recurring_every_year, None),
             ('recurring_toggle', self.on_toggle_recurring, None),
-            ('sort_asc', self.on_sort_order_asc, None),
-            ('sort_desc', self.on_sort_order_desc, None),
         ]
 
         for action, callback, accel in action_entries:
@@ -267,6 +265,14 @@ class MainWindow(Gtk.ApplicationWindow):
  
         sort_action.connect('change-state', self.on_sort)
         self.add_action(sort_action)
+
+        order_variant = GLib.Variant.new_string('ASC')
+        order_action = Gio.SimpleAction.new_stateful('sort_order', 
+                                                    order_variant.get_type(), 
+                                                    order_variant)
+ 
+        order_action.connect('change-state', self.on_sort_order)
+        self.add_action(order_action)
 
 
     def _init_icon_theme(self):
@@ -1305,6 +1311,19 @@ class MainWindow(Gtk.ApplicationWindow):
         self.store_sorting(value_str.lower())
 
 
+    def on_sort_order(self, action, value) -> None:
+        
+        action.set_state(value)
+        value_str = value.get_string()
+
+        if value_str == 'ASC':
+            self.get_pane().set_sort_order(reverse=False)
+            self.change_sort_icon('ASC')
+        else:
+            self.get_pane().set_sort_order(reverse=True)
+            self.change_sort_icon('DESC')
+
+
     def store_sorting(self, mode: str) -> None:
         """Store sorting mode."""
 
@@ -1315,20 +1334,6 @@ class MainWindow(Gtk.ApplicationWindow):
                 self.config.set('sort_mode_closed', mode)
             case _:
                 self.config.set('sort_mode_open', mode)
-
-
-    def on_sort_order_asc(self, action, params) -> None:
-        """Set ascending order for current sorter."""
-
-        self.get_pane().set_sort_order(reverse=False)
-        self.change_sort_icon('ASC')
-
-
-    def on_sort_order_desc(self, action, params) -> None:
-        """Set descending order for current sorter."""
-
-        self.get_pane().set_sort_order(reverse=True)
-        self.change_sort_icon('DESC')
 
 
     def set_sorter(self, value: str) -> None:
