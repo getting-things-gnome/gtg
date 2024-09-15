@@ -52,20 +52,19 @@ class ReversibleSorter(Gtk.Sorter):
     def reversible_compare(self, first, second) -> Gtk.Ordering:
         """Compare for reversible sorters."""
 
+        if first == second:
+            return Gtk.Ordering.EQUAL
+
+        if first < second:
+            if self._reverse:
+                return Gtk.Ordering.LARGER
+            else:
+                return Gtk.Ordering.SMALLER
+
         if self._reverse:
-            if first < second:
-                return Gtk.Ordering.LARGER
-            elif first > second:
-                return Gtk.Ordering.SMALLER
-            else:
-                return Gtk.Ordering.EQUAL
+            return Gtk.Ordering.SMALLER
         else:
-            if first > second:
-                return Gtk.Ordering.LARGER
-            elif first < second:
-                return Gtk.Ordering.SMALLER
-            else:
-                return Gtk.Ordering.EQUAL
+            return Gtk.Ordering.LARGER
 
 
 class TaskTitleSorter(ReversibleSorter):
