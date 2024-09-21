@@ -182,6 +182,20 @@ them locally with `pre-commit run --all-files`.
 For more guidelines about contributing, see
 [CONTRIBUTING.md](./CONTRIBUTING.md).
 
+### Running the tests
+
+Tests are run using `pytest`.
+
+We first need some files to be pre-processed by meson, which is done by the
+following one-time step:
+```sh
+meson setup ./build
+cd GTG/core/ && ln -s ../../.build/GTG/core/info.py .
+```
+
+Then you can run the tests with `pytest` in the repository root.
+
+
 # "Where is my user data and config stored?"
 
 It depends:
