@@ -16,8 +16,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-""" Tag completion which is connected to LibLarch """
-
 from gi.repository import Gtk
 import unicodedata
 
@@ -59,15 +57,10 @@ class TagCompletion(Gtk.EntryCompletion):
        ['@tag', '!@tag', 'tag', '!tag']
 
        The user can choose wheter write tag with or without '@',
-       with or without '!' which is used for negation.
-
-       The list of tasks is updated by LibLarch callbacks """
+       with or without '!' which is used for negation."""
 
     def __init__(self, tagstore):
-        """ Initialize entry completion
-
-        Create a list store which is connected to a LibLarch and
-        kept updated. """
+        """ Initialize entry completion"""
         super().__init__()
 
         self.tags = Gtk.ListStore(str)

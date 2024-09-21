@@ -48,7 +48,6 @@ parts:
       - python-deps
 
   python-deps:
-    source: https://github.com/getting-things-gnome/liblarch.git
     plugin: python
     build-packages:
       - python3-dbus
