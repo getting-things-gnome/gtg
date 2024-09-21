@@ -568,7 +568,7 @@ class MainWindow(Gtk.ApplicationWindow):
             try:
                 self.vtree_panes['active'].collapse_node(path)
             except IndexError:
-                print(f"Invalid liblarch path {path}")
+                print(f"Invalid path {path}")
 
 
     def restore_tag_selection(self) -> None:
@@ -792,9 +792,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.config.set("collapsed_tasks", collapsed_tasks)
 
         # restore expanded state of subnodes
-        # liblarch already has basic tracking of collapsed nodes and expanding
-        # them necessary, but we still need to do it ourselves for subnodes
-        model: liblarch_gtk.treemodel.TreeModel = sender.get_model()
+        model = sender.get_model()
         for child_id in model.tree.node_all_children(tid):
             child_path = path + (child_id,)
             if str(child_path) not in collapsed_tasks:
