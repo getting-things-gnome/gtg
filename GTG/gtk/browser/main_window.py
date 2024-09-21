@@ -255,22 +255,22 @@ class MainWindow(Gtk.ApplicationWindow):
 
             if accel is not None:
                 self.app.set_accels_for_action(*accel)
-            
+
 
         # Stateful actions from now on
         sort_variant = GLib.Variant.new_string('Title')
-        sort_action = Gio.SimpleAction.new_stateful('sort', 
-                                                    sort_variant.get_type(), 
+        sort_action = Gio.SimpleAction.new_stateful('sort',
+                                                    sort_variant.get_type(),
                                                     sort_variant)
- 
+
         sort_action.connect('change-state', self.on_sort)
         self.add_action(sort_action)
 
         order_variant = GLib.Variant.new_string('ASC')
-        order_action = Gio.SimpleAction.new_stateful('sort_order', 
-                                                    order_variant.get_type(), 
+        order_action = Gio.SimpleAction.new_stateful('sort_order',
+                                                    order_variant.get_type(),
                                                     order_variant)
- 
+
         order_action.connect('change-state', self.on_sort_order)
         self.add_action(order_action)
 
@@ -1303,7 +1303,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
 
     def on_sort(self, action, value) -> None:
-        
+
         action.set_state(value)
         value_str = value.get_string()
 
@@ -1312,7 +1312,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
 
     def on_sort_order(self, action, value) -> None:
-        
+
         action.set_state(value)
         value_str = value.get_string()
 
