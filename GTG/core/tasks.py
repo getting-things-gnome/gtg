@@ -766,7 +766,7 @@ class TaskStore(BaseStore):
         return new_task
 
 
-    def new(self, title: str = '', parent: Optional[UUID] = None) -> Task:
+    def new(self, title: str = '', parent: Optional[UUID] = None) -> Task: # type: ignore[override]
         """Create a new task and add it to the store."""
 
         tid = uuid4()
@@ -784,7 +784,7 @@ class TaskStore(BaseStore):
         return task
 
 
-    def from_xml(self, xml: _Element, tag_store: TagStore) -> None:
+    def from_xml(self, xml: _Element, tag_store: TagStore) -> None: # type: ignore[override]
         """Load up tasks from a lxml object."""
 
         elements = list(xml.iter(self.XML_TAG))

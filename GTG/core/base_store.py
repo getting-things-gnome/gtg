@@ -53,6 +53,9 @@ class BaseStore(GObject.Object,Generic[S]):
     # --------------------------------------------------------------------------
 
     def new(self) -> S:
+        """Creates a new item in the store.
+        NOTE: Subclasses may override the signature of this method.
+        """
         raise NotImplementedError
 
 
@@ -177,6 +180,9 @@ class BaseStore(GObject.Object,Generic[S]):
     # --------------------------------------------------------------------------
 
     def from_xml(self, xml: _Element) -> None:
+        """Load data from XML.
+        NOTE: Subclasses may override the signature of this method.
+        """
         raise NotImplementedError
 
 

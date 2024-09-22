@@ -245,7 +245,7 @@ class TagStore(BaseStore[Tag]):
         return self.lookup_names[name]
 
 
-    def new(self, name: str, parent: Optional[UUID] = None) -> Tag:
+    def new(self, name: str, parent: Optional[UUID] = None) -> Tag: # type: ignore[override]
         """Create a new tag and add it to the store."""
 
         name = name if not name.startswith('@') else name[1:]
