@@ -162,7 +162,7 @@ class SavedSearchStore(BaseStore):
         return root
 
 
-    def new(self, name: str, query: str, parent: Optional[UUID] = None) -> SavedSearch:
+    def new(self, name: str, query: str, parent: Optional[UUID] = None) -> SavedSearch: # type: ignore[override]
         """Create a new saved search and add it to the store."""
 
         search_id = uuid4()
