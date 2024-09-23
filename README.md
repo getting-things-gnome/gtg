@@ -42,7 +42,6 @@ git pull --rebase
 * python-caldav
 * pycairo
 * pygobject (>= 3.20)
-* libLarch (>= 3.2)
 * lxml
 * itstool
 * gettext
@@ -66,15 +65,6 @@ echo 'deb http://deb.debian.org/debian buster-backports main' | sudo tee -a /etc
 # On Debian/Ubuntu:
 sudo apt install meson python3-gi-cairo python3-gi gir1.2-pango-1.0 gir1.2-gdkpixbuf-2.0 gir1.2-gtk-3.0 itstool gettext python3-lxml libgirepository1.0-dev libsecret-1.0 gir1.2-secret-1
 ```
-
-liblarch may be harder to come by until distributions package the python3 version of it, alongside GTG 0.6+ itself.
-You can get it in the meanwhile via PIP (commonly provided by `python3-pip` package):
-
-```sh
-pip3 install --user -e git+https://github.com/getting-things-gnome/liblarch.git#egg=liblarch
-```
-
-Alternatively, if you had checked out a specific version of liblarch that you want to test, in a parent folder for example (`../liblarch`), you could do: `pip3 install --user ../liblarch/` (you can later remove that with `pip3 uninstall liblarch` if you need to).
 
 #### Optional Dependencies
 
