@@ -17,11 +17,12 @@
 
 import os
 import platform
-import importlib
+import importlib.util
+from typing import Tuple
 
 from GTG.core import info
 
-from gi.repository import Gdk, Gtk, GObject, GLib, Xdp
+from gi.repository import Gdk, Gtk, GObject, GLib, Xdp # type: ignore[import-untyped]
 
 
 class SystemInfo:
@@ -99,9 +100,10 @@ class SystemInfo:
                 if line.startswith("flatpak-version"):
                     flatpak_version = line.split("=")[1].strip()
                     return flatpak_version
+        raise RuntimeError("Missing flatpak-version in /.flatpak-info file.")
 
 
-    def __get_gtk_version(self) -> str:
+    def __get_gtk_version(self) -> Tuple[int,int,int]:
         """Get GTK version."""
         return (
             Gtk.get_major_version(),
