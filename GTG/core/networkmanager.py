@@ -19,7 +19,7 @@
 
 """ Communicate with Network Manager """
 
-from gi.repository import Gio
+from gi.repository import Gio # type: ignore[import-untyped]
 
 
 def is_connection_up():

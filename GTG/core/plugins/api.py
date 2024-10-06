@@ -19,7 +19,7 @@
 import os
 import pickle
 import logging
-from gi.repository import GLib
+from gi.repository import GLib # type: ignore[import-untyped]
 from GTG.core.dirs import plugin_configuration_dir
 
 log = logging.getLogger(__name__)

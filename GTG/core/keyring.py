@@ -16,11 +16,12 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gi
+from typing import Type
+import gi # type: ignore[import-untyped]
 import logging
 try:
     gi.require_version('Secret', '1')
-    from gi.repository import Secret
+    from gi.repository import Secret # type: ignore[import-untyped]
 except (ValueError, ImportError):
     Secret = None
 
@@ -118,7 +119,7 @@ class FallbackKeyring(Borg):
 
 
 if Secret is not None:
-    Keyring = SecretKeyring
+    Keyring: Type[SecretKeyring|GNOMEKeyring|FallbackKeyring] = SecretKeyring
 elif GnomeKeyring is not None:
     Keyring = GNOMEKeyring
 else:

@@ -18,7 +18,7 @@
 
 """Sorters for tags and tasks."""
 
-from gi.repository import Gtk
+from gi.repository import Gtk # type: ignore[import-untyped]
 from GTG.core.tasks import Task
 
 def unwrap(row, expected_type):
