@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
+from typing import Dict, Any
 
 
 class Borg():
@@ -23,7 +24,7 @@ class Borg():
     the same state (just inherit this class to have it working)
     """
 
-    _borg_state = {}
+    _borg_state: Dict[str,Any] = {}
 
     def __init__(self):
         self.__dict__ = self._borg_state

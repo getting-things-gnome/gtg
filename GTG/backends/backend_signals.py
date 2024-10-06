@@ -16,7 +16,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from gi.repository import GObject, GLib
+from gi.repository import GObject, GLib # type: ignore[import-untyped]
 
 from GTG.core.borg import Borg
 
