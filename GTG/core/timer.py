@@ -22,7 +22,7 @@ import datetime
 import re
 import logging
 
-from gi.repository import GObject, GLib, Gio
+from gi.repository import GObject, GLib, Gio # type: ignore[import-untyped]
 
 log = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ log = logging.getLogger(__name__)
 class Timer(GObject.GObject):
     __signal_type__ = (GObject.SignalFlags.RUN_FIRST,
                        None,
-                       [])
+                       []) # type: ignore[var-annotated]
 
     __gsignals__ = {'refresh': __signal_type__}
 

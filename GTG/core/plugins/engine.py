@@ -20,7 +20,8 @@ import importlib
 import inspect
 import os
 import logging
-from gi.repository import GLib
+from typing import List
+from gi.repository import GLib # type: ignore[import-untyped]
 
 from GTG.core.dirs import PLUGIN_DIRS
 from GTG.core.borg import Borg
@@ -39,7 +40,7 @@ class Plugin():
     error = False
     # True if the plugin is actually loaded and running.
     _active = False
-    missing_modules = []
+    missing_modules: List[str] = []
     missing_dbus = []
 
     def __init__(self, info, module_paths):
