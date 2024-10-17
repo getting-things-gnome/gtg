@@ -48,7 +48,6 @@ class SystemInfo:
         sys_info += "\n"
         sys_info += self.__format_info("lxml", self.__get_python_module("lxml"))
         sys_info += self.__format_info("caldav", self.__get_python_module("caldav"))
-        sys_info += self.__format_info("liblarch", self.__get_python_module("liblarch"))
         sys_info += self.__format_info("Cheetah3", self.__get_python_module("Cheetah"))
         sys_info += self.__format_info("dbus-python", self.__get_python_module("dbus"))
         sys_info += self.__format_info("pdflatex", self.__get_python_module("pdflatex"))

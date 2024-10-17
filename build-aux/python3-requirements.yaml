@@ -2,15 +2,6 @@
 build-commands: []
 buildsystem: simple
 modules:
-  - name: python3-liblarch
-    buildsystem: simple
-    build-commands:
-      - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}"
-        --prefix=${FLATPAK_DEST} "." --no-build-isolation
-    sources:
-      - type: git
-        url: https://github.com/getting-things-gnome/liblarch.git
-        commit: null
   - name: python3-lxml
     buildsystem: simple
     build-commands:
