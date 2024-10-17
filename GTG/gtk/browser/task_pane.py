@@ -613,7 +613,10 @@ class TaskPane(Gtk.ScrolledWindow):
 
 
     def check_parent(self, value, target) -> bool:
-        """Check to parenting a parent to its own children"""
+        """Check for parenting a task to its own descendant or to itself."""
+
+        if value == target:
+            return False
 
         item = target
         while item.parent:
