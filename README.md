@@ -182,6 +182,28 @@ them locally with `pre-commit run --all-files`.
 For more guidelines about contributing, see
 [CONTRIBUTING.md](./CONTRIBUTING.md).
 
+### Running the tests
+
+Tests are run using `pytest`.
+
+Normally, `.py.in` files have to first be pre-processed by the meson setup step,
+then `pytest` has to be run on the output of the meson build. This is what
+the [GitHub Actions
+workflow](https://github.com/getting-things-gnome/gtg/blob/master/.github/workflows/unit_tests.yml)
+does.
+
+For local development, we can simplify our life and just copy the processed
+`.py` files back next to their `.py.in` counterparts:
+
+```
+meson setup ./build
+cp .build/GTG/core/info.py GTG/core/
+```
+
+Then, as long as you have the correct dependencies installed (check out
+the GHA workflow for reference), just run `pytest` from the repo root.
+
+
 # "Where is my user data and config stored?"
 
 It depends:
