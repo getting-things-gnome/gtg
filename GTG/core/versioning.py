@@ -37,7 +37,7 @@ tags_cache = {}
 tid_cache = {}
 
 
-def convert(path: str) -> et.ElementTree:
+def convert(path: str) -> et._ElementTree:
     """Convert old XML into the new format."""
 
     old_tree = xml.open_file(path, 'project')
@@ -75,7 +75,7 @@ def convert(path: str) -> et.ElementTree:
     return et.ElementTree(new_root)
 
 
-def convert_tags(old_tree: et.Element) -> Tuple[et.Element, et.Element]:
+def convert_tags(old_tree: et._Element) -> Tuple[et._Element, et._Element]:
     """Convert old tags for the new format."""
 
     old_file = os.path.join(DATA_DIR, 'tags.xml')
@@ -123,7 +123,9 @@ def convert_tags(old_tree: et.Element) -> Tuple[et.Element, et.Element]:
     # through the tasks to make sure we get *all* tags and have
     # their IDs ready for task conversion.
     for task in old_tree.iter('task'):
-        for tag_name in task.get('tags').split(','):
+        tags_str = task.get('tags')
+        assert tags_str is not None, "Missing tags property in old task."
+        for tag_name in tags_str.split(','):
             if tag_name and tag_name not in tags_cache:
                 new_tag = et.SubElement(taglist, 'tag')
                 tid = str(uuid4())
@@ -135,7 +137,7 @@ def convert_tags(old_tree: et.Element) -> Tuple[et.Element, et.Element]:
     return taglist, searchlist
 
 
-def convert_task(task: et.Element) -> Optional[et.Element]:
+def convert_task(task: et._Element) -> Optional[et._Element]:
     """Convert old task XML into the new format."""
 
     if task is None:
@@ -145,34 +147,42 @@ def convert_task(task: et.Element) -> Optional[et.Element]:
 
     # Get the old task properties
     # TIDs were stored as UUID, but sometimes they were not present
-    tid = task.get('uuid') or uuid4() or tid_cache[tid]
+    tid = task.get('uuid') or str(uuid4())
     status = task.get('status')
-    title = task.find('title').text
+    assert status is not None, 'Missing status property in old task.'
+    title_element = task.find('title')
+    assert title_element is not None, 'Missing title element in old task.'
+    title = title_element.text
     content = task.find('content')
 
-    try:
-        done_date = task.find('donedate').text
-    except AttributeError:
+    donedate_element = task.find('donedate')
+    if donedate_element is not None:
+        done_date = donedate_element.text
+    else:
         done_date = None
 
-    try:
-        due_date = task.find('duedate').text
-    except AttributeError:
+    duedate_element = task.find('duedate')
+    if duedate_element is not None:
+        due_date = duedate_element.text
+    else:
         due_date = None
 
-    try:
-        modified = task.find('modified').text
-    except AttributeError:
+    modified_element = task.find('modified')
+    if modified_element is not None:
+        modified = modified_element.text
+    else:
         modified = None
 
-    try:
-        added = task.find('added').text
-    except AttributeError:
+    added_element = task.find('added')
+    if added_element is not None:
+        added = added_element.text
+    else:
         added = None
 
-    try:
-        start = task.find('startdate').text
-    except AttributeError:
+    startdate_element = task.find('startdate')
+    if startdate_element is not None:
+        start = startdate_element.text
+    else:
         start = None
 
 
@@ -187,7 +197,9 @@ def convert_task(task: et.Element) -> Optional[et.Element]:
 
     tags = et.SubElement(new_task, 'tags')
 
-    for tag_name in task.get('tags').split(','):
+    tags_str = task.get('tags')
+    assert tags_str is not None, 'Missing tags property in old task.'
+    for tag_name in tags_str.split(','):
         if tag_name:
             tag_id = tags_cache[tag_name]
             task_tag = et.SubElement(tags, 'tag')
@@ -217,24 +229,24 @@ def convert_task(task: et.Element) -> Optional[et.Element]:
         new_done.text = str(Date(done_date))
 
     if start:
-        start = Date(start)
+        tmp_start = Date(start)
 
-        if start.is_fuzzy():
+        if tmp_start.is_fuzzy():
             new_start = et.SubElement(dates, 'fuzzyStart')
         else:
             new_start = et.SubElement(dates, 'start')
 
-        new_start.text = str(start)
+        new_start.text = str(tmp_start)
 
     if due_date:
-        due_date = Date(due_date)
+        tmp_due_date = Date(due_date)
 
-        if due_date.is_fuzzy():
+        if tmp_due_date.is_fuzzy():
             new_due = et.SubElement(dates, 'fuzzyDue')
         else:
             new_due = et.SubElement(dates, 'due')
 
-        new_due.text = str(due_date)
+        new_due.text = str(tmp_due_date)
 
     recurring = et.SubElement(new_task, 'recurring')
     recurring.set('enabled', 'false')
@@ -248,7 +260,8 @@ def convert_task(task: et.Element) -> Optional[et.Element]:
     new_content = et.SubElement(new_task, 'content')
 
     if content is not None:
-        new_content.text = et.CDATA(convert_content(content.text))
+        content_text = content.text or ''
+        new_content.text = et.CDATA(convert_content(content_text))
     else:
         new_content.text = et.CDATA('')
 
