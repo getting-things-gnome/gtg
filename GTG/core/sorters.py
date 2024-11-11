@@ -129,10 +129,8 @@ class TaskTagSorter(ReversibleSorter):
     def get_first_letter(self, tags) -> str:
         """Get first letter of the first tag in a set of tags."""
 
-        # Fastest way to get the first item
-        # on a set in Python
-        for t in tags:
-            return t.name[0]
+        return next(iter(tags)).name[0]
+
 
     def do_compare(self, a, b) -> Gtk.Ordering:
 

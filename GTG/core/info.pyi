@@ -1,0 +1,17 @@
+from typing import List
+
+NAME: str
+AUTHORS: str
+COPYRIGHT: str
+SHORT_DESCRIPTION: str
+URL: str
+CHAT_URL: str
+SOURCE_CODE_URL: str
+OPENHUB_URL: str
+REPORT_BUG_URL: str
+EMAIL: str
+VERSION: str
+AUTHORS_MAINTAINERS: List[str]
+AUTHORS_RELEASE_CONTRIBUTORS: List[str]
+ARTISTS: List[str]
+DOCUMENTERS: List[str]

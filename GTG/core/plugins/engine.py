@@ -20,7 +20,7 @@ import importlib
 import inspect
 import os
 import logging
-from typing import List
+from typing import List, Tuple
 from gi.repository import GLib # type: ignore[import-untyped]
 
 from GTG.core.dirs import PLUGIN_DIRS
@@ -41,7 +41,7 @@ class Plugin():
     # True if the plugin is actually loaded and running.
     _active = False
     missing_modules: List[str] = []
-    missing_dbus = []
+    missing_dbus: List[Tuple[str, ...]] = []
 
     def __init__(self, info, module_paths):
         """Initialize the Plugin using a ConfigParser."""

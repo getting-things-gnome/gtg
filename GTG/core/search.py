@@ -82,7 +82,7 @@ from GTG.core.dates import Date
 
 # Generate keywords and their possible translations
 # They must be listed because of gettext
-KEYWORDS = {
+TMP_KEYWORDS = {
     # Translators: Used in search parsing, no spaces, lowercased in code
     "not": _("not"),
     # Translators: Used in search parsing, no spaces, lowercased in code
@@ -108,9 +108,10 @@ KEYWORDS = {
 }
 
 # transform keywords and their translations into a list of possible commands
-for key in KEYWORDS:
-    if " " not in KEYWORDS[key] and KEYWORDS[key].lower() != key.lower():
-        possible_words = [key.lower(), KEYWORDS[key].lower()]
+KEYWORDS = dict()
+for key in TMP_KEYWORDS:
+    if " " not in TMP_KEYWORDS[key] and TMP_KEYWORDS[key].lower() != key.lower():
+        possible_words = [key.lower(), TMP_KEYWORDS[key].lower()]
     else:
         possible_words = [key.lower()]
     KEYWORDS[key] = possible_words
