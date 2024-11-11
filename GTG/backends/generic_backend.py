@@ -28,6 +28,7 @@ import os
 import pickle
 import threading
 import logging
+from typing import Dict, Any
 
 from GTG.backends.backend_signals import BackendSignals
 from GTG.core.dirs import SYNC_DATA_DIR
@@ -66,7 +67,7 @@ class GenericBackend():
     #        _("Short description of the backend"),\
     #    }
     # The complete list of constants and their meaning is given below.
-    _general_description = {}
+    _general_description: Dict[str,Any] = {}
 
     # These are the parameters to configure a new backend of this type. A
     # parameter has a name, a type and a default value.
@@ -82,7 +83,7 @@ class GenericBackend():
     #        GenericBackend.PARAM_DEFAULT_VALUE: 42,
     #        }}
     # The complete list of constants and their meaning is given below.
-    _static_parameters = {}
+    _static_parameters: Dict[str,Dict[str,Any]] = {}
 
     def initialize(self):
         """
