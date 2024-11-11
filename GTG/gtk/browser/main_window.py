@@ -839,10 +839,13 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.quickadd_entry.grab_focus()
 
+
     def focus_sidebar(self, action, param):
         """Callback to focus the sidebar widget."""
+
         self.sidebar_vbox.props.visible = True
-        self.tagtreeview.grab_focus()
+        self.sidebar.general_box.get_row_at_index(0).grab_focus()
+
 
     def on_quickadd_focus_in(self, controller):
         self.toggle_delete_accel(False)
