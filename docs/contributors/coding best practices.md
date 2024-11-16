@@ -171,7 +171,7 @@ Modules should begin with the following header (updated to the current year):
 
 ```
 # -----------------------------------------------------------------------------
-# Gettings Things GNOME! - a personal organizer for the GNOME desktop
+# Getting Things GNOME! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2022 - the GTG contributors
 #
 # This program is free software: you can redistribute it and/or modify it under
