@@ -32,7 +32,7 @@ from operator import attrgetter
 
 from lxml.etree import Element, _Element, SubElement, CDATA
 
-from GTG.core.base_store import BaseStore
+from GTG.core.base_store import BaseStore, StoreItem
 from GTG.core.tags import Tag, TagStore
 from GTG.core.dates import Date
 
@@ -78,19 +78,16 @@ class Filter(Enum):
 DEFAULT_TITLE = _('New Task')
 
 
-class Task(GObject.Object):
+class Task(StoreItem):
     """A single task."""
 
     __gtype_name__ = 'gtg_Task'
 
     def __init__(self, id: UUID, title: str) -> None:
-        self.id = id
         self.raw_title = title.strip('\t\n')
         self.content =  ''
         self.tags: Set[Tag] = set()
-        self.children: List[Task] = []
         self.status = Status.ACTIVE
-        self.parent: Optional[Task] = None
 
         self._date_added = Date.no_date()
         self._date_due = Date.no_date()
@@ -115,7 +112,7 @@ class Task(GObject.Object):
             raise NotImplementedError
         self.duplicate_cb: Callable[[Task],Task] = default_duplicate_cb
 
-        super(Task, self).__init__()
+        super(Task, self).__init__(id)
 
 
     @GObject.Property(type=bool, default=True)
@@ -617,11 +614,6 @@ class Task(GObject.Object):
         self._is_active = value
 
 
-    @GObject.Property(type=bool, default=False)
-    def has_children(self) -> bool:
-        return bool(len(self.children))
-
-
     @GObject.Property(type=str)
     def icons(self) -> str:
         icons_text = ''
@@ -702,7 +694,7 @@ class Task(GObject.Object):
 # STORE
 # ------------------------------------------------------------------------------
 
-class TaskStore(BaseStore):
+class TaskStore(BaseStore[Task]):
     """A tree of tasks."""
 
     __gtype_name__ = 'gtg_TaskStore'
@@ -1013,6 +1005,7 @@ class TaskStore(BaseStore):
 
         # Add back to UI
         self._append_to_parent_model(item_id)
+        assert item.parent is not None
         item.parent.notify('has_children')
 
 
@@ -1023,6 +1016,7 @@ class TaskStore(BaseStore):
 
         # Remove from UI
         self._remove_from_parent_model(item_id)
+        assert item.parent is not None
         item.parent.notify('has_children')
 
         super().unparent(item_id, parent_id)

@@ -612,28 +612,12 @@ class TaskPane(Gtk.ScrolledWindow):
         return Gdk.DragAction.COPY
 
 
-    def check_parent(self, value, target) -> bool:
-        """Check for parenting a task to its own descendant or to itself."""
-
-        if value == target:
-            return False
-
-        item = target
-        while item.parent:
-            if item.parent == value:
-                return False
-
-            item = item.parent
-
-        return True
-
-
     def drag_drop(self, target, task, x, y):
         """Callback when dropping onto a target"""
 
         dropped = target.get_widget().props.task
 
-        if not self.check_parent(task, dropped):
+        if not task.check_possible_parent(dropped):
             return
 
         if task.parent:

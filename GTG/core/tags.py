@@ -29,7 +29,7 @@ import re
 from lxml.etree import Element, SubElement, _Element
 from typing import Dict, List, Set, Optional
 
-from GTG.core.base_store import BaseStore
+from GTG.core.base_store import BaseStore, StoreItem
 
 log = logging.getLogger(__name__)
 
@@ -40,26 +40,23 @@ def extract_tags_from_text(text):
     return re.findall(r'(?:^|[\s])(@[\w\/\.\-\:\&]*\w)', text)
 
 
-class Tag(GObject.Object):
+class Tag(StoreItem):
     """A tag that can be applied to a Task."""
 
     __gtype_name__ = 'gtg_Tag'
 
     def __init__(self, id: UUID, name: str) -> None:
-        self.id = id
         self._name = name
 
         self._icon: Optional[str] = None
         self._color: Optional[str] = None
         self.actionable = True
-        self.children: List[Tag] = []
-        self.parent = None
 
         self._task_count_open = 0
         self._task_count_actionable = 0
         self._task_count_closed = 0
 
-        super(Tag, self).__init__()
+        super(Tag, self).__init__(id)
 
 
     def __str__(self) -> str:
@@ -80,11 +77,6 @@ class Tag(GObject.Object):
         return self.id == other.id
 
 
-    @GObject.Property(type=int)
-    def children_count(self) -> int:
-        """Read only property."""
-
-        return len(self.children)
 
 
     @GObject.Property(type=str)
@@ -168,16 +160,6 @@ class Tag(GObject.Object):
     @task_count_closed.setter
     def set_task_count_closed(self, value: int) -> None:
         self._task_count_closed = value
-
-
-    def get_ancestors(self) -> List['Tag']:
-        """Return all ancestors of this tag"""
-        ancestors: List[Tag] = []
-        here = self
-        while here.parent:
-            here = here.parent
-            ancestors.append(here)
-        return ancestors
 
 
     def get_matching_tags(self) -> List['Tag']:

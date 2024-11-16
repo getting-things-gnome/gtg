@@ -590,27 +590,11 @@ class Sidebar(Gtk.ScrolledWindow):
             source.get_widget().set_opacity(1)
 
 
-    def check_parent(self, value, target) -> bool:
-        """Check for parenting a tag to its own descendant or to itself."""
-
-        if value == target:
-            return False
-
-        item = target
-        while item.parent:
-            if item.parent == value:
-                return False
-
-            item = item.parent
-
-        return True
-
-
     def drag_drop(self, target, value, x, y):
         """Callback when dropping onto a target"""
         dropped = target.get_widget().props.tag
 
-        if not self.check_parent(value, dropped):
+        if not value.check_possible_parent(dropped):
             return
 
         if value.parent:
