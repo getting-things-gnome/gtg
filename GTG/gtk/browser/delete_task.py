@@ -44,8 +44,8 @@ class DeletionUI:
 
     def on_delete_confirm(self, tasklist):
 
-        for task in tasklist:
-            self.ds.tasks.remove(task.id)
+        task_ids = [ t.id for t in tasklist ]
+        self.ds.tasks.batch_remove(task_ids)
 
 
     def recursive_list_tasks(self, tasklist, root):
