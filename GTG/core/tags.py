@@ -56,7 +56,7 @@ class Tag(StoreItem):
         self._task_count_actionable = 0
         self._task_count_closed = 0
 
-        super(Tag, self).__init__(id)
+        super().__init__(id)
 
 
     def __str__(self) -> str:

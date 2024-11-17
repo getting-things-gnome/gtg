@@ -112,7 +112,7 @@ class Task(StoreItem):
             raise NotImplementedError
         self.duplicate_cb: Callable[[Task],Task] = default_duplicate_cb
 
-        super(Task, self).__init__(id)
+        super().__init__(id)
 
 
     @GObject.Property(type=bool, default=True)

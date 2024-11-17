@@ -617,7 +617,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
         dropped = target.get_widget().props.task
 
-        if not task.check_possible_parent(dropped):
+        if not task.is_parentable_to(dropped):
             return
 
         if task.parent:

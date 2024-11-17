@@ -42,8 +42,8 @@ class StoreItem(GObject.Object):
     def __init__(self,id: UUID):
         self.id: UUID = id
         self.parent: Optional[Self] = None
-        self.children: List[Self] = []
-        super(StoreItem, self).__init__()
+        self.children: list[Self] = []
+        super().__init__()
 
 
     @GObject.Property(type=int)
@@ -67,7 +67,7 @@ class StoreItem(GObject.Object):
         return ancestors
 
 
-    def check_possible_parent(self, target) -> bool:
+    def is_parentable_to(self, target) -> bool:
         """Check for parenting an item to its own descendant or to itself."""
         return self != target and self not in target.get_ancestors()
 

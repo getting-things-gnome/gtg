@@ -37,7 +37,7 @@ class TestStoreItemProperties(TestCase):
         self.assertFalse(item.has_children)
 
 
-    def test_children_count_singel_child(self):
+    def test_children_count_single_child(self):
         item = StoreItem(uuid4())
         item.children.append(StoreItem(uuid4))
         self.assertEqual(item.children_count, 1)
@@ -93,7 +93,7 @@ class TestStoreItemGetAncestors(TestCase):
 
 
 
-class TestStoreItemCheckPossibleParent(TestCase):
+class TestStoreItemIsParentableTo(TestCase):
 
 
     def setUp(self):
@@ -117,28 +117,28 @@ class TestStoreItemCheckPossibleParent(TestCase):
 
 
     def test_forbid_selfparenting(self):
-        self.assertFalse(self.root.check_possible_parent(self.root))
+        self.assertFalse(self.root.is_parentable_to(self.root))
 
 
     def test_forbid_children(self):
-        self.assertFalse(self.root.check_possible_parent(self.children[0]))
+        self.assertFalse(self.root.is_parentable_to(self.children[0]))
 
 
     def test_forbid_distant_descendant(self):
-        self.assertFalse(self.root.check_possible_parent(self.greatgrandchildren[1]))
+        self.assertFalse(self.root.is_parentable_to(self.greatgrandchildren[1]))
 
 
     def test_allow_parent(self):
-        self.assertTrue(self.children[1].check_possible_parent(self.root))
+        self.assertTrue(self.children[1].is_parentable_to(self.root))
 
 
     def test_allow_distant_ancestor(self):
-        self.assertTrue(self.greatgrandchildren[0].check_possible_parent(self.root))
+        self.assertTrue(self.greatgrandchildren[0].is_parentable_to(self.root))
 
 
     def test_allow_sibling(self):
-        self.assertTrue(self.children[1].check_possible_parent(self.children[2]))
+        self.assertTrue(self.children[1].is_parentable_to(self.children[2]))
 
 
     def test_allow_other_trees(self):
-        self.assertTrue(self.greatgrandchildren[0].check_possible_parent(self.strangers[2]))
+        self.assertTrue(self.greatgrandchildren[0].is_parentable_to(self.strangers[2]))
