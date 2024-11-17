@@ -594,7 +594,7 @@ class Sidebar(Gtk.ScrolledWindow):
         """Callback when dropping onto a target"""
         dropped = target.get_widget().props.tag
 
-        if not value.check_possible_parent(dropped):
+        if not value.is_parentable_to(dropped):
             return
 
         if value.parent:
