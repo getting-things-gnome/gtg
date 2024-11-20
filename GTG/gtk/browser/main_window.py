@@ -131,6 +131,11 @@ class MainWindow(Gtk.ApplicationWindow):
         # YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         # Setup GTG icon theme
         self._init_icon_theme()
+       
+        #switch tab
+        self.switch_tab_open()
+        self.switch_tab_actionable()
+        self.switch_tab_closed()
 
         # Init Actions
         self._set_actions()
@@ -198,6 +203,22 @@ class MainWindow(Gtk.ApplicationWindow):
         self.panes['active'].sort_btn.set_popover(self.sort_menu)
 
 
+    def switch_tab_open(self, t=None , a = None):
+        """switch tab 'open_view'."""
+        stack = self.stack_switcher.get_stack()
+        stack.set_visible_child_name('open_view')
+
+    def switch_tab_actionable(self, t=None , a = None):
+        """switch tab 'actionable_view'."""
+        stack = self.stack_switcher.get_stack()
+        stack.set_visible_child_name('actionable_view')
+
+    def switch_tab_closed(self, t=None , a = None):
+        """switch tab 'closed_view'."""
+        stack = self.stack_switcher.get_stack()
+        stack.set_visible_child_name('closed_view')
+
+    
     def _set_actions(self):
         """Setup actions."""
 
@@ -213,6 +234,9 @@ class MainWindow(Gtk.ApplicationWindow):
             ('focus_quickentry', self.focus_quickentry, ('win.focus_quickentry', ['<ctrl>L'])),
             ('delete_task', self.on_delete_tasks, ('win.delete_task', ['<ctrl>Delete'])),
             ('help_overlay', None, ('win.show-help-overlay', ['<ctrl>question'])),
+            ('switch_tab_open' , self.switch_tab_open, ('win.switch_tab_open' , ['<alt>1'])),
+            ('switch_tab_actionable' , self.switch_tab_actionable, ('win.switch_tab_actionable' , ['<alt>2'])),
+            ('switch_tab_closed' , self.switch_tab_closed, ('win.switch_tab_closed' , ['<alt>3'])),
             ('mark_as_started', self.on_mark_as_started, None),
             ('start_today', self.on_start_for_today, None),
             ('start_tomorrow', self.on_start_for_tomorrow, None),
