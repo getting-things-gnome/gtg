@@ -132,11 +132,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # Setup GTG icon theme
         self._init_icon_theme()
        
-        #switch tab
-        self.switch_tab_open()
-        self.switch_tab_actionable()
-        self.switch_tab_closed()
-
         # Init Actions
         self._set_actions()
 
