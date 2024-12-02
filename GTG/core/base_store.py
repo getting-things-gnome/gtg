@@ -25,7 +25,7 @@ from uuid import UUID
 import logging
 
 from lxml.etree import _Element
-from typing import Dict, List, Optional, TypeVar, Generic
+from typing import Dict, Optional, TypeVar, Generic
 from typing_extensions import Self
 
 
@@ -57,9 +57,9 @@ class StoreItem(GObject.Object):
         return len(self.children) > 0
 
 
-    def get_ancestors(self) -> List[Self]:
+    def get_ancestors(self) -> list[Self]:
         """Return all ancestors of this tag"""
-        ancestors: List[Self] = []
+        ancestors: list[Self] = []
         here = self
         while here.parent:
             here = here.parent
@@ -79,7 +79,7 @@ class BaseStore(GObject.Object,Generic[S]):
 
     def __init__(self) -> None:
         self.lookup: Dict[UUID, S] = {}
-        self.data: List[S] = []
+        self.data: list[S] = []
 
         super().__init__()
 
@@ -274,7 +274,7 @@ class BaseStore(GObject.Object,Generic[S]):
     def print_tree(self) -> None:
         """Print the all the items as a tree."""
 
-        def recursive_print(tree: List, indent: int) -> None:
+        def recursive_print(tree: list, indent: int) -> None:
             """Inner print function. """
 
             tab =  '   ' * indent if indent > 0 else ''
