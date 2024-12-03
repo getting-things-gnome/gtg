@@ -131,7 +131,7 @@ class MainWindow(Gtk.ApplicationWindow):
         # YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         # Setup GTG icon theme
         self._init_icon_theme()
-       
+
         # Init Actions
         self._set_actions()
 
@@ -213,7 +213,7 @@ class MainWindow(Gtk.ApplicationWindow):
         stack = self.stack_switcher.get_stack()
         stack.set_visible_child_name('closed_view')
 
-    
+
     def _set_actions(self):
         """Setup actions."""
 
