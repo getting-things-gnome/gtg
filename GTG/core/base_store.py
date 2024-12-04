@@ -25,17 +25,52 @@ from uuid import UUID
 import logging
 
 from lxml.etree import _Element
-from typing import Dict, List, Optional, TypeVar, Generic, Protocol
+from typing import Dict, Optional, TypeVar, Generic
+from typing_extensions import Self
 
 
 log = logging.getLogger(__name__)
 
-S = TypeVar('S',bound='Storeable')
+S = TypeVar('S',bound='StoreItem')
 
-class Storeable(Protocol[S]):
-    id: UUID
-    parent: Optional[S]
-    children: List[S]
+class StoreItem(GObject.Object):
+    """Base class for items in BaseStore."""
+
+    __gtype_name__ = 'gtg_StoreItem'
+
+
+    def __init__(self,id: UUID):
+        self.id: UUID = id
+        self.parent: Optional[Self] = None
+        self.children: list[Self] = []
+        super().__init__()
+
+
+    @GObject.Property(type=int)
+    def children_count(self) -> int:
+        """Read only property."""
+        return len(self.children)
+
+
+    @GObject.Property(type=bool, default=False)
+    def has_children(self) -> bool:
+        return len(self.children) > 0
+
+
+    def get_ancestors(self) -> list[Self]:
+        """Return all ancestors of this tag"""
+        ancestors: list[Self] = []
+        here = self
+        while here.parent:
+            here = here.parent
+            ancestors.append(here)
+        return ancestors
+
+
+    def is_parentable_to(self, target) -> bool:
+        """Check for parenting an item to its own descendant or to itself."""
+        return self != target and self not in target.get_ancestors()
+
 
 
 class BaseStore(GObject.Object,Generic[S]):
@@ -44,7 +79,7 @@ class BaseStore(GObject.Object,Generic[S]):
 
     def __init__(self) -> None:
         self.lookup: Dict[UUID, S] = {}
-        self.data: List[S] = []
+        self.data: list[S] = []
 
         super().__init__()
 
@@ -239,7 +274,7 @@ class BaseStore(GObject.Object,Generic[S]):
     def print_tree(self) -> None:
         """Print the all the items as a tree."""
 
-        def recursive_print(tree: List, indent: int) -> None:
+        def recursive_print(tree: list, indent: int) -> None:
             """Inner print function. """
 
             tab =  '   ' * indent if indent > 0 else ''
