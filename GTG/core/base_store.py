@@ -171,7 +171,7 @@ class BaseStore(GObject.Object,Generic[S]):
         self.emit('removed', str(item_id))
 
 
-    def batch_remove(self,item_ids: List[UUID]) -> None:
+    def batch_remove(self,item_ids: list[UUID]) -> None:
         """Remove multiple items, ensuring nothing gets deleted twice"""
         for key in item_ids:
             if key in self.lookup:
