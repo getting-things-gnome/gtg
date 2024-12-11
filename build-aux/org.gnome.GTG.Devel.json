@@ -1,7 +1,7 @@
 {
   "app-id": "org.gnome.GTG.Devel",
   "runtime": "org.gnome.Platform",
-  "runtime-version": "46",
+  "runtime-version": "47",
   "sdk": "org.gnome.Sdk",
   "command": "gtg",
   "tags": ["devel", "development", "nightly"],
@@ -33,7 +33,7 @@
   "add-extensions": {
     "org.freedesktop.Sdk.Extension.texlive": {
       "directory": "texlive",
-      "version": "23.08"
+      "version": "24.08"
     }
   },
   "modules": [
