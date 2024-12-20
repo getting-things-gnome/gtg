@@ -27,24 +27,23 @@ import logging
 
 from lxml.etree import Element, _Element, SubElement
 
-from GTG.core.base_store import BaseStore
+from GTG.core.base_store import BaseStore, StoreItem
 
 log = logging.getLogger(__name__)
 
 
-class SavedSearch(GObject.Object):
+class SavedSearch(StoreItem):
     """A saved search."""
 
     __gtype_name__ = 'gtg_SavedSearch'
 
 
     def __init__(self, id: UUID, name: str, query: str) -> None:
-        self.id = id
         self._name = name
         self._query = query
         self._icon : Optional[str] = None
 
-        super().__init__()
+        super().__init__(id)
 
     @GObject.Property(type=str)
     def name(self) -> str:
