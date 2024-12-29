@@ -67,3 +67,69 @@ class BaseStoreRemove(TestCase):
         self.store.connect('removed',on_remove)
         self.store.remove(self.tree_items[0].id)
         self.assertEqual(removed,{ str(item.id) for item in self.tree_items })
+
+
+
+class BaseStoreParent(TestCase):
+
+
+    def setUp(self):
+        self.store = BaseStore()
+
+        self.root1 = StoreItem(uuid4())
+        self.root2 = StoreItem(uuid4())
+        self.child = StoreItem(uuid4())
+        self.invalid_id = uuid4()
+
+        self.store.add(self.root1)
+        self.store.add(self.root2)
+        self.store.add(self.child,parent_id=self.root1.id)
+
+
+    def test_parent_is_set(self):
+        self.store.parent(self.root2.id,self.root1.id)
+        self.assertEqual(self.root2.parent,self.root1)
+
+
+    def test_children_list_is_updated(self):
+        self.store.parent(self.root2.id,self.root1.id)
+        self.assertTrue(self.root2 in self.root1.children)
+
+
+    def test_root_elements_are_updated(self):
+        self.store.parent(self.root2.id,self.root1.id)
+        self.assertEqual(self.store.count(root_only=True),1)
+
+
+    def test_invalid_item_id_raises_exception(self):
+        with self.assertRaises(KeyError):
+            self.store.parent(self.invalid_id,self.root1.id)
+
+
+    def test_invalid_item_id_does_not_update_children(self):
+        try:
+            self.store.parent(self.invalid_id,self.root1.id)
+        except KeyError:
+            pass
+        self.assertTrue(self.invalid_id not in self.root1.children)
+
+
+    def test_invalid_parent_id_raises_exception(self):
+        with self.assertRaises(KeyError):
+            self.store.parent(self.root1.id,self.invalid_id)
+
+
+    def test_invalid_parent_id_does_not_update_parent(self):
+        try:
+            self.store.parent(self.root1.id,self.invalid_id)
+        except KeyError:
+            pass
+        self.assertEqual(self.root1.parent,None)
+
+
+    def test_invalid_parent_id_does_not_update_root_elements(self):
+        try:
+            self.store.parent(self.root1.id,self.invalid_id)
+        except KeyError:
+            pass
+        self.assertEqual(self.store.count(root_only=True),2)
