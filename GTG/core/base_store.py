@@ -179,19 +179,17 @@ class BaseStore(GObject.Object,Generic[S]):
     def parent(self, item_id: UUID, parent_id: UUID) -> None:
         """Add a child to an item."""
 
-        try:
-            item = self.lookup[item_id]
-        except KeyError:
-            raise
+        if item_id not in self.lookup:
+            raise KeyError("item_id is not in store: "+str(item_id))
+        if parent_id not in self.lookup:
+            raise KeyError("parent_id is not in store: "+str(parent_id))
 
-        try:
-            self.data.remove(item)
-            self.lookup[parent_id].children.append(item)
-            item.parent = self.lookup[parent_id]
+        item = self.lookup[item_id]
+        item.parent = self.lookup[parent_id]
 
-            self.emit('parent-change', item, self.lookup[parent_id])
-        except KeyError:
-            raise
+        self.data.remove(item)
+        self.lookup[parent_id].children.append(item)
+        self.emit('parent-change', item, self.lookup[parent_id])
 
 
     def unparent(self, item_id: UUID, parent_id: UUID) -> None:
