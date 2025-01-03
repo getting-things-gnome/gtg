@@ -126,6 +126,7 @@ class Sidebar(Gtk.ScrolledWindow):
         searches_button.connect('clicked', self.on_search_reveal)
 
         self.searches_selection = Gtk.SingleSelection.new(ds.saved_searches.model)
+        self.searches_selection.set_autoselect(False)
         self.searches_selection.set_can_unselect(True)
         self.searches_selection.unselect_item(0)
         self.search_handle = self.searches_selection.connect('selection-changed', self.on_search_selected)
@@ -405,6 +406,7 @@ class Sidebar(Gtk.ScrolledWindow):
 
     def unselect_tags(self) -> None:
         """Clear tags selection"""
+        self.browser.config.set("selected_tag", '')
 
         with signal_block(self.tag_selection, self.tag_handle):
             self.tag_selection.unselect_all()
@@ -492,8 +494,6 @@ class Sidebar(Gtk.ScrolledWindow):
 
         if tags:
             self.browser.config.set("selected_tag", tags[0])
-        else:
-            self.browser.config.set("selected_tag", '')
 
         self.emit('selection_changed')
 
