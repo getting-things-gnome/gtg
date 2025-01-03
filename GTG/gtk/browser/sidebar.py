@@ -405,6 +405,7 @@ class Sidebar(Gtk.ScrolledWindow):
 
     def unselect_tags(self) -> None:
         """Clear tags selection"""
+        self.browser.config.set("selected_tag", '')
 
         with signal_block(self.tag_selection, self.tag_handle):
             self.tag_selection.unselect_all()
@@ -492,8 +493,6 @@ class Sidebar(Gtk.ScrolledWindow):
 
         if tags:
             self.browser.config.set("selected_tag", tags[0])
-        else:
-            self.browser.config.set("selected_tag", '')
 
         self.emit('selection_changed')
 
