@@ -126,6 +126,7 @@ class Sidebar(Gtk.ScrolledWindow):
         searches_button.connect('clicked', self.on_search_reveal)
 
         self.searches_selection = Gtk.SingleSelection.new(ds.saved_searches.model)
+        self.searches_selection.set_autoselect(False)
         self.searches_selection.set_can_unselect(True)
         self.searches_selection.unselect_item(0)
         self.search_handle = self.searches_selection.connect('selection-changed', self.on_search_selected)
