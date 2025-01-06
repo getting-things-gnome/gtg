@@ -25,3 +25,7 @@ class TestUrlregex(TestCase):
         match = urlregex.search("This snippet contains an url with whitespace"
             "before it:  https://wiki.gnome.org/Apps/GTG/")
         self.assertEqual(list(match)[0].group(), "https://wiki.gnome.org/Apps/GTG/")
+
+    def test_domain_with_short_suffix(selfs):
+        match = urlregex.search("https://ticketsystem.company.x/issues/12345")
+        selfs.assertEqual(list(match)[0].group(), "https://ticketsystem.company.x/issues/12345")
