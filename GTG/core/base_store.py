@@ -194,19 +194,21 @@ class BaseStore(GObject.Object,Generic[S]):
 
     def unparent(self, item_id: UUID, parent_id: UUID) -> None:
         """Remove child item from a parent."""
+        if item_id not in self.lookup:
+            raise KeyError("item_id is not in store: "+str(item_id))
+        if parent_id not in self.lookup:
+            raise KeyError("parent_id is not in store: "+str(parent_id))
+        if self.lookup[item_id].parent != self.lookup[parent_id]:
+            raise ValueError("non-existing parent-child relationship")
 
-        for child in self.lookup[parent_id].children:
-            if child.id == item_id:
-                self.data.append(child)
-                self.lookup[parent_id].children.remove(child)
-                child.parent = None
+        child = self.lookup[item_id]
+        parent = self.lookup[parent_id]
 
-                self.emit('parent-removed',
-                          self.lookup[item_id],
-                          self.lookup[parent_id])
-                return
+        parent.children.remove(child)
+        self.data.append(child)
+        child.parent = None
 
-        raise KeyError
+        self.emit('parent-removed',self.lookup[item_id],self.lookup[parent_id])
 
 
     # --------------------------------------------------------------------------
