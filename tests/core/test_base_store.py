@@ -133,3 +133,50 @@ class BaseStoreParent(TestCase):
         except KeyError:
             pass
         self.assertEqual(self.store.count(root_only=True),2)
+
+
+
+class BaseStoreUnparent(TestCase):
+
+
+    def setUp(self):
+        self.store = BaseStore()
+
+        self.root = StoreItem(uuid4())
+        self.child1 = StoreItem(uuid4())
+        self.child2 = StoreItem(uuid4())
+        self.invalid_id = uuid4()
+
+        self.store.add(self.root)
+        self.store.add(self.child1,parent_id=self.root.id)
+        self.store.add(self.child2,parent_id=self.root.id)
+
+
+    def test_parent_is_unset(self):
+        self.store.unparent(self.child1.id,self.root.id)
+        self.assertIsNone(self.child1.parent)
+
+
+    def test_children_list_is_updated(self):
+        self.store.unparent(self.child1.id,self.root.id)
+        self.assertEqual(self.root.children,[self.child2])
+
+
+    def test_list_of_roots_is_updated(self):
+        self.store.unparent(self.child2.id,self.root.id)
+        self.assertIn(self.child2,self.store.data)
+
+
+    def test_invalid_item_id_raises_exception(self):
+        with self.assertRaises(KeyError):
+            self.store.unparent(self.invalid_id,self.root.id)
+
+
+    def test_invalid_parent_id_raises_exception(self):
+        with self.assertRaises(KeyError):
+            self.store.unparent(self.child1.id,self.invalid_id)
+
+
+    def test_invalid_parent_child_combo_raises_exception(self):
+        with self.assertRaises(ValueError):
+            self.store.unparent(self.child1.id,self.child2.id)
