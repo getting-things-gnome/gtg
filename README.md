@@ -6,7 +6,7 @@ GTG is intended to help you track everything you need to do and need to know, fr
 
 You are currently reading the index of the information intended for **new contributors** (beta testers, developers, packagers, etc.), found in [the project's main software development and management hub](https://github.com/getting-things-gnome/gtg).
 
-See [our website](https://wiki.gnome.org/Apps/GTG) for the list of features and information intended for **users** (including how to install the stable release with pre-built packages).
+See [our website](https://getting-things-gnome.github.io/) for the list of features and information intended for **users** (including how to install the stable release with pre-built packages).
 Except if you're here to report an issue – then you can just directly create
 an issue rather than continue reading.
 
