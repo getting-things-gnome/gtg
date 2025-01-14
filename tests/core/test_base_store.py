@@ -22,7 +22,7 @@ from uuid import uuid4
 from GTG.core.base_store import StoreItem, BaseStore
 
 
-class BaseStoreRemove(TestCase):
+class TestBaseStoreRemove(TestCase):
 
 
     def setUp(self):
@@ -70,7 +70,7 @@ class BaseStoreRemove(TestCase):
 
 
 
-class BaseStoreParent(TestCase):
+class TestBaseStoreParent(TestCase):
 
 
     def setUp(self):
@@ -136,7 +136,7 @@ class BaseStoreParent(TestCase):
 
 
 
-class BaseStoreUnparent(TestCase):
+class TestBaseStoreUnparent(TestCase):
 
 
     def setUp(self):
@@ -153,30 +153,25 @@ class BaseStoreUnparent(TestCase):
 
 
     def test_parent_is_unset(self):
-        self.store.unparent(self.child1.id,self.root.id)
+        self.store.unparent(self.child1.id)
         self.assertIsNone(self.child1.parent)
 
 
     def test_children_list_is_updated(self):
-        self.store.unparent(self.child1.id,self.root.id)
+        self.store.unparent(self.child1.id)
         self.assertEqual(self.root.children,[self.child2])
 
 
     def test_list_of_roots_is_updated(self):
-        self.store.unparent(self.child2.id,self.root.id)
+        self.store.unparent(self.child2.id)
         self.assertIn(self.child2,self.store.data)
 
 
     def test_invalid_item_id_raises_exception(self):
         with self.assertRaises(KeyError):
-            self.store.unparent(self.invalid_id,self.root.id)
+            self.store.unparent(self.invalid_id)
 
 
-    def test_invalid_parent_id_raises_exception(self):
-        with self.assertRaises(KeyError):
-            self.store.unparent(self.child1.id,self.invalid_id)
-
-
-    def test_invalid_parent_child_combo_raises_exception(self):
-        with self.assertRaises(ValueError):
-            self.store.unparent(self.child1.id,self.child2.id)
+    def test_unparenting_root_element_has_no_effect(self):
+        self.store.unparent(self.root.id)
+        self.assertEqual(self.store.data,[self.root])

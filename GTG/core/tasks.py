@@ -1009,17 +1009,18 @@ class TaskStore(BaseStore[Task]):
         item.parent.notify('has_children')
 
 
-    def unparent(self, item_id: UUID, parent_id: UUID) -> None:
+    def unparent(self, item_id: UUID) -> None:
 
         item = self.lookup[item_id]
-        parent = self.lookup[parent_id]
+        parent = item.parent
+        if parent is None:
+            return
 
         # Remove from UI
         self._remove_from_parent_model(item_id)
-        assert item.parent is not None
-        item.parent.notify('has_children')
+        parent.notify('has_children')
 
-        super().unparent(item_id, parent_id)
+        super().unparent(item_id)
 
         # remove inline references to the former subtask
         parent.content = re.sub(r'\{\!\s*'+str(item_id)+r'\s*\!\}','',parent.content)

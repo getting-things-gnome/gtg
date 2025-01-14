@@ -298,7 +298,7 @@ class TestTask(TestCase):
         self.assertEqual(child_task.parent, root_task)
         self.assertEqual(root_task.children[0], child_task)
 
-        store.unparent(child_task.id, root_task.id)
+        store.unparent(child_task.id)
 
         self.assertEqual(store.count(), 2)
         self.assertEqual(store.count(root_only=True), 2)
@@ -317,7 +317,7 @@ class TestTask(TestCase):
         self.assertEqual(child_task.parent, root_task)
         self.assertEqual(inner_child_task.parent, child_task)
 
-        store.unparent(inner_child_task.id, inner_child_task.parent.id)
+        store.unparent(inner_child_task.id)
         self.assertEqual(inner_child_task.parent, None)
         self.assertEqual(len(child_task.children), 0)
 

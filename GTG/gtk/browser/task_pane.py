@@ -621,7 +621,7 @@ class TaskPane(Gtk.ScrolledWindow):
             return
 
         if task.parent:
-            self.ds.tasks.unparent(task.id, task.parent.id)
+            self.ds.tasks.unparent(task.id)
 
         self.ds.tasks.parent(task.id, dropped.id)
         self.refresh()
@@ -654,7 +654,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
     def on_toplevel_tag_drop(self, drop_target, task, x, y):
         if task.parent:
-            self.ds.tasks.unparent(task.id, task.parent.id)
+            self.ds.tasks.unparent(task.id)
             self.ds.tasks.tree_model.emit('items-changed', 0, 0, 0)
             self.refresh()
 
