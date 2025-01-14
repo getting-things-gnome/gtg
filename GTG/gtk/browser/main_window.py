@@ -1106,7 +1106,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
                 for task in selection:
                     self.app.ds.tasks.refresh_lookup_cache()
-                    self.app.ds.tasks.unparent(task.id, parent.id)
+                    self.app.ds.tasks.unparent(task.id)
                     self.app.ds.tasks.parent(task.id, new_parent.id)
         else:
             new_parent = self.app.ds.tasks.new()

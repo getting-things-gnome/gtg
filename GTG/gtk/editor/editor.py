@@ -698,7 +698,7 @@ class TaskEditor(Gtk.Window):
     def remove_subtask(self, tid):
         """Remove a subtask of this task."""
 
-        self.app.ds.tasks.unparent(tid, self.task.id)
+        self.app.ds.tasks.unparent(tid)
 
     def rename_subtask(self, tid, new_title):
         """Rename a subtask of this task."""

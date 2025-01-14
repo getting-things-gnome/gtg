@@ -437,17 +437,19 @@ class TagStore(BaseStore[Tag]):
         self.lookup[parent_id].notify('children_count')
 
 
-    def unparent(self, item_id: UUID, parent_id: UUID) -> None:
+    def unparent(self, item_id: UUID) -> None:
 
         item = self.lookup[item_id]
+        parent = item.parent
+        if parent is None:
+            return
 
         # Remove from UI
         self._remove_from_parent_model(item_id)
 
-        super().unparent(item_id, parent_id)
+        super().unparent(item_id)
 
         # Add back to UI
-        item = self.lookup[item_id]
         self.model.append(item)
 
-        self.lookup[parent_id].notify('children_count')
+        parent.notify('children_count')

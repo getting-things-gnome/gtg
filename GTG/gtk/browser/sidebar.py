@@ -598,7 +598,7 @@ class Sidebar(Gtk.ScrolledWindow):
             return
 
         if value.parent:
-            self.ds.tags.unparent(value.id, value.parent.id)
+            self.ds.tags.unparent(value.id)
 
         self.ds.tags.parent(value.id, dropped.id)
         self.ds.refresh_tag_stats()
@@ -653,7 +653,7 @@ class Sidebar(Gtk.ScrolledWindow):
 
     def on_toplevel_tag_drop(self, drop_target, tag, x, y):
         if tag.parent:
-            self.ds.tags.unparent(tag.id, tag.parent.id)
+            self.ds.tags.unparent(tag.id)
             self.ds.refresh_tag_stats()
             self.refresh_tags()
             try:
