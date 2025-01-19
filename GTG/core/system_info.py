@@ -76,8 +76,8 @@ class SystemInfo:
 
     def __version_to_string(self, version: tuple) -> str:
         """
-        Convert version tuple (major, micro, minor)
-        version to string (major.micro.minor).
+        Convert version tuple (major, minor, micro)
+        version to string (major.minor.micro).
         """
         return ".".join(map(str, version))
 
@@ -106,8 +106,8 @@ class SystemInfo:
         """Get GTK version."""
         return (
             Gtk.get_major_version(),
-            Gtk.get_micro_version(),
             Gtk.get_minor_version(),
+            Gtk.get_micro_version(),
         )
 
 
