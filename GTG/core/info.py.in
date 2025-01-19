@@ -35,7 +35,7 @@ COPYRIGHT = _(f"Copyright © 2008-%d {AUTHORS}") \
                 % date.today().year
 SHORT_DESCRIPTION = _("""A personal productivity tool for GNOME,
 inspired by the GTD methodology.""") # A manual line break looks better in the About dialog.
-URL = "https://wiki.gnome.org/Apps/GTG"
+URL = "https://getting-things-gnome.github.io/"
 CHAT_URL = "https://matrix.to/#/#gtg:gnome.org"
 SOURCE_CODE_URL = "https://github.com/getting-things-gnome/gtg/"
 OPENHUB_URL = "https://www.openhub.net/p/gtg/contributors"

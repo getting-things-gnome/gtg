@@ -28,7 +28,7 @@ You can then "add" (choose) and "commit" (save) your changes:
     $ git add changed_file_1_to_include changed_file_2_to_include_too
     $ git commit
 
-Pro tip: using a graphical tool like [gitg](https://wiki.gnome.org/Apps/Gitg/), which not only lets you see visually the relationship between the various branches, but also lets you select which lines of which files you want to "stage" to commit, making it INCREDIBLY easier, and letting you make much cleaner, smaller, "atomic" commits. Check out the [Meld](https://wiki.gnome.org/Apps/Meld) tool, too.
+Pro tip: using a graphical tool like [gitg](https://wiki.gnome.org/Apps/Gitg/), which not only lets you see visually the relationship between the various branches, but also lets you select which lines of which files you want to "stage" to commit, making it INCREDIBLY easier, and letting you make much cleaner, smaller, "atomic" commits. Check out the [Meld](https://meldmerge.org/) tool, too.
 
 If your branch is solving specific reported issue, please include the number of the issue in the commit message or the pull request description. This will enable others to quickly navigate to the issue being solved. For example, this is a proper Git commit message:
 
