@@ -23,9 +23,9 @@ import GTG.core.urlregex as urlregex
 class TestUrlregex(TestCase):
     def test_search_does_not_include_preceeding_whitespace(self):
         match = urlregex.search("This snippet contains an url with whitespace"
-            "before it:  https://wiki.gnome.org/Apps/GTG/")
-        self.assertEqual(list(match)[0].group(), "https://wiki.gnome.org/Apps/GTG/")
+            "before it:  https://getting-things-gnome.github.io/")
+        self.assertEqual(list(match)[0].group(), "https://getting-things-gnome.github.io/")
 
-    def test_domain_with_short_suffix(selfs):
+    def test_domain_with_short_suffix(self):
         match = urlregex.search("https://ticketsystem.company.x/issues/12345")
-        selfs.assertEqual(list(match)[0].group(), "https://ticketsystem.company.x/issues/12345")
+        self.assertEqual(list(match)[0].group(), "https://ticketsystem.company.x/issues/12345")

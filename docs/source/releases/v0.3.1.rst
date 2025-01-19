@@ -103,6 +103,6 @@ We also have many other projects in the pipeline, most notably:
   Izidor Matusov during Google Summer of Code 2012.
 * Testing and merging GTGOnline! `synchronization backend`_ with the trunk.
 
-.. _`redesign of GTG`: https://wiki.gnome.org/Apps/gtg/Design/
+.. _`redesign of GTG`: https://getting-things-gnome.github.io/pre2020/design
 .. _`collaborative task management`: https://wiki.gnome.org/Outreach/SummerOfCode/2012/Projects/IzidorMatusov_CollaborativeGTG
 .. _`synchronization backend`: https://code.launchpad.net/~parinporecha/gtg/backend_gtgonline

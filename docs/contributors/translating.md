@@ -7,7 +7,7 @@ For existing translations, you would use the old language as a basis, but it is 
 Because of that, you may need to update the translation files manually.
 
 [gtg-pot]: ../../po/gtg.pot
-[gtranslator]: https://wiki.gnome.org/Apps/Gtranslator/
+[gtranslator]: https://gitlab.gnome.org/GNOME/gtranslator/
 [poedit]: https://poedit.net/
 [gettext-plural]: https://www.gnu.org/software/gettext/manual/html_node/Translating-plural-forms.html#Translating-plural-forms
 

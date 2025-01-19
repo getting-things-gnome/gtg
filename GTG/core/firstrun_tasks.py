@@ -136,7 +136,7 @@ tasks : List[TaskData] = [
             "\n"
             "We hope you will enjoy using GTG, and thank you for trying it out! "
             "To learn more about the GTG project and how you can contribute, "
-            "visit our web page: https://wiki.gnome.org/Apps/GTG/ \n"
+            "visit our web page: https://getting-things-gnome.github.io/ \n"
             "\n"
             "— The GTG team")
     },
