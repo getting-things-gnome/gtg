@@ -84,7 +84,7 @@ class TaskEditor(Gtk.Window):
 
         self.app = app
         self.ds = app.ds
-        self.task = task
+        self.task: Task = task
         self.config = app.config_core
         self.task_config = self.config.get_task_config(str(task.id))
         self.time = None
@@ -778,7 +778,7 @@ class TaskEditor(Gtk.Window):
         self.time = time.time()
 
 
-    # light_save save the task without refreshing every 30seconds
+    # light_save save the task without refreshing every 30 seconds
     # We will reduce the time when the get_text will be in another thread
 
     def light_save(self):
@@ -836,13 +836,16 @@ class TaskEditor(Gtk.Window):
         # process textview to make sure every tag is parsed
         self.textview.process()
 
-        # Save should be also called when buffer is modified
+        # Save because self.textview.process() only calls light_save(), which
+        # isn't guaranteed to actually save (see #1138)
+        self.save()
+
         # self.pengine.onTaskClose(self.plugin_api)
         # self.pengine.remove_api(self.plugin_api)
 
         tid = self.task.id
 
-        if self.is_new():
+        if self.task.is_new():
             self.app.ds.tasks.remove(tid)
         else:
             self.save()
