@@ -225,6 +225,7 @@ class TaskView(GtkSource.View):
 
         if not self.buffer.props.text:
             # Why process if there's nothing to process
+            log.warning('No text to process')
             return
 
         log.debug('Processing text buffer after %dms', self.PROCESSING_DELAY)
@@ -266,7 +267,7 @@ class TaskView(GtkSource.View):
             self.detect_url(text, start)
             self.detect_internal_link(text, start)
 
-            # remove current word from the text befor looking for tags
+            # remove current word from the text before looking for tags
             if mask_current_word and cursor_line==start.get_line():
                 cur_pos = cursor_iter.get_line_offset()
                 text = TaskView.mask_current_word(text,cur_pos)
