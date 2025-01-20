@@ -365,7 +365,8 @@ class TagStore(BaseStore[Tag]):
             return
         model = self.tid_to_children_model[item.parent.id]
         pos = model.find(item)
-        if pos[0]: model.remove(pos[1])
+        if pos[0]:
+            model.remove(pos[1])
 
 
     def _append_to_parent_model(self,tag_id: UUID) -> None:
@@ -380,7 +381,8 @@ class TagStore(BaseStore[Tag]):
             return
         model = self.tid_to_children_model[item.parent.id]
         pos = model.find(item)
-        if not pos[0]: model.append(item)
+        if not pos[0]:
+            model.append(item)
 
 
     def add(self, item: Tag, parent_id: Optional[UUID] = None) -> None:
