@@ -1389,7 +1389,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_mark_as_done(self, widget=None):
         for task in self.get_pane().get_selection():
-            task.toggle_active()
+            task.set_status(Status.DONE)
 
     def on_dismiss_task(self, widget=None):
         for task in self.get_pane().get_selection():
@@ -1397,7 +1397,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_reopen_task(self, widget=None):
         for task in self.get_pane().get_selection():
-            task.toggle_active()
+            task.set_status(Status.ACTIVE)
 
     def on_select_tag(self, widget=None, row=None, col=None):
         """ Callback for tag(s) selection from left sidebar.
