@@ -19,6 +19,8 @@
 from unittest import TestCase
 from uuid import uuid4
 
+from gi.repository import GObject
+
 from GTG.core.base_store import StoreItem
 
 
@@ -49,6 +51,121 @@ class TestStoreItemProperties(TestCase):
         item.children = [ StoreItem(uuid4) for _ in range(15) ]
         self.assertEqual(item.children_count, 15)
         self.assertTrue(item.has_children)
+
+
+
+class Dummy(GObject.Object):
+    """A dummy GObject that helps test bindings."""
+
+    int_value = 0
+    num_of_updates = 0
+
+    @GObject.Property(type=int)
+    def an_int(self):
+        return self.int_value
+
+    @an_int.setter
+    def an_int(self,value):
+        self.int_value = value
+        self.num_of_updates += 1
+
+
+
+class TestStoreItemAddChild(TestCase):
+
+
+    def setUp(self):
+        self.root = StoreItem(uuid4())
+        self.child = StoreItem(uuid4())
+        self.root.children = [ self.child ]
+        self.dummy = Dummy()
+
+
+    def test_add_new_child(self):
+        new_item = StoreItem(uuid4())
+        self.root.add_child(new_item)
+        self.assertIn(new_item,self.root.children)
+
+
+    def test_adding_existing_child_does_nothing(self):
+        self.root.add_child(self.child)
+        self.assertEqual(self.root.children,[self.child])
+
+
+    def test_has_child_notification_for_first_child(self):
+        self.child.bind_property('has_children',self.dummy,'an_int',GObject.BindingFlags.DEFAULT,lambda _,b: 5)
+        new_item = StoreItem(uuid4())
+        self.child.add_child(new_item)
+        self.assertEqual(self.dummy.num_of_updates,1)
+
+
+    def test_children_count_notification(self):
+        self.root.bind_property('children_count',self.dummy,'an_int',GObject.BindingFlags.DEFAULT)
+        new_item = StoreItem(uuid4())
+        self.root.add_child(new_item)
+        self.assertEqual(self.dummy.num_of_updates,1)
+
+
+    def test_no_has_children_notification_for_non_first_child(self):
+        self.root.bind_property('has_children',self.dummy,'an_int',GObject.BindingFlags.DEFAULT,lambda _,b: 5)
+        new_item = StoreItem(uuid4())
+        self.root.add_child(new_item)
+        self.assertEqual(self.dummy.num_of_updates,0)
+
+
+    def test_no_children_count_notification_for_existing_child(self):
+        self.root.bind_property('children_count',self.dummy,'an_int',GObject.BindingFlags.DEFAULT)
+        self.root.add_child(self.child)
+        self.assertEqual(self.dummy.num_of_updates,0)
+
+
+
+class TestStoreItemRemoveChild(TestCase):
+
+
+    def setUp(self):
+        self.root = StoreItem(uuid4())
+        self.child1 = StoreItem(uuid4())
+        self.child2 = StoreItem(uuid4())
+        self.root.children = [ self.child1, self.child2 ]
+        self.dummy = Dummy()
+
+
+    def test_remove_child(self):
+        self.root.remove_child(self.child1)
+        self.assertNotIn(self.child1,self.root.children)
+
+
+    def test_removing_non_existing_child_does_nothing(self):
+        new_item = StoreItem(uuid4())
+        self.root.remove_child(new_item)
+        self.assertEqual(self.root.children,[self.child1,self.child2])
+
+
+    def test_has_child_notification_for_last_child(self):
+        self.root.bind_property('has_children',self.dummy,'an_int',GObject.BindingFlags.DEFAULT,lambda _,b: 5)
+        self.root.remove_child(self.child1)
+        self.root.remove_child(self.child2)
+        self.assertEqual(self.dummy.num_of_updates,1)
+
+
+    def test_children_count_notification(self):
+        self.root.bind_property('children_count',self.dummy,'an_int',GObject.BindingFlags.DEFAULT)
+        self.root.remove_child(self.child1)
+        self.assertEqual(self.dummy.num_of_updates,1)
+
+
+    def test_no_has_children_notification_for_non_last_child(self):
+        self.root.bind_property('has_children',self.dummy,'an_int',GObject.BindingFlags.DEFAULT,lambda _,b: 5)
+        self.root.remove_child(self.child2)
+        self.assertEqual(self.dummy.num_of_updates,0)
+
+
+    def test_no_children_count_notification_for_non_existing_child(self):
+        self.root.bind_property('children_count',self.dummy,'an_int',GObject.BindingFlags.DEFAULT)
+        new_item = StoreItem(uuid4())
+        self.root.remove_child(new_item)
+        self.assertEqual(self.dummy.num_of_updates,0)
 
 
 
