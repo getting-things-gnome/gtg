@@ -345,7 +345,8 @@ class Backend(PeriodicImportBackend):
         """Getting all tasks that has the calendar tag"""
         for task in self.datastore.tasks.data:
             if CATEGORIES.has_calendar_tag(task, calendar):
-                yield uid, task
+                # This line was broken in commit 74bd3f44 - see #1176
+                yield uid, task # noqa: F821
 
     #
     # Utility methods

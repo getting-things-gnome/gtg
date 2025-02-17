@@ -206,7 +206,7 @@ class PluginAPI():
         NOTE: This function stronglye depend on browser and could be easily
         broken by changes in browser code
         """
-        browser = self.get_browser()
+        # browser = self.get_browser()
 
         # set default bgcolor?
         # if func is None:
