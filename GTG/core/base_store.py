@@ -57,6 +57,26 @@ class StoreItem(GObject.Object):
         return len(self.children) > 0
 
 
+    def add_child(self,child:Self):
+        """Add an item as child if not yet present."""
+        if child in self.children:
+            return
+        self.children.append(child)
+        self.notify('children_count')
+        if len(self.children) == 1:
+            self.notify('has_children')
+
+
+    def remove_child(self,child:Self):
+        """Remove a child item if present."""
+        if child not in self.children:
+            return
+        self.children.remove(child)
+        self.notify('children_count')
+        if len(self.children) == 0:
+            self.notify('has_children')
+
+
     def get_ancestors(self) -> list[Self]:
         """Return all ancestors of this tag"""
         ancestors: list[Self] = []
@@ -111,7 +131,7 @@ class BaseStore(GObject.Object,Generic[S]):
 
         if parent_id:
             try:
-                self.lookup[parent_id].children.append(item)
+                self.lookup[parent_id].add_child(item)
                 item.parent = self.lookup[parent_id]
 
             except KeyError:
@@ -157,7 +177,7 @@ class BaseStore(GObject.Object,Generic[S]):
             self.remove(cid)
 
         if parent:
-            parent.children.remove(item)
+            parent.remove_child(item)
         else:
             self.data.remove(item)
         del self.lookup[item_id]
@@ -188,7 +208,7 @@ class BaseStore(GObject.Object,Generic[S]):
         item.parent = self.lookup[parent_id]
 
         self.data.remove(item)
-        self.lookup[parent_id].children.append(item)
+        self.lookup[parent_id].add_child(item)
         self.emit('parent-change', item, self.lookup[parent_id])
 
 
@@ -203,7 +223,7 @@ class BaseStore(GObject.Object,Generic[S]):
         parent = child.parent
         assert parent is not None
 
-        parent.children.remove(child)
+        parent.remove_child(child)
         self.data.append(child)
         child.parent = None
 

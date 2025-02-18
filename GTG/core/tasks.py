@@ -962,7 +962,6 @@ class TaskStore(BaseStore[Task]):
             self.model.append(item)
         else:
             self._append_to_parent_model(item.id)
-            self.lookup[parent_id].notify('has_children')
 
         item.duplicate_cb = self.duplicate_for_recurrent
         self.notify('task_count_all')
@@ -978,7 +977,6 @@ class TaskStore(BaseStore[Task]):
         item = self.lookup[item_id]
         if item.parent is not None:
             self._remove_from_parent_model(item.id)
-            item.parent.notify('has_children')
         else:
             pos = self.model.find(item)
             self.model.remove(pos[1])
@@ -996,7 +994,6 @@ class TaskStore(BaseStore[Task]):
         # Remove from UI
         if item.parent is not None:
             self._remove_from_parent_model(item_id)
-            item.parent.notify('has_children')
         else:
             pos = self.model.find(item)
             self.model.remove(pos[1])
@@ -1005,8 +1002,6 @@ class TaskStore(BaseStore[Task]):
 
         # Add back to UI
         self._append_to_parent_model(item_id)
-        assert item.parent is not None
-        item.parent.notify('has_children')
 
 
     def unparent(self, item_id: UUID) -> None:
@@ -1018,7 +1013,6 @@ class TaskStore(BaseStore[Task]):
 
         # Remove from UI
         self._remove_from_parent_model(item_id)
-        parent.notify('has_children')
 
         super().unparent(item_id)
 
@@ -1027,7 +1021,6 @@ class TaskStore(BaseStore[Task]):
 
         # Add back to UI
         self.model.append(item)
-        parent.notify('has_children')
 
 
     def filter(self, filter_type: Filter, arg: Union[Tag,List[Tag],None] = None) -> List[Task]:
