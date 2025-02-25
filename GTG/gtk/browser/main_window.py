@@ -1393,7 +1393,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     def on_dismiss_task(self, widget=None):
         for task in self.get_pane().get_selection():
-            task.toggle_dismiss()
+            task.set_status(Status.DISMISSED)
 
     def on_reopen_task(self, widget=None):
         for task in self.get_pane().get_selection():
