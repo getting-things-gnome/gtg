@@ -36,7 +36,7 @@ DEFAULTS = {
         "sidebar_width": 265,
         'collapsed_tasks': [],
         'expanded_tags': [],
-        'view': 'default',
+        'view': 'open_view',
         "opened_tasks": [],
         'width': 1024,
         'height': 600,
