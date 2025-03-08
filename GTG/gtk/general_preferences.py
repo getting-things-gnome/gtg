@@ -25,6 +25,7 @@ import os
 from gi.repository import Gtk, GLib
 
 from GTG.core.dirs import UI_DIR
+from GTG.gtk.action_row import ActionRow
 from gettext import gettext as _
 
 import logging
@@ -159,7 +160,7 @@ class GeneralPreferences(Gtk.ScrolledWindow):
     def on_autoclean_toggled(self, widget, state):
         """Toggle automatic deletion of old closed tasks."""
 
-        self.config.set("autoclean", state)
+        self.config.set("autoclean", self._autoclean_switch.get_active())
 
     @Gtk.Template.Callback()
     def on_autoclean_days_changed(self, widget):
@@ -177,5 +178,5 @@ class GeneralPreferences(Gtk.ScrolledWindow):
     def on_dark_mode_toggled(self, widget, state):
         """Toggle darkmode."""
 
-        self.config.set("dark_mode", state)
-        self.app.toggle_darkmode(state)
+        self.config.set("dark_mode", self._dark_mode_switch.get_active())
+        self.app.toggle_darkmode(self._dark_mode_switch.get_active())
