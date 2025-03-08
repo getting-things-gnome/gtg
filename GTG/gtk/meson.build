@@ -1,5 +1,6 @@
 gtg_gtk_sources = [
   '__init__.py',
+  'action_row.py',
   'application.py',
   'colors.py',
   'errorhandler.py',
@@ -46,6 +47,7 @@ gtg_browser_sources = [
 ]
 
 gtg_data_sources = [
+  'data/action_row.ui',
   'data/backends.ui',
   'data/calendar.ui',
   'data/context_menus.ui',
