@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ActionRow" parent="GtkListBoxRow">
+    <property name="activatable">False</property>
+    <property name="selectable">False</property>
+    <accessibility>
+      <relation name="labelled-by">title_label</relation>
+      <relation name="described-by">subtitle_label</relation>
+    </accessibility>
+    <property name="child">
+      <object class="GtkBox" id="box">
+        <property name="spacing">12</property>
+        <property name="margin_start">12</property>
+        <property name="margin_end">12</property>
+        <property name="margin_top">8</property>
+        <property name="margin_bottom">8</property>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="valign">center</property>
+            <child>
+              <object class="GtkLabel" id="title_label">
+                <property name="xalign">0</property>
+                <property name="label" bind-source="ActionRow" bind-property="title" bind-flags="bidirectional"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="subtitle_label">
+                <property name="xalign">0</property>
+                <property name="visible">False</property>
+                <property name="label" bind-source="ActionRow" bind-property="subtitle" bind-flags="bidirectional"/>
+                <style>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>
