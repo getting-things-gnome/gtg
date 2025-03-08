@@ -25,6 +25,7 @@ import os
 from gi.repository import Gtk, GLib
 
 from GTG.core.dirs import UI_DIR
+from GTG.gtk.action_row import ActionRow
 from gettext import gettext as _
 
 import logging
@@ -36,14 +37,14 @@ log = logging.getLogger(__name__)
 class GeneralPreferences(Gtk.ScrolledWindow):
     __gtype_name__ = 'GeneralPreferences'
 
-    _preview_button = Gtk.Template.Child()
-    _bg_color_button = Gtk.Template.Child()
-    _font_button = Gtk.Template.Child()
+    preview_switch = Gtk.Template.Child()
+    bg_color_switch = Gtk.Template.Child()
+    font_button = Gtk.Template.Child()
 
-    _refresh_time_entry = Gtk.Template.Child()
-    _autoclean_switch = Gtk.Template.Child()
-    _autoclean_days_spin = Gtk.Template.Child()
-    _dark_mode_switch = Gtk.Template.Child()
+    refresh_time_entry = Gtk.Template.Child()
+    autoclean_switch = Gtk.Template.Child()
+    autoclean_days_spin = Gtk.Template.Child()
+    dark_mode_switch = Gtk.Template.Child()
 
     def __init__(self, app):
         super().__init__()
@@ -54,7 +55,7 @@ class GeneralPreferences(Gtk.ScrolledWindow):
 
         time_entry_focus_controller = Gtk.EventControllerFocus()
         time_entry_focus_controller.connect("leave", self.on_leave_time_entry)
-        self._refresh_time_entry.add_controller(time_entry_focus_controller)
+        self.refresh_time_entry.add_controller(time_entry_focus_controller)
         # setting preference values should not block,
         # as setting certain preferences depends on the complete initialization
         # of the app.
@@ -85,23 +86,23 @@ class GeneralPreferences(Gtk.ScrolledWindow):
         """ Sets the correct value in the preferences checkboxes """
 
         show_preview = self.config.get("contents_preview_enable")
-        self._preview_button.set_active(show_preview)
+        self.preview_switch.set_active(show_preview)
 
         bg_color = self.config.get("bg_color_enable")
-        self._bg_color_button.set_active(bg_color)
+        self.bg_color_switch.set_active(bg_color)
 
-        self._refresh_time_entry.set_text(self.timer.get_formatted_time())
+        self.refresh_time_entry.set_text(self.timer.get_formatted_time())
 
-        self._font_button.set_font(self.get_default_editor_font())
+        self.font_button.set_font(self.get_default_editor_font())
 
         enable_autoclean = self.config.get("autoclean")
-        self._autoclean_switch.set_active(enable_autoclean)
+        self.autoclean_switch.set_active(enable_autoclean)
 
         autoclean_days = self.config.get("autoclean_days")
-        self._autoclean_days_spin.set_value(autoclean_days)
+        self.autoclean_days_spin.set_value(autoclean_days)
 
         dark_mode = self.config.get("dark_mode")
-        self._dark_mode_switch.set_active(dark_mode)
+        self.dark_mode_switch.set_active(dark_mode)
 
 
     @Gtk.Template.Callback()
@@ -111,11 +112,11 @@ class GeneralPreferences(Gtk.ScrolledWindow):
         every new key-stroke from the user by parsing the input.
         """
         try:
-            input_time = self._refresh_time_entry.get_text()
+            input_time = self.refresh_time_entry.get_text()
             self.timer.parse_time(input_time)
-            self._refresh_time_entry.remove_css_class("error")
+            self.refresh_time_entry.remove_css_class("error")
         except ValueError:
-            self._refresh_time_entry.add_css_class("error")
+            self.refresh_time_entry.add_css_class("error")
 
     def on_leave_time_entry(self, widget, data=None):
         """
@@ -124,7 +125,7 @@ class GeneralPreferences(Gtk.ScrolledWindow):
         sets the time value for the widget.
         """
         try:
-            input_time = self._refresh_time_entry.get_text()
+            input_time = self.refresh_time_entry.get_text()
             correct_time = self.timer.parse_time(input_time)
             self.timer.set_configuration(correct_time)
         except ValueError:
@@ -136,14 +137,14 @@ class GeneralPreferences(Gtk.ScrolledWindow):
     def on_preview_toggled(self, widget, state):
         """ Toggle previews in the task view on or off."""
         curstate = self.config.get("contents_preview_enable")
-        if curstate != self._preview_button.get_active():
+        if curstate != self.preview_switch.get_active():
             self.config.set("contents_preview_enable", not curstate)
 
     @Gtk.Template.Callback()
     def on_bg_color_toggled(self, widget, state):
         """ Save configuration and refresh nodes to apply the change """
         curstate = self.config.get("bg_color_enable")
-        if curstate != self._bg_color_button.get_active():
+        if curstate != self.bg_color_switch.get_active():
             self.config.set("bg_color_enable", not curstate)
 
             for task in self.app.ds.tasks.lookup.values():
@@ -152,14 +153,14 @@ class GeneralPreferences(Gtk.ScrolledWindow):
     @Gtk.Template.Callback()
     def on_font_change(self, widget):
         """ Set a new font for editor """
-        self.config.set("font_name", self._font_button.get_font_family().get_name())
-        self.config.set("font_size", int(self._font_button.get_font_size()/1000))
+        self.config.set("font_name", self.font_button.get_font_family().get_name())
+        self.config.set("font_size", int(self.font_button.get_font_size()/1000))
 
     @Gtk.Template.Callback()
     def on_autoclean_toggled(self, widget, state):
         """Toggle automatic deletion of old closed tasks."""
 
-        self.config.set("autoclean", state)
+        self.config.set("autoclean", self.autoclean_switch.get_active())
 
     @Gtk.Template.Callback()
     def on_autoclean_days_changed(self, widget):
@@ -177,5 +178,5 @@ class GeneralPreferences(Gtk.ScrolledWindow):
     def on_dark_mode_toggled(self, widget, state):
         """Toggle darkmode."""
 
-        self.config.set("dark_mode", state)
-        self.app.toggle_darkmode(state)
+        self.config.set("dark_mode", self.dark_mode_switch.get_active())
+        self.app.toggle_darkmode(self.dark_mode_switch.get_active())
