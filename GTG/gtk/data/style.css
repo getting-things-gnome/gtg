@@ -6,10 +6,6 @@
     min-width: 16px;
 }
 
-.task-list {
-    border-top: 1px solid rgb(213, 208, 204);
-}
-
 .dummy {
   background: transparent;
   border: none;
