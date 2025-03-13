@@ -24,6 +24,8 @@ from GTG.gtk.backends.backendscombo import BackendsCombo
 from GTG.backends import BackendFactory
 from gettext import gettext as _, ngettext
 
+from GTG.backends import inactive_modules
+
 
 class AddPanel(Gtk.Box):
     """
@@ -166,7 +168,16 @@ class AddPanel(Gtk.Box):
         """
         backend_name = self.combo_types.get_selected()
         if backend_name is None:
+            if 'backend_caldav' in inactive_modules:
+                markup = '<big>Error: Python package \'caldev\' not installed.</big>'
+                self.label_name.set_markup(markup)
+                return
+
+
+            markup = '<big>Error: An unknown backend could not be loaded.</big>'
+            self.label_name.set_markup(markup)
             return
+
         backend = BackendFactory().get_backend(backend_name)
         self.label_description.set_markup(backend.Backend.get_description())
 
