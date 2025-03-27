@@ -92,6 +92,7 @@
                   <object class="ActionRow">
                     <property name="title" translatable="yes">Dark Mode</property>
                     <property name="activatable_widget">_dark_mode_switch</property>
+                    <property name="visible" bind-source="GeneralPreferences" bind-property="is-portal-initiated" bind-flags="sync-create|invert-boolean" />
                     <child>
                       <object class="GtkSwitch" id="_dark_mode_switch">
                         <property name="name">autoclean_button</property>
