@@ -189,6 +189,7 @@
                 <child>
                   <object class="GtkListBoxRow">
                     <property name="width_request">100</property>
+                    <property name="visible" bind-source="GeneralPreferences" bind-property="is-portal-initiated" bind-flags="sync-create|invert-boolean" />
                     <property name="child">
                       <object class="GtkBox">
                         <property name="margin_start">12</property>
