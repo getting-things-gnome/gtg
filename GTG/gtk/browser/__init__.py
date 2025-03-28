@@ -27,6 +27,7 @@ import os
 class GnomeConfig():
     current_rep = os.path.dirname(os.path.abspath(__file__))
     data = os.path.join(current_rep, '..', 'data')
+    ACTION_ROW = os.path.join(data, "action_row.ui")
     BROWSER_UI_FILE = os.path.join(data, "main_window.ui")
     HELP_OVERLAY_UI_FILE = os.path.join(data, "help_overlay.ui")
     MENUS_UI_FILE = os.path.join(data, "context_menus.ui")

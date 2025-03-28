@@ -25,193 +25,82 @@
                 <property name="margin_bottom">8</property>
                 <property name="selection_mode">none</property>
                 <child>
-                  <object class="GtkListBoxRow" id="description_row">
-                    <property name="selectable">False</property>
-                    <signal name="activate" handler="on_preview_toggled" swapped="no"/>
-                    <property name="child">
-                      <object class="GtkBox">
-                        <property name="margin_start">12</property>
-                        <property name="margin_end">12</property>
-                        <property name="margin_top">8</property>
-                        <property name="margin_bottom">8</property>
-                        <child>
-                          <object class="GtkBox">
-                            <property name="valign">center</property>
-                            <property name="orientation">vertical</property>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="label" translatable="yes">Show description preview</property>
-                                <property name="xalign">0</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="label" translatable="yes">Show a task excerpt next to each task in the Task Browser</property>
-                                <property name="xalign">0</property>
-                                <style>
-                                  <class name="dim-label"/>
-                                </style>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkSwitch" id="_preview_button">
-                            <property name="halign">end</property>
-                            <property name="valign">center</property>
-                            <property name="hexpand">True</property>
-                            <signal name="state-set" handler="on_preview_toggled" swapped="no"/>
-                          </object>
-                        </child>
+                  <object class="ActionRow">
+                    <property name="title" translatable="yes">Show description preview</property>
+                    <property name="subtitle" translatable="yes">Show a task excerpt next to each task in the Task Browser</property>
+                    <property name="activatable_widget">_preview_button</property>
+                    <child>
+                      <object class="GtkSwitch" id="_preview_button">
+                        <property name="halign">end</property>
+                        <property name="valign">center</property>
+                        <property name="hexpand">True</property>
+                        <signal name="notify::active" handler="on_preview_toggled" swapped="no"/>
                       </object>
-                    </property>
+                    </child>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkListBoxRow">
-                    <property name="selectable">False</property>
-                    <property name="child">
-                      <object class="GtkBox">
-                        <property name="margin_start">12</property>
-                        <property name="margin_end">12</property>
-                        <property name="margin_top">8</property>
-                        <property name="margin_bottom">8</property>
-                        <child>
-                          <object class="GtkBox">
-                            <property name="valign">center</property>
-                            <property name="orientation">vertical</property>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="label" translatable="yes">Enable colored backgrounds</property>
-                                <property name="xalign">0</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="label" translatable="yes">Show colored backgrounds for a task based on the colors of its tags</property>
-                                <property name="xalign">0</property>
-                                <style>
-                                  <class name="dim-label"/>
-                                </style>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkSwitch" id="_bg_color_button">
-                            <property name="hexpand">True</property>
-                            <property name="halign">end</property>
-                            <property name="valign">center</property>
-                            <signal name="state-set" handler="on_bg_color_toggled" swapped="no"/>
-                          </object>
-                        </child>
+                  <object class="ActionRow">
+                    <property name="title" translatable="yes">Enable colored backgrounds</property>
+                    <property name="subtitle" translatable="yes">Show colored backgrounds for a task based on the colors of its tags</property>
+                    <property name="activatable_widget">_bg_color_button</property>
+                    <child>
+                      <object class="GtkSwitch" id="_bg_color_button">
+                        <property name="hexpand">True</property>
+                        <property name="halign">end</property>
+                        <property name="valign">center</property>
+                        <signal name="notify::active" handler="on_bg_color_toggled" swapped="no"/>
                       </object>
-                    </property>
+                    </child>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkListBoxRow">
-                    <property name="activatable">False</property>
-                    <property name="selectable">False</property>
-                    <property name="child">
-                      <object class="GtkBox">
-                        <property name="margin_start">12</property>
-                        <property name="margin_end">12</property>
-                        <property name="margin_top">8</property>
-                        <property name="margin_bottom">8</property>
-                        <child>
-                          <object class="GtkBox">
-                            <property name="valign">center</property>
-                            <property name="orientation">vertical</property>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="label" translatable="yes">Start of the day</property>
-                                <property name="xalign">0</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel">
-                                <property name="label" translatable="yes">Automatically refreshes the task list and adjusts the "Actionable" view</property>
-                                <property name="xalign">0</property>
-                                <style>
-                                  <class name="dim-label"/>
-                                </style>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkEntry" id="_refresh_time_entry">
-                            <property name="hexpand">True</property>
-                            <property name="valign">center</property>
-                            <property name="halign">end</property>
-                            <property name="max_length">8</property>
-                            <property name="width_chars">8</property>
-                            <property name="max_width_chars">8</property>
-                            <property name="xalign">0.5</property>
-                            <signal name="changed" handler="on_valid_time_check" swapped="no"/>
-                          </object>
-                        </child>
+                  <object class="ActionRow">
+                    <property name="title" translatable="yes">Start of the day</property>
+                    <property name="subtitle" translatable="yes">Automatically refreshes the task list and adjusts the "Actionable" view</property>
+                    <child>
+                      <object class="GtkEntry" id="_refresh_time_entry">
+                        <property name="hexpand">True</property>
+                        <property name="valign">center</property>
+                        <property name="halign">end</property>
+                        <property name="max_length">8</property>
+                        <property name="width_chars">8</property>
+                        <property name="max_width_chars">8</property>
+                        <property name="xalign">0.5</property>
+                        <signal name="changed" handler="on_valid_time_check" swapped="no"/>
                       </object>
-                    </property>
+                    </child>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkListBoxRow">
-                    <property name="selectable">False</property>
-                    <signal name="activate" handler="on_font_change" swapped="no"/>
-                    <property name="child">
-                      <object class="GtkBox">
-                        <property name="margin_start">12</property>
-                        <property name="margin_end">12</property>
-                        <property name="margin_top">8</property>
-                        <property name="margin_bottom">8</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="label" translatable="yes">Task Editor font</property>
-                            <property name="xalign">0</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkFontButton" id="_font_button">
-                            <property name="hexpand">True</property>
-                            <property name="halign">end</property>
-                            <property name="receives_default">True</property>
-                            <property name="font">Sans 12</property>
-                            <property name="preview_text"/>
-                            <signal name="font-set" handler="on_font_change" swapped="no"/>
-                          </object>
-                        </child>
+                  <object class="ActionRow">
+                    <property name="title" translatable="yes">Task Editor font</property>
+                    <property name="activatable_widget">_font_button</property>
+                    <child>
+                      <object class="GtkFontButton" id="_font_button">
+                        <property name="hexpand">True</property>
+                        <property name="halign">end</property>
+                        <property name="receives_default">True</property>
+                        <property name="font">Sans 12</property>
+                        <property name="preview_text"/>
+                        <signal name="font-set" handler="on_font_change" swapped="no"/>
                       </object>
-                    </property>
+                    </child>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkListBoxRow">
-                    <property name="width_request">100</property>
-                    <property name="child">
-                      <object class="GtkBox">
-                        <property name="margin_start">12</property>
-                        <property name="margin_end">12</property>
-                        <property name="margin_top">8</property>
-                        <property name="margin_bottom">8</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="label" translatable="yes">Dark Mode</property>
-                            <property name="xalign">0</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkSwitch" id="_dark_mode_switch">
-                            <property name="name">autoclean_button</property>
-                            <property name="hexpand">True</property>
-                            <property name="halign">end</property>
-                            <property name="valign">center</property>
-                            <signal name="state-set" handler="on_dark_mode_toggled" swapped="no"/>
-                          </object>
-                        </child>
+                  <object class="ActionRow">
+                    <property name="title" translatable="yes">Dark Mode</property>
+                    <property name="activatable_widget">_dark_mode_switch</property>
+                    <child>
+                      <object class="GtkSwitch" id="_dark_mode_switch">
+                        <property name="name">autoclean_button</property>
+                        <property name="hexpand">True</property>
+                        <property name="halign">end</property>
+                        <property name="valign">center</property>
+                        <signal name="notify::active" handler="on_dark_mode_toggled" swapped="no"/>
                       </object>
-                    </property>
+                    </child>
                   </object>
                 </child>
                 <style>
@@ -238,61 +127,34 @@
                 <property name="margin_top">5</property>
                 <property name="margin_bottom">8</property>
                 <child>
-                  <object class="GtkListBoxRow">
-                    <property name="selectable">False</property>
-                    <property name="child">
-                      <object class="GtkBox">
-                        <property name="margin_start">12</property>
-                        <property name="margin_end">12</property>
-                        <property name="margin_top">8</property>
-                        <property name="margin_bottom">8</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="label" translatable="yes">Automatically remove old closed tasks</property>
-                            <property name="xalign">0</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkSwitch" id="_autoclean_switch">
-                            <property name="name">autoclean_button</property>
-                            <property name="hexpand">True</property>
-                            <property name="valign">center</property>
-                            <property name="halign">end</property>
-                            <signal name="state-set" handler="on_autoclean_toggled" swapped="no"/>
-                          </object>
-                        </child>
+                  <object class="ActionRow">
+                    <property name="title" translatable="yes">Automatically remove old closed tasks</property>
+                    <property name="activatable_widget">_autoclean_switch</property>
+                    <child>
+                      <object class="GtkSwitch" id="_autoclean_switch">
+                        <property name="name">autoclean_button</property>
+                        <property name="hexpand">True</property>
+                        <property name="valign">center</property>
+                        <property name="halign">end</property>
+                        <signal name="notify::active" handler="on_autoclean_toggled" swapped="no"/>
                       </object>
-                    </property>
+                    </child>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkListBoxRow">
-                    <property name="selectable">False</property>
-                    <property name="child">
-                      <object class="GtkBox">
-                        <property name="margin_start">12</property>
-                        <property name="margin_end">12</property>
-                        <property name="margin_top">8</property>
-                        <property name="margin_bottom">8</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="label" translatable="yes">Days to wait before removing a task</property>
-                            <property name="xalign">0</property>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkSpinButton" id="_autoclean_days_spin">
-                            <property name="name">autoclean_days</property>
-                            <property name="hexpand">True</property>
-                            <property name="halign">end</property>
-                            <property name="text">30</property>
-                            <property name="adjustment">adjustment1</property>
-                            <property name="numeric">True</property>
-                            <signal name="value-changed" handler="on_autoclean_days_changed" swapped="no"/>
-                          </object>
-                        </child>
+                  <object class="ActionRow">
+                    <property name="title" translatable="yes">Days to wait before removing a task</property>
+                    <child>
+                      <object class="GtkSpinButton" id="_autoclean_days_spin">
+                        <property name="name">autoclean_days</property>
+                        <property name="hexpand">True</property>
+                        <property name="halign">end</property>
+                        <property name="text">30</property>
+                        <property name="adjustment">adjustment1</property>
+                        <property name="numeric">True</property>
+                        <signal name="value-changed" handler="on_autoclean_days_changed" swapped="no"/>
                       </object>
-                    </property>
+                    </child>
                   </object>
                 </child>
                 <style>
