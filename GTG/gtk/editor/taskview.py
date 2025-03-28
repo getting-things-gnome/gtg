@@ -146,11 +146,9 @@ class TaskView(GtkSource.View):
             'to_delete': []
         }
 
-        if dark:
-            # TODO: It would be better to avoid hardcoding the style
-            manager = GtkSource.StyleSchemeManager().get_default()
-            scheme = manager.get_scheme('oblivion')
-            self.buffer.set_style_scheme(scheme)
+        settings = Gtk.Settings.get_default()
+        settings.connect("notify::gtk-application-prefer-dark-theme", self.__update_style)
+        self.__update_style(settings)
 
         # Signals and callbacks
         self.id_modified = self.buffer.connect('changed', self.on_modified)
@@ -963,3 +961,20 @@ class TaskView(GtkSource.View):
         text = text.replace('→', '')
 
         return text
+
+    def __update_style(self, settings, *args):
+        prefer_dark_theme = settings.get_property("gtk-application-prefer-dark-theme")
+        manager = GtkSource.StyleSchemeManager().get_default()
+        scheme_ids = manager.get_scheme_ids()
+
+        if 'Adwaita' in scheme_ids:
+            scheme_name = 'Adwaita'
+        else:
+            scheme_name = 'classic'
+
+        if prefer_dark_theme:
+            scheme = manager.get_scheme(f'{scheme_name}-dark')
+        else:
+            scheme = manager.get_scheme(scheme_name)
+
+        self.buffer.set_style_scheme(scheme)
