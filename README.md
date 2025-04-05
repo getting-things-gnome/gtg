@@ -63,7 +63,7 @@ sudo dnf install meson python3-cairo python3-gobject gtk3 itstool gettext python
 # On Debian 10 (buster), you need to install the backported version, activate it with:
 echo 'deb http://deb.debian.org/debian buster-backports main' | sudo tee -a /etc/apt/sources.list
 # On Debian/Ubuntu:
-sudo apt install meson python3-gi-cairo python3-gi gir1.2-pango-1.0 gir1.2-gdkpixbuf-2.0 gir1.2-gtk-3.0 itstool gettext python3-lxml libgirepository1.0-dev libsecret-1.0 gir1.2-secret-1
+sudo apt install meson python3-gi-cairo python3-gi gir1.2-pango-1.0 gir1.2-gdkpixbuf-2.0 gir1.2-gtk-3.0 itstool gettext python3-lxml libgirepository1.0-dev libsecret-1-dev gir1.2-secret-1
 ```
 
 #### Optional Dependencies
