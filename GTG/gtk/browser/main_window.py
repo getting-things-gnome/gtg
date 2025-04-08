@@ -110,9 +110,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.config = app.config
         self.tag_active = False
 
-        # Timeout handler for search
-        self.search_timeout = None
-
         self.sidebar = Sidebar(app, app.ds, self)
         self.sidebar_vbox.append(self.sidebar)
 
@@ -224,8 +221,9 @@ class MainWindow(Gtk.ApplicationWindow):
             ('expand_all_tasks', self.on_expand_all_tasks, None),
             ('change_tags', self.on_modify_tags, ('win.change_tags', ['<ctrl>T'])),
             ('focus_sidebar', self.focus_sidebar, ('win.focus_sidebar', ['<ctrl>B'])),
-            ('search', self.toggle_search, ('win.search', ['<ctrl>F'])),
-            ('close_search', self.dismiss_search, ('win.close_search', ['Escape'])),
+            ('toggle_search', self.toggle_search, ('win.toggle_search', [])),
+            ('search', self.activate_search, ('win.search', ['<ctrl>f'])),
+            ('close_search', self.toggle_search, ('win.close_search', ['Escape'])),
             ('focus_quickentry', self.focus_quickentry, ('win.focus_quickentry', ['<ctrl>L'])),
             ('delete_task', self.on_delete_tasks, ('win.delete_task', ['<ctrl>Delete'])),
             ('help_overlay', None, ('win.show-help-overlay', ['<ctrl>question'])),
@@ -513,50 +511,29 @@ class MainWindow(Gtk.ApplicationWindow):
         rect = treeview.get_cell_area(selected_paths[0], None)
         self.show_popup_at(popup, 0, rect.y+2*rect.height)
 
-    def toggle_search(self, action, param):
+    def toggle_search(self, *args):
         """Callback to toggle search bar."""
-
-        self.on_search_toggled()
-
-    def on_search_toggled(self, widget=None):
         if self.searchbar.get_search_mode():
-            self.dismiss_search(None, None)
+            self.searchbar.set_search_mode(False)
+            self.get_pane().set_search_query('')
         else:
-            self.search_button.set_active(True)
-            self.searchbar.set_search_mode(True)
-            self.search_entry.grab_focus()
+            self.activate_search()
 
-
-    def dismiss_search(self, action, param):
-        """Callback to dismiss the search bar."""
-
-        self.search_button.set_active(False)
-        self.searchbar.set_search_mode(False)
-        self.search_entry.set_text('')
-
-
-    def do_search(self):
-        """Perform the actual search and cancel the timeout."""
-
-        self.get_pane().set_search_query(self.search_entry.get_text())
-        GLib.source_remove(self.search_timeout)
-        self.search_timeout = None
-
+    def activate_search(self, *args):
+          self.search_button.set_active(True)
+          self.searchbar.set_search_mode(True)
+          self.search_entry.select_region(0, -1)
+          self.search_entry.grab_focus()
+          if self.search_entry.get_text():
+            self.on_search()
 
     @Gtk.Template.Callback()
-    def on_search(self, data):
+    def on_search(self, *args):
         """Callback everytime a character is inserted in the search field."""
-
-        TIMEOUT = 500
-
-        if self.search_timeout:
-            GLib.source_remove(self.search_timeout)
-            self.search_timeout = None
-
-        self.search_timeout = GLib.timeout_add(TIMEOUT, self.do_search)
+        self.get_pane().set_search_query(self.search_entry.get_text())
 
 
-    def on_save_search(self, action, param):
+    def on_save_search(self, *args):
         query = self.search_entry.get_text()
         name = re.sub(r'!(?=\w)+', '', query)
 
