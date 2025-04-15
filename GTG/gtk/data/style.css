@@ -2,6 +2,10 @@
  * MAIN WINDOW
  * --------------------------------------------------------------------------------
  */
+window {
+  border-radius: 6px;
+}
+
 .menu-disclose button {
     min-width: 16px;
 }
