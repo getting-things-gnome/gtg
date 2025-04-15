@@ -43,7 +43,7 @@
                             <property name="selection-mode">none</property>
                             <property name="activate-on-single-click">False</property>
                             <style>
-                              <class name="prefs_list"/>
+                              <class name="boxed-list"/>
                             </style>
                           </object>
                         </child>
@@ -73,7 +73,7 @@
                             <property name="selection-mode">none</property>
                             <property name="activate-on-single-click">False</property>
                             <style>
-                              <class name="prefs_list"/>
+                              <class name="boxed-list"/>
                             </style>
                           </object>
                         </child>
