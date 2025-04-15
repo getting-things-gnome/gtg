@@ -16,19 +16,6 @@
   padding: 0;
 }
 
-/*
-    We have to get move the padding into the boxes
-    so the background color of the rows reaches all
-    the way to the edges
-*/
-.task-list row {
-    padding: 0;
-}
-
-.task-list row > box {
-    padding: 15px 16px;
-}
-
 indent, expander{
     -gtk-icon-size: 16px;
 }

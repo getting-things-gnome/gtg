@@ -37,16 +37,14 @@ class TaskBox(Gtk.Box):
 
     def __init__(self, config, is_actionable=False):
         self.config = config
-        super().__init__()
+        super().__init__(valign=Gtk.Align.CENTER)
 
         self.expander = Gtk.TreeExpander()
-        self.expander.set_margin_end(6)
         self.expander.add_css_class('arrow-only-expander')
         self.expander.set_indent_for_icon(True)
         self.expander.set_indent_for_depth(True)
 
         self.check = Gtk.CheckButton()
-        self.check.set_margin_end(6)
 
         self.append(self.expander)
         self.append(self.check)
@@ -135,11 +133,6 @@ class TaskPane(Gtk.ScrolledWindow):
         title_box = Gtk.Box()
         title_box.set_valign(Gtk.Align.START)
 
-        title_box.set_margin_top(32)
-        title_box.set_margin_bottom(32)
-        title_box.set_margin_start(24)
-        title_box.set_margin_end(24)
-
         self.title = Gtk.Label()
         self.title.set_halign(Gtk.Align.START)
         self.title.set_hexpand(True)
@@ -180,7 +173,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
         view = Gtk.ListView.new(self.task_selection, tasks_signals)
         view.set_show_separators(True)
-        view.add_css_class('task-list')
+        view.add_css_class('rich-list')
 
         view_drop = Gtk.DropTarget.new(Task, Gdk.DragAction.COPY)
         view_drop.connect("drop", self.on_toplevel_tag_drop)
@@ -428,7 +421,7 @@ class TaskPane(Gtk.ScrolledWindow):
         color.set_vexpand(False)
         color.set_valign(Gtk.Align.CENTER)
 
-        separator.set_margin_end(12)
+        separator.set_margin_end(6)
 
         def on_notify_visibility(obj, gparamstring):
             val = ((recurring_icon.is_visible()
@@ -441,21 +434,17 @@ class TaskPane(Gtk.ScrolledWindow):
         for widget in (recurring_icon, due_icon, start_icon, color, icons):
             widget.connect("notify::visible", on_notify_visibility)
 
-        icons.set_margin_end(6)
-
         label.set_hexpand(True)
         label.set_ellipsize(Pango.EllipsizeMode.END)
-        label.set_margin_end(12)
+        label.set_margin_end(6)
         label.set_xalign(0)
 
-        recurring_icon.set_margin_end(16)
+        recurring_icon.set_margin_end(12)
         recurring_icon.set_label('\u2B6E')
 
-        due_icon.set_margin_end(6)
-        due.set_margin_end(24)
+        due.set_margin_end(18)
 
-        start_icon.set_margin_end(6)
-        start.set_margin_end(12)
+        start.set_margin_end(6)
 
         # DnD stuff
         source = Gtk.DragSource()
