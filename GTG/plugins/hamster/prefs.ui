@@ -166,7 +166,7 @@
                   </object>
                 </child>
                 <style>
-                  <class name="prefs_list"/>
+                  <class name="boxed-list"/>
                 </style>
               </object>
             </child>
