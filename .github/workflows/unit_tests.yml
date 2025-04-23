@@ -33,7 +33,7 @@ jobs:
         python -m pip install --upgrade pip
         sudo apt-get update
         sudo apt install -y meson gettext itstool libgirepository1.0-dev gir1.2-gtk-4.0 libgtksourceview-5-dev libportal-dev
-        pip install --user pytest pycairo PyGObject caldav lxml
+        pip install --user pytest pycairo PyGObject==3.50.0 caldav lxml
 
     - name: Build and install GTG
       run: |
