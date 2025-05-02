@@ -152,10 +152,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
         self.search_filter = SearchTaskFilter(self.ds, pane)
         self.task_filter = TaskPaneFilter(self.app.ds, pane)
-
-        self.filtered = Gtk.FilterListModel()
-        self.filtered.set_model(self.app.ds.tasks.tree_model)
-        self.filtered.set_filter(self.task_filter)
+        self.filtered, self.filter_manager = self.app.ds.tasks.get_filtered_tree_model(self.task_filter)
 
         self.sort_model = Gtk.TreeListRowSorter()
         self.sort_model.set_sorter(TaskTitleSorter())
@@ -223,7 +220,7 @@ class TaskPane(Gtk.ScrolledWindow):
     def set_search_query(self, query) -> None:
         """Change tasks filter."""
 
-        self.filtered.set_filter(self.search_filter)
+        self.filter_manager.set_filter(self.search_filter)
         self.search_filter.set_query(query)
         self.search_filter.pane = self.pane
         self.search_filter.changed(Gtk.FilterChange.DIFFERENT)
@@ -235,7 +232,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
         if self.searching:
             self.searching = False
-            self.filtered.set_filter(self.task_filter)
+            self.filter_manager.set_filter(self.task_filter)
 
         self.pane = pane
         self.task_filter.pane = pane

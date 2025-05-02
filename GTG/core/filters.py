@@ -103,7 +103,7 @@ class TaskPaneFilter(Gtk.Filter):
 
 
     def do_match(self, item) -> bool:
-        task = unwrap(item, Task)
+        task = item if isinstance(item, Task) else  unwrap(item, Task)
 
         if self.pane == 'active':
             show = task.status is Status.ACTIVE
@@ -116,6 +116,7 @@ class TaskPaneFilter(Gtk.Filter):
 
         elif self.pane == 'closed':
             show = task.status is not Status.ACTIVE
+
 
         if show:
             if self.no_tags:
@@ -159,7 +160,7 @@ class SearchTaskFilter(Gtk.Filter):
 
 
     def do_match(self, item) -> bool:
-        task = unwrap(item, Task)
+        task = item if isinstance(item, Task) else unwrap(item, Task)
 
         if self.pane == 'active':
             show = task.status is Status.ACTIVE
