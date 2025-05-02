@@ -710,6 +710,10 @@ class FilteredTaskTreeManager:
         return self.tree_model
 
 
+    def has_matching_children(self,task:Task):
+        return any(self.task_filter.do_match(c) for c in task.children)
+
+
     def set_filter(self,new_filter:Gtk.Filter):
         self.task_filter = new_filter
         self.task_filter.connect('changed',self._on_changed)
