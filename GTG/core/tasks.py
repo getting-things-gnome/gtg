@@ -693,6 +693,128 @@ class Task(StoreItem):
 # ------------------------------------------------------------------------------
 # STORE
 # ------------------------------------------------------------------------------
+class FilteredTaskTreeManager:
+
+
+    def __init__(self,store:'TaskStore',task_filter:Gtk.Filter) -> None:
+        self.root_model: Gio.ListStore = Gio.ListStore.new(Task)
+        self.task_filter: Gtk.Filter = task_filter
+        self.tid_to_subtask_model: Dict[UUID,Gio.ListStore] = dict()
+        self.tid_to_containing_model: Dict[UUID,Gio.ListStore] = dict()
+        self.tree_model = Gtk.TreeListModel.new(self.root_model, False, False, self._model_expand)
+        self.store = store
+        self._find_root_tasks()
+
+
+    def get_tree_model(self):
+        return self.tree_model
+
+
+    def set_filter(self,new_filter:Gtk.Filter):
+        self.task_filter = new_filter
+        self.task_filter.connect('changed',self._on_changed)
+        self._refilter_all_tasks()
+
+
+    def _refilter_all_tasks(self) -> None:
+        for t in self.store.data:
+            self._update_with_descendants(t)
+
+
+    def _on_changed(self,*args):
+        self._refilter_all_tasks()
+
+
+    def _find_root_tasks(self) -> None:
+        self.root_model.remove_all()
+        for t in self.store.lookup.values():
+            if self._should_be_root_item(t):
+                self.root_model.append(t)
+                self.tid_to_containing_model[t.id] = self.root_model
+
+
+    def _should_be_root_item(self,t:Task):
+        if not self.task_filter.do_match(t):
+            return False
+        return t.parent is None or not self.task_filter.do_match(t.parent)
+
+
+    def update_position_of(self,t:Task):
+        if not self.task_filter.do_match(t):
+            self.remove(t)
+            return
+        if not self._in_the_right_model(t):
+            self.remove(t)
+            self.add(t)
+
+    def _update_with_descendants(self,t:Task):
+        self.update_position_of(t)
+        for c in t.children:
+            self._update_with_descendants(c)
+
+
+    def _in_the_right_model(self,t:Task):
+        """Return true if and only if the task matching the filter is in the correct ListStore or not yet present."""
+        current_model = self._get_containing_model(t)
+        correct_model = self._get_correct_containing_model(t)
+
+        if current_model is None and correct_model is None:
+            return True
+        if current_model == correct_model:
+            assert correct_model is not None
+            pos = correct_model.find(t)
+            return pos[0]
+        return False
+
+
+    def add(self,task:Task):
+        """Add the task to the correct ListStore."""
+        model = self._get_correct_containing_model(task)
+        if model is None:
+            return
+        model.append(task)
+        self.tid_to_containing_model[task.id] = model
+
+
+    def remove(self,task:Task):
+        """Remove the task from the containing ListStore."""
+        model = self._get_containing_model(task)
+        if model is None:
+            return
+        pos = model.find(task)
+        if pos[0]:
+            model.remove(pos[1])
+            del self.tid_to_containing_model[task.id]
+
+
+    def _get_correct_containing_model(self,task:Task) -> Optional[Gio.ListStore]:
+        """Return the ListStore that should contain the given task matching the filter."""
+        if task.parent is None or not self.task_filter.do_match(task.parent):
+            return self.root_model
+        return self.tid_to_subtask_model.get(task.parent.id)
+
+
+    def _get_containing_model(self,task:Task) -> Optional[Gio.ListStore]:
+        """Return the ListStore that currently contains the given task."""
+        return self.tid_to_containing_model.get(task.id)
+
+
+    def _model_expand(self, item):
+        """Return a ListStore with the matching children of the given task."""
+        model = Gio.ListStore.new(Task)
+
+        if type(item) == Gtk.TreeListRow:
+            item = item.get_item()
+
+        for child in item.children:
+            if self.task_filter is None or self.task_filter.do_match(child):
+                model.append(child)
+                self.tid_to_containing_model[child.id] = model
+
+        self.tid_to_subtask_model[item.id] = model
+        return Gtk.TreeListModel.new(model, False, False, self._model_expand)
+
+
 
 class TaskStore(BaseStore[Task]):
     """A tree of tasks."""
@@ -706,24 +828,26 @@ class TaskStore(BaseStore[Task]):
         super().__init__()
 
         self.model = Gio.ListStore.new(Task)
-        self.tree_model = Gtk.TreeListModel.new(self.model, False, False, self.model_expand)
-        self.tid_to_subtask_model: Dict[UUID,Gio.ListStore] = dict()
+        self.managers: list[FilteredTaskTreeManager] = []
 
 
-    def model_expand(self, item):
-        model = Gio.ListStore.new(Task)
+    def get_filtered_tree_model(self,task_filter: Optional[Gtk.Filter]):
+        manager = FilteredTaskTreeManager(self,task_filter)
+        self.managers.append(manager)
+        return manager.get_tree_model(), manager
 
-        if type(item) == Gtk.TreeListRow:
-            item = item.get_item()
 
-        # open the first one
-        if item.children:
-            for child in item.children:
-                model.append(child)
+    def _update_task_in_managers(self,t:Optional[Task]):
+        if t is None:
+            return
+        for m in self.managers:
+            m.update_position_of(t)
 
-        self.tid_to_subtask_model[item.id] = model
-        return Gtk.TreeListModel.new(model, False, False, self.model_expand)
-
+    def _remove_task_from_managers(self,t:Optional[Task]):
+        if t is None:
+            return
+        for m in self.managers:
+            m.remove(t)
 
     def __str__(self) -> str:
         """String representation."""
@@ -773,6 +897,8 @@ class TaskStore(BaseStore[Task]):
             for tag in self.lookup[parent].tags:
                 task.add_tag(tag)
 
+        self._update_task_in_managers(task)
+        self._update_task_in_managers(task.parent)
         return task
 
 
@@ -921,47 +1047,13 @@ class TaskStore(BaseStore[Task]):
         return root
 
 
-    def _remove_from_parent_model(self,task_id: UUID) -> None:
-        """
-        Remove the task indicated by task_id from the model of its parent's subtasks.
-        This is required to trigger a GUI update.
-        """
-        item = self.lookup[task_id]
-        if item.parent is None:
-            return
-        if item.parent.id not in self.tid_to_subtask_model:
-            return
-        model = self.tid_to_subtask_model[item.parent.id]
-        pos = model.find(item)
-        if pos[0]:
-            model.remove(pos[1])
-
-
-    def _append_to_parent_model(self,task_id: UUID) -> None:
-        """
-        Appends the task indicated by task_id to the model of its parent's subtasks.
-        This is required to trigger a GUI update.
-        """
-        item = self.lookup[task_id]
-        if item.parent is None:
-            return
-        if item.parent.id not in self.tid_to_subtask_model:
-            return
-        model = self.tid_to_subtask_model[item.parent.id]
-        pos = model.find(item)
-        if not pos[0]:
-            model.append(item)
-
-
     def add(self, item: Any, parent_id: Optional[UUID] = None) -> None:
         """Add a task to the taskstore."""
 
         super().add(item, parent_id)
 
-        if not parent_id:
-            self.model.append(item)
-        else:
-            self._append_to_parent_model(item.id)
+        self._update_task_in_managers(item)
+        self._update_task_in_managers(item.parent)
 
         item.duplicate_cb = self.duplicate_for_recurrent
         self.notify('task_count_all')
@@ -975,13 +1067,12 @@ class TaskStore(BaseStore[Task]):
 
         # Remove from UI
         item = self.lookup[item_id]
-        if item.parent is not None:
-            self._remove_from_parent_model(item.id)
-        else:
-            pos = self.model.find(item)
-            self.model.remove(pos[1])
+        parent = item.parent
+        self._remove_task_from_managers(item)
 
         super().remove(item_id)
+
+        self._update_task_in_managers(parent)
 
         self.notify('task_count_all')
         self.notify('task_count_no_tags')
@@ -991,36 +1082,26 @@ class TaskStore(BaseStore[Task]):
 
         item = self.lookup[item_id]
 
-        # Remove from UI
-        if item.parent is not None:
-            self._remove_from_parent_model(item_id)
-        else:
-            pos = self.model.find(item)
-            self.model.remove(pos[1])
-
         super().parent(item_id, parent_id)
 
-        # Add back to UI
-        self._append_to_parent_model(item_id)
+        self._update_task_in_managers(item)
+        self._update_task_in_managers(item.parent)
 
 
     def unparent(self, item_id: UUID) -> None:
 
         item = self.lookup[item_id]
-        parent = item.parent
-        if parent is None:
+        old_parent = item.parent
+        if old_parent is None:
             return
-
-        # Remove from UI
-        self._remove_from_parent_model(item_id)
 
         super().unparent(item_id)
 
         # remove inline references to the former subtask
-        parent.content = re.sub(r'\{\!\s*'+str(item_id)+r'\s*\!\}','',parent.content)
+        old_parent.content = re.sub(r'\{\!\s*'+str(item_id)+r'\s*\!\}','',old_parent.content)
 
-        # Add back to UI
-        self.model.append(item)
+        self._update_task_in_managers(item)
+        self._update_task_in_managers(old_parent)
 
 
     def filter(self, filter_type: Filter, arg: Union[Tag,List[Tag],None] = None) -> List[Task]:
