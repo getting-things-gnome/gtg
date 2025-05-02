@@ -506,7 +506,8 @@ class TaskPane(Gtk.ScrolledWindow):
 
         listitem.bindings = [
             item.bind_property('has_children', box, 'has_children', BIND_FLAGS),
-            item.bind_property('has_children', expander, 'hide-expander', BIND_FLAGS,lambda _,x: not x),
+            item.bind_property('has_children', expander, 'hide-expander', BIND_FLAGS
+                               ,lambda _,x: not self.filter_manager.has_matching_children(item)),
 
             item.bind_property('title', label, 'label', BIND_FLAGS),
             item.bind_property('excerpt', box, 'tooltip-text', BIND_FLAGS),
