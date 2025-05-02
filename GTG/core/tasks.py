@@ -711,7 +711,7 @@ class FilteredTaskTreeManager:
 
 
     def has_matching_children(self,task:Task):
-        return any(self.task_filter.do_match(c) for c in task.children)
+        return any(self.task_filter.match(c) for c in task.children)
 
 
     def set_filter(self,new_filter:Gtk.Filter):
@@ -738,13 +738,13 @@ class FilteredTaskTreeManager:
 
 
     def _should_be_root_item(self,t:Task):
-        if not self.task_filter.do_match(t):
+        if not self.task_filter.match(t):
             return False
-        return t.parent is None or not self.task_filter.do_match(t.parent)
+        return t.parent is None or not self.task_filter.match(t.parent)
 
 
     def update_position_of(self,t:Task):
-        if not self.task_filter.do_match(t):
+        if not self.task_filter.match(t):
             self.remove(t)
             return
         if not self._in_the_right_model(t):
@@ -764,7 +764,7 @@ class FilteredTaskTreeManager:
 
         if current_model is None and correct_model is None:
             return True
-        if current_model == correct_model:
+        if current_model is correct_model:
             assert correct_model is not None
             pos = correct_model.find(t)
             return pos[0]
@@ -793,7 +793,7 @@ class FilteredTaskTreeManager:
 
     def _get_correct_containing_model(self,task:Task) -> Optional[Gio.ListStore]:
         """Return the ListStore that should contain the given task matching the filter."""
-        if task.parent is None or not self.task_filter.do_match(task.parent):
+        if task.parent is None or not self.task_filter.match(task.parent):
             return self.root_model
         return self.tid_to_subtask_model.get(task.parent.id)
 
@@ -805,19 +805,21 @@ class FilteredTaskTreeManager:
 
     def _model_expand(self, item):
         """Return a ListStore with the matching children of the given task."""
-        model = Gio.ListStore.new(Task)
-
         if type(item) == Gtk.TreeListRow:
             item = item.get_item()
-
-        for child in item.children:
-            if self.task_filter is None or self.task_filter.do_match(child):
-                model.append(child)
-                self.tid_to_containing_model[child.id] = model
-
-        self.tid_to_subtask_model[item.id] = model
+        if item.id not in self.tid_to_subtask_model:
+            self.tid_to_subtask_model[item.id] = self._create_model_for_children(item)
+        model = self.tid_to_subtask_model[item.id]
         return Gtk.TreeListModel.new(model, False, False, self._model_expand)
 
+
+    def _create_model_for_children(self,item):
+        model = Gio.ListStore.new(Task)
+        for child in item.children:
+            if self.task_filter.match(child):
+                model.append(child)
+                self.tid_to_containing_model[child.id] = model
+        return model
 
 
 class TaskStore(BaseStore[Task]):
@@ -831,8 +833,10 @@ class TaskStore(BaseStore[Task]):
     def __init__(self) -> None:
         super().__init__()
 
-        self.model = Gio.ListStore.new(Task)
         self.managers: list[FilteredTaskTreeManager] = []
+        self.always_true_filter = Gtk.CustomFilter()
+        self.always_true_filter.set_filter_func(lambda x: True)
+        self.tree_model, manager = self.get_filtered_tree_model(self.always_true_filter)
 
 
     def get_filtered_tree_model(self,task_filter: Optional[Gtk.Filter]):

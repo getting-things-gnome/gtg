@@ -220,11 +220,10 @@ class TaskPane(Gtk.ScrolledWindow):
     def set_search_query(self, query) -> None:
         """Change tasks filter."""
 
-        self.filter_manager.set_filter(self.search_filter)
         self.search_filter.set_query(query)
         self.search_filter.pane = self.pane
-        self.search_filter.changed(Gtk.FilterChange.DIFFERENT)
         self.searching = True
+        self.filter_manager.set_filter(self.search_filter)
 
 
     def set_filter_pane(self, pane) -> None:
@@ -326,7 +325,7 @@ class TaskPane(Gtk.ScrolledWindow):
     def select_last(self) -> None:
         """Select last position in the task list."""
 
-        position = self.app.ds.tasks.tree_model.get_n_items()
+        position = self.filtered.get_n_items()
         self.task_selection.select_item(position - 1, True)
 
 
@@ -642,7 +641,7 @@ class TaskPane(Gtk.ScrolledWindow):
     def on_toplevel_tag_drop(self, drop_target, task, x, y):
         if task.parent:
             self.ds.tasks.unparent(task.id)
-            self.ds.tasks.tree_model.emit('items-changed', 0, 0, 0)
+            self.filtered.emit('items-changed', 0, 0, 0)
             self.refresh()
 
             return True
