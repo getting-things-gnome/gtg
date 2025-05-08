@@ -182,3 +182,14 @@ class SavedSearchStore(BaseStore):
         self.model.append(item)
 
         self.emit('added', item)
+
+
+    def remove(self, item_id: UUID) -> None:
+        """Remove an existing saved search."""
+
+        # Remove from UI
+        item = self.lookup[item_id]
+        pos = self.model.find(item)
+        self.model.remove(pos[1])
+
+        super().remove(item_id)
