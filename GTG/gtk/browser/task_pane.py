@@ -152,10 +152,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
         self.search_filter = SearchTaskFilter(self.ds, pane)
         self.task_filter = TaskPaneFilter(self.app.ds, pane)
-
-        self.filtered = Gtk.FilterListModel()
-        self.filtered.set_model(self.app.ds.tasks.tree_model)
-        self.filtered.set_filter(self.task_filter)
+        self.filtered, self.filter_manager = self.app.ds.tasks.get_filtered_tree_model(self.task_filter)
 
         self.sort_model = Gtk.TreeListRowSorter()
         self.sort_model.set_sorter(TaskTitleSorter())
@@ -223,11 +220,10 @@ class TaskPane(Gtk.ScrolledWindow):
     def set_search_query(self, query) -> None:
         """Change tasks filter."""
 
-        self.filtered.set_filter(self.search_filter)
         self.search_filter.set_query(query)
         self.search_filter.pane = self.pane
-        self.search_filter.changed(Gtk.FilterChange.DIFFERENT)
         self.searching = True
+        self.filter_manager.set_filter(self.search_filter)
 
 
     def set_filter_pane(self, pane) -> None:
@@ -235,7 +231,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
         if self.searching:
             self.searching = False
-            self.filtered.set_filter(self.task_filter)
+            self.filter_manager.set_filter(self.task_filter)
 
         self.pane = pane
         self.task_filter.pane = pane
@@ -329,7 +325,7 @@ class TaskPane(Gtk.ScrolledWindow):
     def select_last(self) -> None:
         """Select last position in the task list."""
 
-        position = self.app.ds.tasks.tree_model.get_n_items()
+        position = self.filtered.get_n_items()
         self.task_selection.select_item(position - 1, True)
 
 
@@ -509,7 +505,8 @@ class TaskPane(Gtk.ScrolledWindow):
 
         listitem.bindings = [
             item.bind_property('has_children', box, 'has_children', BIND_FLAGS),
-            item.bind_property('has_children', expander, 'hide-expander', BIND_FLAGS,lambda _,x: not x),
+            item.bind_property('has_children', expander, 'hide-expander', BIND_FLAGS
+                               ,lambda _,x: not self.filter_manager.has_matching_children(item)),
 
             item.bind_property('title', label, 'label', BIND_FLAGS),
             item.bind_property('excerpt', box, 'tooltip-text', BIND_FLAGS),
@@ -644,7 +641,7 @@ class TaskPane(Gtk.ScrolledWindow):
     def on_toplevel_tag_drop(self, drop_target, task, x, y):
         if task.parent:
             self.ds.tasks.unparent(task.id)
-            self.ds.tasks.tree_model.emit('items-changed', 0, 0, 0)
+            self.filtered.emit('items-changed', 0, 0, 0)
             self.refresh()
 
             return True
