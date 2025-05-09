@@ -58,8 +58,8 @@
       "sources": [
         {
           "type": "archive",
-          "url": "https://github.com/flatpak/libportal/releases/download/0.7.1/libportal-0.7.1.tar.xz",
-          "sha256": "297b90b263fad22190a26b8c7e8ea938fe6b18fb936265e588927179920d3805"
+          "url": "https://github.com/flatpak/libportal/releases/download/0.9.1/libportal-0.9.1.tar.xz",
+          "sha256": "de801ee349ed3c255a9af3c01b1a401fab5b3fc1c35eb2fd7dfb35d4b8194d7f"
         }
       ]
     },
