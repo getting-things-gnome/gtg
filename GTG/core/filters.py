@@ -73,75 +73,62 @@ class TaskPaneFilter(Gtk.Filter):
         self.expand = False
 
 
-    def expand_tags(self) -> set:
-        """Expand tags to include their children."""
-
-        def get_children(children: set) -> None:
-            for child in children:
-                result.add(child)
-
-                if child.children:
-                    get_children(child.children)
-
-
-        result = set()
-
-        for tag in self.tags:
-            result.add(tag)
-
-            if tag.children:
-                get_children(tag.children)
-
-        return result
-
-
     def match_tags(self, task: Task) -> bool:
         """Match selected tags to task tags."""
+        for tag in self.tags:
+            matching_tags = set(tag.get_matching_tags())
+            if set(task.tags).isdisjoint(matching_tags):
+                return False
+        return True
 
-        all_tags = self.expand_tags()
-        return len(all_tags.intersection(set(task.tags))) >= len(self.tags)
+
+    def is_task_matched_by_pane(self,task: Task) -> bool:
+        """Return true if and only if the current pane does not filter out the task."""
+        if self.pane == 'active':
+            return task.status is Status.ACTIVE
+        elif self.pane == 'workview':
+            return task.is_actionable
+        elif self.pane == 'closed':
+            return task.status is not Status.ACTIVE
+        raise Exception("Unknown pane: " + self.pane)
+
+
+    def is_task_matched_by_tags(self,task: Task) -> bool:
+        """Return true if and only if the selected tag filtering option does not filter out the task."""
+        if self.no_tags:
+            return len(task.tags) == 0
+        return self.match_tags(task)
 
 
     def do_match(self, item) -> bool:
         task = item if isinstance(item, Task) else  unwrap(item, Task)
-
-        if self.pane == 'active':
-            show = task.status is Status.ACTIVE
-        elif self.pane == 'workview':
-            show = task.is_actionable
-
-            if self.expand:
-                item.set_expanded(True)
-                self.expand = False
-
-        elif self.pane == 'closed':
-            show = task.status is not Status.ACTIVE
-
-
-        if show:
-            if self.no_tags:
-                current = not task.tags
-                return current or any(bool(c.tags) for c in task.children)
-            elif self.tags:
-                current = self.match_tags(task)
-                return current or any(self.match_tags(c) for c in task.children)
-            else:
-                return True
-        else:
-            return False
+        return self.is_task_matched_by_pane(task) and self.is_task_matched_by_tags(task)
 
 
 class SearchTaskFilter(Gtk.Filter):
     __gtype_name__ = 'SearchTaskFilter'
 
-    def __init__(self, ds, pane):
+    def __init__(self, ds, pane) -> None:
         super(SearchTaskFilter, self).__init__()
         self.ds = ds
         self.query = ''
         self.checks = None
-        self.pane = pane
+        self.pane : str = pane
         self.expand = False
-        self.tags = set()
+        self.tags: list[Tag] = []
+        self.only_untagged = False
+
+
+    def allow_untagged_only(self) -> None:
+        self.tags = []
+        self.only_untagged = True
+        self.changed(Gtk.FilterChange.DIFFERENT)
+
+
+    def set_required_tags(self,tags: list[Tag]) -> None:
+        self.tags = tags
+        self.only_untagged = False
+        self.changed(Gtk.FilterChange.DIFFERENT)
 
 
     def set_query(self, query: str) -> None:
@@ -152,33 +139,43 @@ class SearchTaskFilter(Gtk.Filter):
         except search.InvalidQuery:
             self.checks = None
 
+        self.changed(Gtk.FilterChange.DIFFERENT)
+
 
     def match_tags(self, task: Task) -> bool:
         """Match selected tags to task tags."""
+        for tag in self.tags:
+            matching_tags = set(tag.get_matching_tags())
+            if set(task.tags).isdisjoint(matching_tags):
+                return False
+        return True
 
-        return len(self.tags.intersection(set(task.tags))) >= len(self.tags)
+
+    def is_task_matched_by_pane(self,task: Task) -> bool:
+        """Return true if and only if the current pane does not filter out the task."""
+        if self.pane == 'active':
+            return task.status is Status.ACTIVE
+        elif self.pane == 'workview':
+            return task.is_actionable
+        elif self.pane == 'closed':
+            return task.status is not Status.ACTIVE
+        raise Exception("Unknown pane: " + self.pane)
+
+
+    def is_task_matched_by_tags(self,task: Task) -> bool:
+        """Return true if and only if the selected tag filtering option does not filter out the task."""
+        if self.only_untagged:
+            return len(task.tags) == 0
+        return self.match_tags(task)
+
+
+    def is_task_matched_by_query(self,task:Task) -> bool:
+        """Return true if and only if the search query does not filter out the task."""
+        return search.search_filter(task, self.checks)
 
 
     def do_match(self, item) -> bool:
         task = item if isinstance(item, Task) else unwrap(item, Task)
-
-        if self.pane == 'active':
-            show = task.status is Status.ACTIVE
-        elif self.pane == 'workview':
-            show = task.is_actionable
-            if self.expand:
-                item.set_expanded(True)
-                self.expand = False
-        elif self.pane == 'closed':
-            show = task.status is not Status.ACTIVE
-
-        if show:
-            if self.tags:
-                current = self.match_tags(task)
-                tag_show = current or any(self.match_tags(c) for c in task.children)
-
-                return tag_show and search.search_filter(task, self.checks)
-
-            return search.search_filter(task, self.checks)
-        else:
-            return False
+        return (self.is_task_matched_by_pane(task)
+                and self.is_task_matched_by_tags(task)
+                and self.is_task_matched_by_query(task))
