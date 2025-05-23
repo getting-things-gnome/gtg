@@ -237,6 +237,7 @@ class TaskPane(Gtk.ScrolledWindow):
         self.task_filter.pane = pane
         self.task_filter.expand = True
         self.task_filter.changed(Gtk.FilterChange.DIFFERENT)
+        self.filter_manager.set_filter(self.task_filter)
         self.set_title()
 
 
@@ -244,8 +245,7 @@ class TaskPane(Gtk.ScrolledWindow):
         """Change tasks filter."""
 
         if self.searching:
-            self.search_filter.tags = tags
-            self.search_filter.changed(Gtk.FilterChange.DIFFERENT)
+            self.search_filter.set_required_tags(tags)
         else:
             self.task_filter.tags = tags
             self.task_filter.no_tags = False
@@ -257,8 +257,7 @@ class TaskPane(Gtk.ScrolledWindow):
         """Change tasks filter."""
 
         if self.searching:
-            self.search_filter.tags = []
-            self.search_filter.changed(Gtk.FilterChange.DIFFERENT)
+            self.search_filter.allow_untagged_only()
         else:
             self.task_filter.tags = []
             self.task_filter.no_tags = True
