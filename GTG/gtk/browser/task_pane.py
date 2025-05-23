@@ -20,7 +20,7 @@
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 from GTG.core.tasks import Task, Status
-from GTG.core.filters import TaskPaneFilter, SearchTaskFilter
+from GTG.core.filters import TaskFilter
 from GTG.core.sorters import (TaskAddedSorter, TaskDueSorter,
                               TaskModifiedSorter, TaskStartSorter,
                               TaskTagSorter, TaskTitleSorter)
@@ -150,8 +150,7 @@ class TaskPane(Gtk.ScrolledWindow):
         # Task List
         # -------------------------------------------------------------------------------
 
-        self.search_filter = SearchTaskFilter(self.ds, pane)
-        self.task_filter = TaskPaneFilter(self.app.ds, pane)
+        self.task_filter = TaskFilter(self.app.ds, pane)
         self.filtered, self.filter_manager = self.app.ds.tasks.get_filtered_tree_model(self.task_filter)
 
         self.sort_model = Gtk.TreeListRowSorter()
@@ -220,10 +219,9 @@ class TaskPane(Gtk.ScrolledWindow):
     def set_search_query(self, query) -> None:
         """Change tasks filter."""
 
-        self.search_filter.set_query(query)
-        self.search_filter.pane = self.pane
+        self.task_filter.set_pane(self.pane)
+        self.task_filter.set_query(query)
         self.searching = True
-        self.filter_manager.set_filter(self.search_filter)
 
 
     def set_filter_pane(self, pane) -> None:
@@ -231,38 +229,23 @@ class TaskPane(Gtk.ScrolledWindow):
 
         if self.searching:
             self.searching = False
-            self.filter_manager.set_filter(self.task_filter)
 
         self.pane = pane
-        self.task_filter.pane = pane
-        self.task_filter.expand = True
-        self.task_filter.changed(Gtk.FilterChange.DIFFERENT)
-        self.filter_manager.set_filter(self.task_filter)
+        self.task_filter.set_pane(pane)
         self.set_title()
 
 
     def set_filter_tags(self, tags=[]) -> None:
         """Change tasks filter."""
 
-        if self.searching:
-            self.search_filter.set_required_tags(tags)
-        else:
-            self.task_filter.tags = tags
-            self.task_filter.no_tags = False
-            self.task_filter.changed(Gtk.FilterChange.DIFFERENT)
-
+        self.task_filter.set_required_tags(tags)
         self.set_title()
+
 
     def set_filter_notags(self, tags=[]) -> None:
         """Change tasks filter."""
 
-        if self.searching:
-            self.search_filter.allow_untagged_only()
-        else:
-            self.task_filter.tags = []
-            self.task_filter.no_tags = True
-            self.task_filter.changed(Gtk.FilterChange.DIFFERENT)
-
+        self.task_filter.allow_untagged_only()
         self.set_title()
 
 

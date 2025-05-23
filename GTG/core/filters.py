@@ -61,60 +61,16 @@ class TagEmptyFilter(Gtk.Filter):
             return True
 
 
-class TaskPaneFilter(Gtk.Filter):
-    __gtype_name__ = 'TaskPaneFilter'
 
-    def __init__(self, ds, pane, tags = [], no_tags=False):
-        super(TaskPaneFilter, self).__init__()
-        self.ds = ds
-        self.pane = pane
-        self.tags = set()
-        self.no_tags = no_tags
-        self.expand = False
-
-
-    def match_tags(self, task: Task) -> bool:
-        """Match selected tags to task tags."""
-        for tag in self.tags:
-            matching_tags = set(tag.get_matching_tags())
-            if set(task.tags).isdisjoint(matching_tags):
-                return False
-        return True
-
-
-    def is_task_matched_by_pane(self,task: Task) -> bool:
-        """Return true if and only if the current pane does not filter out the task."""
-        if self.pane == 'active':
-            return task.status is Status.ACTIVE
-        elif self.pane == 'workview':
-            return task.is_actionable
-        elif self.pane == 'closed':
-            return task.status is not Status.ACTIVE
-        raise Exception("Unknown pane: " + self.pane)
-
-
-    def is_task_matched_by_tags(self,task: Task) -> bool:
-        """Return true if and only if the selected tag filtering option does not filter out the task."""
-        if self.no_tags:
-            return len(task.tags) == 0
-        return self.match_tags(task)
-
-
-    def do_match(self, item) -> bool:
-        task = item if isinstance(item, Task) else  unwrap(item, Task)
-        return self.is_task_matched_by_pane(task) and self.is_task_matched_by_tags(task)
-
-
-class SearchTaskFilter(Gtk.Filter):
-    __gtype_name__ = 'SearchTaskFilter'
+class TaskFilter(Gtk.Filter):
+    __gtype_name__ = 'TaskFilter'
 
     def __init__(self, ds, pane) -> None:
-        super(SearchTaskFilter, self).__init__()
+        super(TaskFilter, self).__init__()
         self.ds = ds
         self.query = ''
         self.checks = None
         self.pane : str = pane
-        self.expand = False
         self.tags: list[Tag] = []
         self.only_untagged = False
 
@@ -128,6 +84,11 @@ class SearchTaskFilter(Gtk.Filter):
     def set_required_tags(self,tags: list[Tag]) -> None:
         self.tags = tags
         self.only_untagged = False
+        self.changed(Gtk.FilterChange.DIFFERENT)
+
+
+    def set_pane(self,pane: str) -> None:
+        self.pane = pane
         self.changed(Gtk.FilterChange.DIFFERENT)
 
 
