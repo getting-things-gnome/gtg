@@ -699,6 +699,7 @@ class FilteredTaskTreeManager:
     def __init__(self,store:'TaskStore',task_filter:Gtk.Filter) -> None:
         self.root_model: Gio.ListStore = Gio.ListStore.new(Task)
         self.task_filter: Gtk.Filter = task_filter
+        self.task_filter.connect('changed',self._on_changed)
         self.tid_to_subtask_model: Dict[UUID,Gio.ListStore] = dict()
         self.tid_to_containing_model: Dict[UUID,Gio.ListStore] = dict()
         self.tree_model = Gtk.TreeListModel.new(self.root_model, False, False, self._model_expand)
