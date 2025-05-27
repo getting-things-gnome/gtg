@@ -67,6 +67,18 @@ class TagContextMenu(Gtk.PopoverMenu):
             self.set_menu_model(menu_model)
 
 
+    def disable_edit_btn(self) -> None:
+        """Disable the edit button in the context menu"""
+
+        self.action_set_enabled('tags_popup.edit_tag', False)
+
+
+    def enable_edit_btn(self) -> None:
+        """Enable the edit button in the context menu"""
+
+        self.action_set_enabled('tags_popup.edit_tag', True)
+
+
     # CALLBACKS ###############################################################
     def on_mi_cc_activate(self, widget, action_name, param):
         """Callback: show the tag editor upon request"""
