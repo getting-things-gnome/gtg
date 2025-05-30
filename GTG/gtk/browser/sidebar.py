@@ -231,11 +231,6 @@ class Sidebar(Gtk.ScrolledWindow):
         menu.set_halign(Gtk.Align.START)
         menu.set_position(Gtk.PositionType.BOTTOM)
 
-        if self.tag_selection.get_selection().get_size() > 1:
-            menu.disable_edit_btn()
-        else:
-            menu.enable_edit_btn()
-
         point = gesture.get_point(sequence)
         rect = Gdk.Rectangle()
         rect.x = point.x
