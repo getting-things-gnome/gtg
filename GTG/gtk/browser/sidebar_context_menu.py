@@ -34,9 +34,9 @@ from GTG.gtk.browser import GnomeConfig
 class TagContextMenu(Gtk.PopoverMenu):
     """Context menu to the tag in the sidebar"""
 
-    def __init__(self, ds, app, tag):
+    def __init__(self, ds, app, tags):
         super().__init__(has_arrow=False)
-        self.tag = tag
+        self.tags = tags
         self.app = app
         self.ds = ds
 
@@ -44,7 +44,7 @@ class TagContextMenu(Gtk.PopoverMenu):
             ("edit_tag", self.on_mi_cc_activate),
             ("generate_tag_color", self.on_mi_ctag_activate),
             ("delete_tag", lambda w, a, p:
-            	self.app.browser.on_delete_tag_activate([self.tag]))
+            	self.app.browser.on_delete_tag_activate(self.tags))
         ]
 
         for action_disc in actions:
@@ -57,7 +57,7 @@ class TagContextMenu(Gtk.PopoverMenu):
 
     def build_menu(self):
         """Build up the widget"""
-        if self.tag:
+        if self.tags:
             menu_builder = Gtk.Builder()
             menu_builder.add_from_file(GnomeConfig.MENUS_UI_FILE)
             menu_model = menu_builder.get_object("tag_context_menu")
@@ -83,12 +83,12 @@ class TagContextMenu(Gtk.PopoverMenu):
     def on_mi_cc_activate(self, widget, action_name, param):
         """Callback: show the tag editor upon request"""
 
-        self.app.open_tag_editor(self.tag)
+        self.app.open_tag_editor(self.tags[0])
 
 
     def on_mi_ctag_activate(self, widget, action_name, param):
 
-        self.tag.color = self.ds.tags.generate_color()
+        self.tags[0].color = self.ds.tags.generate_color()
         self.ds.notify_tag_change(self.tag)
 
 
