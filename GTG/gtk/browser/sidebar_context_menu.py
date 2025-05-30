@@ -51,6 +51,10 @@ class TagContextMenu(Gtk.PopoverMenu):
             self.install_action(
                 ".".join(["tags_popup", action_disc[0]]), None, action_disc[1])
 
+        if len(self.tags) > 1:
+            self.action_set_enabled('tags_popup.edit_tag', False)
+            self.action_set_enabled('tags_popup.generate_tag_color', False)
+
         # Build up the menu
         self.build_menu()
 
@@ -65,18 +69,6 @@ class TagContextMenu(Gtk.PopoverMenu):
             menu_model.append_item(self.mi_del_tag)
 
             self.set_menu_model(menu_model)
-
-
-    def disable_edit_btn(self) -> None:
-        """Disable the edit button in the context menu"""
-
-        self.action_set_enabled('tags_popup.edit_tag', False)
-
-
-    def enable_edit_btn(self) -> None:
-        """Enable the edit button in the context menu"""
-
-        self.action_set_enabled('tags_popup.edit_tag', True)
 
 
     # CALLBACKS ###############################################################
