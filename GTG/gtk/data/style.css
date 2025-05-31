@@ -24,6 +24,16 @@ indent, expander{
     -gtk-icon-size: 16px;
 }
 
+.task-list row {
+    padding: 0px;
+}
+
+.task-list .task-box {
+    min-height: 48px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
 /* --------------------------------------------------------------------------------
  * ERROR HANDLER
  * --------------------------------------------------------------------------------

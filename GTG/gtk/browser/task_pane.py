@@ -39,6 +39,8 @@ class TaskBox(Gtk.Box):
         self.config = config
         super().__init__(valign=Gtk.Align.CENTER)
 
+        self.add_css_class('task-box')
+
         self.expander = Gtk.TreeExpander()
         self.expander.add_css_class('arrow-only-expander')
         self.expander.set_indent_for_icon(True)
@@ -170,6 +172,7 @@ class TaskPane(Gtk.ScrolledWindow):
         view = Gtk.ListView.new(self.task_selection, tasks_signals)
         view.set_show_separators(True)
         view.add_css_class('rich-list')
+        view.add_css_class('task-list')
 
         view_drop = Gtk.DropTarget.new(Task, Gdk.DragAction.COPY)
         view_drop.connect("drop", self.on_toplevel_tag_drop)
