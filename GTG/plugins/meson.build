@@ -12,7 +12,6 @@ gtg_plugins = [
   'urgency-color',
   'hamster',
   'dev_console',
-	'gamify',
 ]
 
 foreach plugin : gtg_plugins
