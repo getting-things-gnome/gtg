@@ -369,6 +369,8 @@ class Task(StoreItem):
                 # remove every other instance of the tag
                 self.content = re.sub(r'\B@'+tag_name+r'\b(?!-)','',self.content)
 
+                self.notify('row_css')
+
 
     def rename_tag(self, old_tag_name: str, new_tag_name: str) -> None:
         """Replace a tag's name in the content."""
