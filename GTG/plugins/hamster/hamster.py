@@ -137,15 +137,12 @@ class HamsterPlugin():
         task.set_attribute("id-list", ",".join(ids),
                            namespace=self.PLUGIN_NAMESPACE)
 
-    def on_task_deleted(self, task_id, path):
+    def on_task_deleted(self, store, task):
         """ Stop tracking a deleted task if it is being tracked """
-        self.stop_task(task_id)
+        self.stop_task(task.id)
 
-    def on_task_modified(self, task_id, path):
+    def on_task_modified(self, store, task):
         """ Stop task if it is tracked and it is Done/Dismissed """
-        task = self.plugin_api.ds.tasks.lookup[task_id]
-        if not task:
-            return
         if task.get_status() in (Task.STA_DISMISSED, Task.STA_DONE):
             self.stop_task(task_id)
 
@@ -176,8 +173,8 @@ class HamsterPlugin():
         #     ("node-deleted-inview", self.on_task_deleted),
         # ])
 
-        plugin_api.ds.tasks.tree_model.connect('items-changed', self.on_task_modified)
-        plugin_api.ds.tasks.tree_model.connect('items-changed', self.on_task_deleted)
+        plugin_api.ds.tasks.connect('task-filterably-changed', self.on_task_modified)
+        plugin_api.ds.tasks.connect('removed', self.on_task_deleted)
 
         # set up preferences
         self.preference_dialog_init()

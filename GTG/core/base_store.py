@@ -126,23 +126,21 @@ class BaseStore(GObject.Object,Generic[S]):
         if item.id in self.lookup.keys():
             log.warning('Failed to add item with id %s, already added!',
                         item.id)
+            raise KeyError
 
+        if parent_id and parent_id not in self.lookup:
+            log.warning(('Failed to add item with id %s to parent %s, '
+                         'parent not found!'), item.id, parent_id)
             raise KeyError
 
         if parent_id:
-            try:
-                self.lookup[parent_id].add_child(item)
-                item.parent = self.lookup[parent_id]
-
-            except KeyError:
-                log.warning(('Failed to add item with id %s to parent %s, '
-                            'parent not found!'), item.id, parent_id)
-                raise
-
+            self.lookup[parent_id].add_child(item)
+            item.parent = self.lookup[parent_id]
         else:
             self.data.append(item)
 
         self.lookup[item.id] = item
+        self.emit('added', item)
         log.debug('Added %s', item)
 
 
@@ -151,7 +149,7 @@ class BaseStore(GObject.Object,Generic[S]):
         """Signal to emit when adding a new item."""
 
 
-    @GObject.Signal(name='removed', arg_types=(str,))
+    @GObject.Signal(name='removed', arg_types=(object,))
     def remove_signal(self, *_):
         """Signal to emit when removing a new item."""
 
@@ -182,7 +180,7 @@ class BaseStore(GObject.Object,Generic[S]):
             self.data.remove(item)
         del self.lookup[item_id]
 
-        self.emit('removed', str(item_id))
+        self.emit('removed', item)
 
 
     def batch_remove(self,item_ids: list[UUID]) -> None:
