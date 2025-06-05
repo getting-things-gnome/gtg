@@ -863,24 +863,10 @@ class TaskStore(BaseStore[Task]):
     #: Tag to look for in XML
     XML_TAG = 'task'
 
-    def __init__(self) -> None:
-        super().__init__()
-
-        self.managers: list[FilteredTaskTreeManager] = []
-        self.always_true_filter = Gtk.CustomFilter()
-        self.always_true_filter.set_filter_func(lambda x: True)
-        self.tree_model, manager = self.get_filtered_tree_model(self.always_true_filter)
-
 
     @GObject.Signal(name='task-filterably-changed', arg_types=(object,))
     def task_filterably_changed_signal(self, *_):
         """Signal to emit when a task was changed in a filterable way. (E.g., A tag was added.)"""
-
-
-    def get_filtered_tree_model(self,task_filter: Optional[Gtk.Filter]):
-        manager = FilteredTaskTreeManager(self,task_filter)
-        self.managers.append(manager)
-        return manager.get_tree_model(), manager
 
 
     def __str__(self) -> str:
@@ -1088,8 +1074,6 @@ class TaskStore(BaseStore[Task]):
         item.duplicate_cb = self.duplicate_for_recurrent
         self.notify('task_count_all')
         self.notify('task_count_no_tags')
-
-        self.emit('added', item)
 
 
     def remove(self, item_id: UUID) -> None:

@@ -19,7 +19,7 @@
 """Task pane and list."""
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
-from GTG.core.tasks import Task, Status
+from GTG.core.tasks import Task, Status, FilteredTaskTreeManager
 from GTG.core.filters import TaskFilter
 from GTG.core.sorters import (TaskAddedSorter, TaskDueSorter,
                               TaskModifiedSorter, TaskStartSorter,
@@ -153,7 +153,8 @@ class TaskPane(Gtk.ScrolledWindow):
         # -------------------------------------------------------------------------------
 
         self.task_filter = TaskFilter(self.app.ds, pane)
-        self.filtered, self.filter_manager = self.app.ds.tasks.get_filtered_tree_model(self.task_filter)
+        self.filter_manager = FilteredTaskTreeManager(self.app.ds.tasks,self.task_filter)
+        self.filtered = self.filter_manager.get_tree_model()
 
         self.sort_model = Gtk.TreeListRowSorter()
         self.sort_model.set_sorter(TaskTitleSorter())
