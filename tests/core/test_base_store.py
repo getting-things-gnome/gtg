@@ -66,7 +66,7 @@ class TestBaseStoreRemove(TestCase):
             removed.add(s)
         self.store.connect('removed',on_remove)
         self.store.remove(self.tree_items[0].id)
-        self.assertEqual(removed,{ str(item.id) for item in self.tree_items })
+        self.assertEqual(removed,set(self.tree_items))
 
 
 
