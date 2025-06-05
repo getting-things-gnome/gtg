@@ -705,6 +705,37 @@ class FilteredTaskTreeManager:
         self.tree_model = Gtk.TreeListModel.new(self.root_model, False, False, self._model_expand)
         self.store = store
         self._find_root_tasks()
+        self._connect_to_update_events()
+
+
+    def _connect_to_update_events(self):
+        self.store.connect('removed', self._on_task_removed)
+        self.store.connect('added', self._on_task_added)
+        self.store.connect('parent-change',self._on_task_parented)
+        self.store.connect('parent-removed',self._on_task_unparented)
+        self.store.connect('task-filterably-changed',lambda _, t: self.update_position_of(t))
+
+
+    def _on_task_removed(self,store:'TaskStore',t:Task):
+        self.remove(t)
+        if t.parent is not None:
+            self.update_position_of(t.parent)
+
+
+    def _on_task_added(self,store:'TaskStore',t:Task):
+        self.update_position_of(t)
+        if t.parent is not None:
+            self.update_position_of(t.parent)
+
+
+    def _on_task_parented(self,store:'TaskStore',t:Task,parent:Task):
+        self.update_position_of(t)
+        self.update_position_of(parent)
+
+
+    def _on_task_unparented(self,store:'TaskStore',t:Task,old_parent:Task):
+        self.update_position_of(t)
+        self.update_position_of(old_parent)
 
 
     def get_tree_model(self):
@@ -823,6 +854,7 @@ class FilteredTaskTreeManager:
         return model
 
 
+
 class TaskStore(BaseStore[Task]):
     """A tree of tasks."""
 
@@ -840,23 +872,16 @@ class TaskStore(BaseStore[Task]):
         self.tree_model, manager = self.get_filtered_tree_model(self.always_true_filter)
 
 
+    @GObject.Signal(name='task-filterably-changed', arg_types=(object,))
+    def task_filterably_changed_signal(self, *_):
+        """Signal to emit when a task was changed in a filterable way. (E.g., A tag was added.)"""
+
+
     def get_filtered_tree_model(self,task_filter: Optional[Gtk.Filter]):
         manager = FilteredTaskTreeManager(self,task_filter)
         self.managers.append(manager)
         return manager.get_tree_model(), manager
 
-
-    def _update_task_in_managers(self,t:Optional[Task]):
-        if t is None:
-            return
-        for m in self.managers:
-            m.update_position_of(t)
-
-    def _remove_task_from_managers(self,t:Optional[Task]):
-        if t is None:
-            return
-        for m in self.managers:
-            m.remove(t)
 
     def __str__(self) -> str:
         """String representation."""
@@ -906,8 +931,7 @@ class TaskStore(BaseStore[Task]):
             for tag in self.lookup[parent].tags:
                 task.add_tag(tag)
 
-        self._update_task_in_managers(task)
-        self._update_task_in_managers(task.parent)
+        self.emit('task-filterably-changed',task)
         return task
 
 
@@ -1056,13 +1080,10 @@ class TaskStore(BaseStore[Task]):
         return root
 
 
-    def add(self, item: Any, parent_id: Optional[UUID] = None) -> None:
+    def add(self, item: Task, parent_id: Optional[UUID] = None) -> None:
         """Add a task to the taskstore."""
 
         super().add(item, parent_id)
-
-        self._update_task_in_managers(item)
-        self._update_task_in_managers(item.parent)
 
         item.duplicate_cb = self.duplicate_for_recurrent
         self.notify('task_count_all')
@@ -1074,27 +1095,9 @@ class TaskStore(BaseStore[Task]):
     def remove(self, item_id: UUID) -> None:
         """Remove an existing task."""
 
-        # Remove from UI
-        item = self.lookup[item_id]
-        parent = item.parent
-        self._remove_task_from_managers(item)
-
         super().remove(item_id)
-
-        self._update_task_in_managers(parent)
-
         self.notify('task_count_all')
         self.notify('task_count_no_tags')
-
-
-    def parent(self, item_id: UUID, parent_id: UUID) -> None:
-
-        item = self.lookup[item_id]
-
-        super().parent(item_id, parent_id)
-
-        self._update_task_in_managers(item)
-        self._update_task_in_managers(item.parent)
 
 
     def unparent(self, item_id: UUID) -> None:
@@ -1108,9 +1111,6 @@ class TaskStore(BaseStore[Task]):
 
         # remove inline references to the former subtask
         old_parent.content = re.sub(r'\{\!\s*'+str(item_id)+r'\s*\!\}','',old_parent.content)
-
-        self._update_task_in_managers(item)
-        self._update_task_in_managers(old_parent)
 
 
     def filter(self, filter_type: Filter, arg: Union[Tag,List[Tag],None] = None) -> List[Task]:
