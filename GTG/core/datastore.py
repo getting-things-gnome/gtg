@@ -266,18 +266,19 @@ class Datastore:
         for tag_name in self.tags.get_all_tag_names():
             tag = self.tags.find(tag_name)
             self.refresh_task_for_tag(tag)
-            self.notify_tag_change(tag)
+            self.notify_tag_change([tag])
 
 
-    def notify_tag_change(self, tag) -> None:
+    def notify_tag_change(self, tags: list[Tag]) -> None:
         """Notify tasks that this tag has changed."""
 
         for task in self.tasks.lookup.values():
-            if tag in task.tags:
-                task.notify('icons')
-                task.notify('row_css')
-                task.notify('tag_colors')
-                task.notify('show_tag_colors')
+            for tag in tags:
+                if tag in task.tags:
+                    task.notify('icons')
+                    task.notify('row_css')
+                    task.notify('tag_colors')
+                    task.notify('show_tag_colors')
 
 
     def first_run(self, path: str) -> None:
