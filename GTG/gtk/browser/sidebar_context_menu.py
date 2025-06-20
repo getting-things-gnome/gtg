@@ -115,10 +115,3 @@ class SearchesContextMenu(Gtk.PopoverMenu):
         menu_model = menu_builder.get_object("search_context_menu")
 
         self.set_menu_model(menu_model)
-
-
-    # CALLBACKS ###############################################################
-    def on_mi_cc_activate(self, widget, action_name, param):
-        """Callback: show the tag editor upon request"""
-
-        # self.app.open_tag_editor(self.tag)
