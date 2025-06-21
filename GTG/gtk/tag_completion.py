@@ -63,6 +63,7 @@ class TagCompletion(Gtk.EntryCompletion):
         """ Initialize entry completion"""
         super().__init__()
 
+        self.tagstore = tagstore
         self.tags = Gtk.ListStore(str)
 
         self.set_model(self.tags)
@@ -72,8 +73,19 @@ class TagCompletion(Gtk.EntryCompletion):
         self.set_inline_selection(True)
         self.set_popup_single_match(False)
 
-        for tag in tagstore.lookup.values():
-            self._on_tag_added(tag.name)
+        for opt in sorted(self._get_all_completion_options()):
+            self.tags.append((opt,))
+
+
+    def _get_all_completion_options(self) -> list[str]:
+        options = []
+        for tag in self.tagstore.lookup.values():
+            tname = normalize_unicode(tag.name)
+            options.append('@'+tname)
+            options.append('!@'+tname)
+            options.append(tname)
+            options.append('!'+tname)
+        return options
 
 
     def _try_insert(self, name):
