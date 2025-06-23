@@ -406,11 +406,15 @@ class Sidebar(Gtk.ScrolledWindow):
             binding.unbind()
 
 
-    def unselect_tags(self) -> None:
+    def unselect_tags(self, block: bool = True) -> None:
         """Clear tags selection"""
+
         self.browser.config.set("selected_tag", '')
 
-        with signal_block(self.tag_selection, self.tag_handle):
+        if block:
+            with signal_block(self.tag_selection, self.tag_handle):
+                self.tag_selection.unselect_all()
+        else:
             self.tag_selection.unselect_all()
 
 
@@ -449,7 +453,7 @@ class Sidebar(Gtk.ScrolledWindow):
     def on_search_selected(self, model, position, user_data=None):
         """Callback when selecting a saved search"""
 
-        self.unselect_tags()
+        self.unselect_tags(block=False)
         self.unselect_general_box()
 
         item = model.get_item(position)
