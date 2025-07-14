@@ -17,7 +17,7 @@ prefix = get_option('prefix')
 bindir = prefix / get_option('bindir')
 datadir = prefix / get_option('datadir')
 
-appdatadir = datadir / 'metainfo'
+metainfodir = datadir / 'metainfo'
 desktopdir = datadir / 'applications'
 dbusservicedir = datadir / 'dbus-1' / 'services'
 icondir = datadir / 'icons'

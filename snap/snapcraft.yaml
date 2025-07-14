@@ -35,7 +35,7 @@ parts:
       - itstool
       - meson
     parse-info:
-      - usr/share/metainfo/org.gnome.GTG.appdata.xml
+      - usr/share/metainfo/org.gnome.GTG.metainfo.xml
     stage:
       - usr/bin/gtg
       - usr/lib/python3/
