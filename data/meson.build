@@ -1,12 +1,12 @@
 i18n.merge_file(
   input: configure_file(
-    output: rdnn_name + '.appdata.xml.in',
-    input: rdnn_name + '.appdata.xml.in.in',
+    output: rdnn_name + '.metainfo.xml.in',
+    input: rdnn_name + '.metainfo.xml.in.in',
     configuration: bin_config),
-  output: application_id + '.appdata.xml',
+  output: application_id + '.metainfo.xml',
   po_dir: meson.source_root() / 'po',
   install: true,
-  install_dir: appdatadir,
+  install_dir: metainfodir,
 )
 
 i18n.merge_file(

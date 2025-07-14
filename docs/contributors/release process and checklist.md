@@ -7,7 +7,7 @@
 4. Update the NEWS file, and ideally prepare release notes and announcements in advance
 5. Test creating tarballs (see further below)
 6. Update the version number in `meson.build` (in the main directory), and the `appVersion` value in `GTG/core/versioning.py` and `GTG/core/xml.py` (the xmlVersion doesn't necessarily change, but appVersion should)
-7. Update `data/org.gnome.GTG.appdata.xml.in.in` to add the new release version number, date, and planned announcement (release notes) URL. For a beta/RC release, use a separate announcement URL, version number and type (ex: `version=0.4_RC" date="2020-06-11" type=development"`). When making the final stable release, replace that release by the final version number, date and URL. Note that you cannot use dates in the future, as Flathub will not be able to handle that.
+7. Update `data/org.gnome.GTG.metainfo.xml.in.in` to add the new release version number, date, and planned announcement (release notes) URL. For a beta/RC release, use a separate announcement URL, version number and type (ex: `version=0.4_RC" date="2020-06-11" type=development"`). When making the final stable release, replace that release by the final version number, date and URL. Note that you cannot use dates in the future, as Flathub will not be able to handle that.
 8. Tag the stable release (see below) and create the tarballs and Flatpak packages. Tagging RCs/betas is not needed.
 9. Remember to update the historical wiki page at https://getting-things-gnome.github.io/release_names
 
