@@ -138,8 +138,8 @@ class BackendFactory(Borg):
         config = CoreConfig()
         backends = []
 
-        for backend in config.get_all_backends():
-            settings = config.get_backend_config(backend)
+        for backend_id in config.get_all_backends():
+            settings = config.get_backend_config(backend_id)
             module = self.get_backend(settings.get('module'))
 
             # Skip this backend if it doesn't have a module
@@ -167,7 +167,11 @@ class BackendFactory(Borg):
                     # Parameter not found in config
                     pass
 
-            backend_data['backend'] = module.Backend(backend_data)
+            backend = backend_data['backend'] = module.Backend(backend_data)
+
+            # Rename configuration sections created by older versions of GTG
+            config.rename_backend_section(backend.get_name(), backend.get_id())
+
             backends.append(backend_data)
 
         return backends
