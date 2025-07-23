@@ -86,7 +86,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
     sidebar_vbox = Gtk.Template.Child('sidebar_vbox')
 
-    vbox_toolbars = None
+    vbox_toolbars = Gtk.Template.Child('vbox_toolbars')
     stack_switcher = Gtk.Template.Child()
     main_box = Gtk.Template.Child('main_view_box')
 
