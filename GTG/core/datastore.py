@@ -27,7 +27,7 @@ from time import time
 import random
 import string
 
-from GTG.core.tasks import TaskStore, Filter
+from GTG.core.tasks import TaskStore, Task, Filter
 from GTG.core.tags import TagStore, Tag
 from GTG.core.saved_searches import SavedSearchStore
 from GTG.core import firstrun_tasks
@@ -76,9 +76,16 @@ class Datastore:
             'actionable': {'all': 0, 'untagged': 0},
             'closed': {'all': 0, 'untagged': 0},
         }
+        self.tasks.connect('removed', self._on_task_removed)
 
         self.data_path: Optional[str] = None
         self._activate_non_default_backends()
+
+
+    def _on_task_removed(self,_,task:Task):
+        "When a task is removed, the corresponding tag-stats must be updated."
+        self.refresh_task_count()
+        self.refresh_tag_stats()
 
 
     @property
