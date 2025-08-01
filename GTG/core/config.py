@@ -24,6 +24,9 @@ import configparser
 import os
 import re
 import logging
+import time
+
+from gi.repository import GObject # type: ignore[import-untyped]
 
 from GTG.core.dirs import CONFIG_DIR
 
@@ -94,8 +97,10 @@ def open_config_file(config_file):
     return config
 
 
-class SectionConfig():
+class SectionConfig(GObject.Object):
     """ Configuration only for a section (system or a task) """
+
+    __gtype_name__ = 'gtg_SectionConfig'
 
     def __init__(self, section_name, section, defaults, save_function):
         """ Initiatizes section config:
@@ -110,6 +115,13 @@ class SectionConfig():
         self._section = section
         self._defaults = defaults
         self._save_function = save_function
+        self._last_updated = time.time()
+        super().__init__()
+
+    @GObject.Property(type=int)
+    def last_updated(self) -> str:
+        return self._last_updated
+
 
     def _getlist(self, option):
         """ Parses string representation of list from configuration
@@ -178,14 +190,19 @@ class SectionConfig():
         else:
             value = str(value)
         self._section[option] = value
+
         # Immediately save the configuration
         self.save()
+
+        # Notify observers
+        self._last_updated = time.time()
+        self.notify("last_updated")
 
     def save(self):
         self._save_function()
 
 
-class CoreConfig():
+class CoreConfig:
     """ Class holding configuration to all systems and tasks """
 
     def __init__(self):

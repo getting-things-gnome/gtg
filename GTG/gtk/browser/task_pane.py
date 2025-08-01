@@ -389,6 +389,7 @@ class TaskPane(Gtk.ScrolledWindow):
 
         box = TaskBox(self.app.config, self.pane == 'workview')
         label = Gtk.Label()
+        description = Gtk.Label()
         separator = Gtk.Separator()
         icons = Gtk.Label()
         color = TagPill()
@@ -416,10 +417,14 @@ class TaskPane(Gtk.ScrolledWindow):
         for widget in (recurring_icon, due_icon, start_icon, color, icons):
             widget.connect("notify::visible", on_notify_visibility)
 
-        label.set_hexpand(True)
         label.set_ellipsize(Pango.EllipsizeMode.END)
         label.set_margin_end(6)
         label.set_xalign(0)
+
+        description.set_ellipsize(Pango.EllipsizeMode.END)
+        description.set_margin_end(6)
+        description.set_xalign(0)
+        description.add_css_class("short-description")
 
         recurring_icon.set_margin_end(12)
         recurring_icon.set_label('\u2B6E')
@@ -450,6 +455,7 @@ class TaskPane(Gtk.ScrolledWindow):
         self.connect('collapse-all', lambda s: box.expander.activate_action('listitem.collapse'))
 
         box.append(label)
+        box.append(description)
         box.append(recurring_icon)
         box.append(due_icon)
         box.append(due)
@@ -468,7 +474,8 @@ class TaskPane(Gtk.ScrolledWindow):
         expander = box.get_first_child()
         check = expander.get_next_sibling()
         label = check.get_next_sibling()
-        recurring_icon = label.get_next_sibling()
+        description = label.get_next_sibling()
+        recurring_icon = description.get_next_sibling()
         due_icon = recurring_icon.get_next_sibling()
         due = due_icon.get_next_sibling()
         start_icon = due.get_next_sibling()
@@ -481,6 +488,8 @@ class TaskPane(Gtk.ScrolledWindow):
 
         box.props.task = item
         box.expander.set_list_row(listitem.get_item())
+
+        config = self.app.config
 
         def not_empty(binding, value, user_data=None):
             return len(value) > 0
@@ -496,6 +505,14 @@ class TaskPane(Gtk.ScrolledWindow):
 
             item.bind_property('title', label, 'label', BIND_FLAGS),
             item.bind_property('excerpt', box, 'tooltip-text', BIND_FLAGS),
+            item.bind_property('excerpt', description, 'label', BIND_FLAGS
+                                          ,lambda _,x: " ".join(x.splitlines())),
+            config.bind_property('last_updated',description,'visible',BIND_FLAGS
+                                          ,lambda _,x: config.get('contents_preview_enable') ),
+            config.bind_property('last_updated',label,'hexpand',BIND_FLAGS
+                                          ,lambda _,x: not config.get('contents_preview_enable') ),
+            config.bind_property('last_updated',description,'hexpand',BIND_FLAGS
+                                          ,lambda _,x: config.get('contents_preview_enable') ),
 
             item.bind_property('is_recurring', recurring_icon, 'visible', BIND_FLAGS),
 
