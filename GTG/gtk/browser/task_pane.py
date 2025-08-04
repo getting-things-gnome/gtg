@@ -308,13 +308,6 @@ class TaskPane(Gtk.ScrolledWindow):
             self.expand_selected(True)
 
 
-    def select_last(self) -> None:
-        """Select last position in the task list."""
-
-        position = self.filtered.get_n_items()
-        self.task_selection.select_item(position - 1, True)
-
-
     def select_task(self, task: Task) -> None:
         """Select a task in the list."""
 
