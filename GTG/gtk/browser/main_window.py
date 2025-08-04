@@ -889,7 +889,7 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # signal the event for the plugins to catch
         GLib.idle_add(self.emit, "task-added-via-quick-add", task.id)
-        self.get_pane().select_last()
+        self.get_pane().select_task(task)
 
 
     def on_tag_treeview_click_begin(self, gesture, sequence):
