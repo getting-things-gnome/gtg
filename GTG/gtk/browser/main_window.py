@@ -883,9 +883,8 @@ class MainWindow(Gtk.ApplicationWindow):
 
         #TODO: Add back recurring
 
-        for tag in data['tags']:
-            _tag = self.app.ds.tags.new(tag)
-            task.add_tag(_tag)
+        tags = [ self.app.ds.tags.new(t) for t in data['tags'] ]
+        self.app.ds.tasks.add_tags(task,tags)
 
         # signal the event for the plugins to catch
         GLib.idle_add(self.emit, "task-added-via-quick-add", task.id)
