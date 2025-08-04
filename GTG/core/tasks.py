@@ -886,6 +886,12 @@ class TaskStore(BaseStore[Task]):
         return f'Task Store. Holds {len(self.lookup)} task(s)'
 
 
+    def add_tags(self, task: Task, tags: list[Tag]):
+        for t in tags:
+            task.add_tag(t)
+        self.emit('task-filterably-changed',task)
+
+
     def get(self, tid: UUID) -> Task:
         """Get a task by name."""
 
