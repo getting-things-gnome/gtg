@@ -84,7 +84,6 @@ class Datastore:
 
     def _on_task_removed(self,_,task:Task):
         "When a task is removed, the corresponding tag-stats must be updated."
-        self.refresh_task_count()
         self.refresh_tag_stats()
 
 
@@ -108,7 +107,7 @@ class Datastore:
         self.tags.from_xml(tags_xml)
         self.tasks.from_xml(tasks_xml, self.tags)
 
-        self.refresh_task_count()
+        self.refresh_tag_stats()
 
 
     def load_file(self, path: str) -> None:
