@@ -1131,16 +1131,16 @@ class TaskStore(BaseStore[Task]):
 
 
         if filter_type == Filter.STATUS:
-            return [t for t in self.data if t.status == arg]
+            return [t for t in self.lookup.values() if t.status == arg]
 
         elif filter_type == Filter.ACTIVE:
-            return [t for t in self.data if t.status == Status.ACTIVE]
+            return [t for t in self.lookup.values() if t.status == Status.ACTIVE]
 
         elif filter_type == Filter.CLOSED:
-            return [t for t in self.data if t.status != Status.ACTIVE]
+            return [t for t in self.lookup.values() if t.status != Status.ACTIVE]
 
         elif filter_type == Filter.ACTIONABLE:
-            return [t for t in self.data if t.is_actionable]
+            return [t for t in self.lookup.values() if t.is_actionable]
 
         elif filter_type == Filter.PARENT:
             return [t for t in self.lookup.values() if not t.parent]
