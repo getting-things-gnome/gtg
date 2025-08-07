@@ -244,9 +244,6 @@ class Datastore:
                     val = count.get(tag.name, 0)
                     count[tag.name] = val + 1
 
-                if task.children:
-                    count_tasks(count, task.children)
-
         # Reset task counts
         self.task_count = {
             'open': {'all': 0, 'untagged': 0},
