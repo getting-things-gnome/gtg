@@ -54,6 +54,11 @@ class TaskCounts(GObject.Object):
     task_count_actionable = GObject.Property(type=int,default=0)
     task_count_closed = GObject.Property(type=int,default=0)
 
+    def reset(self) -> None:
+        self.task_count_open = 0
+        self.task_count_actionable = 0
+        self.task_count_closed = 0
+
 
 
 class TagStats:
@@ -72,6 +77,9 @@ class TagStats:
 
     def recalculate_all(self):
         "Recalculate all stats from scratch."
+
+        for task_count in self.stats.values():
+            task_count.reset()
 
         for tname,count in TagStats._count_tasks(self.tasks.filter(Filter.ACTIVE)).items():
             self.get_by_name(tname).task_count_open = count
