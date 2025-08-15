@@ -71,41 +71,30 @@ class TagStats:
 
 
     def recalculate_all(self):
-        # Reset task counts
-        self.task_count = {
-            'open': {'all': 0, 'untagged': 0},
-            'actionable': {'all': 0, 'untagged': 0},
-            'closed': {'all': 0, 'untagged': 0},
-        }
+        "Recalculate all stats from scratch."
 
-        TagStats._count_tasks(self.task_count['open'],
-                    self.tasks.filter(Filter.ACTIVE))
-
-        TagStats._count_tasks(self.task_count['closed'],
-                    self.tasks.filter(Filter.CLOSED))
-
-        TagStats._count_tasks(self.task_count['actionable'],
-                    self.tasks.filter(Filter.ACTIONABLE))
-
-        for tname,count in self.task_count['open'].items():
+        for tname,count in TagStats._count_tasks(self.tasks.filter(Filter.ACTIVE)).items():
             self.get_by_name(tname).task_count_open = count
-        for tname,count in self.task_count['actionable'].items():
+        for tname,count in TagStats._count_tasks(self.tasks.filter(Filter.ACTIONABLE)).items():
             self.get_by_name(tname).task_count_actionable = count
-        for tname,count in self.task_count['closed'].items():
+        for tname,count in TagStats._count_tasks(self.tasks.filter(Filter.CLOSED)).items():
             self.get_by_name(tname).task_count_closed = count
 
 
     @staticmethod
-    def _count_tasks(count: dict, tasklist: list):
+    def _count_tasks(tasklist: list[Task]) -> dict[str,int]:
+        count = {'all':len(tasklist),'untagged':0}
         for task in tasklist:
-            count['all'] += 1
 
             if not task.tags:
                 count['untagged'] += 1
 
-            for tag in { t for owned_tag in task.tags for t in [owned_tag] + owned_tag.get_ancestors() }:
+            all_tags = { t for owned_tag in task.tags for t in [owned_tag] + owned_tag.get_ancestors() }
+            for tag in all_tags:
                 val = count.get(tag.name, 0)
                 count[tag.name] = val + 1
+
+        return count
 
 
 class Datastore:
@@ -135,15 +124,10 @@ class Datastore:
         # Count of tasks for each pane and each tag
         self.tag_stats = TagStats(self.tags,self.tasks)
         for event in ['removed','added','parent-change','parent-removed','task-filterably-changed']:
-            self.tasks.connect(event, self._handle_possible_tag_stat_chnages)
+            self.tasks.connect(event, lambda *_: self.tag_stats.recalculate_all())
 
         self.data_path: Optional[str] = None
         self._activate_non_default_backends()
-
-
-    def _handle_possible_tag_stat_chnages(self,*args,**kwargs) -> None:
-        "Recalculate tag_stats. This is a method to be used as a callback."
-        self.tag_stats.recalculate_all()
 
 
     @property

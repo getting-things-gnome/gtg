@@ -1043,7 +1043,7 @@ class TaskStore(BaseStore[Task]):
         super().add(item, parent_id)
         item.duplicate_cb = self.duplicate_for_recurrent
         for event in ['notify::is-actionable','notify::is-active','tags-changed']:
-            item.connect(event,lambda *a: self.emit('task-filterably-changed',item))
+            item.connect(event,lambda *_: self.emit('task-filterably-changed',item))
 
 
     def unparent(self, item_id: UUID) -> None:
