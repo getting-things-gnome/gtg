@@ -200,14 +200,12 @@ class TaskEditor(Gtk.Window):
     def tag_added(self, name):
 
         self.task.add_tag(self.ds.tags.new(name))
-        self.ds.tasks.notify('task_count_no_tags')
         self.app.browser.sidebar.refresh_tags()
 
 
     def tag_removed(self, name):
 
         self.task.remove_tag(name)
-        self.ds.tasks.notify('task_count_no_tags')
         self.app.browser.sidebar.refresh_tags()
 
 

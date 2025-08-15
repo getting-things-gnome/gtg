@@ -111,7 +111,6 @@ class ModifyTagsDialog(Gtk.Dialog):
                     task.remove_tag(_tag.name)
 
         self.app.ds.save()
-        self.app.ds.tasks.notify('task_count_no_tags')
 
         # Rember the last actions
         self.last_tag_entry = self._tag_entry.get_text()

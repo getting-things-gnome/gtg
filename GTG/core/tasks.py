@@ -158,18 +158,6 @@ class Task(StoreItem):
     def set_status(self, status: Status, propagated: bool = False) -> None:
         """Set status for task."""
 
-        if self.status == Status.ACTIVE:
-            for t in self.tags:
-                t.task_count_open -= 1
-
-            if self.is_actionable:
-                for t in self.tags:
-                    t.task_count_actionable -= 1
-
-        else:
-            for t in self.tags:
-                t.task_count_closed -= 1
-
         self.status = status
         self.is_active = (status == Status.ACTIVE)
 
@@ -193,19 +181,6 @@ class Task(StoreItem):
             if self.parent and self.parent.status is not Status.ACTIVE:
                 self.parent.set_status(status, propagated=True)
 
-        if status == Status.ACTIVE:
-            for t in self.tags:
-                t.task_count_open += 1
-
-            if self.is_actionable:
-                for t in self.tags:
-                    t.task_count_actionable += 1
-
-        else:
-            for t in self.tags:
-                t.task_count_closed += 1
-
-
         for child in self.children:
             child.set_status(status, propagated=True)
 
@@ -224,12 +199,6 @@ class Task(StoreItem):
             self.date_due_str = self._date_due.to_readable_string()
         else:
             self.date_due_str = ''
-
-        for tag in self.tags:
-            if self.is_actionable:
-                tag.task_count_actionable += 1
-            else:
-                tag.task_count_actionable -= 1
 
         if not value or value.is_fuzzy():
             return
@@ -331,14 +300,6 @@ class Task(StoreItem):
         if isinstance(tag, Tag):
             if tag not in self.tags:
                 self.tags.add(tag)
-
-                if self.status == Status.ACTIVE:
-                    tag.task_count_open += 1
-                else:
-                    tag.task_count_closed += 1
-
-                if self.is_actionable:
-                    tag.task_count_actionable += 1
         else:
             raise ValueError
 
@@ -349,14 +310,6 @@ class Task(StoreItem):
         for t in self.tags.copy():
             if t.name == tag_name:
                 self.tags.remove(t)
-
-                if self.status == Status.ACTIVE:
-                    t.task_count_open -= 1
-                else:
-                    t.task_count_closed -= 1
-
-                if self.is_actionable:
-                    t.task_count_actionable -= 1
 
                 # remove the tag and the unnecessary empty lines
                 # if this is the only tag in the list of tags at the beginning
@@ -1087,18 +1040,7 @@ class TaskStore(BaseStore[Task]):
         """Add a task to the taskstore."""
 
         super().add(item, parent_id)
-
         item.duplicate_cb = self.duplicate_for_recurrent
-        self.notify('task_count_all')
-        self.notify('task_count_no_tags')
-
-
-    def remove(self, item_id: UUID) -> None:
-        """Remove an existing task."""
-
-        super().remove(item_id)
-        self.notify('task_count_all')
-        self.notify('task_count_no_tags')
 
 
     def unparent(self, item_id: UUID) -> None:
@@ -1185,19 +1127,3 @@ class TaskStore(BaseStore[Task]):
             t.children.sort(key=attrgetter(key), reverse=reverse)
 
         tasks.sort(key=attrgetter(key), reverse=reverse)
-
-
-    @GObject.Property(type=str)
-    def task_count_all(self) -> str:
-        return str(len(self.lookup.keys()))
-
-
-    @GObject.Property(type=str)
-    def task_count_no_tags(self) -> str:
-        i = 0
-
-        for task in self.lookup.values():
-            if not task.tags:
-                i += 1
-
-        return str(i)

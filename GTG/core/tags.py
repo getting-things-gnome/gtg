@@ -52,10 +52,6 @@ class Tag(StoreItem):
         self._color: Optional[str] = None
         self.actionable = True
 
-        self._task_count_open = 0
-        self._task_count_actionable = 0
-        self._task_count_closed = 0
-
         super().__init__(id)
 
 
@@ -75,8 +71,6 @@ class Tag(StoreItem):
         """Equivalence."""
 
         return self.id == other.id
-
-
 
 
     @GObject.Property(type=str)
@@ -129,39 +123,6 @@ class Tag(StoreItem):
         return self._icon is not None
 
 
-    @GObject.Property(type=int, default=0)
-    def task_count_open(self) -> int:
-
-        return self._task_count_open
-
-
-    @task_count_open.setter
-    def set_task_count_open(self, value: int) -> None:
-        self._task_count_open = value
-
-
-    @GObject.Property(type=int, default=0)
-    def task_count_actionable(self) -> int:
-
-        return self._task_count_actionable
-
-
-    @task_count_actionable.setter
-    def set_task_count_actionable(self, value: int) -> None:
-        self._task_count_actionable = value
-
-
-    @GObject.Property(type=int, default=0)
-    def task_count_closed(self) -> int:
-
-        return self._task_count_closed
-
-
-    @task_count_closed.setter
-    def set_task_count_closed(self, value: int) -> None:
-        self._task_count_closed = value
-
-
     def get_matching_tags(self) -> List['Tag']:
         """Return the tag with its descendants."""
         matching = [self]
@@ -172,6 +133,7 @@ class Tag(StoreItem):
 
     def __hash__(self):
         return id(self)
+
 
 
 class TagStore(BaseStore[Tag]):
