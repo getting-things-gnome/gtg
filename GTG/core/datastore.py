@@ -38,12 +38,74 @@ import GTG.core.info as info
 import GTG.core.dirs as dirs
 import GTG.core.versioning as versioning
 
+from gi.repository import GObject # type: ignore[import-untyped]
 from lxml import etree as et
 
 from typing import Optional, Dict
 
 
 log = logging.getLogger(__name__)
+
+
+class TaskCounts(GObject.Object):
+    __gtype_name__ = 'TaskCounts'
+
+    task_count_open = GObject.Property(type=int,default=0)
+    task_count_actionable = GObject.Property(type=int,default=0)
+    task_count_closed = GObject.Property(type=int,default=0)
+
+
+
+class TagStats:
+
+    def __init__(self,tags:TagStore,tasks:TaskStore):
+        self.tags = tags
+        self.tasks = tasks
+        self.stats: dict[str,TaskCounts] = dict()
+
+
+    def get_by_name(self,tag_name:str) -> TaskCounts:
+        if tag_name not in self.stats:
+            self.stats[tag_name] = TaskCounts()
+        return self.stats[tag_name]
+
+
+    def recalculate_all(self):
+        # Reset task counts
+        self.task_count = {
+            'open': {'all': 0, 'untagged': 0},
+            'actionable': {'all': 0, 'untagged': 0},
+            'closed': {'all': 0, 'untagged': 0},
+        }
+
+        TagStats._count_tasks(self.task_count['open'],
+                    self.tasks.filter(Filter.ACTIVE))
+
+        TagStats._count_tasks(self.task_count['closed'],
+                    self.tasks.filter(Filter.CLOSED))
+
+        TagStats._count_tasks(self.task_count['actionable'],
+                    self.tasks.filter(Filter.ACTIONABLE))
+
+        for tname,count in self.task_count['open'].items():
+            self.get_by_name(tname).task_count_open = count
+        for tname,count in self.task_count['actionable'].items():
+            self.get_by_name(tname).task_count_actionable = count
+        for tname,count in self.task_count['closed'].items():
+            self.get_by_name(tname).task_count_closed = count
+
+
+    @staticmethod
+    def _count_tasks(count: dict, tasklist: list):
+        for task in tasklist:
+            count['all'] += 1
+
+            if not task.tags:
+                count['untagged'] += 1
+
+            for tag in { t for owned_tag in task.tags for t in [owned_tag] + owned_tag.get_ancestors() }:
+                val = count.get(tag.name, 0)
+                count[tag.name] = val + 1
 
 
 class Datastore:
@@ -71,11 +133,7 @@ class Datastore:
         self.please_quit = False
 
         # Count of tasks for each pane and each tag
-        self.task_count = {
-            'open': {'all': 0, 'untagged': 0},
-            'actionable': {'all': 0, 'untagged': 0},
-            'closed': {'all': 0, 'untagged': 0},
-        }
+        self.tag_stats = TagStats(self.tags,self.tasks)
         self.tasks.connect('removed', self._on_task_removed)
 
         self.data_path: Optional[str] = None
@@ -211,65 +269,18 @@ class Datastore:
         print(f'- Tasks: {self.tasks.count()}')
 
 
-    def refresh_task_for_tag(self, tag: Tag) -> None:
-        """Refresh task counts for a tag."""
-
-        try:
-            tag.task_count_open = self.task_count['open'][tag.name]
-        except KeyError:
-            tag.task_count_open = 0
-
-        try:
-            tag.task_count_closed = self.task_count['closed'][tag.name]
-        except KeyError:
-            tag.task_count_closed = 0
-
-        try:
-            tag.task_count_actionable = self.task_count['actionable'][tag.name]
-        except KeyError:
-            tag.task_count_actionable = 0
-
-
-    def refresh_task_count(self) -> None:
-        """Refresh task count dictionary."""
-
-        def count_tasks(count: dict, tasklist: list):
-            for task in tasklist:
-                count['all'] += 1
-
-                if not task.tags:
-                    count['untagged'] += 1
-
-                for tag in { t for owned_tag in task.tags for t in [owned_tag] + owned_tag.get_ancestors() }:
-                    val = count.get(tag.name, 0)
-                    count[tag.name] = val + 1
-
-        # Reset task counts
-        self.task_count = {
-            'open': {'all': 0, 'untagged': 0},
-            'actionable': {'all': 0, 'untagged': 0},
-            'closed': {'all': 0, 'untagged': 0},
-        }
-
-        count_tasks(self.task_count['open'],
-                    self.tasks.filter(Filter.ACTIVE))
-
-        count_tasks(self.task_count['closed'],
-                    self.tasks.filter(Filter.CLOSED))
-
-        count_tasks(self.task_count['actionable'],
-                    self.tasks.filter(Filter.ACTIONABLE))
-
-
     def refresh_tag_stats(self) -> None:
         """
         Refresh the number of tasks for each tag.
         """
-        self.refresh_task_count()
-        for tag_name in self.tags.get_all_tag_names():
-            tag = self.tags.find(tag_name)
-            self.refresh_task_for_tag(tag)
-            self.notify_tag_change([tag])
+        self.tag_stats.recalculate_all()
+
+
+    def get_task_counts(self,tag_name:str) -> TaskCounts:
+        """
+        Return a bindable object containing task counts for a given tag.
+        """
+        return self.tag_stats.get_by_name(tag_name)
 
 
     def notify_tag_change(self, tags: list[Tag]) -> None:
@@ -484,8 +495,8 @@ class Datastore:
         log.debug("Deleting unused tags")
 
         for tag in self.tags.data:
-            count_open = self.task_count['open'].get(tag.name, 0)
-            count_closed = self.task_count['closed'].get(tag.name, 0)
+            count_open = self.tag_stats.get_by_name(tag.name).task_count_open
+            count_closed = self.tag_stats.get_by_name(tag.name).task_count_closed
             customized = tag.color or tag.icon
 
             if (count_open + count_closed) == 0 and not customized:

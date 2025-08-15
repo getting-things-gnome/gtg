@@ -87,11 +87,8 @@ class Sidebar(Gtk.ScrolledWindow):
         self.general_box = Gtk.ListBox()
         self.general_box.get_style_context().add_class('navigation-sidebar')
 
-        all_count = str(ds.task_count['open']['all'])
-        untag_count = str(ds.task_count['open']['untagged'])
-
-        self.all_btn = self.btn_item('emblem-documents-symbolic', _('All Tasks'), 'task_count_all')
-        self.none_btn = self.btn_item('task-past-due-symbolic', _('Tasks With No Tags'), 'task_count_no_tags')
+        self.all_btn = self.btn_item('emblem-documents-symbolic', _('All Tasks'), 'all')
+        self.none_btn = self.btn_item('task-past-due-symbolic', _('Tasks With No Tags'), 'untagged')
 
         self.general_box.append(self.all_btn)
         self.general_box.append(self.none_btn)
@@ -277,7 +274,8 @@ class Sidebar(Gtk.ScrolledWindow):
         count_label.add_css_class('dim-label')
         box.append(count_label)
 
-        self.ds.tasks.bind_property(count_prop, count_label, 'label', BIND_FLAGS)
+        task_counts = self.ds.get_task_counts(count_prop)
+        task_counts.bind_property('task_count_open', count_label, 'label', BIND_FLAGS)
 
         return box
 
@@ -380,6 +378,8 @@ class Sidebar(Gtk.ScrolledWindow):
         box.props.tag = item
         expander.set_list_row(listitem.get_item())
 
+        task_counts = self.ds.get_task_counts(item.name)
+
         listitem.bindings = [
             item.bind_property('name', label, 'label', BIND_FLAGS),
             item.bind_property('icon', icon, 'label', BIND_FLAGS),
@@ -388,9 +388,9 @@ class Sidebar(Gtk.ScrolledWindow):
             item.bind_property('has_icon', color, 'visible', BIND_FLAGS, lambda b, v: not v),
             item.bind_property('has_icon', icon, 'visible', BIND_FLAGS),
 
-            item.bind_property('task_count_open', open_count_label, 'label', BIND_FLAGS),
-            item.bind_property('task_count_actionable', actionable_count_label, 'label', BIND_FLAGS),
-            item.bind_property('task_count_closed', closed_count_label, 'label', BIND_FLAGS),
+            task_counts.bind_property('task_count_open', open_count_label, 'label', BIND_FLAGS),
+            task_counts.bind_property('task_count_actionable', actionable_count_label, 'label', BIND_FLAGS),
+            task_counts.bind_property('task_count_closed', closed_count_label, 'label', BIND_FLAGS),
 
             item.bind_property('children_count',expander,'hide-expander',BIND_FLAGS, lambda _,x: x==0),
         ]
@@ -635,8 +635,6 @@ class Sidebar(Gtk.ScrolledWindow):
         task.add_tag(tag)
         self.notify_task(task)
 
-        self.ds.tasks.notify('task_count_no_tags')
-
 
     def multi_task_drag_drop(self, target, tasklist, x, y):
         """Callback when dropping onto a target"""
@@ -645,8 +643,6 @@ class Sidebar(Gtk.ScrolledWindow):
             tag = target.get_widget().props.tag
             task.add_tag(tag)
             self.notify_task(task)
-
-        self.ds.tasks.notify('task_count_no_tags')
 
 
     def notify_task(self, task: Task) -> None:
