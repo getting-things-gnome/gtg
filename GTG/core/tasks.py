@@ -294,12 +294,18 @@ class Task(StoreItem):
         return f'{txt[:80]}…'
 
 
+    @GObject.Signal(name='tags-changed')
+    def tags_changed_signal(self):
+        """Signal to emit when a tag was added or removed."""
+
+
     def add_tag(self, tag: Tag) -> None:
         """Add a tag to this task."""
 
         if isinstance(tag, Tag):
             if tag not in self.tags:
                 self.tags.add(tag)
+                self.emit('tags-changed')
         else:
             raise ValueError
 
@@ -322,6 +328,7 @@ class Task(StoreItem):
                 # remove every other instance of the tag
                 self.content = re.sub(r'\B@'+tag_name+r'\b(?!-)','',self.content)
 
+                self.emit('tags-changed')
                 self.notify('row_css')
 
 
@@ -839,12 +846,6 @@ class TaskStore(BaseStore[Task]):
         return f'Task Store. Holds {len(self.lookup)} task(s)'
 
 
-    def add_tags(self, task: Task, tags: list[Tag]):
-        for t in tags:
-            task.add_tag(t)
-        self.emit('task-filterably-changed',task)
-
-
     def get(self, tid: UUID) -> Task:
         """Get a task by name."""
 
@@ -1041,6 +1042,8 @@ class TaskStore(BaseStore[Task]):
 
         super().add(item, parent_id)
         item.duplicate_cb = self.duplicate_for_recurrent
+        for event in ['notify::is-actionable','notify::is-active','tags-changed']:
+            item.connect(event,lambda *a: self.emit('task-filterably-changed',item))
 
 
     def unparent(self, item_id: UUID) -> None:

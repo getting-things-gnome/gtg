@@ -134,15 +134,16 @@ class Datastore:
 
         # Count of tasks for each pane and each tag
         self.tag_stats = TagStats(self.tags,self.tasks)
-        self.tasks.connect('removed', self._on_task_removed)
+        for event in ['removed','added','parent-change','parent-removed','task-filterably-changed']:
+            self.tasks.connect(event, self._handle_possible_tag_stat_chnages)
 
         self.data_path: Optional[str] = None
         self._activate_non_default_backends()
 
 
-    def _on_task_removed(self,_,task:Task):
-        "When a task is removed, the corresponding tag-stats must be updated."
-        self.refresh_tag_stats()
+    def _handle_possible_tag_stat_chnages(self,*args,**kwargs) -> None:
+        "Recalculate tag_stats. This is a method to be used as a callback."
+        self.tag_stats.recalculate_all()
 
 
     @property
