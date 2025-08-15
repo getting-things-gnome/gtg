@@ -48,7 +48,7 @@ class TagEmptyFilter(Gtk.Filter):
     def do_match(self, item) -> bool:
         tag = unwrap(item, Tag)
 
-        task_counts = self.ds.get_task_counts(tag.name)
+        task_counts = self.ds.get_task_counts(tag)
         if self.pane == 'open_view':
             return self.show_zero or task_counts.task_count_open > 0
 
