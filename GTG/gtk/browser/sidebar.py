@@ -274,7 +274,7 @@ class Sidebar(Gtk.ScrolledWindow):
         count_label.add_css_class('dim-label')
         box.append(count_label)
 
-        task_counts = self.ds.get_task_counts(count_prop)
+        task_counts = self.ds.get_task_counts_by_handle(count_prop)
         task_counts.bind_property('task_count_open', count_label, 'label', BIND_FLAGS)
 
         return box
@@ -378,7 +378,7 @@ class Sidebar(Gtk.ScrolledWindow):
         box.props.tag = item
         expander.set_list_row(listitem.get_item())
 
-        task_counts = self.ds.get_task_counts(item.name)
+        task_counts = self.ds.get_task_counts(item)
 
         listitem.bindings = [
             item.bind_property('name', label, 'label', BIND_FLAGS),

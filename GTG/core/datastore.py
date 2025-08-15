@@ -69,10 +69,19 @@ class TagStats:
         self.stats: dict[str,TaskCounts] = dict()
 
 
-    def get_by_name(self,tag_name:str) -> TaskCounts:
-        if tag_name not in self.stats:
-            self.stats[tag_name] = TaskCounts()
-        return self.stats[tag_name]
+    def get_by_tag(self,tag:Tag) -> TaskCounts:
+        handle = str(tag.id)
+        return self.get_by_handle(handle)
+
+
+    def get_by_handle(self,handle:str) -> TaskCounts:
+        """
+        Return the task counts based on a tag id as string or a special string.
+        Supported special values: 'all','untagged'
+        """
+        if handle not in self.stats:
+            self.stats[handle] = TaskCounts()
+        return self.stats[handle]
 
 
     def recalculate_all(self):
@@ -81,12 +90,12 @@ class TagStats:
         for task_count in self.stats.values():
             task_count.reset()
 
-        for tname,count in TagStats._count_tasks(self.tasks.filter(Filter.ACTIVE)).items():
-            self.get_by_name(tname).task_count_open = count
-        for tname,count in TagStats._count_tasks(self.tasks.filter(Filter.ACTIONABLE)).items():
-            self.get_by_name(tname).task_count_actionable = count
-        for tname,count in TagStats._count_tasks(self.tasks.filter(Filter.CLOSED)).items():
-            self.get_by_name(tname).task_count_closed = count
+        for h,count in TagStats._count_tasks(self.tasks.filter(Filter.ACTIVE)).items():
+            self.get_by_handle(h).task_count_open = count
+        for h,count in TagStats._count_tasks(self.tasks.filter(Filter.ACTIONABLE)).items():
+            self.get_by_handle(h).task_count_actionable = count
+        for h,count in TagStats._count_tasks(self.tasks.filter(Filter.CLOSED)).items():
+            self.get_by_handle(h).task_count_closed = count
 
 
     @staticmethod
@@ -99,8 +108,9 @@ class TagStats:
 
             all_tags = { t for owned_tag in task.tags for t in [owned_tag] + owned_tag.get_ancestors() }
             for tag in all_tags:
-                val = count.get(tag.name, 0)
-                count[tag.name] = val + 1
+                handle = str(tag.id)
+                val = count.get(handle, 0)
+                count[handle] = val + 1
 
         return count
 
@@ -269,11 +279,15 @@ class Datastore:
         self.tag_stats.recalculate_all()
 
 
-    def get_task_counts(self,tag_name:str) -> TaskCounts:
+    def get_task_counts(self,tag:Tag) -> TaskCounts:
         """
         Return a bindable object containing task counts for a given tag.
         """
-        return self.tag_stats.get_by_name(tag_name)
+        return self.tag_stats.get_by_tag(tag)
+
+
+    def get_task_counts_by_handle(self,handle:str) -> TaskCounts:
+        return self.tag_stats.get_by_handle(handle)
 
 
     def notify_tag_change(self, tags: list[Tag]) -> None:
@@ -488,8 +502,8 @@ class Datastore:
         log.debug("Deleting unused tags")
 
         for tag in self.tags.data:
-            count_open = self.tag_stats.get_by_name(tag.name).task_count_open
-            count_closed = self.tag_stats.get_by_name(tag.name).task_count_closed
+            count_open = self.get_task_counts(tag).task_count_open
+            count_closed = self.get_task_counts(tag).task_count_closed
             customized = tag.color or tag.icon
 
             if (count_open + count_closed) == 0 and not customized:
