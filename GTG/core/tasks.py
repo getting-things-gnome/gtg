@@ -241,6 +241,7 @@ class Task(StoreItem):
 
         self.has_date_start = bool(value)
         self.date_start_str = self._date_start.to_readable_string()
+        self.notify('is_actionable')
 
 
     @property
