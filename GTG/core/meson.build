@@ -7,13 +7,6 @@ if git.found() and get_option('profile') == 'development'
             check: true
         ).stdout().strip()
     version = base_version + '-' + commit
-elif get_option('profile') == 'flatpak_snapshot'
-    base_version = meson.project_version()
-    date = run_command(
-            ['date', '--utc', '+%Y%m%d'],
-            check: true
-        ).stdout().strip()
-    version = base_version + '-' + date
 else
     version = meson.project_version()
 endif

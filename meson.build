@@ -25,7 +25,7 @@ pythondir = python3.get_path('purelib')
 rdnn_name = 'org.gnome.GTG'
 application_id = rdnn_name
 
-if get_option('profile') == 'development' or get_option('profile') == 'flatpak_snapshot'
+if get_option('profile') == 'development'
   application_id = rdnn_name + '.Devel'
 endif
 
