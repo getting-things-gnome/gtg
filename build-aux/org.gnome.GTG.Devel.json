@@ -1,7 +1,7 @@
 {
   "app-id": "org.gnome.GTG.Devel",
   "runtime": "org.gnome.Platform",
-  "runtime-version": "47",
+  "runtime-version": "48",
   "sdk": "org.gnome.Sdk",
   "command": "gtg",
   "tags": ["devel", "development", "nightly"],
