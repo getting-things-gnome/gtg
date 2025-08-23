@@ -34,6 +34,11 @@ parts:
       - gettext
       - itstool
       - meson
+    stage-packages:
+      - python3-cheetah
+      - python3-lxml
+      - python3-caldav
+      - python3-typing-extensions
     parse-info:
       - usr/share/metainfo/org.gnome.GTG.metainfo.xml
     stage:
@@ -44,14 +49,3 @@ parts:
       craftctl default
       sed -i $CRAFT_PART_INSTALL/usr/share/applications/org.gnome.GTG.desktop \
         -e 's|Icon=.*|Icon=${SNAP}/usr/share/icons/hicolor/scalable/apps/org.gnome.GTG.svg|'
-    after:
-      - python-deps
-
-  python-deps:
-    plugin: python
-    build-packages:
-      - python3-dbus
-    python-packages:
-      - lxml==5.1.0
-      - caldav==1.3.9
-      - Cheetah3
