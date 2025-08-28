@@ -67,6 +67,17 @@ class TagStats:
         self.tags = tags
         self.tasks = tasks
         self.stats: dict[str,TaskCounts] = dict()
+        self.calculations_enabled: bool = True
+
+
+    def disable_calculations(self) -> None:
+        """Prevent stat recalculations."""
+        self.calculations_enabled = False
+
+
+    def enable_calculations(self) -> None:
+        """Enable stat recalculations. Consider calling recalculate_all."""
+        self.calculations_enabled = True
 
 
     def get_by_tag(self,tag:Tag) -> TaskCounts:
@@ -86,6 +97,8 @@ class TagStats:
 
     def recalculate_all(self):
         "Recalculate all stats from scratch."
+        if not self.calculations_enabled:
+            return
 
         for task_count in self.stats.values():
             task_count.reset()
@@ -164,9 +177,11 @@ class Datastore:
         assert tags_xml is not None, "Missing 'taglist' tag in xml file."
         assert tasks_xml is not None, "Missing 'tasklist' tag in xml file."
 
+        self.tag_stats.disable_calculations()
         self.saved_searches.from_xml(searches_xml)
         self.tags.from_xml(tags_xml)
         self.tasks.from_xml(tasks_xml, self.tags)
+        self.tag_stats.enable_calculations()
 
         self.refresh_tag_stats()
 
