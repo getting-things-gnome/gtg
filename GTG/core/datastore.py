@@ -38,7 +38,7 @@ import GTG.core.info as info
 import GTG.core.dirs as dirs
 import GTG.core.versioning as versioning
 
-from gi.repository import GObject # type: ignore[import-untyped]
+from gi.repository import GObject, GLib # type: ignore[import-untyped]
 from lxml import etree as et
 
 from typing import Optional, Dict
@@ -67,17 +67,7 @@ class TagStats:
         self.tags = tags
         self.tasks = tasks
         self.stats: dict[str,TaskCounts] = dict()
-        self.calculations_enabled: bool = True
-
-
-    def disable_calculations(self) -> None:
-        """Prevent stat recalculations."""
-        self.calculations_enabled = False
-
-
-    def enable_calculations(self) -> None:
-        """Enable stat recalculations. Consider calling recalculate_all."""
-        self.calculations_enabled = True
+        self.recalculation_scheduled: bool = False
 
 
     def get_by_tag(self,tag:Tag) -> TaskCounts:
@@ -95,10 +85,22 @@ class TagStats:
         return self.stats[handle]
 
 
+    def schedule_recalculation(self) -> None:
+        """Schedule the recalculation of stats after higher priority events."""
+        if self.recalculation_scheduled:
+            return
+        GLib.idle_add(self._do_recalculate)
+        self.recalculation_scheduled = True
+
+
+    def _do_recalculate(self) -> bool:
+        self.recalculate_all()
+        self.recalculation_scheduled = False
+        return False # see GLib.idle_add
+
+
     def recalculate_all(self):
         "Recalculate all stats from scratch."
-        if not self.calculations_enabled:
-            return
 
         for task_count in self.stats.values():
             task_count.reset()
@@ -155,7 +157,7 @@ class Datastore:
         # Count of tasks for each pane and each tag
         self.tag_stats = TagStats(self.tags,self.tasks)
         for event in ['removed','added','parent-change','parent-removed','task-filterably-changed']:
-            self.tasks.connect(event, lambda *_: self.tag_stats.recalculate_all())
+            self.tasks.connect(event, lambda *_: self.tag_stats.schedule_recalculation())
 
         self.data_path: Optional[str] = None
         self._activate_non_default_backends()
@@ -177,11 +179,9 @@ class Datastore:
         assert tags_xml is not None, "Missing 'taglist' tag in xml file."
         assert tasks_xml is not None, "Missing 'tasklist' tag in xml file."
 
-        self.tag_stats.disable_calculations()
         self.saved_searches.from_xml(searches_xml)
         self.tags.from_xml(tags_xml)
         self.tasks.from_xml(tasks_xml, self.tags)
-        self.tag_stats.enable_calculations()
 
         self.refresh_tag_stats()
 
