@@ -39,6 +39,7 @@ class GeneralPreferences(Gtk.ScrolledWindow):
 
     _preview_button = Gtk.Template.Child()
     _bg_color_button = Gtk.Template.Child()
+    _compact_mode_button = Gtk.Template.Child()
     _font_button = Gtk.Template.Child()
 
     _refresh_time_entry = Gtk.Template.Child()
@@ -94,6 +95,9 @@ class GeneralPreferences(Gtk.ScrolledWindow):
         bg_color = self.config.get("bg_color_enable")
         self._bg_color_button.set_active(bg_color)
 
+        compact_mode = self.config.get("compact_mode")
+        self._compact_mode_button.set_active(compact_mode)
+
         self._refresh_time_entry.set_text(self.timer.get_formatted_time())
 
         self._font_button.set_font(self.get_default_editor_font())
@@ -148,6 +152,12 @@ class GeneralPreferences(Gtk.ScrolledWindow):
 
             for task in self.app.ds.tasks.lookup.values():
                 task.notify('row_css')
+
+
+    @Gtk.Template.Callback()
+    def on_compact_mode_toggled(self, widget, enabled):
+        self.config.set("compact_mode", enabled)
+
 
     @Gtk.Template.Callback()
     def on_font_change(self, widget):

@@ -40,6 +40,7 @@ class TaskBox(Gtk.Box):
         super().__init__(valign=Gtk.Align.CENTER)
 
         self.add_css_class('task-box')
+        self.config.connect('notify::last-updated',lambda *_: self._apply_config())
 
         self.expander = Gtk.TreeExpander()
         self.expander.add_css_class('arrow-only-expander')
@@ -52,6 +53,15 @@ class TaskBox(Gtk.Box):
         self.append(self.check)
 
         self.is_actionable = is_actionable
+
+        self._apply_config()
+
+
+    def _apply_config(self,*args):
+        if self.config.get('compact_mode'):
+            self.add_css_class('compact-mode')
+        else:
+            self.remove_css_class('compact-mode')
 
 
     @GObject.Property(type=bool, default=True)

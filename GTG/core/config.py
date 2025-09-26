@@ -34,6 +34,7 @@ log = logging.getLogger(__name__)
 DEFAULTS = {
     'browser': {
         "bg_color_enable": True,
+        "compact_mode": False,
         "contents_preview_enable": False,
         'tag_pane': True,
         "sidebar_width": 265,

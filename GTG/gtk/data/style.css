@@ -34,6 +34,10 @@ indent, expander{
     padding-right: 12px;
 }
 
+.task-list .task-box.compact-mode {
+    min-height: 32px;
+}
+
 .short-description{
     color: #999;
 }
