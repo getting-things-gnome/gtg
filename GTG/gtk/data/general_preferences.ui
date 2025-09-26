@@ -56,6 +56,21 @@
                 </child>
                 <child>
                   <object class="ActionRow">
+                    <property name="title" translatable="yes">Compact mode</property>
+                    <property name="subtitle" translatable="yes">Use smaller padding for tasks in the task browser.</property>
+                    <property name="activatable_widget">_compact_mode_button</property>
+                    <child>
+                      <object class="GtkSwitch" id="_compact_mode_button">
+                        <property name="hexpand">True</property>
+                        <property name="halign">end</property>
+                        <property name="valign">center</property>
+                        <signal name="state-set" handler="on_compact_mode_toggled"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="ActionRow">
                     <property name="title" translatable="yes">Start of the day</property>
                     <property name="subtitle" translatable="yes">Automatically refreshes the task list and adjusts the "Actionable" view</property>
                     <child>
