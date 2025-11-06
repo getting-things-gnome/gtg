@@ -203,10 +203,14 @@ class SectionConfig(GObject.Object):
         self._save_function()
 
 
-class CoreConfig:
+class CoreConfig_:
     """ Class holding configuration to all systems and tasks """
 
+    _instance = None
+
     def __init__(self):
+        assert self._instance is None
+
         self._conf_path = os.path.join(CONFIG_DIR, 'gtg.conf')
         self._conf = open_config_file(self._conf_path)
 
@@ -215,6 +219,11 @@ class CoreConfig:
 
         self._backends_conf_path = os.path.join(CONFIG_DIR, 'backends.conf')
         self._backends_conf = open_config_file(self._backends_conf_path)
+
+    @classmethod
+    def get_instance(cls):
+        cls._instance = cls._instance or cls()
+        return cls._instance
 
     def save_gtg_config(self):
         self._conf.write(open(self._conf_path, 'w'))
@@ -242,15 +251,27 @@ class CoreConfig:
             DEFAULTS['task'],
             self.save_task_config)
 
+    def rename_backend_section(self, backend_name, backend_id):
+        """Rename section `backend_name` to `backend_id` if it exists."""
+        if backend_name in self._backends_conf:
+            assert backend_id not in self._backends_conf
+            self._backends_conf.add_section(backend_id)
+            for (k, v) in self._backends_conf[backend_name].items():
+                self._backends_conf.set(backend_id, k, v)
+            self._backends_conf.remove_section(backend_name)
+
     def get_all_backends(self):
         return self._backends_conf.sections()
 
-    def get_backend_config(self, backend):
-        if backend not in self._backends_conf:
-            self._backends_conf.add_section(backend)
+    def get_backend_config(self, backend_id):
+        if backend_id not in self._backends_conf:
+            self._backends_conf.add_section(backend_id)
 
         return SectionConfig(
-            f'Backend {backend}',
-            self._backends_conf[backend],
+            f'Backend {backend_id}',
+            self._backends_conf[backend_id],
             DEFAULTS['backend'],
             self.save_backends_config)
+
+def CoreConfig():
+    return CoreConfig_.get_instance()
