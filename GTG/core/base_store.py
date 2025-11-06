@@ -205,7 +205,11 @@ class BaseStore(GObject.Object,Generic[S]):
         item = self.lookup[item_id]
         item.parent = self.lookup[parent_id]
 
-        self.data.remove(item)
+        try:
+            self.data.remove(item)
+        except ValueError:
+            log.error("item not found in data: " + str(item_id))
+
         self.lookup[parent_id].add_child(item)
         self.emit('parent-change', item, self.lookup[parent_id])
 
