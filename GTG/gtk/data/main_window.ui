@@ -393,6 +393,12 @@
               <object class="GtkBox" id="main_vbox">
                 <property name="orientation">vertical</property>
                 <child>
+                  <object class="GtkBox" id="vbox_toolbars">
+                    <property name="orientation">vertical</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+                <child>
                   <object class="GtkSearchBar" id="searchbar">
                     <property name="valign">center</property>
                     <property name="child">
