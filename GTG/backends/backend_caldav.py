@@ -982,6 +982,10 @@ class Translator:
         if not CATEGORIES.has_calendar_tag(task, todo.parent):
             tag = datastore.tags.new(CATEGORIES.get_calendar_tag(todo.parent))
             task.add_tag(tag)
+
+        if not task.get_added_date():
+            task.set_added_date(datetime.now())
+
         return task
 
     @classmethod
