@@ -16,7 +16,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 from GTG.gtk.backends.parameters_ui import ParametersUI
@@ -143,7 +143,7 @@ class ConfigurePanel(Gtk.Box):
         """
         Refreshes the state of the button that enables the backend
         """
-        self.sync_button.set_sensitive(not self.backend.is_default())
+        self.sync_button.set_visible(not self.backend.is_default())
         if self.backend.is_enabled():
             label = _("Disable syncing")
         else:
@@ -155,7 +155,9 @@ class ConfigurePanel(Gtk.Box):
         Refreshes the Gtk.Label that shows the current state of this backend
         """
         if self.backend.is_default():
-            label = _("This is the default synchronization service")
+            xml_folder = GLib.filename_to_uri("/home/" + GLib.get_user_name() + "/.var/app/org.gnome.GTG/data/gtg/gtg_data.xml")
+
+            label = "This is the default file storage backend. <a href='{}'>{}</a>.".format(xml_folder, _("Open the XML data file"))
         else:
             if self.backend.is_enabled():
                 label = _("Syncing is enabled.")

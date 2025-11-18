@@ -32,7 +32,7 @@ from GTG.core.config import CoreConfig
 from GTG.backends.generic_backend import GenericBackend
 
 log = logging.getLogger(__name__)
-
+inactive_modules = set()
 
 class BackendFactory(Borg):
     """
@@ -67,10 +67,12 @@ class BackendFactory(Borg):
                 # Something is wrong with this backend, skipping
                 log.warning("Backend %s could not be loaded: %r",
                             module_name, exception)
+                inactive_modules.append(module_name)
                 continue
             except Exception:
                 # Other exception log as errors
                 log.exception("Malformated backend %s:", module_name)
+                inactive_modules.append(module_name)
                 continue
 
         def browse_subclasses(cls):
