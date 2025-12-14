@@ -420,9 +420,10 @@ class Sidebar(Gtk.ScrolledWindow):
 
     def unselect_searches(self) -> None:
         """Clear selection for saved searches"""
-
+        search_id = self.searches_selection.get_selected()
+        if search_id == Gtk.INVALID_LIST_POSITION:
+            return
         with signal_block(self.searches_selection, self.search_handle):
-            search_id = self.searches_selection.get_selected()
             self.searches_selection.unselect_item(search_id)
             self.app.browser.get_pane().set_search_query('')
 
