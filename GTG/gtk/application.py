@@ -484,8 +484,7 @@ class Application(Gtk.Application):
         to_remove = [t for t in closed_tasks
                      if (today - t.date_closed).days > max_days]
 
-        for t in to_remove:
-            self.ds.tasks.remove(t.id)
+        self.ds.tasks.batch_remove([t.id for t in to_remove])
 
 
     def autoclean(self, timer):
