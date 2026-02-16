@@ -1401,7 +1401,6 @@ class MainWindow(Gtk.ApplicationWindow):
         #       to actionable
         self.stack_switcher.get_stack().get_first_child().get_first_child().emit('expand-all')
 
-        self.get_pane().set_filter_tags(set(self.sidebar.selected_tags()))
         self.sidebar.change_pane(current_pane)
         self.get_pane().sort_btn.set_popover(None)
         self.get_pane().sort_btn.set_popover(self.sort_menu)
@@ -1476,6 +1475,23 @@ class MainWindow(Gtk.ApplicationWindow):
 
 
         return self.stack_switcher.get_stack().get_visible_child().get_first_child()
+
+
+    def set_filter_tags(self,required_tags=None):
+        if required_tags is None:
+            required_tags = []
+        for p in self.panes.values():
+            p.set_filter_tags(required_tags)
+
+
+    def set_filter_notags(self):
+        for p in self.panes.values():
+            p.set_filter_notags()
+
+
+    def set_search_query(self,query):
+        for p in self.panes.values():
+            p.set_search_query(query)
 
 
     @GObject.Property(type=bool, default=True)
