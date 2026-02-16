@@ -425,7 +425,7 @@ class Sidebar(Gtk.ScrolledWindow):
             return
         with signal_block(self.searches_selection, self.search_handle):
             self.searches_selection.unselect_item(search_id)
-            self.app.browser.get_pane().set_search_query('')
+            self.app.browser.set_search_query('')
 
 
     def unselect_general_box(self) -> None:
@@ -444,9 +444,9 @@ class Sidebar(Gtk.ScrolledWindow):
         self.app.browser.get_pane().emit('expand-all')
 
         if index == 0:
-            self.app.browser.get_pane().set_filter_tags()
+            self.app.browser.set_filter_tags()
         elif index == 1:
-            self.app.browser.get_pane().set_filter_notags()
+            self.app.browser.set_filter_notags()
 
         self.emit('selection_changed')
 
@@ -459,7 +459,7 @@ class Sidebar(Gtk.ScrolledWindow):
 
         item = model.get_item(position)
         self.app.browser.get_pane().emit('expand-all')
-        self.app.browser.get_pane().set_search_query(item.query)
+        self.app.browser.set_search_query(item.query)
         self.emit('selection_changed')
 
 
@@ -495,7 +495,7 @@ class Sidebar(Gtk.ScrolledWindow):
         self.unselect_searches()
 
         self.app.browser.get_pane().emit('expand-all')
-        self.app.browser.get_pane().set_filter_tags(set(self.selected_tags()))
+        self.app.browser.set_filter_tags(set(self.selected_tags()))
 
         tags = self.selected_tags(names_only=True)
 
