@@ -66,6 +66,19 @@ class TestTagStore(TestCase):
         self.assertEqual(store.count(root_only=True), 2)
 
 
+    def test_xml_load_tree_with_old_parent_naming(self):
+        store = TagStore()
+        xml_doc = XML('''
+        <taglist>
+            <tag id="df4db599-63f8-4fc8-9f3d-5454dcadfd78" name="money"/>
+            <tag id="ef4db599-73f8-4fc8-9f3d-5454dcadfd78" name="errands" parent="money"/>
+        </taglist>
+            ''')
+
+        store.from_xml(xml_doc)
+        self.assertIs(store.find("errands").parent,store.find("money"))
+
+
     def test_xml_load_bad(self):
         store = TagStore()
         xml_doc = XML('''
