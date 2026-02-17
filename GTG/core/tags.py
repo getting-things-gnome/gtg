@@ -247,13 +247,22 @@ class TagStore(BaseStore[Tag]):
         for element in elements:
             child_id: UUID = UUID(element.get('id'))
             hex_parent_id: Optional[str] = element.get('parent')
+            parent_id: Optional[UUID] = None
+
             if hex_parent_id is None:
                 continue
 
             try:
-                parent_id: UUID = UUID(hex_parent_id)
+                parent_id = UUID(hex_parent_id)
             except ValueError:
-                log.debug('Malformed parent UUID: %s', tag, hex_parent_id)
+                log.debug('Parent id is not a valid UUID: %s', hex_parent_id)
+
+            if parent_id is None and hex_parent_id in self.lookup_names:
+                log.debug('Parent id recognised as tag name from an old format: %s', hex_parent_id)
+                parent_id = self.lookup_names[hex_parent_id].id
+
+            if parent_id is None:
+                log.error('Failed to identify parent tag: %s', hex_parent_id)
                 continue
 
             try:
