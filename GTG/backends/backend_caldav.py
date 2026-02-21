@@ -83,6 +83,9 @@ class Backend(PeriodicImportBackend):
         "is-first-run": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL,
             GenericBackend.PARAM_DEFAULT_VALUE: True},
+        "default-calendar": {
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
+            GenericBackend.PARAM_DEFAULT_VALUE: 'gtg'},
     }
 
     #
@@ -371,8 +374,8 @@ class Backend(PeriodicImportBackend):
         if todo and getattr(todo, 'parent', None):
             logger.debug('Found from todo %r and %r', todo, todo.parent)
             return todo, todo.parent
-        # fallback: use calendar named 'gtg' as default, or first available
-        default_calendar = self._cache.get_calendar(name='gtg')
+        # fallback: use configured default calendar, or first available
+        default_calendar = self._cache.get_calendar(name=self._parameters.get('default-calendar', 'gtg'))
         if not default_calendar:
             for __, default_calendar in self._cache.calendars:
                 break
