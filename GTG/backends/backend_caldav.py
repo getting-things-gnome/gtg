@@ -371,6 +371,14 @@ class Backend(PeriodicImportBackend):
         if todo and getattr(todo, 'parent', None):
             logger.debug('Found from todo %r and %r', todo, todo.parent)
             return todo, todo.parent
+        # fallback: use calendar named 'gtg' as default, or first available
+        default_calendar = self._cache.get_calendar(name='gtg')
+        if not default_calendar:
+            for __, default_calendar in self._cache.calendars:
+                break
+        if default_calendar:
+            logger.debug('No calendar found, using default %r', default_calendar)
+            return todo, default_calendar
         return None, None
 
     @property
