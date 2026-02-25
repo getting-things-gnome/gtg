@@ -1406,7 +1406,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.get_pane().sort_btn.set_popover(None)
         self.get_pane().sort_btn.set_popover(self.sort_menu)
 
-        if search_query := self.search_entry.get_text():
+        if self.searchbar.get_search_mode() and (search_query := self.search_entry.get_text()):
             self.get_pane().set_search_query(search_query)
 
         self.notify('is_pane_open')
