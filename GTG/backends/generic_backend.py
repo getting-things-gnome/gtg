@@ -654,12 +654,13 @@ class GenericBackend():
         """
         while not self.please_quit or bypass_quit_request:
             try:
-                task = self.to_set.pop()
+                tid = self.to_set.pop()
             except IndexError:
                 break
-            tid = task.id
             if tid not in self.to_remove:
-                self.set_task(task)
+                task = self.datastore.tasks.lookup.get(tid)
+                if task:
+                    self.set_task(task)
 
         while not self.please_quit or bypass_quit_request:
             try:
@@ -670,16 +671,15 @@ class GenericBackend():
         # we release the weak lock
         self.to_set_timer = None
 
-    def queue_set_task(self, task):
+    def queue_set_task(self, tid):
         """ Save the task in the backend. In particular, it just enqueues the
         task in the self.to_set queue. A thread will shortly run to apply the
         requested changes.
 
-        @param task: the task that should be saved
+        @param tid: the task UUID that should be saved
         """
-        tid = task.id
-        if task not in self.to_set and tid not in self.to_remove:
-            self.to_set.appendleft(task)
+        if tid not in self.to_set and tid not in self.to_remove:
+            self.to_set.appendleft(tid)
             self.__try_launch_setting_thread()
 
     def queue_remove_task(self, tid):

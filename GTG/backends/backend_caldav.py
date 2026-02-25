@@ -23,6 +23,7 @@ Backend for storing/loading tasks in CalDAV Tasks
 import logging
 import re
 from collections import defaultdict
+from uuid import UUID
 from datetime import date, datetime
 from gettext import gettext as _
 from hashlib import md5
@@ -119,7 +120,9 @@ class Backend(PeriodicImportBackend):
             logger.warning("not loaded yet, ignoring set_task")
             return
         with self.datastore.mutex:
-            self.datastore.tasks.add(task)
+            if task.id not in self.datastore.tasks.lookup:
+                self.datastore.tasks.add(task)
+            # If task already exists, it was updated in-place by the backend
 
     @interruptible
     def remove_task(self, tid: str) -> None:
@@ -300,10 +303,9 @@ class Backend(PeriodicImportBackend):
             uid = UID_FIELD.get_dav(todo)
             self._cache.set_todo(todo, uid)
             # Updating and creating task according to todos
-            task = self.datastore.tasks.lookup[uid]
+            task = self.datastore.tasks.lookup.get(UUID(uid))
             if not task:  # not found, creating it
-                task = Task()
-                task.id = uid
+                task = Task(id=UUID(uid), title='')
                 Translator.fill_task(todo, task, self.namespace, self.datastore)
                 self.datastore.tasks.add(task)
                 counts['created'] += 1
@@ -337,7 +339,7 @@ class Backend(PeriodicImportBackend):
                 parents = PARENT_FIELD.get_dav(todo)
                 if (not parents  # no parent mean no relationship on build
                         or parents[0] in known_todos  # already known parent
-                        or self.datastore.tasks.lookup[uid]):  # already known uid
+                        or self.datastore.tasks.lookup.get(UUID(uid))):  # already known uid
                     yield todo
                     known_todos.add(uid)
             if loop >= MAX_CALENDAR_DEPTH:
@@ -348,8 +350,7 @@ class Backend(PeriodicImportBackend):
         """Getting all tasks that has the calendar tag"""
         for task in self.datastore.tasks.data:
             if CATEGORIES.has_calendar_tag(task, calendar):
-                # This line was broken in commit 74bd3f44 - see #1176
-                yield uid, task # noqa: F821
+                yield str(task.id), task
 
     #
     # Utility methods
@@ -407,9 +408,48 @@ class Field:
     def _is_value_allowed(self, value):
         return value not in self.ignored_values
 
+    # Mapping: old method names -> Task property names (new core)
+    PROPERTY_GET_MAP = {
+        'get_title':               'title',
+        'get_excerpt':             'content',
+        'get_uuid':                'id',
+        'get_start_date':          'date_start',
+        'get_due_date_constraint': 'date_due',
+        'get_closed_date':         'date_closed',
+        'get_added_date':          'date_added',
+        'get_modified':            'date_modified',
+    }
+
+    PROPERTY_SET_MAP = {
+        'set_uuid':        None,
+        'set_text':        'content',
+        'set_start_date':  'date_start',
+        'set_due_date':    'date_due',
+        'set_closed_date': 'date_closed',
+        'set_added_date':  'date_added',
+        'set_modified':    'date_modified',
+        'set_tags':        None,
+        'set_parent':      None,
+        'remove_parent':   None,
+    }
+
     def get_gtg(self, task: Task, namespace: str = None):
         "Extract value from GTG.core.task.Task according to specified getter"
-        return getattr(task, self.task_get_func_name)()
+        name = self.task_get_func_name
+        if name in self.PROPERTY_GET_MAP:
+            value = getattr(task, self.PROPERTY_GET_MAP[name])
+            if name == 'get_uuid':
+                return str(value)
+            return value
+        if name == 'get_tags_name':
+            return [t.name for t in task.tags]
+        if name == 'get_parents':
+            return [str(task.parent.id)] if task.parent else []
+        if name == 'get_children':
+            return [str(c.id) for c in task.children]
+        # Fallback: call as method (e.g. get_status)
+        attr = getattr(task, name)
+        return attr() if callable(attr) else attr
 
     def clean_dav(self, vtodo: iCalendar):
         """Will remove existing conflicting value from vTodo object"""
@@ -440,7 +480,18 @@ class Field:
 
     def write_gtg(self, task: Task, value, namespace: str = None):
         """Will write new value to GTG.core.task.Task"""
-        return getattr(task, self.task_set_func_name)(value)
+        name = self.task_set_func_name
+        if name in self.PROPERTY_SET_MAP:
+            prop = self.PROPERTY_SET_MAP[name]
+            if prop is not None:
+                setattr(task, prop, value)
+            return
+        # Fallback: call as method (e.g. set_title, set_status)
+        attr = getattr(task, name)
+        if callable(attr):
+            return attr(value)
+        else:
+            setattr(task, name, value)
 
     def set_gtg(self, todo: iCalendar, task: Task,
                 namespace: str = None) -> None:
@@ -648,7 +699,7 @@ class Categories(Field):
             task.add_tag(to_add)
         for to_delete in local_tags.difference(remote_tags):
             task.remove_tag(to_delete)
-        task.tags.sort(key=remote_tags.index)
+        # task.tags is a set in the new core, ordering is not supported
 
     def get_calendar_tag(self, calendar: iCalendar) -> str:
         return self.to_tag(calendar.name, DAV_TAG_PREFIX)
