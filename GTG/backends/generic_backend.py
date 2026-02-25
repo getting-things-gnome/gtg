@@ -657,7 +657,7 @@ class GenericBackend():
                 task = self.to_set.pop()
             except IndexError:
                 break
-            tid = task.get_id()
+            tid = task.id
             if tid not in self.to_remove:
                 self.set_task(task)
 
@@ -677,7 +677,7 @@ class GenericBackend():
 
         @param task: the task that should be saved
         """
-        tid = task.get_id()
+        tid = task.id
         if task not in self.to_set and tid not in self.to_remove:
             self.to_set.appendleft(task)
             self.__try_launch_setting_thread()
