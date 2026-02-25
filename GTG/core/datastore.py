@@ -162,6 +162,12 @@ class Datastore:
         self.tag_stats = TagStats(self.tags,self.tasks)
         for event in ['removed','added','parent-change','parent-removed','task-filterably-changed']:
             self.tasks.connect(event, lambda *_: self.tag_stats.schedule_recalculation())
+        # Notify backends when a task changes
+        def _on_task_changed(_, task):
+            for backend in self.backends.values():
+                if backend.is_enabled():
+                    backend.queue_set_task(task.id)
+        self.tasks.connect('task-filterably-changed', _on_task_changed)
 
         self.data_path: Optional[str] = None
         self._activate_non_default_backends()

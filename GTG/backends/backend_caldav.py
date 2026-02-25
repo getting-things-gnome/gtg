@@ -35,7 +35,7 @@ from GTG.backends.generic_backend import GenericBackend
 from GTG.backends.periodic_import_backend import PeriodicImportBackend
 from GTG.core.dates import LOCAL_TIMEZONE, Accuracy, Date
 from GTG.core.interruptible import interruptible
-from GTG.core.tasks import Task, Status
+from GTG.core.tasks import Task, Status as TaskStatus
 from vobject import iCalendar
 
 logger = logging.getLogger(__name__)
@@ -122,7 +122,7 @@ class Backend(PeriodicImportBackend):
         with self.datastore.mutex:
             if task.id not in self.datastore.tasks.lookup:
                 self.datastore.tasks.add(task)
-            # If task already exists, it was updated in-place by the backend
+        self._set_task(task)
 
     @interruptible
     def remove_task(self, tid: str) -> None:
@@ -133,7 +133,7 @@ class Backend(PeriodicImportBackend):
             logger.warning("no task id passed to remove_task call, ignoring")
             return
         with self.datastore.mutex:
-            return self.datastore.tasks.remove(tid)
+            return self.datastore.tasks.remove(UUID(tid) if isinstance(tid, str) else tid)
 
     #
     # real main methods
@@ -240,7 +240,7 @@ class Backend(PeriodicImportBackend):
         fact that it's missing"""
         task, do_delete = None, False
         task = calendar_tasks[uid]
-        if import_started_on < task.get_added_date():
+        if import_started_on < task.date_added:
             return
         # if first run, we're getting all task, including completed
         # if we miss one, we delete it
@@ -248,7 +248,7 @@ class Backend(PeriodicImportBackend):
             do_delete = True
         # if cache is initialized, it's normal we missed completed
         # task, but we should have seen active ones
-        elif task.get_status() == Task.STA_ACTIVE:
+        elif task.status == TaskStatus.ACTIVE:
             __, calendar = self._get_todo_and_calendar(task)
             if not calendar:
                 logger.warning("Couldn't find calendar for %r", task)
@@ -264,7 +264,7 @@ class Backend(PeriodicImportBackend):
         if do_delete:  # the task was missing for a good reason
             counts['deleted'] += 1
             self._cache.del_todo(uid)
-            self.datastore.tasks.remove(uid)
+            self.datastore.tasks.remove(UUID(uid))
 
     @staticmethod
     def _denorm_children_on_vtodos(todos: list):
@@ -518,7 +518,7 @@ class Field:
     @classmethod
     def _browse_subtasks(cls, task: Task):
         yield task
-        for subtask in task.get_subtasks():
+        for subtask in task.children:
             yield from cls._browse_subtasks(subtask)
 
 
@@ -615,11 +615,11 @@ class UTCDateTimeField(DateField):
 
 
 class Status(Field):
-    DEFAULT_STATUS = (Status.ACTIVE, 'NEEDS-ACTION')
-    _status_mapping = ((Status.ACTIVE, 'NEEDS-ACTION'),
-                       (Status.ACTIVE, 'IN-PROCESS'),
-                       (Status.DISMISSED, 'CANCELLED'),
-                       (Status.DONE, 'COMPLETED'))
+    DEFAULT_STATUS = (TaskStatus.ACTIVE, 'NEEDS-ACTION')
+    _status_mapping = ((TaskStatus.ACTIVE, 'NEEDS-ACTION'),
+                       (TaskStatus.ACTIVE, 'IN-PROCESS'),
+                       (TaskStatus.DISMISSED, 'CANCELLED'),
+                       (TaskStatus.DONE, 'COMPLETED'))
 
     def _translate(self, gtg_value=None, dav_value=None):
         for gtg_status, dav_status in self._status_mapping:
@@ -636,7 +636,7 @@ class Status(Field):
         for subtask in self._browse_subtasks(task):
             if subtask.is_active:
                 active += 1
-            elif subtask.status == Status.DONE:
+            elif subtask.status == TaskStatus.DONE:
                 done += 1
             if active and done:
                 return 'IN-PROCESS'
@@ -659,9 +659,9 @@ class PercentComplete(Field):
     def get_gtg(self, task: Task, namespace: str = None) -> str:
         total_cnt, done_cnt = 0, 0
         for subtask in self._browse_subtasks(task):
-            if subtask.status != Status.DISMISSED:
+            if subtask.status != TaskStatus.DISMISSED:
                 total_cnt += 1
-                if subtask.status == Status.DONE:
+                if subtask.status == TaskStatus.DONE:
                     done_cnt += 1
         if total_cnt:
             return str(int(100 * done_cnt / total_cnt))
@@ -781,7 +781,7 @@ class Description(Field):
 
     def write_gtg(self, task: Task, value, namespace: str = None):
         hash_, text = value
-        if hash_ and hash_ == self._get_content_hash(task.get_text()):
+        if hash_ and hash_ == self._get_content_hash(task.content):
             logger.debug('not writing %r from vtodo, hash matches', task)
             return
         return super().write_gtg(task, text)
@@ -804,7 +804,7 @@ class Description(Field):
     def _extract_plain_text(self, task: Task) -> str:
         """Will extract plain text from task content, replacing subtask
         referenced in the text by their proper titles"""
-        result, content = '', task.get_text()
+        result, content = '', task.content
         for line_no, line in enumerate(content.splitlines()):
             for tag in self.XML_TAGS:
                 while tag in line:
@@ -818,7 +818,7 @@ class Description(Field):
                 subtask = task.req.get_task(line[2:-2].strip())
                 if not subtask:
                     continue
-                if subtask.status == Status.DONE:
+                if subtask.status == TaskStatus.DONE:
                     result += f"[x] {subtask.title}\n"
                 else:
                     result += f"[ ] {subtask.title}\n"
