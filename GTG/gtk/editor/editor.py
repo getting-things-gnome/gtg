@@ -169,6 +169,11 @@ class TaskEditor(Gtk.Window):
 
         self.textview.set_text_from_task()
 
+        # Refresh editor if a subtask is deleted externally (fix #544)
+        self._removed_handler = self.ds.tasks.connect(
+            'removed', self._on_task_removed
+        )
+
         # Connect search field to tags popup
         self.tags_tree.set_search_entry(self.tags_entry)
         self.tags_tree.set_search_equal_func(self.search_function, None)
@@ -713,7 +718,15 @@ class TaskEditor(Gtk.Window):
     def remove_subtask(self, tid):
         """Remove a subtask of this task."""
 
+        if tid not in self.app.ds.tasks.lookup:
+            log.debug('Task %s already removed, skipping unparent', tid)
+            return
         self.app.ds.tasks.unparent(tid)
+
+    def _on_task_removed(self, store, removed_task):
+        """Refresh textview if a subtask of this task was removed externally."""
+        if removed_task.id in self.textview.subtasks['tags']:
+            self.textview.process()
 
     def rename_subtask(self, tid, new_title):
         """Rename a subtask of this task."""
@@ -854,6 +867,9 @@ class TaskEditor(Gtk.Window):
         # Save because self.textview.process() only calls light_save(), which
         # isn't guaranteed to actually save (see #1138)
         self.save()
+
+        # Disconnect the task-removed signal handler
+        self.ds.tasks.disconnect(self._removed_handler)
 
         # self.pengine.onTaskClose(self.plugin_api)
         # self.pengine.remove_api(self.plugin_api)

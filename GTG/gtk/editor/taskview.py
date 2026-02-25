@@ -363,6 +363,16 @@ class TaskView(GtkSource.View):
 
             # Don't auto-remove it
             tid = sub_tag.tid
+
+            # Task may have been deleted externally (fix #544)
+            if tid not in self.ds.tasks.lookup:
+                log.debug('Task %s was deleted externally, removing from content', tid)
+                end = start.copy()
+                end.forward_to_line_end()
+                start.backward_chars(2)
+                self.buffer.delete(start, end)
+                return False
+
             task = self.ds.tasks.lookup[tid]
             parent = task.parent
 
