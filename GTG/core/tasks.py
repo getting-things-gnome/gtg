@@ -716,16 +716,8 @@ class FilteredTaskTreeManager:
 
 
     def _refilter_all_tasks(self) -> None:
-        self._clear_models()
         for t in self.store.data:
             self._update_with_descendants(t)
-
-
-    def _clear_models(self):
-        self.tid_to_containing_model = dict()
-        self.root_model.remove_all()
-        for model in self.tid_to_subtask_model.values():
-            model.remove_all()
 
 
     def _on_changed(self,*args):
