@@ -18,7 +18,7 @@
 
 import os
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 from GTG.core.dirs import UI_DIR
 from GTG.gtk.general_preferences import GeneralPreferences
@@ -39,6 +39,7 @@ class Preferences(Gtk.Window):
 
         self.pages = {}
         self.add_page(GeneralPreferences(app))
+        self.connect('key-press-event', self._on_key_press)
 
     def activate(self):
         """ Activate the preferences window."""
@@ -51,9 +52,17 @@ class Preferences(Gtk.Window):
         self.hide()
         return True
 
+
     def add_page(self, page):
         """add_page adds a titled child to the main stack.
         All children are added using this function from __init__"""
         page_name = page.get_name()
         self.pages[page_name] = page
         self._page_stack.add_titled(page, page_name, page.get_title())
+
+    
+    def _on_key_press(self, widget, event):
+        """Close the window when Escape is pressed."""
+        if event.keyval == Gdk.KEY_Escape:
+            self.hide()
+            return True
