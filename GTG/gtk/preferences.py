@@ -36,10 +36,11 @@ class Preferences(Gtk.Window):
     def __init__(self, app):
         super().__init__()
         self.config = app.config
-
         self.pages = {}
         self.add_page(GeneralPreferences(app))
-        self.connect('key-press-event', self._on_key_press)
+        key_controller = Gtk.EventControllerKey()
+        key_controller.connect('key-pressed', self._on_key_press)
+        self.add_controller(key_controller)
 
     def activate(self):
         """ Activate the preferences window."""
@@ -61,8 +62,8 @@ class Preferences(Gtk.Window):
         self._page_stack.add_titled(page, page_name, page.get_title())
 
     
-    def _on_key_press(self, widget, event):
+    def _on_key_press(self, controller, keyval, keycode, state):
         """Close the window when Escape is pressed."""
-        if event.keyval == Gdk.KEY_Escape:
+        if keyval == Gdk.KEY_Escape:
             self.hide()
             return True
