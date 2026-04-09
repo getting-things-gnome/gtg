@@ -53,7 +53,6 @@ class Preferences(Gtk.Window):
         self.hide()
         return True
 
-
     def add_page(self, page):
         """add_page adds a titled child to the main stack.
         All children are added using this function from __init__"""
