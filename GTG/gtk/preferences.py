@@ -61,7 +61,7 @@ class Preferences(Gtk.Window):
         self.pages[page_name] = page
         self._page_stack.add_titled(page, page_name, page.get_title())
 
-    
+
     def _on_key_press(self, controller, keyval, keycode, state):
         """Close the window when Escape is pressed."""
         if keyval == Gdk.KEY_Escape:
