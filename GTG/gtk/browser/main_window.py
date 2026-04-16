@@ -223,7 +223,7 @@ class MainWindow(Gtk.ApplicationWindow):
             ('focus_sidebar', self.focus_sidebar, ('win.focus_sidebar', ['<ctrl>B'])),
             ('toggle_search', self.toggle_search, ('win.toggle_search', [])),
             ('search', self.activate_search, ('win.search', ['<ctrl>f'])),
-            ('close_search', self.toggle_search, ('win.close_search', ['Escape'])),
+            ('close_search', self.close_search, ('win.close_search', ['Escape'])),
             ('focus_quickentry', self.focus_quickentry, ('win.focus_quickentry', ['<ctrl>L'])),
             ('delete_task', self.on_delete_tasks, ('win.delete_task', ['<ctrl>Delete'])),
             ('help_overlay', None, ('win.show-help-overlay', ['<ctrl>question'])),
@@ -514,10 +514,15 @@ class MainWindow(Gtk.ApplicationWindow):
     def toggle_search(self, *args):
         """Callback to toggle search bar."""
         if self.searchbar.get_search_mode():
-            self.searchbar.set_search_mode(False)
-            self.get_pane().set_search_query('')
+            self.close_search()
         else:
             self.activate_search()
+
+    def close_search(self, *args):
+        """Callback to close search bar (does nothing if already closed)."""
+        if self.searchbar.get_search_mode():
+            self.searchbar.set_search_mode(False)
+            self.get_pane().set_search_query('')
 
     def activate_search(self, *args):
           self.search_button.set_active(True)
