@@ -45,6 +45,7 @@ class GTGCalendar(GObject.GObject):
         self.__builder.add_from_file(GnomeConfig.CALENDAR_UI_FILE)
         self.__date_kind = None
         self.__date = Date.no_date()
+        self.__sigid = None
         self.__init_gtk__()
 
     def __init_gtk__(self):
