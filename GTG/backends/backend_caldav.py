@@ -23,7 +23,7 @@ Backend for storing/loading tasks in CalDAV Tasks
 import logging
 import re
 from collections import defaultdict
-from uuid import UUID
+from uuid import NAMESPACE_URL, UUID, uuid5
 from datetime import date, datetime
 from gettext import gettext as _
 from hashlib import md5
@@ -50,6 +50,23 @@ DAV_IGNORE = {'last-modified',  # often updated alone by GTG
               'percent-complete',  # calculated on subtask and status
               'completed',  # GTG date is constrained
               }
+
+
+# CalDAV UIDs are opaque unique strings (RFC 5545), while GTG task ids
+# are UUIDs. Valid UUID strings are used as-is; anything else is mapped
+# to a stable name-based UUID (RFC 4122, uuid5) so that the same remote
+# UID always yields the same task id across sync runs.
+UUID_NAMESPACE = uuid5(NAMESPACE_URL, 'gtg://backend_caldav')
+
+
+def uid_to_task_id(uid) -> UUID:
+    """Map a CalDAV UID (any unique string) to a stable GTG task UUID."""
+    if isinstance(uid, UUID):
+        return uid
+    try:
+        return UUID(uid)
+    except (TypeError, AttributeError, ValueError):
+        return uuid5(UUID_NAMESPACE, str(uid))
 
 
 class Backend(PeriodicImportBackend):
@@ -205,11 +222,11 @@ class Backend(PeriodicImportBackend):
                              '%r => %r', task, new_todo)
             return
         uid = UID_FIELD.get_dav(todo=new_todo)
-        self._cache.set_todo(new_todo, uid)
+        self._cache.set_todo(new_todo, str(uid_to_task_id(uid)))
 
     def _remove_todo(self, uid: str, todo: iCalendar) -> None:
         logger.info('SYNCING removing todo for Task(%s)', uid)
-        self._cache.del_todo(uid)  # cleaning cache
+        self._cache.del_todo(str(uid_to_task_id(uid)))  # cleaning cache
         try:  # deleting through caldav
             todo.delete()
         except caldav.lib.error.DAVError:
@@ -288,7 +305,9 @@ class Backend(PeriodicImportBackend):
     def _import_calendar_todos(self, calendar: iCalendar,
                                import_started_on: datetime, counts: dict):
         todos = calendar.todos(include_completed=not self._cache.initialized)
-        todo_uids = {UID_FIELD.get_dav(todo) for todo in todos}
+        todo_uids = {str(uid_to_task_id(uid))
+                     for uid in (UID_FIELD.get_dav(todo) for todo in todos)
+                     if uid}
 
         # browsing all task linked to current calendar,
         # removing missed ones we don't see in fetched todos
@@ -301,11 +320,15 @@ class Backend(PeriodicImportBackend):
 
         for todo in self.__sort_todos(todos):
             uid = UID_FIELD.get_dav(todo)
-            self._cache.set_todo(todo, uid)
+            if not uid:  # RFC 5545 requires a UID, but stay safe
+                logger.warning('Skipping todo without UID: %r', todo)
+                continue
+            tid = uid_to_task_id(uid)
+            self._cache.set_todo(todo, str(tid))
             # Updating and creating task according to todos
-            task = self.datastore.tasks.lookup.get(UUID(uid))
+            task = self.datastore.tasks.lookup.get(tid)
             if not task:  # not found, creating it
-                task = Task(id=UUID(uid), title='')
+                task = Task(id=tid, title='')
                 Translator.fill_task(todo, task, self.namespace, self.datastore)
                 self.datastore.tasks.add(task)
                 counts['created'] += 1
@@ -339,7 +362,8 @@ class Backend(PeriodicImportBackend):
                 parents = PARENT_FIELD.get_dav(todo)
                 if (not parents  # no parent mean no relationship on build
                         or parents[0] in known_todos  # already known parent
-                        or self.datastore.tasks.lookup.get(UUID(uid))):  # already known uid
+                        or self.datastore.tasks.lookup.get(
+                            uid_to_task_id(uid))):  # already known uid
                     yield todo
                     known_todos.add(uid)
             if loop >= MAX_CALENDAR_DEPTH:
@@ -815,7 +839,9 @@ class Description(Field):
                 if new_line:
                     result += new_line + '\n'
             elif line.startswith('{!') and line.endswith('!}'):
-                subtask = task.req.get_task(line[2:-2].strip())
+                tid = line[2:-2].strip()
+                subtask = next((child for child in task.children
+                                if str(child.id) == tid), None)
                 if not subtask:
                     continue
                 if subtask.status == TaskStatus.DONE:
