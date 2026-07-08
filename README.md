@@ -59,17 +59,18 @@ You can get most of those from your distribution packages:
 
 ```sh
 # On Fedora:
-sudo dnf install meson python3-cairo python3-gobject gtk3 itstool gettext python3-lxml libsecret gtksourceview4
-# On Debian 10 (buster), you need to install the backported version, activate it with:
-echo 'deb http://deb.debian.org/debian buster-backports main' | sudo tee -a /etc/apt/sources.list
+sudo dnf install meson ninja-build gettext itstool gtk4-devel gtksourceview5 libportal libsecret python3-gobject python3-cairo python3-lxml
 # On Debian/Ubuntu:
-sudo apt install meson python3-gi-cairo python3-gi gir1.2-pango-1.0 gir1.2-gdkpixbuf-2.0 gir1.2-gtk-3.0 itstool gettext python3-lxml libgirepository1.0-dev libsecret-1.0 gir1.2-secret-1
+sudo apt install meson ninja-build pkgconf gettext itstool libgtk-4-dev gir1.2-gtk-4.0 gir1.2-gtksource-5 gir1.2-xdp-1.0 gir1.2-secret-1 python3-gi python3-gi-cairo python3-lxml
 ```
 
 #### Optional Dependencies
 
 * [setproctitle](https://pypi.org/project/setproctitle/)
   (to set the process title when listing processes with `ps` et al.)
+* [caldav](https://pypi.org/project/caldav/) (`python3-caldav` on
+  Debian/Ubuntu and Fedora): required to enable the CalDAV
+  synchronization backend.
 
 ### Test dependencies
 
@@ -77,9 +78,9 @@ To run the current test suite, you need some additional packages (this list may 
 
 ```sh
 # On Fedora:
-sudo dnf install python3-pytest python3-pyflakes python3-spec python3-pycodestyle
+sudo dnf install python3-pytest python3-pycodestyle python3-caldav
 # On Ubuntu/Debian:
-sudo apt install python3-pytest python3-pyflakes python3-pep8 python3-pycodestyle python3-caldav
+sudo apt install python3-pytest python3-pycodestyle python3-caldav
 ```
 
 You currently also need the optional plugin dependencies, as the tests don't automatically skip them. (Help welcome improving that!)
