@@ -417,3 +417,82 @@ class CalDAVTest(TestCase):
         task.set_start_date(before)
         task.set_due_date(later)
         self.assertEqual(later, field.get_gtg(task, '').dt_value)
+
+
+class NonUuidUidRegressionTest(TestCase):
+    """CalDAV UIDs are opaque unique strings (RFC 5545): servers and
+    clients are not required to produce UUID-shaped values.
+
+    Regression test for the ValueError('badly formed hexadecimal UUID
+    string') reported while testing PR #1265."""
+
+    NON_UUID_UID = '19960401T080045Z-4000F192713@example.com'
+    VTODO_NON_UUID = ("BEGIN:VTODO\r\n"
+                      "CREATED:20201212T092155Z\r\n"
+                      "DTSTAMP:20201212T172830Z\r\n"
+                      "LAST-MODIFIED:20201212T172558Z\r\n"
+                      "STATUS:NEEDS-ACTION\r\n"
+                      "SUMMARY:todo with a non-uuid uid\r\n"
+                      "UID:" + NON_UUID_UID + "\r\n"
+                      "END:VTODO\r\n")
+
+    @staticmethod
+    def _todo(raw):
+        todo = Mock()
+        todo.instance.vtodo = vobject.readOne(raw)
+        todo.parent.name = 'My Calendar'
+        return todo
+
+    @staticmethod
+    def _backend():
+        parameters = {'pid': 'test', 'service-url': 'unittest',
+                      'username': 'u', 'password': 'p', 'period': 1}
+        backend = Backend(parameters)
+        backend.datastore = Datastore()
+        return backend
+
+    def test_import_todo_with_non_uuid_uid(self):
+        backend = self._backend()
+        calendar = Mock()
+        calendar.todos.return_value = [self._todo(self.VTODO_NON_UUID)]
+        counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
+        start = datetime.now(LOCAL_TIMEZONE)
+        backend._import_calendar_todos(calendar, start, counts)
+        self.assertEqual(1, counts['created'])
+        self.assertEqual(1, len(backend.datastore.tasks.lookup))
+        task = next(iter(backend.datastore.tasks.lookup.values()))
+        self.assertEqual('todo with a non-uuid uid', task.title)
+        # importing again must neither crash, duplicate nor delete
+        counts2 = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
+        backend._import_calendar_todos(calendar, start, counts2)
+        self.assertEqual(0, counts2['created'])
+        self.assertEqual(0, counts2['deleted'])
+        self.assertEqual(1, len(backend.datastore.tasks.lookup))
+
+    def test_extract_plain_text_with_subtask_reference(self):
+        """Task content can reference subtasks as {!<task id>!} lines:
+        extraction must resolve them through the new core API."""
+        from types import SimpleNamespace
+        from uuid import uuid4
+        from GTG.core.tasks import Status as TaskStatus
+        field = [f for f in Translator.fields
+                 if f.dav_name == 'description'][0]
+        child_id = uuid4()
+        child = SimpleNamespace(id=child_id, title='my subtask',
+                                status=TaskStatus.DONE)
+        parent = SimpleNamespace(
+            content='first line\n{!' + str(child_id) + '!}\nlast line',
+            children=[child])
+        text = field._extract_plain_text(parent)
+        self.assertIn('[x] my subtask', text)
+        self.assertIn('last line', text)
+
+    def test_uid_mapping_is_stable(self):
+        from uuid import UUID as _UUID
+        from GTG.backends.backend_caldav import uid_to_task_id
+        once = uid_to_task_id(self.NON_UUID_UID)
+        self.assertEqual(once, uid_to_task_id(self.NON_UUID_UID))
+        self.assertNotEqual(once, uid_to_task_id('another-opaque-uid'))
+        canonical = '1f0ac2a2-2e44-4f9c-89e2-6dd00b78ef34'
+        self.assertEqual(_UUID(canonical),
+                         uid_to_task_id(canonical.upper()))
