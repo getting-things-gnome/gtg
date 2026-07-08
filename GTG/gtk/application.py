@@ -439,6 +439,8 @@ class Application(Gtk.Application):
         search = self.browser.search_entry.is_focus()
 
         if editor:
+            if editor.close_open_date_popover():
+                return
             self.close_task(editor.task.id)
         elif search:
             self.browser.toggle_search(action, params)

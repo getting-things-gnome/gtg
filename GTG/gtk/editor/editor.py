@@ -247,6 +247,23 @@ class TaskEditor(Gtk.Window):
 
         self.closed_popover.popup()
 
+    def close_open_date_popover(self) -> bool:
+        """Close the currently open date popover, if any.
+
+        Returns True if a popover was closed. Used by the application's
+        Escape accelerator so that a first Escape only dismisses the
+        popover instead of closing the whole editor (see issue #403).
+        """
+
+        for popover in (self.start_popover,
+                        self.due_popover,
+                        self.closed_popover):
+            if popover.get_visible():
+                popover.popdown()
+                return True
+
+        return False
+
     @Gtk.Template.Callback()
     def sync_tag_store(self, widget=None):
 
