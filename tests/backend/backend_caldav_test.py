@@ -487,6 +487,44 @@ class NonUuidUidRegressionTest(TestCase):
         self.assertIn('[x] my subtask', text)
         self.assertIn('last line', text)
 
+    ROOT_NO_CATEG = "".join(
+        line + "\r\n" for line in VTODO_ROOT.splitlines()
+        if not line.startswith("CATEGORIES"))
+
+    def test_import_parent_child_hierarchy(self):
+        """RELATED-TO hierarchy must be wired with real Task objects,
+        never raw UID strings (regression for PR #1265 re-test)."""
+        backend = self._backend()
+        calendar = Mock()
+        calendar.todos.return_value = [self._todo(self.ROOT_NO_CATEG),
+                                       self._todo(VTODO_CHILD)]
+        counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
+        backend._import_calendar_todos(
+            calendar, datetime.now(LOCAL_TIMEZONE), counts)
+        self.assertEqual(2, counts['created'])
+        parent = next(t for t in backend.datastore.tasks.lookup.values()
+                      if t.title == 'my summary')
+        child = next(t for t in backend.datastore.tasks.lookup.values()
+                     if t.title == 'my child summary')
+        for c in parent.children:
+            self.assertIsInstance(c, Task)
+        self.assertEqual([child], list(parent.children))
+        self.assertIs(parent, child.parent)
+
+    def test_import_categories_as_real_tags(self):
+        """CATEGORIES must become real Tag objects from the datastore."""
+        backend = self._backend()
+        calendar = Mock()
+        calendar.todos.return_value = [self._todo(VTODO_ROOT)]
+        counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
+        backend._import_calendar_todos(
+            calendar, datetime.now(LOCAL_TIMEZONE), counts)
+        self.assertEqual(1, counts['created'])
+        task = next(iter(backend.datastore.tasks.lookup.values()))
+        names = {tag.name for tag in task.tags}
+        self.assertIn(CATEGORIES.to_tag('my first category'), names)
+        self.assertIn(CATEGORIES.to_tag('my second category'), names)
+
     def test_uid_mapping_is_stable(self):
         from uuid import UUID as _UUID
         from GTG.backends.backend_caldav import uid_to_task_id

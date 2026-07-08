@@ -335,6 +335,15 @@ class Backend(PeriodicImportBackend):
             else:
                 result = self._update_task(task, todo)
                 counts[result] += 1
+            # wire hierarchy with real Task objects; __sort_todos
+            # guarantees parents are imported first. Conservative:
+            # links are only created, never changed nor removed here.
+            parent_uids = PARENT_FIELD.get_dav(todo)
+            if parent_uids and task.parent is None:
+                parent_task = self.datastore.tasks.lookup.get(
+                    uid_to_task_id(parent_uids[0]))
+                if parent_task:
+                    self.datastore.tasks.parent(tid, parent_task.id)
             if logger.isEnabledFor(logging.DEBUG):
                 if Translator.should_sync(task, self.namespace, todo):
                     logger.warning("Shouldn't be diff for %r", uid)
@@ -1063,7 +1072,20 @@ class Translator:
     def fill_task(cls, todo: iCalendar, task: Task, namespace: str, datastore):
         nmspc = {'namespace': namespace}
         for field in cls.fields:
+            # Hierarchy and tags need real core objects (Task, Tag) and
+            # datastore access: they are wired in the import loop and
+            # right below, not through the generic string pipeline.
+            if field in (CATEGORIES, PARENT_FIELD, CHILDREN_FIELD):
+                continue
             field.set_gtg(todo, task, **nmspc)
+        # tags from CATEGORIES: Tag objects must come from the datastore
+        remote_tags = [CATEGORIES.to_tag(categ)
+                       for categ in CATEGORIES.get_dav(todo)]
+        local_tags = set(tag.name for tag in task.tags)
+        for to_add in set(remote_tags).difference(local_tags):
+            task.add_tag(datastore.tags.new(to_add))
+        for to_delete in local_tags.difference(remote_tags):
+            task.remove_tag(to_delete)
         task.set_attribute("url", str(todo.url), **nmspc)
         task.set_attribute("calendar_url", str(todo.parent.url), **nmspc)
         task.set_attribute("calendar_name", todo.parent.name, **nmspc)
