@@ -37,10 +37,26 @@ tags_cache = {}
 tid_cache = {}
 
 
+def _open_file(path: str, root_tag: str) -> et._ElementTree:
+    """Open an XML file and check its root tag.
+
+    Minimal replacement for the old core's _open_file(), which was
+    removed in e43eee0a together with the rest of the old core. The
+    backup-rotation logic of the original is intentionally not
+    reimplemented: migration sources are existing files, and failing
+    loudly beats silently ignoring user data.
+    """
+    tree = et.parse(path)
+    if tree.getroot().tag != root_tag:
+        raise ValueError(f'{path}: expected root tag {root_tag!r}, '
+                         f'found {tree.getroot().tag!r}')
+    return tree
+
+
 def convert(path: str) -> et._ElementTree:
     """Convert old XML into the new format."""
 
-    old_tree = xml.open_file(path, 'project')
+    old_tree = _open_file(path, 'project')
 
     new_root = et.Element('gtgData')
     # Bump this on each new GTG release, no matter what:
@@ -79,7 +95,7 @@ def convert_tags(old_tree: et._Element) -> Tuple[et._Element, et._Element]:
     """Convert old tags for the new format."""
 
     old_file = os.path.join(DATA_DIR, 'tags.xml')
-    tree = xml.open_file(old_file, 'tagstore')
+    tree = _open_file(old_file, 'tagstore')
 
     taglist = et.Element('taglist')
     searchlist = et.Element('searchlist')

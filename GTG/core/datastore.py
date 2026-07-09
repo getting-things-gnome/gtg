@@ -496,9 +496,11 @@ class Datastore:
         # We couldn't open any file :(
         if not self.xml_tree:
             try:
-                # Try making a new empty file and open it
-                self.first_run(path)
+                # No data file yet: migrate old-format
+                # data if present, otherwise create the
+                # first-run file (see #855)
                 self.data_path = path
+                self.do_first_run_versioning(path)
 
             except IOError:
                 raise SystemError(f'Could not write a file at {path}')
