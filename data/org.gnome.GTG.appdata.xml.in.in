@@ -24,15 +24,19 @@
     <url type="translate">https://wiki.gnome.org/TranslationProject#How_can_I_help.3F</url>
 
     <screenshots>
-        <screenshot type="default">https://fortintam.com/gtg/screenshots/appstream/1.png</screenshot>
-        <screenshot>https://fortintam.com/gtg/screenshots/appstream/2.png</screenshot>
-        <screenshot>https://fortintam.com/gtg/screenshots/appstream/3.png</screenshot>
+        <screenshot type="default">
+            <caption>Main window</caption>
+            <image>https://raw.githubusercontent.com/wiki/getting-things-gnome/gtg/assets/screenshots/0.6/main_window.png</image>
+        </screenshot>
+        <screenshot>
+            <caption>Task details</caption>
+            <image>https://raw.githubusercontent.com/wiki/getting-things-gnome/gtg/assets/screenshots/0.6/detail.png</image>
+        </screenshot>
+        <screenshot>
+            <caption>Main window with background</caption>
+            <image>https://raw.githubusercontent.com/wiki/getting-things-gnome/gtg/assets/screenshots/0.6/main_with_background.png</image>
+        </screenshot>
     </screenshots>
-
-    <kudos>
-        <kudo>UserDocs</kudo>
-        <kudo>ModernToolkit</kudo>
-    </kudos>
 
     <content_rating type="oars-1.1">
         <content_attribute id="violence-cartoon">none</content_attribute>
@@ -65,8 +69,9 @@
     </content_rating>
 
     <project_group>GNOME</project_group>
-    <developer_name>The GTG team</developer_name>
-    <updatecontact>nekohayo+gtg@gmail.com</updatecontact>
+    <developer id="org.gnome">
+        <name>The GTG team</name>
+    </developer>
 
     <releases>
         <release version="0.6" date="2022-03-02" type="stable">
