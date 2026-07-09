@@ -644,6 +644,9 @@ class Task(StoreItem):
     def __eq__(self, other) -> bool:
         """Equivalence."""
 
+        if not isinstance(other, Task):
+            return NotImplemented
+
         return self.id == other.id
 
 
