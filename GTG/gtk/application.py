@@ -458,7 +458,7 @@ class Application(Gtk.Application):
         task = editor.task
 
         if editor.is_new():
-            self.close_task(task)
+            self.close_task(task.id)
         else:
             self.delete_tasks([task], editor)
 
