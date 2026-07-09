@@ -26,13 +26,16 @@
 
     <screenshots>
         <screenshot type="default">
-            <image type="source">https://raw.githubusercontent.com/wiki/getting-things-gnome/gtg/assets/screenshots/0.6/main_window.png</image>
+            <caption>Main window</caption>
+            <image>https://raw.githubusercontent.com/wiki/getting-things-gnome/gtg/assets/screenshots/0.6/main_window.png</image>
         </screenshot>
         <screenshot>
-            <image type="source">https://raw.githubusercontent.com/wiki/getting-things-gnome/gtg/assets/screenshots/0.6/detail.png</image>
+            <caption>Task details</caption>
+            <image>https://raw.githubusercontent.com/wiki/getting-things-gnome/gtg/assets/screenshots/0.6/detail.png</image>
         </screenshot>
         <screenshot>
-            <image type="source">https://raw.githubusercontent.com/wiki/getting-things-gnome/gtg/assets/screenshots/0.6/main_with_background.png</image>
+            <caption>Main window with background</caption>
+            <image>https://raw.githubusercontent.com/wiki/getting-things-gnome/gtg/assets/screenshots/0.6/main_with_background.png</image>
         </screenshot>
     </screenshots>
 
