@@ -87,7 +87,7 @@ class Sidebar(Gtk.ScrolledWindow):
         self.general_box = Gtk.ListBox()
         self.general_box.get_style_context().add_class('navigation-sidebar')
 
-        self.all_btn = self.btn_item('emblem-documents-symbolic', _('All Tasks'), 'all')
+        self.all_btn = self.btn_item('view-list-symbolic', _('All Tasks'), 'all')
         self.none_btn = self.btn_item('task-past-due-symbolic', _('Tasks With No Tags'), 'untagged')
 
         self.general_box.append(self.all_btn)
