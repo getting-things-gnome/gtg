@@ -37,6 +37,27 @@ class TestTagStore(TestCase):
         self.assertEqual(len(store.data), 2)
         self.assertEqual(tag2.name, 'a_tag')
 
+    def test_new_keeps_root_tags_sorted(self):
+        store = TagStore()
+        store.new('zulu')
+        store.new('Alpha')
+        store.new('bravo')
+
+        names = [store.model.get_item(i).name for i in range(store.model.get_n_items())]
+        self.assertEqual(names, ['Alpha', 'bravo', 'zulu'])
+
+    def test_new_keeps_child_tags_sorted(self):
+        store = TagStore()
+        parent = store.new('parent')
+        store.model_expand(parent)
+        store.new('zulu', parent.id)
+        store.new('Alpha', parent.id)
+        store.new('bravo', parent.id)
+
+        children = store.tid_to_children_model[parent.id]
+        names = [children.get_item(i).name for i in range(children.get_n_items())]
+        self.assertEqual(names, ['Alpha', 'bravo', 'zulu'])
+
 
     def test_xml_load_simple(self):
         store = TagStore()

@@ -166,11 +166,24 @@ class TagStore(BaseStore[Tag]):
 
         # open the first one
         if item.children:
-            for child in item.children:
+            for child in sorted(item.children, key=lambda child: child.name.casefold()):
                 model.append(child)
 
         self.tid_to_children_model[item.id] = model
         return Gtk.TreeListModel.new(model, False, False, self.model_expand)
+
+
+    @staticmethod
+    def _insert_sorted(model: Gio.ListStore, item: Tag) -> None:
+        """Insert a tag in alphabetical order without changing its parent."""
+        name = item.name.casefold()
+        for position in range(model.get_n_items()):
+            current = model.get_item(position)
+            if name < current.name.casefold():
+                model.insert(position, item)
+                return
+
+        model.append(item)
 
 
     def __str__(self) -> str:
@@ -353,7 +366,7 @@ class TagStore(BaseStore[Tag]):
         model = self.tid_to_children_model[item.parent.id]
         pos = model.find(item)
         if not pos[0]:
-            model.append(item)
+            self._insert_sorted(model, item)
 
 
     def add(self, item: Tag, parent_id: Optional[UUID] = None) -> None:
@@ -364,7 +377,7 @@ class TagStore(BaseStore[Tag]):
 
         # Update UI
         if not parent_id:
-            self.model.append(item)
+            self._insert_sorted(self.model, item)
         else:
             self._append_to_parent_model(item.id)
 
