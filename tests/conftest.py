@@ -16,7 +16,17 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from GTG import gi_version_requires
+# Isolate the whole test suite from the user's real XDG dirs:
+# some tests build real Datastores, which now persist backend
+# configuration (and would otherwise write into ~/.config/gtg).
+import os
+import tempfile
+
+_xdg_scratch = tempfile.mkdtemp(prefix='gtg-tests-xdg-')
+for _var in ('XDG_CONFIG_HOME', 'XDG_DATA_HOME', 'XDG_CACHE_HOME'):
+    os.environ[_var] = os.path.join(_xdg_scratch, _var[4:].lower())
+
+from GTG import gi_version_requires  # noqa: E402
 
 def pytest_collection(session):
     gi_version_requires()
