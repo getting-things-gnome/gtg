@@ -254,3 +254,9 @@ class CoreConfig:
             self._backends_conf[backend],
             DEFAULTS['backend'],
             self.save_backends_config)
+
+    def delete_backend_config(self, backend):
+        """Remove the configuration section of a backend, if any."""
+        if backend in self._backends_conf:
+            self._backends_conf.remove_section(backend)
+            self.save_backends_config()

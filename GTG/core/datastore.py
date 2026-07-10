@@ -34,6 +34,7 @@ from GTG.core import firstrun_tasks
 from GTG.core.dates import Date
 from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
+from GTG.core.config import CoreConfig
 import GTG.core.info as info
 import GTG.core.dirs as dirs
 import GTG.core.versioning as versioning
@@ -145,6 +146,9 @@ class Datastore:
         self._mutex = threading.Lock()
         self.backends: Dict[str,GenericBackend] = {}
         self._backend_signals = BackendSignals()
+        self._backend_signals.connect(
+            self._backend_signals.BACKEND_STATE_TOGGLED,
+            self._on_backend_state_toggled_persist)
 
         # When a backup has to be used, this will be filled with
         # info on the backup used
@@ -559,6 +563,45 @@ class Datastore:
             return None
 
 
+    def save_backend_config(self, backend) -> None:
+        """Persist a backend's configuration to backends.conf.
+
+        One section per backend, keyed by its pid, which also fixes the
+        historical collision where sections were keyed by the module
+        name and a second backend of the same type overwrote the first
+        (#845). Passwords go through the keyring, courtesy of
+        cast_param_type_to_string(). A leftover module-named legacy
+        section is dropped so the backend doesn't get loaded twice
+        after an upgrade.
+        """
+        config = CoreConfig()
+        pid = backend.get_parameters()['pid']
+        section = config.get_backend_config(pid)
+        section.set('module', backend.get_name())
+        section.set('pid', pid)
+        specs = type(backend).get_static_parameters()
+        for name, spec in specs.items():
+            param_type = spec[GenericBackend.PARAM_TYPE]
+            section.set(name, backend.cast_param_type_to_string(
+                param_type, backend.get_parameters()[name]))
+        legacy = backend.get_name()
+        if legacy != pid:
+            config.delete_backend_config(legacy)
+
+    def _on_backend_state_toggled_persist(self, sender, backend_id):
+        """Persist a backend once its enabled state has settled.
+
+        This runs on the main loop (BackendSignals marshals its
+        emissions through idle_add), after the quit thread has written
+        the final state; persisting directly from set_backend_enabled()
+        would race it. It also captures parameter edits, since the
+        configuration panel commits them right before toggling the
+        state.
+        """
+        backend = self.backends.get(backend_id)
+        if backend is not None:
+            self.save_backend_config(backend)
+
     def register_backend(self, backend_dic):
         """
         Registers a TaskSource as a backend for this DataStore
@@ -597,6 +640,8 @@ class Datastore:
                 backend.set_parameter(GenericBackend.KEY_ENABLED, True)
             if GenericBackend.KEY_DEFAULT_BACKEND not in backend_dic:
                 backend.set_parameter(GenericBackend.KEY_DEFAULT_BACKEND, True)
+            if first_run:
+                self.save_backend_config(backend)
             # if it's enabled, we initialize it
             if backend.is_enabled():
                 self._backend_startup(backend)
@@ -693,6 +738,8 @@ class Datastore:
             # we notify that the backend has been deleted
             self._backend_signals.backend_removed(backend.get_id())
             del self.backends[backend_id]
+            CoreConfig().delete_backend_config(
+                backend.get_parameters()['pid'])
 
 
     def backend_change_attached_tags(self, backend_id, tag_names):
@@ -705,6 +752,7 @@ class Datastore:
         """
         backend = self.backends[backend_id]
         backend.set_attached_tags(tag_names)
+        self.save_backend_config(backend)
 
 
     def flush_all_tasks(self, backend_id):
