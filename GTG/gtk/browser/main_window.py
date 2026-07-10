@@ -1696,18 +1696,19 @@ class MainWindow(Gtk.ApplicationWindow):
         infobar = self._new_infobar(backend_id)
         infobar.set_interaction_request(description, interaction_type, callback)
 
-    def __remove_backend_infobar(self, child, backend_id):
-        """
-        Helper function to remove an Gtk.Infobar related to a backend
+    def _remove_backend_infobars(self, backend_id):
+        """Remove the infobars related to a backend.
 
-        @param child: a Gtk.Infobar
-        @param backend_id: the id of the backend which Gtk.Infobar should be
-                            removed.
+        GTK 4 removed Gtk.Container.foreach(): walk the siblings,
+        grabbing the next one before a potential removal.
         """
-        if isinstance(child, BackendInfoBar) and\
-                child.get_backend_id() == backend_id:
-            if self.vbox_toolbars:
+        child = self.vbox_toolbars.get_first_child()
+        while child is not None:
+            next_child = child.get_next_sibling()
+            if isinstance(child, BackendInfoBar) and \
+                    child.get_backend_id() == backend_id:
                 self.vbox_toolbars.remove(child)
+            child = next_child
 
     def remove_backend_infobar(self, sender, backend_id):
         """
@@ -1722,7 +1723,7 @@ class MainWindow(Gtk.ApplicationWindow):
         if not backend or (backend and backend.is_enabled()):
             # remove old infobar related to backend_id, if any
             if self.vbox_toolbars:
-                self.vbox_toolbars.foreach(self.__remove_backend_infobar, backend_id)
+                self._remove_backend_infobars(backend_id)
 
     def _new_infobar(self, backend_id):
         """
@@ -1734,11 +1735,11 @@ class MainWindow(Gtk.ApplicationWindow):
         # remove old infobar related to backend_id, if any
         if not self.vbox_toolbars:
             return
-        self.vbox_toolbars.foreach(self.__remove_backend_infobar, backend_id)
+        self._remove_backend_infobars(backend_id)
         # add a new one
-        infobar = BackendInfoBar(self.req, self, self.app, backend_id)
+        infobar = BackendInfoBar(self, self.app, backend_id)
         infobar.set_vexpand(True)
-        self.vbox_toolbars.add(infobar)
+        self.vbox_toolbars.append(infobar)
         return infobar
 
 # SEARCH RELATED STUFF ########################################################

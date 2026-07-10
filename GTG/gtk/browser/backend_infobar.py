@@ -42,21 +42,19 @@ class BackendInfoBar(Gtk.InfoBar):
     DBUS_MESSAGE = _("Cannot connect to DBus, I've disabled "
                      "the <b>%s</b> synchronization service.")
 
-    def __init__(self, req, browser, app, backend_id):
+    def __init__(self, browser, app, backend_id):
         """
         Constructor, Prepares the infobar.
 
-        @param req: a Requester object
-        @param browser: a MainWindow object
-        @param app: a ViewManager object
+        @param browser: the MainWindow
+        @param app: the Application
         @param backend_id: the id of the backend linked to the infobar
         """
         super().__init__()
-        self.req = req
         self.browser = browser
         self.app = app
         self.backend_id = backend_id
-        self.backend = self.req.get_backend(backend_id)
+        self.backend = app.ds.get_backend(backend_id)
 
     def get_backend_id(self):
         """
@@ -67,14 +65,13 @@ class BackendInfoBar(Gtk.InfoBar):
 
     def _populate(self):
         """Setting up gtk widgets"""
-        content_box = self.get_content_area()
-        content_box.set_homogeneous(False)
         self.label = Gtk.Label()
         self.label.set_hexpand(True)
         self.label.set_wrap(True)
-        self.label.set_alignment(0.5, 0.5)
+        self.label.set_xalign(0.5)
+        self.label.set_yalign(0.5)
         self.label.set_justify(Gtk.Justification.FILL)
-        content_box.append(self.label)
+        self.add_child(self.label)
 
     def _on_error_response(self, widget, event):
         """
@@ -84,7 +81,7 @@ class BackendInfoBar(Gtk.InfoBar):
         @param widget: not used, here for compatibility with signals callbacks
         @param event: the code of the gtk response
         """
-        self.hide()
+        self.set_revealed(False)
         if event == Gtk.ResponseType.ACCEPT:
             self.app.open_edit_backends(backend_id=self.backend_id)
 
@@ -118,7 +115,7 @@ class BackendInfoBar(Gtk.InfoBar):
             self.label.set_markup(self.DBUS_MESSAGE % backend_name)
             self.add_button(_('OK'), Gtk.ResponseType.CLOSE)
 
-        self.show_all()
+        self.set_revealed(True)
 
     def set_interaction_request(self, description, interaction_type, callback):
         """
@@ -142,7 +139,7 @@ class BackendInfoBar(Gtk.InfoBar):
             self.add_button(_('Continue'), Gtk.ResponseType.ACCEPT)
         elif interaction_type == BackendSignals().INTERACTION_INFORM:
             self.add_button(_('OK'), Gtk.ResponseType.ACCEPT)
-        self.show_all()
+        self.set_revealed(True)
 
     def _on_interaction_response(self, widget, event):
         """
@@ -156,51 +153,42 @@ class BackendInfoBar(Gtk.InfoBar):
             if self.interaction_type == BackendSignals().INTERACTION_TEXT:
                 self._prepare_textual_interaction()
             elif self.interaction_type == BackendSignals().INTERACTION_CONFIRM:
-                self.hide()
+                self.set_revealed(False)
                 threading.Thread(target=getattr(self.backend,
                                                 self.callback)).start()
             else:
-                self.hide()
+                self.set_revealed(False)
 
     def _prepare_textual_interaction(self):
         """
         Helper function. gtk calls to populate the infobar in the case of
         interaction request
         """
-        title, description\
+        title, description \
             = getattr(self.backend,
                       self.callback)("get_ui_dialog_text")
-        self.dialog = Gtk.Window()  # type = Gtk.WindowType.POPUP
+        self.dialog = Gtk.Window()
         self.dialog.set_title(title)
-        self.dialog.set_transient_for(self.browser.window)
+        self.dialog.set_transient_for(self.browser)
         self.dialog.set_destroy_with_parent(True)
         self.dialog.set_modal(True)
-        #        self.dialog.set_size_request(300,170)
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        for setter in (vbox.set_margin_top, vbox.set_margin_bottom,
+                       vbox.set_margin_start, vbox.set_margin_end):
+            setter(12)
         self.dialog.set_child(vbox)
         description_label = Gtk.Label()
         description_label.set_justify(Gtk.Justification.FILL)
         description_label.set_wrap(True)
         description_label.set_markup(description)
-        align = Gtk.Alignment.new(0.5, 0.5, 1, 1)
-        align.set_padding(10, 0, 20, 20)
-        align.set_vexpand(True)
-        align.add(description_label)
-        vbox.append(align)
+        vbox.append(description_label)
         self.text_box = Gtk.Entry()
-        self.text_box.set_size_request(-1, 40)
-        align = Gtk.Alignment.new(0.5, 0.5, 1, 1)
-        align.set_vexpand(True)
-        align.set_padding(20, 20, 20, 20)
-        align.add(self.text_box)
-        vbox.append(align)
-        button = Gtk.Button()
-        button.set_label(_("OK"))
+        vbox.append(self.text_box)
+        button = Gtk.Button(label=_("OK"))
         button.connect("clicked", self._on_text_confirmed)
-        button.set_size_request(-1, 40)
         vbox.append(button)
-        self.dialog.show_all()
-        self.hide()
+        self.dialog.present()
+        self.set_revealed(False)
 
     def _on_text_confirmed(self, widget):
         """
