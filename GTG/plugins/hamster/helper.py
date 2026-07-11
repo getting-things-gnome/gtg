@@ -31,14 +31,14 @@ class FactBuilder():
             if len(activity_candidates) >= 1:
                 activity = list(activity_candidates)[0]
         elif self.preferences['activity'] == 'title':
-            activity = task.get_title()
+            activity = task.title
         # hamster can't handle ',' or '@' in activity name
         activity = activity.replace(',', '')
         activity = re.sub(' +@.*', '', activity)
         return activity
 
     def _build_category(self, task):
-        gtg_title = task.get_title()
+        gtg_title = task.title
         gtg_tags = self._get_gtg_tags(task)
 
         category = ""
@@ -67,10 +67,9 @@ class FactBuilder():
     def _build_description(self, task):
         description = ""
         if self.preferences['description'] == 'title':
-            description = task.get_title()
+            description = task.title
         elif self.preferences['description'] == 'contents':
-            description = task.get_excerpt(strip_tags=True,
-                                           strip_subtasks=True)
+            description = task.excerpt
         return description
 
     def _build_tags(self, task):
@@ -91,5 +90,6 @@ class FactBuilder():
     @staticmethod
     def _get_gtg_tags(task):
         return [
-            tag_name.lstrip('@').lower() for tag_name in task.get_tags_name()
+            tag.name.lstrip('@').lower() for tag in sorted(
+                task.tags, key=lambda t: t.name)
         ]
