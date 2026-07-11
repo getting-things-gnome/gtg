@@ -192,26 +192,65 @@ class PluginEngine(Borg):
     def remove_api(self, api):
         self.plugin_apis.remove(api)
 
+    def _check_dbus_depends(self, plugin):
+        """Check the DBus services a plugin declared as dependencies.
+
+        The `dbus-dependencies` manifest field was parsed but never
+        verified anywhere, so a plugin talking to an absent service
+        (Hamster, typically) blew up at activation or later instead of
+        being cleanly marked unavailable (#998, #683, #1248).
+        Conservative on purpose: no python-dbus module or no session
+        bus counts as missing.
+        """
+        plugin.missing_dbus = []
+        for dep in plugin.dbus_depends:
+            # the plugins dialog displays these as (name, path) pairs
+            bus_name, _, obj_path = dep.partition(':')
+            try:
+                import dbus
+                owned = dbus.SessionBus().name_has_owner(bus_name)
+            except Exception:
+                owned = False
+            if not owned:
+                plugin.missing_dbus.append((bus_name, obj_path))
+                plugin.error = True
+
     def activate_plugins(self, plugins=[]):
-        """Activate plugins."""
-        assert(isinstance(plugins, list))
+        """Activate plugins, never letting one break startup."""
+        assert isinstance(plugins, list)
         if not plugins:
             plugins = self.get_plugins("inactive")
         for plugin in plugins:
             # activate enabled plugins without errors
             if plugin.enabled and not plugin.error:
+                self._check_dbus_depends(plugin)
+                if plugin.error:
+                    plugin.enabled = False
+                    log.warning(
+                        "Not activating plugin %s, missing DBus "
+                        "service(s): %s", plugin.module_name,
+                        plugin.missing_dbus)
+                    continue
                 # activate the plugin
                 plugin.active = True
-                for api in self.plugin_apis:
-                    if hasattr(plugin.instance, "activate"):
-                        plugin.instance.activate(api)
-                    if api.is_editor():
-                        if hasattr(plugin.instance, "onTaskOpened"):
-                            plugin.instance.onTaskOpened(api)
-                        # also refresh the content of the task
-                        tv = api.get_ui().get_textview()
-                        if tv:
-                            tv.on_modified(None)
+                try:
+                    for api in self.plugin_apis:
+                        if hasattr(plugin.instance, "activate"):
+                            plugin.instance.activate(api)
+                        if api.is_editor():
+                            if hasattr(plugin.instance, "onTaskOpened"):
+                                plugin.instance.onTaskOpened(api)
+                            # also refresh the content of the task
+                            tv = api.get_ui().get_textview()
+                            if tv:
+                                tv.on_modified(None)
+                except Exception:
+                    log.exception(
+                        "Plugin %s failed to activate, disabling it "
+                        "for this session:", plugin.module_name)
+                    plugin.error = True
+                    plugin.active = False
+                    plugin.enabled = False
 
     def deactivate_plugins(self, plugins=[]):
         """Deactivate plugins."""
