@@ -490,18 +490,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
 # HELPER FUNCTIONS ##########################################################
 
-    def show_popup_at(self, popup, x, y):
-        rect = Gdk.Rectangle()
-        rect.x = x
-        rect.y = y
-        popup.set_pointing_to(rect)
-        popup.popup()
-
-    def show_popup_at_tree_cursor(self, popup, treeview):
-        _, selected_paths = treeview.get_selection().get_selected_rows()
-        rect = treeview.get_cell_area(selected_paths[0], None)
-        self.show_popup_at(popup, 0, rect.y+2*rect.height)
-
     def toggle_search(self, *args):
         """Callback to toggle search bar."""
         if self.searchbar.get_search_mode():
@@ -860,68 +848,6 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_delete_tag_activate(self, tags):
         self.deletetags_dialog.show(tags)
 
-    def on_task_treeview_click_begin(self, gesture, sequence):
-        """ Pop up context menu on right mouse click in the main
-        task tree view """
-        treeview = gesture.get_widget()
-        _, x, y = gesture.get_point(sequence)
-        log.debug("Received button event #%s at %d,%d",
-                  gesture.get_current_button(), x, y)
-        if gesture.get_current_button() == 3:
-            # Only when using a filtered treeview (you have selected a specific
-            # tag in tagtree), for some reason the standard coordinates become
-            # wrong and you must convert them.
-            # The original coordinates are still needed to put the popover
-            # in the correct place
-            tx, ty = treeview.convert_widget_to_bin_window_coords(x, y)
-            pthinfo = treeview.get_path_at_pos(tx, ty)
-            if pthinfo is not None:
-                path, col, cellx, celly = pthinfo
-                selection = treeview.get_selection()
-                if selection.count_selected_rows() > 0:
-                    if not selection.path_is_selected(path):
-                        treeview.set_cursor(path, col, 0)
-                else:
-                    treeview.set_cursor(path, col, 0)
-                treeview.grab_focus()
-                self.app.action_enabled_changed('add_parent', True)
-                if not self.have_same_parent():
-                    self.app.action_enabled_changed('add_parent', False)
-                self.show_popup_at(self.open_menu, x, y)
-
-    def on_task_treeview_key_press_event(self, controller, keyval, keycode, state):
-        keyname = Gdk.keyval_name(keyval)
-        is_shift_f10 = (keyname == "F10" and state & Gdk.ModifierType.SHIFT_MASK)
-
-        if is_shift_f10 or keyname == "Menu":
-            self.show_popup_at_tree_cursor(self.open_menu, controller.get_widget())
-
-    def on_closed_task_treeview_click_begin(self, gesture, sequence):
-        treeview = gesture.get_widget()
-        _, x, y = gesture.get_point(sequence)
-        if gesture.get_current_button() == 3:
-            tx, ty = treeview.convert_widget_to_bin_window_coords(x, y)
-            pthinfo = treeview.get_path_at_pos(tx, ty)
-
-            if pthinfo is not None:
-                path, col, cellx, celly = pthinfo
-                selection = treeview.get_selection()
-                if selection.count_selected_rows() > 0:
-                    if not selection.path_is_selected(path):
-                        treeview.set_cursor(path, col, 0)
-                else:
-                    treeview.set_cursor(path, col, 0)
-
-                treeview.grab_focus()
-                self.show_popup_at(self.closed_menu, x, y)
-
-    def on_closed_task_treeview_key_press_event(self, controller, keyval, keycode, state):
-        keyname = Gdk.keyval_name(keyval)
-        is_shift_f10 = (keyname == "F10" and state & Gdk.ModifierType.SHIFT_MASK)
-
-        if is_shift_f10 or keyname == "Menu":
-            self.show_popup_at_tree_cursor(self.closed_menu, controller.get_widget())
-
     def on_add_task(self, widget=None):
         new_task = self.app.ds.tasks.new()
 
@@ -1255,19 +1181,6 @@ class MainWindow(Gtk.ApplicationWindow):
     def get_quickadd_pane(self):
         """Get the quickadd pane"""
         return self.quickadd_pane
-
-    def have_same_parent(self):
-        """Determine whether the selected tasks have the same parent"""
-
-        selected_tasks = self.get_selected_tasks()
-        first_task = self.req.get_task(selected_tasks[0])
-        parents = first_task.get_parents()
-
-        for uid in selected_tasks[1:]:
-            task = self.req.get_task(uid)
-            if parents != task.get_parents():
-                return False
-        return True
 
     def set_pane(self, name: str) -> None:
         """Set the selected pane by name."""
