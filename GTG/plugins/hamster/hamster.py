@@ -26,7 +26,7 @@ from gettext import gettext as _
 import dbus
 from gi.repository import Gtk, Gio
 
-from GTG.core.tasks import Task
+from GTG.core.tasks import Status
 from GTG.plugins.hamster.helper import FactBuilder
 
 log = logging.getLogger(__name__)
@@ -61,8 +61,7 @@ class HamsterPlugin():
         self.button = Gtk.Button()
         self.task_menu_items = {}
 
-        self.tree = None
-        self.liblarch_callbacks = []
+        self._task_handlers = []
         self.tracked_task_id = None
 
     # Interaction with Hamster ###
@@ -77,7 +76,7 @@ class HamsterPlugin():
         ids = self.get_hamster_ids(task)
         ids.append(str(hamster_id))
         self.set_hamster_ids(task, ids)
-        self.tracked_task_id = task.get_id()
+        self.tracked_task_id = task.id
 
     def get_records(self, task):
         """Get a list of hamster facts for a task"""
@@ -101,7 +100,11 @@ class HamsterPlugin():
 
     def get_active_id(self):
         """ returns active hamster task id, or None if hamster don't have active task """
-        todays_facts = self.hamster.GetTodaysFacts()
+        try:
+            todays_facts = self.hamster.GetTodaysFacts()
+        except dbus.DBusException:
+            log.error("Hamster service vanished while querying facts")
+            return None
         ID_INDEX = 0
         END_TIME_INDEX = 2
         if todays_facts and todays_facts[-1][END_TIME_INDEX] == 0:
@@ -143,8 +146,8 @@ class HamsterPlugin():
 
     def on_task_modified(self, store, task):
         """ Stop task if it is tracked and it is Done/Dismissed """
-        if task.get_status() in (Task.STA_DISMISSED, Task.STA_DONE):
-            self.stop_task(task_id)
+        if task.status in (Status.DISMISSED, Status.DONE):
+            self.stop_task(task.id)
 
     # Plugin api methods ###
     def activate(self, plugin_api):
@@ -168,30 +171,20 @@ class HamsterPlugin():
             header_bar.pack_end(self.button)
             plugin_api.set_active_selection_changed_callback(self.selection_changed)
 
-        # self.subscribe_task_updates([
-        #     ("node-modified-inview", self.on_task_modified),
-        #     ("node-deleted-inview", self.on_task_deleted),
-        # ])
-
-        plugin_api.ds.tasks.connect('task-filterably-changed', self.on_task_modified)
-        plugin_api.ds.tasks.connect('removed', self.on_task_deleted)
+        self._task_handlers = [
+            plugin_api.ds.tasks.connect('task-filterably-changed',
+                                        self.on_task_modified),
+            plugin_api.ds.tasks.connect('removed', self.on_task_deleted),
+        ]
 
         # set up preferences
         self.preference_dialog_init()
         self.preferences_load()
 
-    def subscribe_task_updates(self, signal_callbacks):
-        """ Subscribe to updates about tasks """
-        self.tree = self.plugin_api.get_requester().get_tasks_tree()
-        self.liblarch_callbacks = []
-        for event, callback in signal_callbacks:
-            callback_id = self.tree.register_cllbck(event, callback)
-            self.liblarch_callbacks.append((callback_id, event))
-
     def onTaskOpened(self, plugin_api):
         task = plugin_api.get_ui().get_task()
 
-        if task.get_status() != Task.STA_ACTIVE:
+        if task.status != Status.ACTIVE:
             return
 
         group = Gio.SimpleActionGroup()
@@ -201,17 +194,11 @@ class HamsterPlugin():
         plugin_api.get_ui().insert_action_group(self.EDIT_ACTIVITY_ACTION_PREF, group)
 
         task_menu_item = Gio.MenuItem.new(
-            (self.STOP_ACTIVITY_LABEL if self.is_task_active(task.get_id())
+            (self.STOP_ACTIVITY_LABEL if self.is_task_active(task.id)
              else self.START_ACTIVITY_LABEL),
             self.EDIT_ACTIVITY_ACTION_FULL
         )
-        self.task_menu_items.update({task.get_id(): task_menu_item})
-        if self.is_task_active(task.get_id()):
-            task_menu_item.props.text = self.STOP_ACTIVITY_LABEL
-        else:
-            task_menu_item.props.text = self.START_ACTIVITY_LABEL
-        task_menu_item.show_all()
-        task_menu_item.connect('clicked', self.task_cb, plugin_api)
+        self.task_menu_items[task.id] = task_menu_item
         plugin_api.add_menu_item(task_menu_item)
 
         records = self.get_records(task)
@@ -220,8 +207,8 @@ class HamsterPlugin():
     def onTaskClosed(self, plugin_api):
         task = plugin_api.get_ui().get_task()
         plugin_api.get_ui().insert_action_group(self.EDIT_ACTIVITY_ACTION_PREF, None)
-        if task.get_id() in self.task_menu_items:
-            del self.task_menu_items[task.get_id()]
+        if task.id in self.task_menu_items:
+            del self.task_menu_items[task.id]
         self.check_task_selected()
 
     def render_record_list(self, records, plugin_api):
@@ -233,11 +220,9 @@ class HamsterPlugin():
             inner_grid = Gtk.Grid()
             if len(records) > 4:
                 inner_container = Gtk.ScrolledWindow()
-                inner_container.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-                viewport = Gtk.Viewport()
-                viewport.add(inner_grid)
-                inner_container.add(viewport)
-                viewport.set_shadow_type(Gtk.ShadowType.NONE)
+                inner_container.set_policy(Gtk.PolicyType.NEVER,
+                                           Gtk.PolicyType.AUTOMATIC)
+                inner_container.set_child(inner_grid)
                 inner_container.set_size_request(-1, 80)
             else:
                 inner_container = inner_grid
@@ -301,36 +286,38 @@ class HamsterPlugin():
             header_bar = plugin_api.get_header()
             header_bar.remove(self.button)
         else:
-            for _, menu_button in self.task_menu_items.items():
-                plugin_api.remove_menu_item(menu_button)
-            plugin_api.remove_widget_from_taskeditor(self.vbox_id)
+            for menu_item in self.task_menu_items.values():
+                plugin_api.remove_menu_item(menu_item)
+            if self.vbox_id is not None:
+                plugin_api.remove_widget_from_taskeditor(self.vbox_id)
 
-        # Deactivate LibLarch callbacks
-        for callback_id, event in self.liblarch_callbacks:
-            self.tree.deregister_cllbck(event, callback_id)
-        self.liblarch_callbacks = []
+        for handler_id in self._task_handlers:
+            plugin_api.ds.tasks.disconnect(handler_id)
+        self._task_handlers = []
 
     def browser_cb(self, widget, plugin_api):
-        task_id = plugin_api.browser.get_pane().get_selection()[0]
-        task = plugin_api.ds.tasks.lookup[task_id]
-        self.decide_start_or_stop_activity(task, widget)
+        selected = plugin_api.get_selected()
+        if not selected:
+            return
+        task = plugin_api.ds.tasks.lookup[selected[0]]
+        self.decide_start_or_stop_activity(task, plugin_api)
 
     def task_cb(self, action, gparam, plugin_api):
         task = plugin_api.get_ui().get_task()
         self.decide_start_or_stop_activity(task, plugin_api)
 
     def decide_start_or_stop_activity(self, task, plugin_api):
-        if self.is_task_active(task.get_id()):
+        if self.is_task_active(task.id):
             self.change_button_to_start_activity(self.button)
-            self.change_task_menu_to_start_activity(task.get_id(), plugin_api)
-            self.stop_task(task.get_id())
-        elif task.get_status() == Task.STA_ACTIVE:
+            self.change_task_menu_to_start_activity(task.id, plugin_api)
+            self.stop_task(task.id)
+        elif task.status == Status.ACTIVE:
             self.change_button_to_stop_activity(self.button)
-            self.change_task_menu_to_stop_activity(task.get_id(), plugin_api)
+            self.change_task_menu_to_stop_activity(task.id, plugin_api)
             self.send_task(task)
 
     def selection_changed(self, selection):
-        if selection.count_selected_rows() == 1:
+        if len(selection) == 1:
             self.button.set_sensitive(True)
             self.check_task_selected()
         else:
@@ -338,14 +325,14 @@ class HamsterPlugin():
             self.button.set_sensitive(False)
 
     def check_task_selected(self):
-        task_id = self.plugin_api.get_browser().get_selected_task()
-        if not task_id:
+        selected = self.plugin_api.get_selected()
+        if not selected:
             return
-        task = self.plugin_api.ds.tasks.lookup[task_id]
+        task = self.plugin_api.ds.tasks.lookup[selected[0]]
         self.decide_button_mode(self.button, task)
 
     def decide_button_mode(self, button, task):
-        if self.is_task_active(task.get_id()):
+        if self.is_task_active(task.id):
             self.change_button_to_stop_activity(button)
         else:
             self.change_button_to_start_activity(button)
@@ -359,8 +346,12 @@ class HamsterPlugin():
         button.set_icon_name('process-stop-symbolic')
 
     def change_task_menu_to_start_activity(self, task_id, plugin_api):
+        # relabelling only makes sense on an open editor's menu:
+        # the browser api would (silently) edit its own burger menu
+        if not plugin_api.is_editor():
+            return
         if task_id in self.task_menu_items:
-            plugin_api.remove_menu_item(self.task_menu_items[task_id][0])
+            plugin_api.remove_menu_item(self.task_menu_items[task_id])
             replacement_item = Gio.MenuItem.new(
                 self.START_ACTIVITY_LABEL, self.EDIT_ACTIVITY_ACTION_FULL
             )
@@ -368,8 +359,12 @@ class HamsterPlugin():
             plugin_api.add_menu_item(replacement_item)
 
     def change_task_menu_to_stop_activity(self, task_id, plugin_api):
+        # relabelling only makes sense on an open editor's menu:
+        # the browser api would (silently) edit its own burger menu
+        if not plugin_api.is_editor():
+            return
         if task_id in self.task_menu_items:
-            plugin_api.remove_menu_item(self.task_menu_items[task_id][0])
+            plugin_api.remove_menu_item(self.task_menu_items[task_id])
             replacement_item = Gio.MenuItem.new(
                 self.STOP_ACTIVITY_LABEL, self.EDIT_ACTIVITY_ACTION_FULL
             )

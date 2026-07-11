@@ -1275,24 +1275,22 @@ class MainWindow(Gtk.ApplicationWindow):
             return None
 
     def get_selected_tasks(self, tree_view: str = ''):
-        """
-        Returns a list of 'uids' of the selected tasks, and the corresponding
-        iters
+        """Return the ids of the selected tasks, if any.
 
-        @param tree_view: The tree view to find the selected task in.
-                          Defaults to the task_tview.
+        @param tree_view: The pane to look in. Defaults to the
+                          currently selected one, falling back to the
+                          first pane with a selection.
         """
-
-        selected = []
         if tree_view:
-            selected = self.panes[tree_view].get_selected_nodes()
+            tasks = self.panes[tree_view].get_selection()
         else:
-            current_pane = self.get_selected_pane()
-            selected = self.panes[current_pane].get_selected_nodes()
-            for i in self.panes:
-                if not selected:
-                    selected = self.panes[i].get_selected_nodes()
-        return selected
+            tasks = self.panes[self.get_selected_pane()].get_selection()
+            if not tasks:
+                for pane in self.panes.values():
+                    tasks = pane.get_selection()
+                    if tasks:
+                        break
+        return [task.id for task in tasks]
 
     # If nospecial=True, only normal @tag are considered
     def select_on_sidebar(self, value):
