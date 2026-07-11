@@ -108,7 +108,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # Object prime variables
         self.app = app
         self.config = app.config
-        self.tag_active = False
 
         self.sidebar = Sidebar(app, app.ds, self)
         self.sidebar_vbox.append(self.sidebar)
@@ -133,8 +132,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self._set_actions()
 
         # Tags
-        self.tagtree = None
-        self.tagtreeview = None
 
         self.sidebar_vbox.connect('notify::visible', self._on_sidebar_visible)
         self.add_action(Gio.PropertyAction.new('sidebar', self.sidebar_vbox, 'visible'))
@@ -194,7 +191,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.sort_menu = Gtk.PopoverMenu.new_from_model(sort_menu_model)
         self.panes['active'].sort_btn.set_popover(self.sort_menu)
 
-
     def switch_tab_open(self, t=None , a = None):
         """switch tab 'open_view'."""
         stack = self.stack_switcher.get_stack()
@@ -209,7 +205,6 @@ class MainWindow(Gtk.ApplicationWindow):
         """switch tab 'closed_view'."""
         stack = self.stack_switcher.get_stack()
         stack.set_visible_child_name('closed_view')
-
 
     def _set_actions(self):
         """Setup actions."""
@@ -291,7 +286,6 @@ class MainWindow(Gtk.ApplicationWindow):
         order_action.connect('change-state', self.on_sort_order)
         self.add_action(order_action)
 
-
     def _init_icon_theme(self):
         """
         sets the deafault theme for icon and its directory
@@ -343,7 +337,6 @@ class MainWindow(Gtk.ApplicationWindow):
             replacement_item = Gio.MenuItem.new(translated_weekday_combo, action)
             self.defer_menu_days_section.remove(i)
             self.defer_menu_days_section.insert_item(i, replacement_item)
-
 
     def _init_about_dialog(self):
         """
@@ -416,7 +409,6 @@ class MainWindow(Gtk.ApplicationWindow):
         uri_box.append(create_uri_button(_("_GitHub"), info.SOURCE_CODE_URL))
 
         about_box.append(uri_box)
-
 
     def _init_signal_connections(self):
         """
@@ -496,7 +488,6 @@ class MainWindow(Gtk.ApplicationWindow):
         b_signals.connect(b_signals.INTERACTION_REQUESTED, self.on_backend_needing_interaction)
         # self.selection = self.vtree_panes['active'].get_selection()
 
-
 # HELPER FUNCTIONS ##########################################################
 
     def show_popup_at(self, popup, x, y):
@@ -537,13 +528,11 @@ class MainWindow(Gtk.ApplicationWindow):
         """Callback everytime a character is inserted in the search field."""
         self.get_pane().set_search_query(self.search_entry.get_text())
 
-
     def on_save_search(self, *args):
         query = self.search_entry.get_text()
         name = re.sub(r'!(?=\w)+', '', query)
 
         self.app.ds.saved_searches.new(name, query)
-
 
     def quit(self, widget=None, data=None):
         self.app.quit()
@@ -571,7 +560,6 @@ class MainWindow(Gtk.ApplicationWindow):
             except IndexError:
                 print(f"Invalid path {path}")
 
-
     def restore_tag_selection(self) -> None:
         """Restore tag selection from config."""
 
@@ -584,7 +572,6 @@ class MainWindow(Gtk.ApplicationWindow):
             return
 
         self.sidebar.select_tag(selected_tag)
-
 
     def restore_state_from_conf(self):
         # NOTE: for the window state to be restored, this must
@@ -650,7 +637,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # for t in self.config.get("opened_tasks"):
         #     GLib.idle_add(open_task, self.app.ds, t)
 
-
     def restore_editor_windows(self):
         """Restore editor window for tasks."""
 
@@ -661,31 +647,12 @@ class MainWindow(Gtk.ApplicationWindow):
             except KeyError:
                 log.warning("Could not restore task with id %s", tid)
 
-
     def refresh_all_views(self, timer = None) -> None:
         """Refresh all taskpanes."""
 
         for page in self.stack_switcher.get_stack().get_pages():
             pane = page.get_child().get_first_child()
             pane.refresh()
-
-
-    def find_value_in_treestore(self, store, treeiter, value):
-        """Search for value in tree store recursively."""
-
-        while treeiter is not None:
-            if store[treeiter][1] == value:
-                return(treeiter)
-                break
-
-            if store.iter_has_child(treeiter):
-                childiter = store.iter_children(treeiter)
-                ret = self.find_value_in_treestore(store, childiter, value)
-
-                if ret is not None:
-                    return ret
-
-            treeiter = store.iter_next(treeiter)
 
 # SIGNAL CALLBACKS ############################################################
 # Typically, reaction to user input & interactions with the GUI
@@ -722,7 +689,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self.about.hide()
         return True
 
-
     def on_sidebar_select_changed(self, widget=None) -> None:
         """Callback when the sidebar selection changes. """
 
@@ -732,7 +698,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         # This isn't called automatically for some reason
         self.on_selection_changed()
-
 
     def on_selection_changed(self, position=None, n_items=None, user_data=None) -> None:
         """Callback when selection changes."""
@@ -745,7 +710,6 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             self.defer_btn.set_sensitive(False)
             self.defer_menu_btn.set_sensitive(False)
-
 
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
@@ -840,13 +804,11 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.quickadd_entry.grab_focus()
 
-
     def focus_sidebar(self, action, param):
         """Callback to focus the sidebar widget."""
 
         self.sidebar_vbox.props.visible = True
         self.sidebar.general_box.get_row_at_index(0).grab_focus()
-
 
     def on_quickadd_focus_in(self, controller):
         self.toggle_delete_accel(False)
@@ -895,97 +857,8 @@ class MainWindow(Gtk.ApplicationWindow):
         GLib.idle_add(self.emit, "task-added-via-quick-add", task.id)
         self.get_pane().select_task(task)
 
-
-    def on_tag_treeview_click_begin(self, gesture, sequence):
-        """
-        deals with mouse click event on the tag tree
-        """
-        _, x, y = gesture.get_point(sequence)
-        log.debug("Received button event #%d at %d, %d",
-                  gesture.get_current_button(), x, y)
-        if gesture.get_current_button() == 3:
-            pthinfo = self.tagtreeview.get_path_at_pos(x, y)
-            if pthinfo is not None:
-                path, col, cellx, celly = pthinfo
-                self.tagtreeview.grab_focus()
-                # The location we want the cursor to return to
-                # after we're done.
-                self.previous_cursor = self.tagtreeview.get_cursor()
-                # For use in is_task_visible
-                self.previous_tag = self.get_selected_tags()
-                # Let's us know that we're working on a tag.
-                self.tag_active = True
-
-                # This location is stored in case we need to work with it
-                # later on.
-                self.target_cursor = path, col
-                self.tagtreeview.set_cursor(path, col, 0)
-                # the nospecial=True disable right clicking for special tags
-                selected_tags = self.get_selected_tags(nospecial=True)
-                selected_search = self.get_selected_search()
-                # popup menu for searches
-                # FIXME thos two branches could be simplified
-                # (there is no difference betweenn search and normal tag
-                if selected_search is not None:
-                    my_tag = self.req.get_tag(selected_search)
-                    self.tagpopup.set_tag(my_tag)
-                    self.show_popup_at(self.tagpopup, x, y)
-                elif len(selected_tags) > 0:
-                    # Then we are looking at single, normal tag rather than
-                    # the special 'All tags' or 'Tasks without tags'. We only
-                    # want to popup the menu for normal tags.
-                    my_tag = self.req.get_tag(selected_tags[0])
-                    self.tagpopup.set_tag(my_tag)
-                    self.show_popup_at(self.tagpopup, x, y)
-                else:
-                    self.reset_cursor()
-
-    def on_tag_treeview_key_press_event(self, controller, keyval, keycode, state):
-        keyname = Gdk.keyval_name(keyval)
-        is_shift_f10 = (keyname == "F10" and state & Gdk.ModifierType.SHIFT_MASK)
-        if is_shift_f10 or keyname == "Menu":
-            selected_tags = self.get_selected_tags(nospecial=True)
-            selected_search = self.get_selected_search()
-            # FIXME thos two branches could be simplified (there is
-            # no difference betweenn search and normal tag
-            # popup menu for searches
-            if selected_search is not None:
-                self.tagpopup.set_tag(selected_search)
-                self.show_popup_at_tree_cursor(self.tagpopup, self.tagtreeview)
-            elif len(selected_tags) > 0:
-                # Then we are looking at single, normal tag rather than
-                # the special 'All tags' or 'Tasks without tags'. We only
-                # want to popup the menu for normal tags.
-                selected_tag = self.req.get_tag(selected_tags[0])
-                self.tagpopup.set_tag(selected_tag)
-                model, titer = self.tagtreeview.get_selection().get_selected()
-                self.show_popup_at_tree_cursor(self.tagpopup, self.tagtreeview)
-            else:
-                self.reset_cursor()
-            return True
-        if keyname == "Delete":
-            self.on_delete_tag_activate()
-            return True
-
-    def on_delete_tag_activate(self, tags=[]):
-        tags = tags or self.get_selected_tags()
+    def on_delete_tag_activate(self, tags):
         self.deletetags_dialog.show(tags)
-
-    def on_delete_tag(self, event):
-        tags = self.get_selected_tags()
-        for tagname in tags:
-            self.req.delete_tag(tagname)
-            tag = self.req.get_tag(tagname)
-            self.app.reload_opened_editors(tag.get_related_tasks())
-
-            # TODO: New core
-            self.app.ds.tags.remove(self.app.ds.tags.find(tagname).id)
-            tasks = self.app.ds.tasks.filter(Filter.TAG, tagname)
-            for t in tasks:
-                t.remove_tag(tagname)
-
-        self.tagtreeview.set_cursor(0)
-        self.on_select_tag()
 
     def on_task_treeview_click_begin(self, gesture, sequence):
         """ Pop up context menu on right mouse click in the main
@@ -1057,7 +930,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.app.open_task(new_task)
 
-
     def on_add_subtask(self, widget=None):
 
         pane = self.get_pane()
@@ -1067,7 +939,6 @@ class MainWindow(Gtk.ApplicationWindow):
             new_task.tags = task.tags
             self.app.open_task(new_task)
             pane.refresh()
-
 
     def on_add_parent(self, widget=None):
         selection = self.get_pane().get_selection()
@@ -1099,7 +970,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.app.open_task(new_parent)
             self.get_pane().refresh()
 
-
     def on_edit_active_task(self, widget=None, row=None, col=None):
         for task in self.get_pane().get_selection():
             self.app.open_task(task)
@@ -1108,7 +978,6 @@ class MainWindow(Gtk.ApplicationWindow):
         tid = self.get_selected_task('closed')
         if tid:
             self.app.open_task(tid)
-
 
     def on_delete_tasks(self, widget=None, tid=None):
         # If we don't have a parameter, then take the selection in the
@@ -1123,7 +992,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         log.debug("going to delete %r", tasks_todelete)
         self.app.delete_tasks(tasks_todelete, self)
-
 
     def update_start_date(self, widget, new_start_date):
         for task in self.get_pane().get_selection():
@@ -1146,7 +1014,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # (e.g. setting the start date of an Actionable task to tomorrow)
         # See #1039
         self.get_pane().refresh()
-
 
     def on_mark_as_started(self, action, param):
         self.update_start_date(None, "today")
@@ -1295,13 +1162,11 @@ class MainWindow(Gtk.ApplicationWindow):
                 task.date_start = date
         self.get_pane().refresh()
 
-
     def on_modify_tags(self, action, params):
         """Open modify tags dialog for selected tasks."""
 
         tasks = self.get_pane().get_selection()
         self.modifytags_dialog.modify_tags(tasks)
-
 
     def on_sort(self, action, value) -> None:
 
@@ -1310,7 +1175,6 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.set_sorter(value_str)
         self.store_sorting(value_str.lower())
-
 
     def on_sort_order(self, action, value) -> None:
 
@@ -1324,7 +1188,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.get_pane().set_sort_order(reverse=True)
             self.change_sort_icon('DESC')
 
-
     def store_sorting(self, mode: str) -> None:
         """Store sorting mode."""
 
@@ -1336,12 +1199,10 @@ class MainWindow(Gtk.ApplicationWindow):
             case _:
                 self.config.set('sort_mode_open', mode)
 
-
     def set_sorter(self, value: str) -> None:
         """Set sorter for current task pane."""
 
         self.get_pane().set_sorter(value)
-
 
     def change_sort_icon(self, order: str) -> None:
         """Change icon for sorting menu button."""
@@ -1350,23 +1211,6 @@ class MainWindow(Gtk.ApplicationWindow):
             self.sort_btn.set_icon_name('view-sort-ascending-symbolic')
         elif order == 'DESC':
             self.sort_btn.set_icon_name('view-sort-descending-symbolic')
-
-
-    def close_all_task_editors(self, task_id):
-        """ Including editors of subtasks """
-        all_subtasks = []
-
-        def trace_subtasks(root):
-            all_subtasks.append(root)
-            for i in root.get_subtasks():
-                if i not in all_subtasks:
-                    trace_subtasks(i)
-
-        trace_subtasks(self.req.get_task(task_id))
-
-        for task in all_subtasks:
-            self.app.close_task(task.id)
-
 
     def on_mark_as_done(self, widget=None):
         for task in self.get_pane().get_selection():
@@ -1379,20 +1223,6 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_reopen_task(self, widget=None):
         for task in self.get_pane().get_selection():
             task.set_status(Status.ACTIVE)
-
-    def on_select_tag(self, widget=None, row=None, col=None):
-        """ Callback for tag(s) selection from left sidebar.
-
-        Using liblarch built-in cache.
-        Optim: reseting it on first item, allows trigger refresh on last.
-        """
-        for tagname in self.get_selected_tags():
-            # In case of search tag, refining search query
-            tag = self.req.get_tag(tagname)
-            if tag.is_search_tag():
-                break
-
-        self.reapply_filter()
 
     def on_pane_switch(self, obj, pspec):
         """ Callback for pane switching.
@@ -1439,20 +1269,10 @@ class MainWindow(Gtk.ApplicationWindow):
                 return False
         return True
 
-    def has_any_selection(self):
-        """Determine if the current pane has any task selected."""
-
-        current_pane = self.get_selected_pane()
-        selected = self.vtree_panes[current_pane].get_selected_nodes()
-
-        return bool(selected)
-
-
     def set_pane(self, name: str) -> None:
         """Set the selected pane by name."""
 
         self.stack_switcher.get_stack().set_visible_child_name(name)
-
 
     def get_selected_pane(self, old_names: bool = True) -> str:
         """ Get the selected pane in the stack switcher """
@@ -1464,12 +1284,10 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             return current
 
-
     def get_pane_by_name(self, name: str) -> TaskPane:
         """Get a task pane by name."""
 
         return self.stack_switcher.get_stack().get_child_by_name(name).get_first_child()
-
 
     def get_pane(self):
         """Get the selected pane."""
@@ -1477,18 +1295,15 @@ class MainWindow(Gtk.ApplicationWindow):
 
         return self.stack_switcher.get_stack().get_visible_child().get_first_child()
 
-
     def set_filter_tags(self,required_tags=None):
         if required_tags is None:
             required_tags = []
         for p in self.panes.values():
             p.set_filter_tags(required_tags)
 
-
     def set_filter_notags(self):
         for p in self.panes.values():
             p.set_filter_notags()
-
 
     def set_search_query(self,query):
         for p in self.panes.values():
@@ -1508,11 +1323,6 @@ class MainWindow(Gtk.ApplicationWindow):
     @GObject.Property(type=bool, default=False)
     def is_pane_closed(self) -> bool:
         return self.get_selected_pane() == 'closed'
-
-
-    def get_selected_tree(self, refresh: bool = False):
-        return self.req.get_tasks_tree(name=self.get_selected_pane(),
-                                       refresh=refresh)
 
     def get_selected_task(self, tree_view: str = '') -> Optional[Task]:
         """
@@ -1551,72 +1361,9 @@ class MainWindow(Gtk.ApplicationWindow):
         return selected
 
     # If nospecial=True, only normal @tag are considered
-    def get_selected_tags(self, nospecial=False):
-        """
-        Returns the selected nodes from the tagtree
-
-        @param nospecial: doesn't return tags that do not stat with
-        """
-        taglist = []
-        if self.tagtreeview:
-            taglist = self.tagtreeview.get_selected_nodes()
-        # If no selection, we display all
-        if not nospecial and not taglist:
-            taglist = ['gtg-tags-all']
-        if nospecial:
-            special = ['gtg-tags-all', 'gtg-tags-none',
-                       'search', 'gtg-tags-sep']
-
-            for t in list(taglist):
-                if t in special:
-                    taglist.remove(t)
-                else:
-                    tag = self.req.get_tag(t)
-                    if tag and tag.is_search_tag():
-                        taglist.remove(t)
-
-        return taglist
-
     def select_on_sidebar(self, value):
-        """Select a row in the tag treeview (by value)."""
-
-        try:
-            selection = self.tagtreeview.get_selection()
-
-        except AttributeError:
-            # tagtreeview is None if it's hidden
-            return
-
-        model = self.tagtreeview.get_model()
-        tree_iter = model.get_iter_first()
-
-        result = self.find_value_in_treestore(model, tree_iter, value)
-        selection.select_iter(result)
-
-    def reset_cursor(self):
-        """ Returns the cursor to the tag that was selected prior
-            to any right click action. Should be used whenever we're done
-            working with any tag through a right click menu action.
-            """
-        if self.tag_active:
-            self.tag_active = False
-            path, col = self.previous_cursor
-            if self.tagtreeview:
-                self.tagtreeview.set_cursor(path, col, 0)
-
-    def set_target_cursor(self):
-        """ Selects the last tag to be right clicked.
-
-            We need this because the context menu will deactivate
-            (and in turn, call reset_cursor()) before, for example, the color
-            picker dialog begins. Should be used at the beginning of any tag
-            editing function to remind the user which tag they're working with.
-            """
-        if not self.tag_active:
-            self.tag_active = True
-            path, col = self.target_cursor
-            if self.tagtreeview:
-                self.tagtreeview.set_cursor(path, col, 0)
+        """Select a tag by name in the sidebar."""
+        self.sidebar.select_tag(value)
 
     def add_page_to_sidebar_notebook(self, icon, page):
         """Adds a new page tab to the left panel.  The tab will
@@ -1742,12 +1489,3 @@ class MainWindow(Gtk.ApplicationWindow):
         return infobar
 
 # SEARCH RELATED STUFF ########################################################
-    def get_selected_search(self):
-        """ return just one selected view """
-        if self.tagtreeview:
-            tags = self.tagtreeview.get_selected_nodes()
-            if len(tags) > 0:
-                tag = self.tagtree.get_node(tags[0])
-                if tag.is_search_tag():
-                    return tags[0]
-        return None
