@@ -2,11 +2,15 @@ from types import SimpleNamespace
 from unittest import TestCase
 from uuid import uuid4
 
-import dbus
+import pytest
 
-from GTG.core.tasks import Status, Task
-from GTG.plugins.hamster.hamster import HamsterPlugin
-from GTG.plugins.hamster.helper import FactBuilder
+# python-dbus is an optional dependency (the Hamster plugin's): skip
+# this whole module where it isn't installed, e.g. on the CI runner
+dbus = pytest.importorskip('dbus')
+
+from GTG.core.tasks import Status, Task  # noqa: E402
+from GTG.plugins.hamster.hamster import HamsterPlugin  # noqa: E402
+from GTG.plugins.hamster.helper import FactBuilder  # noqa: E402
 
 
 class HamsterPluginTest(TestCase):
