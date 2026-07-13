@@ -175,8 +175,6 @@ class Backend(PeriodicImportBackend):
 
     def _set_task(self, task: Task) -> None:
         logger.debug('set_task todo for %r', task.id)
-        seq_value = SEQUENCE.get_gtg(task, self.namespace)
-        SEQUENCE.write_gtg(task, seq_value + 1, self.namespace)
         todo, calendar = self._get_todo_and_calendar(task)
         if not calendar:
             logger.info("%r has no calendar to be synced with", task)
@@ -188,6 +186,13 @@ class Backend(PeriodicImportBackend):
             if not Translator.should_sync(task, self.namespace, todo):
                 logger.debug('insufficient change, ignoring set_task call')
                 return
+            # A real change is going out: bump SEQUENCE now (RFC 5545 says
+            # SEQUENCE increments on a significant revision, not on every
+            # write). Doing it here -- and only here -- avoids the import/
+            # export loop where an echo of a remote change kept incrementing
+            # SEQUENCE past the server value on every sync cycle.
+            seq_value = SEQUENCE.get_gtg(task, self.namespace)
+            SEQUENCE.write_gtg(task, seq_value + 1, self.namespace)
             # updating vtodo content
             Translator.fill_vtodo(task, calendar.name, self.namespace,
                                   todo.instance.vtodo)
