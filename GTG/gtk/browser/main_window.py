@@ -21,7 +21,6 @@ from __future__ import annotations
 
 import datetime
 import logging
-import ast
 import re
 from uuid import UUID
 from typing import Optional
@@ -438,8 +437,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # active_pane_key_controller.connect('key-pressed', task_treeview_key_press)
         # self.vtree_panes['active'].add_controller(active_pane_gesture_single)
         # self.vtree_panes['active'].add_controller(active_pane_key_controller)
-        # self.vtree_panes['active'].connect('node-expanded', self.on_task_expanded)
-        # self.vtree_panes['active'].connect('node-collapsed', self.on_task_collapsed)
 
         # # Workview tasks TreeView
         # tsk_treeview_btn_press = self.on_task_treeview_click_begin
@@ -532,22 +529,6 @@ class MainWindow(Gtk.ApplicationWindow):
         and maximize it if needed """
         self.config.set("maximized", self.is_maximized())
 
-    def restore_collapsed_tasks(self, tasks=None):
-        tasks = tasks or self.config.get("collapsed_tasks")
-
-        for path_s in tasks:
-            # the tuple was stored as a string. we have to reconstruct it
-            path = ()
-            for p in path_s[1:-1].split(","):
-                p = p.strip(" '")
-                path += (p, )
-            if path[-1] == '':
-                path = path[:-1]
-            try:
-                self.vtree_panes['active'].collapse_node(path)
-            except IndexError:
-                print(f"Invalid path {path}")
-
     def restore_tag_selection(self) -> None:
         """Restore tag selection from config."""
 
@@ -596,6 +577,11 @@ class MainWindow(Gtk.ApplicationWindow):
 
         self.set_sorter(sort_mode.capitalize())
 
+        # Every row is born collapsed (autoexpand is off on the tree
+        # model): once the pane is up, expand everything except what
+        # the user collapsed, like the sidebar filters already do.
+        GLib.idle_add(lambda: self.get_pane().emit('expand-all'))
+
 
         # Callbacks for sorting and restoring previous state
         # model = self.vtree_panes['active'].get_model()
@@ -606,8 +592,6 @@ class MainWindow(Gtk.ApplicationWindow):
         # if sort_column and sort_order:
         #     sort_column, sort_order = int(sort_column), int(sort_order)
         #     model.set_sort_column_id(sort_column, sort_order)
-
-        # self.restore_collapsed_tasks()
 
         # view_name = PANE_STACK_NAMES_MAP_INVERTED.get(self.config.get('view'),
         #                                               PANE_STACK_NAMES_MAP_INVERTED['active'])
@@ -724,40 +708,14 @@ class MainWindow(Gtk.ApplicationWindow):
     def on_collapse_all_tasks(self, action, param):
         """Collapse all tasks."""
 
+        self.get_pane().mark_user_action()
         self.get_pane().emit('collapse-all')
 
     def on_expand_all_tasks(self, action, param):
-        """Expand all tasks."""
+        """Expand all tasks, clearing the collapsed-tasks memory."""
 
+        self.get_pane().forget_collapsed()
         self.get_pane().emit('expand-all')
-
-    def on_task_expanded(self, sender, path: str):
-        # For some reason, path is turned from a tuple into a string of a
-        # tuple
-        if type(path) is str:
-            path = ast.literal_eval(path)
-        tid = path[-1]
-
-        collapsed_tasks = self.config.get("collapsed_tasks")
-        stringified_path = str(path)
-        if stringified_path in collapsed_tasks:
-            collapsed_tasks.remove(stringified_path)
-            self.config.set("collapsed_tasks", collapsed_tasks)
-
-        # restore expanded state of subnodes
-        model = sender.get_model()
-        for child_id in model.tree.node_all_children(tid):
-            child_path = path + (child_id,)
-            if str(child_path) not in collapsed_tasks:
-                # Warning: Recursion. We expect having not too many nested
-                # subtasks for now.
-                sender.expand_node(child_path)
-
-    def on_task_collapsed(self, sender, tid):
-        colt = self.config.get("collapsed_tasks")
-        if tid not in colt:
-            colt.append(str(tid))
-        self.config.set("collapsed_tasks", colt)
 
     def on_tag_expanded(self, sender, tag):
         colt = self.config.get("expanded_tags")
