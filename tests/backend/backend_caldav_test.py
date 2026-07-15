@@ -469,6 +469,31 @@ class NonUuidUidRegressionTest(TestCase):
         self.assertEqual(0, counts2['deleted'])
         self.assertEqual(1, len(backend.datastore.tasks.lookup))
 
+    VTODO_NO_CREATED = ("BEGIN:VTODO\r\n"
+                        "DTSTAMP:20201212T172830Z\r\n"
+                        "LAST-MODIFIED:20201212T172558Z\r\n"
+                        "STATUS:NEEDS-ACTION\r\n"
+                        "SUMMARY:todo without a created date\r\n"
+                        "UID:no-created@example.org\r\n"
+                        "END:VTODO\r\n")
+
+    def test_import_todo_without_created_date(self):
+        """CREATED is optional in RFC 5545. A task imported without one
+        must still get an added date: the core serializes an empty
+        <added> and then refuses to reload the file."""
+        backend = self._backend()
+        calendar = Mock()
+        calendar.todos.return_value = [self._todo(self.VTODO_NO_CREATED)]
+        counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
+        start = datetime.now(LOCAL_TIMEZONE)
+        backend._import_calendar_todos(calendar, start, counts)
+        self.assertEqual(1, counts['created'])
+        task = next(iter(backend.datastore.tasks.lookup.values()))
+        self.assertTrue(task.date_added,
+                        'task imported without CREATED has no added date, '
+                        'it will be saved as an empty <added> element')
+        self.assertNotEqual('', str(task.date_added))
+
     def test_extract_plain_text_with_subtask_reference(self):
         """Task content can reference subtasks as {!<task id>!} lines:
         extraction must resolve them through the new core API."""
