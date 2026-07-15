@@ -1097,6 +1097,14 @@ class Translator:
         if not CATEGORIES.has_calendar_tag(task, todo.parent):
             tag = datastore.tags.new(CATEGORIES.get_calendar_tag(todo.parent))
             task.add_tag(tag)
+        if not task.date_added:
+            # CREATED is optional in RFC 5545, and Task() starts with no
+            # added date. The core assumes every task has one: it
+            # serializes an empty <added> and then asserts on reload.
+            # Fall back on the modification date, which is always set,
+            # rather than 'now' which would claim the task was created
+            # during this import.
+            task.date_added = task.date_modified
         return task
 
     @classmethod
