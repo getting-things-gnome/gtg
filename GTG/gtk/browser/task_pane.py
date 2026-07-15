@@ -18,7 +18,7 @@
 
 """Task pane and list."""
 
-from gi.repository import Gtk, GObject, Gdk, Gio, Pango
+from gi.repository import Gtk, GObject, Gdk, Gio, GLib, Pango
 from GTG.core.tasks import Task, Status, FilteredTaskTreeManager
 from GTG.core.filters import TaskFilter
 from GTG.core.sorters import (TaskAddedSorter, TaskDueSorter,
@@ -135,6 +135,22 @@ class TaskPane(Gtk.ScrolledWindow):
         self.browser = browser
         self.pane = pane
         self.searching = False
+
+        # Tasks the user collapsed, remembered across sessions by task
+        # id. Legacy entries (stringified tree paths from the pre-GTK4
+        # code) can never match an id, and the config reader drops bare
+        # ids whenever such entries are present: prune them at load time
+        # and rewrite the setting right away.
+        stored = self.app.config.get('collapsed_tasks')
+        self.collapsed_ids = {i for i in stored if not i.startswith('(')}
+        self._collapsed_save_pending = False
+        if len(self.collapsed_ids) != len(stored):
+            self._save_collapsed()
+
+        # The model collapses rows on its own (loading, refiltering,
+        # teardown) and those emissions must not be remembered. Only a
+        # fold change right after a user gesture on this pane counts.
+        self._armed_tid = None
 
         self.set_vexpand(True)
         self.set_hexpand(True)
@@ -354,6 +370,50 @@ class TaskPane(Gtk.ScrolledWindow):
         return selected
 
 
+    def _on_expander_pressed(self, gesture, n_press, x, y, task):
+        """A press on a row's own fold arrow arms that row only."""
+        self._armed_tid = str(task.id)
+
+
+    def mark_user_action(self) -> None:
+        """Menu actions (collapse/expand all) arm every row at once."""
+        self._armed_tid = '*'
+
+
+    def _on_row_expanded_changed(self, row, _pspec, task):
+        """Remember manually collapsed tasks across sessions."""
+
+        # Accept only fold changes whose own expander arrow was
+        # pressed (or a collapse/expand-all menu action). Mechanical
+        # collapses from loading, refiltering or teardown never press
+        # an arrow, so they are never remembered.
+        if self._armed_tid not in ('*', str(task.id)):
+            return
+
+        tid = str(task.id)
+        if row.get_expanded():
+            self.collapsed_ids.discard(tid)
+        else:
+            self.collapsed_ids.add(tid)
+
+        # collapse-all fires this for every row: save once, on idle
+        if not self._collapsed_save_pending:
+            self._collapsed_save_pending = True
+            GLib.idle_add(self._save_collapsed)
+
+
+    def _save_collapsed(self) -> bool:
+        self._collapsed_save_pending = False
+        self.app.config.set('collapsed_tasks', sorted(self.collapsed_ids))
+        return False
+
+
+    def forget_collapsed(self) -> None:
+        """Explicitly expanding everything also clears the memory."""
+        self.collapsed_ids.clear()
+        self._save_collapsed()
+
+
     def expand_selected(self, expand) -> None:
         """Get the box widgets of the selected tasks."""
 
@@ -454,8 +514,15 @@ class TaskPane(Gtk.ScrolledWindow):
         task_RMB_controller.connect('end', self.on_task_RMB_click)
         box.add_controller(task_RMB_controller)
 
-        self.connect('expand-all', lambda s: box.expander.activate_action('listitem.expand'))
-        self.connect('collapse-all', lambda s: box.expander.activate_action('listitem.collapse'))
+        def expand_unless_remembered(pane):
+            task = box.props.task
+            if task is not None and str(task.id) in pane.collapsed_ids:
+                return
+            box.expander.activate_action('listitem.expand')
+
+        self.connect('expand-all', expand_unless_remembered)
+        self.connect('collapse-all',
+                     lambda s: box.expander.activate_action('listitem.collapse'))
 
         box.append(label)
         box.append(description)
@@ -490,7 +557,15 @@ class TaskPane(Gtk.ScrolledWindow):
         item = unwrap(listitem, Task)
 
         box.props.task = item
-        box.expander.set_list_row(listitem.get_item())
+        row = listitem.get_item()
+        box.expander.set_list_row(row)
+        arrow_press = Gtk.GestureClick()
+        arrow_press.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
+        arrow_press.connect('pressed', self._on_expander_pressed, item)
+        box.expander.add_controller(arrow_press)
+        listitem.arrow_gesture = arrow_press
+        listitem.expanded_handler = row.connect(
+            'notify::expanded', self._on_row_expanded_changed, item)
 
         config = self.app.config
 
@@ -544,7 +619,9 @@ class TaskPane(Gtk.ScrolledWindow):
         for binding in listitem.bindings:
             binding.unbind()
         listitem.bindings.clear()
+        listitem.get_item().disconnect(listitem.expanded_handler)
         box = listitem.get_child()
+        box.expander.remove_controller(listitem.arrow_gesture)
         box.check.disconnect_by_func(self.on_checkbox_toggled)
 
 
