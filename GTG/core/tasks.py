@@ -1038,7 +1038,11 @@ class TaskStore(BaseStore[Task]):
 
         super().add(item, parent_id)
         item.duplicate_cb = self.duplicate_for_recurrent
-        for event in ['notify::is-actionable','notify::is-active','tags-changed']:
+        # notify::title matters as much as the others: the title is what
+        # search filters on, and backends only learn a task changed
+        # through this signal -- without it a rename never reaches them.
+        for event in ['notify::title', 'notify::is-actionable',
+                      'notify::is-active', 'tags-changed']:
             item.connect(event,lambda *_: self.emit('task-filterably-changed',item))
 
 
