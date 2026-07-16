@@ -960,8 +960,14 @@ class OrderField(Field):
         parent = task.parent
         if not parent:
             return
-        uid = UID_FIELD.get_gtg(task, namespace)
-        return parent.get_child_index(uid)
+        # get_child_index() belonged to the pre-rewrite core; children
+        # is now an ordered list on the parent. This raised
+        # AttributeError on every push of a subtask, which is why
+        # hierarchy only ever synced from the server, never to it.
+        try:
+            return parent.children.index(task)
+        except ValueError:
+            return None
 
     def set_dav(self, task: Task, vtodo: iCalendar, namespace: str) -> None:
         parent_index = self.get_gtg(task, namespace)

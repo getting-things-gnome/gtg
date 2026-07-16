@@ -8,7 +8,8 @@ from caldav.lib.error import NotFoundError
 from dateutil.tz import UTC
 from GTG.backends.backend_caldav import (CATEGORIES, CHILDREN_FIELD,
                                          DAV_IGNORE, PARENT_FIELD, UID_FIELD,
-                                         Backend, DueDateField, Translator)
+                                         Backend, DueDateField, SORT_ORDER,
+                                         Translator, uid_to_task_id)
 from GTG.core.datastore import Datastore
 from GTG.core.dates import LOCAL_TIMEZONE, Date
 from GTG.core.tasks import Task
@@ -496,6 +497,28 @@ class NonUuidUidRegressionTest(TestCase):
                         'task imported without CREATED has no added date, '
                         'it will be saved as an empty <added> element')
         self.assertNotEqual('', str(task.date_added))
+
+    def _imported_child(self):
+        backend = self._backend()
+        calendar = Mock()
+        calendar.name = 'My Calendar'
+        calendar.todos.return_value = [self._todo(VTODO_ROOT),
+                                       self._todo(VTODO_CHILD)]
+        counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
+        backend._import_calendar_todos(calendar, datetime.now(LOCAL_TIMEZONE),
+                                       counts)
+        self.assertEqual(2, counts['created'])
+        child = backend.datastore.tasks.lookup[uid_to_task_id('CHILD')]
+        self.assertIsNotNone(child.parent, 'hierarchy was not imported')
+        return backend, child
+
+    def test_push_subtask_does_not_call_the_old_core_api(self):
+        """OrderField used the pre-rewrite get_child_index(): pushing
+        any subtask raised AttributeError, so hierarchy only ever
+        synced from the server, never to it."""
+        backend, child = self._imported_child()
+        vtodo = Translator.fill_vtodo(child, 'My Calendar', backend.namespace)
+        self.assertEqual('0', SORT_ORDER.get_dav(vtodo=vtodo.vtodo))
 
     def test_calendar_tag_is_parsable_back_by_the_core(self):
         """A calendar named "Deck: Server" used to yield the tag
