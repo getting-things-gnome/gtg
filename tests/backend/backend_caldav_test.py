@@ -105,6 +105,7 @@ class CalDAVTest(TestCase):
     @staticmethod
     def _mock_calendar(name='my calendar', url='https://my.fa.ke/calendar'):
         calendar = Mock()
+        calendar.name = 'My Calendar'
         calendar.name, calendar.url = name, url
         return calendar
 
@@ -454,6 +455,7 @@ class NonUuidUidRegressionTest(TestCase):
     def test_import_todo_with_non_uuid_uid(self):
         backend = self._backend()
         calendar = Mock()
+        calendar.name = 'My Calendar'
         calendar.todos.return_value = [self._todo(self.VTODO_NON_UUID)]
         counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
         start = datetime.now(LOCAL_TIMEZONE)
@@ -483,6 +485,7 @@ class NonUuidUidRegressionTest(TestCase):
         <added> and then refuses to reload the file."""
         backend = self._backend()
         calendar = Mock()
+        calendar.name = 'My Calendar'
         calendar.todos.return_value = [self._todo(self.VTODO_NO_CREATED)]
         counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
         start = datetime.now(LOCAL_TIMEZONE)
@@ -493,6 +496,31 @@ class NonUuidUidRegressionTest(TestCase):
                         'task imported without CREATED has no added date, '
                         'it will be saved as an empty <added> element')
         self.assertNotEqual('', str(task.date_added))
+
+    def test_calendar_tag_is_parsable_back_by_the_core(self):
+        """A calendar named "Deck: Server" used to yield the tag
+        DAV_Deck:_Server, which the editor re-read as @DAV_Deck and
+        re-added as a second, truncated tag on every open."""
+        backend = self._backend()
+        calendar = Mock()
+        calendar.name = 'Deck: Server'
+        calendar.todos.return_value = [self._todo(self.VTODO_NO_CREATED)]
+        calendar.todos.return_value[0].parent.name = 'Deck: Server'
+        counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
+        backend._import_calendar_todos(calendar, datetime.now(LOCAL_TIMEZONE),
+                                       counts)
+        task = next(iter(backend.datastore.tasks.lookup.values()))
+        dav_tags = [t.name for t in task.tags if t.name.startswith('DAV_')]
+        self.assertEqual(1, len(dav_tags), dav_tags)
+        tag = dav_tags[0]
+        editor_re = re.compile(
+            r'(?<!\/|\w)\@\w+(\.*[\-\w+\+\%\$\\(\)\[\]\{\}\^\=\/\*])*')
+        match = editor_re.match('@' + tag)
+        self.assertIsNotNone(match)
+        self.assertEqual('@' + tag, match.group(0),
+                         'the editor truncates this tag and will fork it')
+        self.assertIsNotNone(re.compile(r'^\B\@\w+(\-\w+)*\,*.*')
+                             .match('@' + tag))
 
     def test_extract_plain_text_with_subtask_reference(self):
         """Task content can reference subtasks as {!<task id>!} lines:
@@ -521,6 +549,7 @@ class NonUuidUidRegressionTest(TestCase):
         never raw UID strings (regression for PR #1265 re-test)."""
         backend = self._backend()
         calendar = Mock()
+        calendar.name = 'My Calendar'
         calendar.todos.return_value = [self._todo(self.ROOT_NO_CATEG),
                                        self._todo(VTODO_CHILD)]
         counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
@@ -540,6 +569,7 @@ class NonUuidUidRegressionTest(TestCase):
         """CATEGORIES must become real Tag objects from the datastore."""
         backend = self._backend()
         calendar = Mock()
+        calendar.name = 'My Calendar'
         calendar.todos.return_value = [self._todo(VTODO_ROOT)]
         counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
         backend._import_calendar_todos(
