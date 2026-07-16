@@ -63,6 +63,51 @@ class BackendPersistenceTest(TestCase):
         self.ds.remove_backend(self.backend.get_id())
         self.assertEqual([], CoreConfig().get_all_backends())
 
+    def test_saving_a_parameter_the_backend_lacks(self):
+        """A config written before a parameter was added to a backend
+        simply lacks it -- which is every config out there, the day a
+        parameter is added (default-calendar, Feb 2026).
+        get_saved_backends_list() drops what it can't read, and the
+        rest of the code copes: the parameter panels check before
+        reading, the caldav backend falls back on its own default.
+        Saving must cope too, rather than demand a value nobody has.
+        """
+        config = CoreConfig()
+        section = config.get_backend_config(self.pid)
+        del section._section['default-calendar']
+        config.save_backends_config()
+
+        loaded = [b for b in BackendFactory().get_saved_backends_list()
+                  if b['pid'] == self.pid]
+        self.assertEqual(1, len(loaded))
+        backend = loaded[0]['backend']
+        self.assertNotIn('default-calendar', backend.get_parameters())
+
+        self.ds.save_backend_config(backend)  # used to raise KeyError
+
+        self.assertEqual('alice',
+                         CoreConfig().get_backend_config(self.pid)
+                         .get('username'))
+
+    def test_migration_carries_over_what_it_cannot_read(self):
+        """Moving a section to its pid must carry values we can't
+        produce ourselves. A password reference is useless to us when
+        the keyring is down, but it's the user's: dropping it would
+        lose it for good."""
+        config = CoreConfig()
+        legacy = config.get_backend_config('backend_caldav')
+        legacy.set('module', 'backend_caldav')
+        legacy.set('pid', self.pid)
+        legacy.set('a-value-we-cannot-read', 'must survive')
+        config.save_backends_config()
+
+        self.ds.save_backend_config(self.backend)
+
+        moved = CoreConfig().get_backend_config(self.pid)
+        self.assertEqual('must survive',
+                         moved.get('a-value-we-cannot-read'))
+        self.assertNotIn('backend_caldav', CoreConfig().get_all_backends())
+
     def test_legacy_module_named_section_is_cleaned_up(self):
         legacy = CoreConfig()
         legacy.get_backend_config('backend_caldav').set('module',

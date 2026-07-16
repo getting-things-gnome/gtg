@@ -575,16 +575,32 @@ class Datastore:
         after an upgrade.
         """
         config = CoreConfig()
-        pid = backend.get_parameters()['pid']
-        section = config.get_backend_config(pid)
-        section.set('module', backend.get_name())
-        section.set('pid', pid)
-        specs = type(backend).get_static_parameters()
-        for name, spec in specs.items():
-            param_type = spec[GenericBackend.PARAM_TYPE]
-            section.set(name, backend.cast_param_type_to_string(
-                param_type, backend.get_parameters()[name]))
+        params = backend.get_parameters()
+        pid = params['pid']
         legacy = backend.get_name()
+        section = config.get_backend_config(pid)
+
+        # 1. Move the old section over verbatim. We carry values we
+        # can't read -- a password reference is useless to us if the
+        # keyring is down, but it's the user's, and dropping it would
+        # lose it for good.
+        if legacy != pid:
+            for key, value in config.get_backend_raw_items(legacy):
+                section.set(key, value)
+
+        # 2. Then write what the backend actually holds. Not what it
+        # declares: get_saved_backends_list() drops any parameter it
+        # can't read, so a declared parameter isn't guaranteed to be
+        # there. Whatever we don't write keeps the value moved above.
+        section.set('module', legacy)
+        for name, value in params.items():
+            if name == 'backend':
+                continue  # the live object; rebuilt at startup
+            param_type = backend.get_parameter_type(name)
+            section.set(str(name), backend.cast_param_type_to_string(
+                param_type, value))
+
+        # 3. Only now drop the old section.
         if legacy != pid:
             config.delete_backend_config(legacy)
 
