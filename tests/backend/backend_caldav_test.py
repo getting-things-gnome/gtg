@@ -520,6 +520,15 @@ class NonUuidUidRegressionTest(TestCase):
         vtodo = Translator.fill_vtodo(child, 'My Calendar', backend.namespace)
         self.assertEqual('0', SORT_ORDER.get_dav(vtodo=vtodo.vtodo))
 
+    def test_export_related_to_carries_the_server_uid(self):
+        """RELATED-TO must carry the UID the server issued, not the GTG
+        id derived from it: uid_to_task_id() is one-way, so a mapped
+        uuid5 means nothing to the server and the link is dropped."""
+        backend, child = self._imported_child()
+        vtodo = Translator.fill_vtodo(child, 'My Calendar', backend.namespace)
+        self.assertEqual(['ROOT'], PARENT_FIELD.get_dav(vtodo=vtodo.vtodo),
+                         'the server would not recognize this parent UID')
+
     def test_calendar_tag_is_parsable_back_by_the_core(self):
         """A calendar named "Deck: Server" used to yield the tag
         DAV_Deck:_Server, which the editor re-read as @DAV_Deck and

@@ -43,6 +43,7 @@ logger = logging.getLogger(__name__)
 TAG_REGEX = re.compile(r'\B@\w+[-_()\w]*')
 MAX_CALENDAR_DEPTH = 500
 DAV_TAG_PREFIX = 'DAV_'
+REMOTE_UID_ATTR = 'remote_uid'
 
 # Set of fields whose change alone won't trigger a sync up
 DAV_IGNORE = {'last-modified',  # often updated alone by GTG
@@ -67,6 +68,21 @@ def uid_to_task_id(uid) -> UUID:
         return UUID(uid)
     except (TypeError, AttributeError, ValueError):
         return uuid5(UUID_NAMESPACE, str(uid))
+
+
+def remote_uid(task: Task, namespace: str) -> str:
+    """The UID the server knows this task by.
+
+    uid_to_task_id() is deliberately one-way (uuid5), so a task
+    imported from a server whose UIDs are not UUIDs cannot yield its
+    remote UID back from its id. Sending the GTG id in RELATED-TO
+    would point the server at a UID it never issued, and the
+    relationship would be silently dropped. The original UID is kept
+    as a task attribute at import time; tasks created in GTG are
+    pushed with their own id as UID, so falling back on it is correct.
+    """
+    return (task.get_attribute(REMOTE_UID_ATTR, namespace=namespace)
+            or str(task.id))
 
 
 class Backend(PeriodicImportBackend):
@@ -482,9 +498,11 @@ class Field:
         if name == 'get_tags_name':
             return [t.name for t in task.tags]
         if name == 'get_parents':
-            return [str(task.parent.id)] if task.parent else []
+            if not task.parent:
+                return []
+            return [remote_uid(task.parent, namespace)]
         if name == 'get_children':
-            return [str(c.id) for c in task.children]
+            return [remote_uid(child, namespace) for child in task.children]
         # Fallback: call as method (e.g. get_status)
         attr = getattr(task, name)
         return attr() if callable(attr) else attr
@@ -1105,6 +1123,7 @@ class Translator:
             task.add_tag(datastore.tags.new(to_add))
         for to_delete in local_tags.difference(remote_tags):
             task.remove_tag(to_delete)
+        task.set_attribute(REMOTE_UID_ATTR, UID_FIELD.get_dav(todo), **nmspc)
         task.set_attribute("url", str(todo.url), **nmspc)
         task.set_attribute("calendar_url", str(todo.parent.url), **nmspc)
         task.set_attribute("calendar_name", todo.parent.name, **nmspc)
