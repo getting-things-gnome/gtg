@@ -255,6 +255,16 @@ class CoreConfig:
             DEFAULTS['backend'],
             self.save_backends_config)
 
+    def get_backend_raw_items(self, backend):
+        """Key/value pairs of a backend section, exactly as stored.
+
+        No typing, no defaults, no interpretation: this is for moving a
+        section without needing to understand it.
+        """
+        if backend not in self._backends_conf:
+            return []
+        return list(self._backends_conf[backend].items())
+
     def delete_backend_config(self, backend):
         """Remove the configuration section of a backend, if any."""
         if backend in self._backends_conf:
