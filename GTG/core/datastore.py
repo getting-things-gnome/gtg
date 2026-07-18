@@ -709,6 +709,34 @@ class Datastore:
         thread.start()
 
 
+    def sync_now(self, backend_id=None):
+        """
+        Trigger an immediate synchronization cycle on remote backends,
+        without waiting for the next periodic import.
+
+        @param backend_id: if given, only that backend is synced.
+        """
+
+        for backend in self.backends.values():
+            if backend_id and backend.get_id() != backend_id:
+                continue
+            if not backend.is_enabled():
+                continue
+            # Only remote (periodic import) backends can be forced.
+            # The local file backend syncs continuously and is skipped.
+            if not hasattr(backend, 'do_periodic_import'):
+                continue
+
+            def __sync_now(self, backend):
+                backend.start_get_tasks()
+                self.flush_all_tasks(backend.get_id())
+
+            thread = threading.Thread(target=__sync_now,
+                                      args=(self, backend))
+            thread.setDaemon(True)
+            thread.start()
+
+
     def set_backend_enabled(self, backend_id, state):
         """
         The backend corresponding to backend_id is enabled or disabled

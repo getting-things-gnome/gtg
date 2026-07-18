@@ -162,7 +162,70 @@ class MainWindow(Gtk.ApplicationWindow):
         # so the buttons start disabled
         self.on_selection_changed()
 
+        self._init_sync_indicator()
+
 # INIT HELPER FUNCTIONS #######################################################
+    def _init_sync_indicator(self):
+        """Add a "Synchronize now" button to the headerbar.
+
+        The button doubles as a sync activity indicator: while any
+        remote backend is syncing, it shows a spinner and is disabled.
+        It is only visible when a remote (periodic import) backend
+        is enabled.
+        """
+
+        self._syncing_backends = set()
+        self._sync_spinner = Gtk.Spinner()
+        self.sync_button = Gtk.Button()
+        self.sync_button.set_valign(Gtk.Align.CENTER)
+        self.sync_button.set_action_name('app.sync_now')
+        self.sync_button.set_icon_name('emblem-synchronizing-symbolic')
+        self.sync_button.set_tooltip_text(_('Synchronize now (F5)'))
+        self.sync_button.set_visible(False)
+        self.headerbar.pack_end(self.sync_button)
+
+        signals = BackendSignals()
+        signals.connect('backend-sync-started', self._on_backend_sync_started)
+        signals.connect('backend-sync-ended', self._on_backend_sync_ended)
+        signals.connect('backend-state-toggled', self._refresh_sync_button)
+        signals.connect('backend-added', self._refresh_sync_button)
+        signals.connect('default-backend-loaded', self._refresh_sync_button)
+        self._refresh_sync_button()
+
+    def _refresh_sync_button(self, *args):
+        """Show the sync button only if a remote backend is enabled."""
+
+        has_remote = any(hasattr(b, 'do_periodic_import')
+                         for b in self.app.ds.get_all_backends())
+        self.sync_button.set_visible(has_remote)
+
+    def _on_backend_sync_started(self, sender, backend_id):
+        """A backend sync cycle started: show activity."""
+
+        self._syncing_backends.add(backend_id)
+        self._update_sync_indicator()
+
+    def _on_backend_sync_ended(self, sender, backend_id):
+        """A backend sync cycle ended: back to idle when none left."""
+
+        self._syncing_backends.discard(backend_id)
+        self._update_sync_indicator()
+
+    def _update_sync_indicator(self):
+        """Reflect the current sync activity on the headerbar button."""
+
+        syncing = bool(self._syncing_backends)
+        self.sync_button.set_sensitive(not syncing)
+
+        if syncing:
+            self.sync_button.set_child(self._sync_spinner)
+            self._sync_spinner.start()
+            self.sync_button.set_tooltip_text(_('Synchronizing…'))
+        else:
+            self._sync_spinner.stop()
+            self.sync_button.set_icon_name('emblem-synchronizing-symbolic')
+            self.sync_button.set_tooltip_text(_('Synchronize now (F5)'))
+
     def _init_context_menus(self):
         builder = Gtk.Builder()
         builder.add_from_file(GnomeConfig.MENUS_UI_FILE)
