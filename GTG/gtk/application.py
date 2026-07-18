@@ -313,6 +313,7 @@ class Application(Gtk.Application):
             ('dismiss', self.dismiss, ('app.dismiss', ['<ctrl><shift>D'])),
             ('reopen', self.reopen, ('app.reopen', ['<ctrl>O'])),
             ('open_backends', self.open_backends_manager, None),
+            ('sync_now', self.sync_now, ('app.sync_now', ['F5'])),
             ('open_help', self.open_help, ('app.open_help', ['F1'])),
             ('open_preferences', self.open_preferences, ('app.open_preferences', ['<ctrl>comma'])),
             ('close', self.close_context, ('app.close', ['Escape'])),
@@ -413,6 +414,11 @@ class Application(Gtk.Application):
         """Callback to open the backends manager dialog."""
 
         self.open_edit_backends()
+
+    def sync_now(self, action=None, param=None):
+        """Callback to trigger an immediate backend synchronization."""
+
+        self.ds.sync_now()
 
     def open_preferences(self, action, param):
         """Callback to open the preferences dialog."""
