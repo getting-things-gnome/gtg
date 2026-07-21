@@ -178,7 +178,7 @@ class MainWindow(Gtk.ApplicationWindow):
         self.sync_button = Gtk.Button()
         self.sync_button.set_valign(Gtk.Align.CENTER)
         self.sync_button.set_action_name('app.sync_now')
-        self.sync_button.set_icon_name('emblem-synchronizing-symbolic')
+        self.sync_button.set_icon_name('view-refresh-symbolic')
         self.sync_button.set_tooltip_text(_('Synchronize now (F5)'))
         self.sync_button.set_visible(False)
         self.headerbar.pack_end(self.sync_button)
@@ -222,7 +222,7 @@ class MainWindow(Gtk.ApplicationWindow):
             self.sync_button.set_tooltip_text(_('Synchronizing…'))
         else:
             self._sync_spinner.stop()
-            self.sync_button.set_icon_name('emblem-synchronizing-symbolic')
+            self.sync_button.set_icon_name('view-refresh-symbolic')
             self.sync_button.set_tooltip_text(_('Synchronize now (F5)'))
 
     def _init_context_menus(self):
