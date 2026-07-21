@@ -169,6 +169,17 @@ class Datastore:
                     backend.queue_set_task(task.id)
         self.tasks.connect('task-filterably-changed', _on_task_changed)
 
+        # Notify backends when a task is removed, so local deletions
+        # are pushed to the server. base_store.remove() cascades one
+        # 'removed' signal per descendant (children first), so every
+        # subtask gets its own queue_remove_task without any tree
+        # walking here or in the backends.
+        def _on_task_removed(_, task):
+            for backend in self.backends.values():
+                if backend.is_enabled():
+                    backend.queue_remove_task(task.id)
+        self.tasks.connect('removed', _on_task_removed)
+
         self.data_path: Optional[str] = None
         self._activate_non_default_backends()
 
