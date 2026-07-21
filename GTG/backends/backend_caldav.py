@@ -256,6 +256,10 @@ class Backend(PeriodicImportBackend):
         self._cache.del_todo(str(uid_to_task_id(uid)))  # cleaning cache
         try:  # deleting through caldav
             todo.delete()
+        except caldav.lib.error.NotFoundError:
+            # Already gone server-side: the goal (the todo no longer
+            # exists) is reached, deletion is idempotent.
+            logger.info('Todo for Task(%s) already gone from server', uid)
         except caldav.lib.error.DAVError:
             logger.exception('Something went wrong while deleting %r => %r',
                              uid, todo)
