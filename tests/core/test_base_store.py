@@ -175,3 +175,43 @@ class TestBaseStoreUnparent(TestCase):
     def test_unparenting_root_element_has_no_effect(self):
         self.store.unparent(self.root.id)
         self.assertEqual(self.store.data,[self.root])
+
+
+class TestBaseStoreThreadMarshalling(TestCase):
+    """Regression test for #1279: a background worker (a backend's sync
+    thread) mutating the store used to emit GObject signals synchronously
+    from that thread. GTK 4 is not thread-safe, so that reached the UI off
+    the main loop and could raise a GLib ref-count assertion or segfault.
+    _emit must fire directly on the main thread (keeping the synchronous
+    behaviour existing callers rely on) and defer to the main loop via
+    GLib.idle_add from any other thread."""
+
+    def setUp(self):
+        self.store = BaseStore()
+
+    def test_emit_is_synchronous_on_the_main_thread(self):
+        import threading
+        self.assertIs(threading.current_thread(), threading.main_thread())
+        received = []
+        self.store.connect('added', lambda s, item: received.append(item))
+        item = StoreItem(uuid4())
+        self.store.add(item)
+        # on the main thread the signal has already fired, no loop needed
+        self.assertEqual([item], received)
+
+    def test_emit_is_deferred_off_the_main_thread(self):
+        import threading
+        from unittest.mock import patch
+        calls = []
+        # capture what _emit routes to GLib.idle_add from a worker thread
+        with patch('GTG.core.base_store.GLib.idle_add',
+                   side_effect=lambda *a: calls.append(a)):
+            def worker():
+                self.store._emit('added', StoreItem(uuid4()))
+            t = threading.Thread(target=worker)
+            t.start()
+            t.join()
+        # off the main thread the emit was handed to idle_add, not called inline
+        self.assertEqual(1, len(calls))
+        self.assertEqual(self.store.emit, calls[0][0])
+        self.assertEqual('added', calls[0][1])

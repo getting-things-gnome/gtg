@@ -19,10 +19,11 @@
 """Base for all store classes."""
 
 
-from gi.repository import GObject # type: ignore[import-untyped]
+from gi.repository import GObject, GLib # type: ignore[import-untyped]
 
 from uuid import UUID
 import logging
+import threading
 
 from lxml.etree import _Element
 from typing import Dict, Optional, TypeVar, Generic
@@ -107,6 +108,23 @@ class BaseStore(GObject.Object,Generic[S]):
     # BASIC MANIPULATION
     # --------------------------------------------------------------------------
 
+    def _emit(self, signal: str, *args) -> None:
+        """Emit a store signal, marshalled to the main loop when needed.
+
+        These stores are GObject-based and their signals fire
+        synchronously; sidebar counters and list models react on the
+        spot. GTK 4 is not thread-safe, so when a background worker
+        (e.g. a backend's sync thread) mutates the store, emitting from
+        that thread reaches GTK off the main loop and can raise a
+        GLib ref-count assertion or segfault (#1279). Defer to the main
+        loop with idle_add in that case; on the main thread, emit
+        directly so existing callers keep their synchronous behaviour.
+        """
+        if threading.current_thread() is threading.main_thread():
+            self.emit(signal, *args)
+        else:
+            GLib.idle_add(self.emit, signal, *args)
+
     def new(self) -> S:
         """Creates a new item in the store.
         NOTE: Subclasses may override the signature of this method.
@@ -140,7 +158,7 @@ class BaseStore(GObject.Object,Generic[S]):
             self.data.append(item)
 
         self.lookup[item.id] = item
-        self.emit('added', item)
+        self._emit('added', item)
         log.debug('Added %s', item)
 
 
@@ -180,7 +198,7 @@ class BaseStore(GObject.Object,Generic[S]):
             self.data.remove(item)
         del self.lookup[item_id]
 
-        self.emit('removed', item)
+        self._emit('removed', item)
 
 
     def batch_remove(self,item_ids: list[UUID]) -> None:
@@ -211,7 +229,7 @@ class BaseStore(GObject.Object,Generic[S]):
             log.error("item not found in data: " + str(item_id))
 
         self.lookup[parent_id].add_child(item)
-        self.emit('parent-change', item, self.lookup[parent_id])
+        self._emit('parent-change', item, self.lookup[parent_id])
 
 
     def unparent(self, item_id: UUID) -> None:
@@ -229,7 +247,7 @@ class BaseStore(GObject.Object,Generic[S]):
         self.data.append(child)
         child.parent = None
 
-        self.emit('parent-removed',child,parent)
+        self._emit('parent-removed',child,parent)
 
 
     # --------------------------------------------------------------------------
