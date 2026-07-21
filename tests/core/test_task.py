@@ -469,7 +469,7 @@ class TestTask(TestCase):
                     <term>None</term>
                 </recurring>
                 <subtasks>
-                    <sub>lol</sub>
+                    <sub>ghost-subtask-that-matches-no-task</sub>
                 </subtasks>
 
                 <content><![CDATA[ My Content ]]></content>
@@ -493,7 +493,10 @@ class TestTask(TestCase):
         </tasklist>
         ''')
 
-        with self.assertRaises(ValueError):
+        # a <sub> pointing at no existing task is still rejected, now as
+        # a KeyError from parent() (missing task) rather than a ValueError
+        # from casting the id: non-canonical ids no longer crash the cast
+        with self.assertRaises(KeyError):
             task_store.from_xml(parsed_xml, None)
 
 
@@ -718,3 +721,74 @@ class LoadStoreWithoutAddedDateTest(TestCase):
     def test_valid_added_element_is_still_honored(self):
         task = self._load('<added>2020-01-02 03:04:05</added>')
         self.assertIn('2020-01-02', str(task.date_added))
+
+
+class LoadStoreWithNonUuidIdsTest(TestCase):
+    """Regression test for #1289: a 0.6 data file that ever synced tasks
+    created by another CalDAV client can carry task ids that are not
+    canonical UUIDs (RFC 5545 makes the iCalendar UID an opaque string;
+    the 0.6 CalDAV backend used it verbatim as the local id). from_xml
+    cast every id with UUID() and no guard, so a single non-UUID id
+    raised ValueError, aborted find_and_load_file, and GTG failed to
+    start entirely -- one bad id made all the other tasks unreachable.
+
+    The store must instead map any non-canonical id to a deterministic
+    UUID (uuid5), exactly as the CalDAV backend already does on the sync
+    side, so the same original string always yields the same task id and
+    parent/child references stay intact."""
+
+    NON_UUID_XML = ('<tasklist>'
+                    '<task id="deck-card-986" status="Active">'
+                    '<title>Sturm des Wissens</title>'
+                    '<dates>'
+                    '<added>2023-11-08 14:14:27</added>'
+                    '<modified>2023-11-08 14:14:27</modified>'
+                    '</dates>'
+                    '<subtasks>'
+                    '<sub>task-1772@someclient</sub>'
+                    '</subtasks>'
+                    '<content>from a Nextcloud Deck card</content>'
+                    '</task>'
+                    '<task id="task-1772@someclient" status="Active">'
+                    '<title>A child with a mail-style id</title>'
+                    '<dates>'
+                    '<added>2023-11-08 14:14:27</added>'
+                    '<modified>2023-11-08 14:14:27</modified>'
+                    '</dates>'
+                    '<subtasks/>'
+                    '<content>child content</content>'
+                    '</task>'
+                    '</tasklist>')
+
+    def test_non_uuid_ids_load_instead_of_crashing(self):
+        task_store = TaskStore()
+        task_store.from_xml(XML(self.NON_UUID_XML), TagStore())
+        self.assertEqual(task_store.count(), 2)
+
+    def test_non_uuid_ids_are_mapped_deterministically(self):
+        # the same original string must always yield the same task id,
+        # otherwise a reload would orphan every subtask
+        first = TaskStore()
+        first.from_xml(XML(self.NON_UUID_XML), TagStore())
+        second = TaskStore()
+        second.from_xml(XML(self.NON_UUID_XML), TagStore())
+        self.assertEqual(sorted(str(t.id) for t in first.lookup.values()),
+                         sorted(str(t.id) for t in second.lookup.values()))
+
+    def test_non_uuid_parent_child_link_survives(self):
+        task_store = TaskStore()
+        task_store.from_xml(XML(self.NON_UUID_XML), TagStore())
+        parents = [t for t in task_store.lookup.values() if t.children]
+        self.assertEqual(1, len(parents))
+        self.assertEqual(1, len(parents[0].children))
+
+    def test_canonical_uuid_ids_are_left_untouched(self):
+        canonical = '1d34df07-4185-43ad-adbd-698a86193411'
+        xml = ('<tasklist><task id="' + canonical + '" status="Active">'
+               '<title>T</title>'
+               '<dates><added>2020-01-01 00:00:00</added>'
+               '<modified>2020-01-01 00:00:00</modified></dates>'
+               '<subtasks/><content>c</content></task></tasklist>')
+        task_store = TaskStore()
+        task_store.from_xml(XML(xml), TagStore())
+        self.assertIn(canonical, [str(t.id) for t in task_store.lookup.values()])

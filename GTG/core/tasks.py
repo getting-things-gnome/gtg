@@ -22,7 +22,7 @@
 from gi.repository import GObject, Gio, Gtk, Gdk # type: ignore[import-untyped]
 from gettext import gettext as _
 
-from uuid import uuid4, UUID
+from uuid import uuid4, uuid5, UUID, NAMESPACE_URL
 import logging
 from typing import Callable, Any, List, Optional, Set, Dict, Tuple, Union
 from enum import Enum
@@ -37,6 +37,27 @@ from GTG.core.tags import Tag, TagStore
 from GTG.core.dates import Date
 
 log = logging.getLogger(__name__)
+
+
+# Task ids are UUIDs, but 0.6 data files can carry non-canonical ids:
+# the old CalDAV backend used the remote iCalendar UID verbatim as the
+# local id, and RFC 5545 makes that UID an opaque string (name@host is
+# even the traditional form). Map anything that is not already a valid
+# UUID to a stable name-based one (RFC 4122, uuid5), so the same
+# original string always yields the same task id and subtask/parent
+# references written with that string keep pointing to the same task.
+# This mirrors uid_to_task_id in the CalDAV backend, kept separate to
+# avoid the core depending on a backend.
+ID_NAMESPACE = uuid5(NAMESPACE_URL, 'gtg://core/tasks')
+
+
+def id_to_uuid(task_id) -> UUID:
+    if isinstance(task_id, UUID):
+        return task_id
+    try:
+        return UUID(task_id)
+    except (TypeError, AttributeError, ValueError):
+        return uuid5(ID_NAMESPACE, str(task_id))
 
 
 # ------------------------------------------------------------------------------
@@ -894,7 +915,11 @@ class TaskStore(BaseStore[Task]):
         elements = list(xml.iter(self.XML_TAG))
 
         for element in elements:
-            tid = UUID(element.get('id'))
+            raw_id = element.get('id')
+            tid = id_to_uuid(raw_id)
+            if str(tid) != raw_id:
+                log.warning('Task id %r is not a UUID, mapped to %s',
+                            raw_id, tid)
             title_element = element.find('title')
             assert title_element is not None, 'Title element not found for task '+str(tid)
             assert title_element.text is not None, 'Title text not found for task '+str(tid)
@@ -979,12 +1004,12 @@ class TaskStore(BaseStore[Task]):
 
         # All tasks have been added, now we parent them
         for element in elements:
-            parent_tid = UUID(element.get('id'))
+            parent_tid = id_to_uuid(element.get('id'))
             subtasks = element.find('subtasks')
             assert subtasks is not None, 'Subtasks element not found in task '+str(tid)
 
             for sub in subtasks.findall('sub'):
-                self.parent(UUID(sub.text), parent_tid)
+                self.parent(id_to_uuid(sub.text), parent_tid)
 
 
     def to_xml(self) -> _Element:
