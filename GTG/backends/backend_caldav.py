@@ -158,15 +158,19 @@ class Backend(PeriodicImportBackend):
         self._set_task(task)
 
     @interruptible
-    def remove_task(self, tid: str) -> None:
+    def remove_task(self, tid) -> None:
+        """Push a local deletion to the server. The task is already
+        gone from the local store (that removal is what triggered the
+        'removed' signal), so this must only delete the remote todo."""
         if self._parameters["is-first-run"] or not self._cache.initialized:
-            logger.warning("not loaded yet, ignoring set_task")
+            logger.warning("not loaded yet, ignoring remove_task")
             return
         if not tid:
             logger.warning("no task id passed to remove_task call, ignoring")
             return
-        with self.datastore.mutex:
-            return self.datastore.tasks.remove(UUID(tid) if isinstance(tid, str) else tid)
+        # tid may arrive as a UUID object (task.id) from the queue;
+        # the todo cache is keyed by str(task.id), so normalize.
+        self._remove_task(str(tid))
 
     #
     # real main methods
@@ -222,11 +226,13 @@ class Backend(PeriodicImportBackend):
             self._create_todo(task, calendar)
 
     def _remove_task(self, tid: str) -> None:
-        todo = self._cache.get_todo(tid)
+        todo = self._cache.get_todo(str(tid))
         if todo:
-            self._remove_todo(tid, todo)
+            self._remove_todo(str(tid), todo)
         else:
-            logger.error("Could not find todo for task(%s)", tid)
+            # Not an error: the task may never have reached the server
+            # or may belong to another calendar. Nothing to delete.
+            logger.info("No known todo for task(%s), nothing to remove", tid)
 
     #
     # Dav functions
