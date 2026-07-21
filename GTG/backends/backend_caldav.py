@@ -50,6 +50,12 @@ DAV_IGNORE = {'last-modified',  # often updated alone by GTG
               'sequence',  # internal DAV value, only set by translator
               'percent-complete',  # calculated on subtask and status
               'completed',  # GTG date is constrained
+              'uid',  # identity, not a change: for non-UUID server
+                      # UIDs the task id is a uuid5 mapping and the two
+                      # sides legitimately never match (see
+                      # uid_to_task_id); treating that as a diff made
+                      # every set_task rewrite the todo and inflate its
+                      # SEQUENCE forever
               }
 
 
