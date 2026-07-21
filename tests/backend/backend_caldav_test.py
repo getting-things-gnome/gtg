@@ -717,3 +717,18 @@ class LocalDeletionPushTest(TestCase):
         backend = self._backend()
         # cache not initialized: nothing to look up, must not raise
         backend.remove_task('5241ab4d-05ef-4b2e-ab1e-1699ba222eef')
+
+    def test_deleting_an_already_gone_todo_is_a_success(self):
+        # DELETE must be idempotent: a 404 means the goal (the todo
+        # no longer exists server-side) is already reached
+        backend, todo, task = self._synced_backend(self.VTODO_UUID)
+        todo.delete.side_effect = NotFoundError('410 Gone')
+        # assertNoLogs is Python 3.10+ and CI runs 3.9: capture the
+        # records and check none is error-level instead
+        with self.assertLogs('GTG.backends.backend_caldav',
+                             level='INFO') as captured:
+            backend.remove_task(task.id)  # must not raise
+        self.assertFalse(
+            [r.getMessage() for r in captured.records
+             if r.levelname in ('ERROR', 'CRITICAL')])
+        self.assertIsNone(backend._cache.get_todo(str(task.id)))
