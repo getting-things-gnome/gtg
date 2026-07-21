@@ -913,10 +913,20 @@ class TaskStore(BaseStore[Task]):
             task.date_modified = Date(datetime.datetime.fromisoformat(modified))
 
             added_element = dates.find('added')
-            assert added_element is not None, 'Added element not found in task '+str(tid)
-            assert added_element.text is not None, 'Added text not found in task '+str(tid)
-            added = added_element.text
-            task.date_added = Date(datetime.datetime.fromisoformat(added))
+            if added_element is not None and added_element.text:
+                added = added_element.text
+                task.date_added = Date(datetime.datetime.fromisoformat(added))
+            else:
+                # Stores written while a task had no added date -- e.g.
+                # after importing a CalDAV VTODO without a CREATED
+                # field, before the fill_task guard -- lack the <added>
+                # element or leave it empty. Refusing to load them makes
+                # GTG crash at startup (#1033): heal the task instead,
+                # falling back on the modification date parsed above,
+                # like the import side does.
+                log.warning('Task %s has no added date, falling back '
+                            'on the modification date', tid)
+                task.date_added = task.date_modified
 
             if status == 'Done':
                 task.status = Status.DONE
