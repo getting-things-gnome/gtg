@@ -732,3 +732,50 @@ class LocalDeletionPushTest(TestCase):
             [r.getMessage() for r in captured.records
              if r.levelname in ('ERROR', 'CRITICAL')])
         self.assertIsNone(backend._cache.get_todo(str(task.id)))
+
+
+class ServerSideSubtaskDeletionTest(TestCase):
+    """A subtask deleted on the server must be removed locally too.
+
+    _get_calendar_tasks used to iterate tasks.data, which only holds
+    toplevel tasks: subtasks were invisible to the import's deletion
+    detection and lived on in GTG forever."""
+
+    @staticmethod
+    def _todo(raw, calendar):
+        todo = Mock()
+        todo.instance.vtodo = vobject.readOne(raw)
+        todo.parent = calendar
+        return todo
+
+    @patch('GTG.backends.periodic_import_backend.threading.Timer')
+    @patch('GTG.backends.backend_caldav.caldav.DAVClient')
+    def test_subtask_deleted_on_server_is_deleted_locally(
+            self, dav_client, timer):
+        calendar = Mock()
+        calendar.name, calendar.url = 'my calendar', 'https://my.fa.ke/cal'
+        root = self._todo(VTODO_ROOT, calendar)
+        child = self._todo(VTODO_CHILD, calendar)
+        calendar.todos.return_value = [root, child]
+        dav_client.return_value.principal.return_value.calendars\
+            .return_value = [calendar]
+        parameters = {'pid': 'test', 'service-url': 'unittest',
+                      'username': 'u', 'password': 'p', 'period': 1,
+                      'is-first-run': False}
+        backend = Backend(parameters)
+        backend.register_datastore(Datastore())
+        backend.initialize()
+        backend.do_periodic_import()
+        self.assertEqual(2, len(backend.datastore.tasks.lookup))
+        child_id = uid_to_task_id('CHILD')
+        self.assertIsNotNone(
+            backend.datastore.tasks.lookup[child_id].parent,
+            'the subtask must be attached under its parent')
+
+        # the subtask disappears from the server
+        calendar.todos.return_value = [root]
+        calendar.todo_by_uid.side_effect = NotFoundError
+        backend.do_periodic_import()
+        self.assertNotIn(child_id, backend.datastore.tasks.lookup,
+                         'a subtask deleted on the server must not '
+                         'survive the next import')
