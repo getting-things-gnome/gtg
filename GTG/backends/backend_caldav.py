@@ -412,7 +412,9 @@ class Backend(PeriodicImportBackend):
 
     def _get_calendar_tasks(self, calendar: iCalendar):
         """Getting all tasks that has the calendar tag"""
-        for task in self.datastore.tasks.data:
+        # lookup holds every task; data only holds toplevel ones, and
+        # iterating it would hide subtasks from the deletion detection
+        for task in self.datastore.tasks.lookup.values():
             if CATEGORIES.has_calendar_tag(task, calendar):
                 yield str(task.id), task
 
