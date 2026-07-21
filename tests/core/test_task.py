@@ -676,3 +676,45 @@ class TestTask(TestCase):
         task_store.sort(tasks, key='title')
         expected = [task1, task2, task4]
         self.assertEqual(tasks, expected)
+
+
+class LoadStoreWithoutAddedDateTest(TestCase):
+    """Regression test for #1033: a gtg_data.xml written while a task
+    had no added date (e.g. after importing a CalDAV VTODO without a
+    CREATED field, before the fill_task guard) lacks the <added>
+    element or leaves it empty. Refusing to load such a file makes
+    GTG crash at startup; the store must heal the task instead,
+    falling back on the modification date like the import side does."""
+
+    TASK_XML = ('<tasklist>'
+                '<task id="0ab33328-4bd0-4d1b-8b06-58bdd8fc4d05"'
+                ' status="Active">'
+                '<title>Sturm des Wissens</title>'
+                '<dates>'
+                '<modified>2023-11-08 14:14:27.529767</modified>'
+                '{added}'
+                '</dates>'
+                '<subtasks/>'
+                '<content>from a Nextcloud Deck card</content>'
+                '</task>'
+                '</tasklist>')
+
+    def _load(self, added_fragment):
+        task_store = TaskStore()
+        xml = XML(self.TASK_XML.format(added=added_fragment))
+        task_store.from_xml(xml, TagStore())
+        return next(iter(task_store.lookup.values()))
+
+    def test_missing_added_element_falls_back_on_modified(self):
+        task = self._load('')
+        self.assertTrue(task.date_added)
+        self.assertEqual(str(task.date_modified), str(task.date_added))
+
+    def test_empty_added_element_falls_back_on_modified(self):
+        task = self._load('<added></added>')
+        self.assertTrue(task.date_added)
+        self.assertEqual(str(task.date_modified), str(task.date_added))
+
+    def test_valid_added_element_is_still_honored(self):
+        task = self._load('<added>2020-01-02 03:04:05</added>')
+        self.assertIn('2020-01-02', str(task.date_added))
