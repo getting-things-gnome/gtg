@@ -622,6 +622,32 @@ class NonUuidUidRegressionTest(TestCase):
         self.assertEqual(_UUID(canonical),
                          uid_to_task_id(canonical.upper()))
 
+    def test_non_uuid_uid_alone_does_not_trigger_a_push(self):
+        """The task id is the uuid5 mapping of a non-UUID server UID,
+        so the two sides legitimately never match. That identity
+        difference used to count as a change: every set_task rewrote
+        the unchanged todo and inflated its SEQUENCE forever."""
+        parameters = {'pid': 'test', 'service-url': 'unittest',
+                      'username': 'u', 'password': 'p', 'period': 1,
+                      'is-first-run': False}
+        backend = Backend(parameters)
+        backend.datastore = Datastore()
+        calendar = Mock()
+        calendar.name = 'My Calendar'
+        todo = self._todo(self.VTODO_NON_UUID)
+        todo.parent = calendar
+        calendar.todos.return_value = [todo]
+        counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
+        backend._import_calendar_todos(
+            calendar, datetime.now(LOCAL_TIMEZONE), counts)
+        backend._cache.initialized = True
+        task = next(iter(backend.datastore.tasks.lookup.values()))
+
+        backend.set_task(task)
+
+        todo.save.assert_not_called()
+        calendar.add_todo.assert_not_called()
+
 
 class LocalDeletionPushTest(TestCase):
     """Deleting a task in GTG must delete the matching todo on the
