@@ -621,3 +621,99 @@ class NonUuidUidRegressionTest(TestCase):
         canonical = '1f0ac2a2-2e44-4f9c-89e2-6dd00b78ef34'
         self.assertEqual(_UUID(canonical),
                          uid_to_task_id(canonical.upper()))
+
+
+class LocalDeletionPushTest(TestCase):
+    """Deleting a task in GTG must delete the matching todo on the
+    CalDAV server, otherwise it reappears on the next import.
+
+    Follow-up to #1265, whose scope note read "this PR does not cover
+    pushing local deletions to the server": the public remove_task
+    used to mutate GTG's own store (the exact inverse of a push)
+    while the real DAV deletion, _remove_task, had no caller."""
+
+    UUID_UID = '5241ab4d-05ef-4b2e-ab1e-1699ba222eef'
+    VTODO_UUID = ("BEGIN:VTODO\r\n"
+                  "CREATED:20201212T092155Z\r\n"
+                  "DTSTAMP:20201212T172830Z\r\n"
+                  "LAST-MODIFIED:20201212T172558Z\r\n"
+                  "STATUS:NEEDS-ACTION\r\n"
+                  "SUMMARY:todo to be deleted\r\n"
+                  "UID:" + UUID_UID + "\r\n"
+                  "END:VTODO\r\n")
+    NON_UUID_UID = '19960401T080045Z-4000F192713@example.com'
+    VTODO_NON_UUID = ("BEGIN:VTODO\r\n"
+                      "CREATED:20201212T092155Z\r\n"
+                      "DTSTAMP:20201212T172830Z\r\n"
+                      "LAST-MODIFIED:20201212T172558Z\r\n"
+                      "STATUS:NEEDS-ACTION\r\n"
+                      "SUMMARY:todo with a non-uuid uid\r\n"
+                      "UID:" + NON_UUID_UID + "\r\n"
+                      "END:VTODO\r\n")
+
+    @staticmethod
+    def _todo(raw):
+        todo = Mock()
+        todo.instance.vtodo = vobject.readOne(raw)
+        todo.parent.name = 'My Calendar'
+        return todo
+
+    @staticmethod
+    def _backend():
+        parameters = {'pid': 'test', 'service-url': 'unittest',
+                      'username': 'u', 'password': 'p', 'period': 1,
+                      'is-first-run': False}
+        backend = Backend(parameters)
+        backend.datastore = Datastore()
+        return backend
+
+    def _synced_backend(self, raw_vtodo):
+        """A backend whose cache holds one imported todo."""
+        backend = self._backend()
+        calendar = Mock()
+        calendar.name = 'My Calendar'
+        todo = self._todo(raw_vtodo)
+        calendar.todos.return_value = [todo]
+        counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
+        backend._import_calendar_todos(
+            calendar, datetime.now(LOCAL_TIMEZONE), counts)
+        backend._cache.initialized = True  # done by _do_periodic_import
+        self.assertEqual(1, counts['created'])
+        task = next(iter(backend.datastore.tasks.lookup.values()))
+        return backend, todo, task
+
+    def test_remove_task_deletes_the_remote_todo(self):
+        backend, todo, task = self._synced_backend(self.VTODO_UUID)
+        backend.remove_task(str(task.id))
+        todo.delete.assert_called_once_with()
+        self.assertIsNone(backend._cache.get_todo(str(task.id)))
+
+    def test_remove_task_does_not_touch_the_local_store(self):
+        # regression: the old remove_task deleted the task from GTG's
+        # own store instead of pushing the deletion to the server
+        backend, todo, task = self._synced_backend(self.VTODO_UUID)
+        backend.remove_task(str(task.id))
+        self.assertIn(task.id, backend.datastore.tasks.lookup)
+
+    def test_remove_task_accepts_a_uuid_object(self):
+        # regression: the queue hands over task.id (a UUID object)
+        # while the todo cache is keyed by str(task.id)
+        backend, todo, task = self._synced_backend(self.VTODO_UUID)
+        backend.remove_task(task.id)
+        todo.delete.assert_called_once_with()
+
+    def test_remove_task_with_non_uuid_server_uid(self):
+        backend, todo, task = self._synced_backend(self.VTODO_NON_UUID)
+        backend.remove_task(task.id)
+        todo.delete.assert_called_once_with()
+        self.assertIsNone(backend._cache.get_todo(str(task.id)))
+
+    def test_remove_task_for_unknown_tid_is_a_noop(self):
+        backend, todo, task = self._synced_backend(self.VTODO_UUID)
+        backend.remove_task('11111111-2222-3333-4444-555555555555')
+        todo.delete.assert_not_called()
+
+    def test_remove_task_before_cache_is_ready_is_ignored(self):
+        backend = self._backend()
+        # cache not initialized: nothing to look up, must not raise
+        backend.remove_task('5241ab4d-05ef-4b2e-ab1e-1699ba222eef')
