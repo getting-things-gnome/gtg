@@ -143,7 +143,9 @@ class ConfigurePanel(Gtk.Box):
         """
         Refreshes the state of the button that enables the backend
         """
-        self.sync_button.set_sensitive(not self.backend.is_default())
+        # The default backend cannot be disabled, so hide the button
+        # entirely instead of showing it greyed out
+        self.sync_button.set_visible(not self.backend.is_default())
         if self.backend.is_enabled():
             label = _("Disable syncing")
         else:
