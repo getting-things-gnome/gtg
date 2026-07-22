@@ -8,6 +8,7 @@ import vobject
 from caldav.lib.error import NotFoundError
 from dateutil.tz import UTC
 from GTG.backends.backend_caldav import (CATEGORIES, CHILDREN_FIELD,
+                                         Recurrence,
                                          DAV_IGNORE, PARENT_FIELD, UID_FIELD,
                                          Backend, DueDateField, SORT_ORDER,
                                          Translator, uid_to_task_id)
@@ -685,6 +686,56 @@ class NonUuidUidRegressionTest(TestCase):
         calendar.todo_by_uid.assert_called_once_with(self.NON_UUID_UID)
         self.assertEqual(1, len(backend.datastore.tasks.lookup),
                          'the task must survive: the server still has it')
+
+
+
+class RecurrenceRRuleTest(TestCase):
+    """The CalDAV Recurrence field maps between iCalendar RRULE FREQ and
+    GTG recurring terms. Reading a DAILY rule used to go through
+    freq.lower()[:-2], which turns 'WEEKLY'->'week' but 'DAILY'->'dai',
+    a term GTG's date parser doesn't know. Every FREQ we write must read
+    back as a term GTG actually accepts."""
+
+    GTG_TERMS = {'day', 'other-day', 'week', 'month', 'year'}
+
+    def _vtodo_with_rrule(self, **params):
+        cal = vobject.iCalendar()
+        todo = cal.add('vtodo')
+        rrule = todo.add('rrule')
+        rrule.params = {k: (v if isinstance(v, list) else [v])
+                        for k, v in params.items()}
+        return todo
+
+    def test_daily_reads_back_as_a_valid_gtg_term(self):
+        field = Recurrence('rrule', 'get_recurring_term', 'set_recurring')
+        vtodo = self._vtodo_with_rrule(FREQ='DAILY')
+        enabled, term = field.get_dav(vtodo=vtodo)
+        self.assertTrue(enabled)
+        self.assertEqual('day', term)
+        self.assertIn(term, self.GTG_TERMS)
+
+    def test_every_freq_maps_to_a_term_gtg_accepts(self):
+        field = Recurrence('rrule', 'get_recurring_term', 'set_recurring')
+        for freq in ('DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'):
+            vtodo = self._vtodo_with_rrule(FREQ=freq)
+            enabled, term = field.get_dav(vtodo=vtodo)
+            self.assertTrue(enabled, f'{freq} should be recurring')
+            self.assertIn(term, self.GTG_TERMS,
+                          f'{freq} read back as {term!r}, not a GTG term')
+
+    def test_every_other_day_is_recognised(self):
+        field = Recurrence('rrule', 'get_recurring_term', 'set_recurring')
+        vtodo = self._vtodo_with_rrule(FREQ='DAILY', INTERVAL='2')
+        enabled, term = field.get_dav(vtodo=vtodo)
+        self.assertTrue(enabled)
+        self.assertEqual('other-day', term)
+
+    def test_unsupported_freq_is_ignored_not_mangled(self):
+        field = Recurrence('rrule', 'get_recurring_term', 'set_recurring')
+        vtodo = self._vtodo_with_rrule(FREQ='HOURLY')
+        enabled, term = field.get_dav(vtodo=vtodo)
+        self.assertFalse(enabled)
+        self.assertIsNone(term)
 
 
 
