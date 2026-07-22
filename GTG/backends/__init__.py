@@ -54,6 +54,7 @@ class BackendFactory(Borg):
             # This object has already been constructed
             return
         self.backend_modules = {}
+        self.inactive_modules = {}
         backend_files = self._find_backend_files()
         # Create module names
         module_names = [f.replace(".py", "") for f in backend_files]
@@ -67,10 +68,12 @@ class BackendFactory(Borg):
                 # Something is wrong with this backend, skipping
                 log.warning("Backend %s could not be loaded: %r",
                             module_name, exception)
+                self.inactive_modules[module_name] = str(exception)
                 continue
-            except Exception:
+            except Exception as exception:
                 # Other exception log as errors
                 log.exception("Malformated backend %s:", module_name)
+                self.inactive_modules[module_name] = str(exception)
                 continue
 
         def browse_subclasses(cls):
@@ -110,6 +113,13 @@ class BackendFactory(Borg):
         Returns a dictionary containing all the backends types
         """
         return self.backend_modules
+
+    def get_inactive_modules(self):
+        """
+        Returns a dictionary mapping the name of each backend module that
+        failed to load to the error message explaining why it failed
+        """
+        return self.inactive_modules
 
     def get_new_backend_dict(self, backend_name, additional_parameters={}):
         """
