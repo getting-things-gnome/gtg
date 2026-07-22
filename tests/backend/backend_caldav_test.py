@@ -651,6 +651,42 @@ class NonUuidUidRegressionTest(TestCase):
         todo.save.assert_not_called()
         calendar.add_todo.assert_not_called()
 
+    def test_missing_active_todo_is_refetched_by_its_server_uid(self):
+        """A task imported from a non-UUID server keeps that UID as an
+        attribute; its GTG id is a one-way uuid5 of it. When the todo is
+        absent from a later fetch, the backend refetches it to decide
+        whether to delete the task -- and must ask the server by the UID
+        the server actually knows (remote_uid), not the GTG id. Asking
+        by the GTG id always raises NotFoundError, so the task gets
+        deleted on every import (silent data loss)."""
+        backend = self._backend()
+        calendar = Mock()
+        calendar.name = 'My Calendar'
+        todo = self._todo(self.VTODO_NON_UUID)
+        todo.parent = calendar
+        calendar.todos.return_value = [todo]
+        counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
+        start = datetime.now(LOCAL_TIMEZONE)
+        backend._import_calendar_todos(calendar, start, counts)
+        backend._cache.initialized = True
+        self.assertEqual(1, len(backend.datastore.tasks.lookup))
+        task = next(iter(backend.datastore.tasks.lookup.values()))
+        # make the task look older than the import so it is a deletion
+        # candidate rather than a just-created one
+        task.date_added = Date(datetime(2000, 1, 1, tzinfo=LOCAL_TIMEZONE))
+
+        # next import: the todo is gone from the fetch. The server still
+        # has it under its real UID, so refetch must find it and NOT delete.
+        calendar.todos.return_value = []
+        calendar.todo_by_uid.return_value = todo
+        backend._import_calendar_todos(
+            calendar, datetime.now(LOCAL_TIMEZONE), counts)
+
+        calendar.todo_by_uid.assert_called_once_with(self.NON_UUID_UID)
+        self.assertEqual(1, len(backend.datastore.tasks.lookup),
+                         'the task must survive: the server still has it')
+
+
 
 class LocalDeletionPushTest(TestCase):
     """Deleting a task in GTG must delete the matching todo on the
