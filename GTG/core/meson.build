@@ -16,7 +16,7 @@ info_config.set('VCS_TAG', version)
 
 infodir = python3.get_install_dir()
 info_py = configure_file(
-            input : 'info.py.in',
+            input : 'info.py',
             output :'info.py',
             configuration: info_config,
             install : true,
