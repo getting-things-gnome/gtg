@@ -1013,6 +1013,9 @@ class OrderField(Field):
 
 class Recurrence(Field):
     DAV_DAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA']
+    # iCalendar FREQ -> GTG recurring term (see dates.py parsing)
+    FREQ_TO_TERM = {'DAILY': 'day', 'WEEKLY': 'week',
+                    'MONTHLY': 'month', 'YEARLY': 'year'}
 
     def get_gtg(self, task: Task, namespace: str = None) -> tuple:
         return task._is_recurring, task.recurring_term
@@ -1028,7 +1031,9 @@ class Recurrence(Field):
         if interval and freq and interval[0] == '2' and freq[0] == 'DAILY':
             return True, 'other-day'
         if freq:
-            return True, freq[0].lower()[:-2]
+            term = self.FREQ_TO_TERM.get(freq[0])
+            if term:
+                return True, term
         return False, None
 
     def write_dav(self, vtodo: iCalendar, value: tuple):
