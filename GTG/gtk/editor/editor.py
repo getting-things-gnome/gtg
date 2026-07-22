@@ -606,11 +606,29 @@ class TaskEditor(Gtk.Window):
         year, month, day = gtime.get_year(), gtime.get_month(), gtime.get_day_of_month()
         return datetime.date(year, month, day)
 
+    def _dismiss_date_popover(self, kind):
+        """Close the date popover for the given kind and hand focus back.
+
+        The popovers open on the entry's focus 'enter' event, so simply
+        calling popdown() leaves the focus inside the entry: clicking it
+        again fires no new 'enter' and the popover won't reopen (#403).
+        Moving focus to the text view restores that, and it mirrors the
+        calendar day-selection UX -- pick a date, popover closes, you're
+        back in the task.
+        """
+        popover = {GTGCalendar.DATE_KIND_START: self.start_popover,
+                   GTGCalendar.DATE_KIND_DUE: self.due_popover,
+                   GTGCalendar.DATE_KIND_CLOSED: self.closed_popover}.get(kind)
+        if popover is not None:
+            popover.popdown()
+        self.textview.grab_focus()
+
     def on_duedate_fuzzy(self, widget, date):
         """ Callback when a fuzzy date is selected through the popup. """
 
         self.task.date_due = date
         self.due_entry.set_text(date.localized_str)
+        self._dismiss_date_popover(GTGCalendar.DATE_KIND_DUE)
 
     def on_date_cleared(self, widget, kind):
         """ Callback when a date is cleared through the popups. """
@@ -622,6 +640,8 @@ class TaskEditor(Gtk.Window):
         elif kind == GTGCalendar.DATE_KIND_DUE:
             self.task.date_due = Date.no_date()
             self.due_entry.set_text('')
+
+        self._dismiss_date_popover(kind)
 
     def on_date_selected(self, calendar, kind):
         """ Callback when a day is selected in the calendars."""
@@ -639,6 +659,8 @@ class TaskEditor(Gtk.Window):
         elif kind == GTGCalendar.DATE_KIND_CLOSED:
             self.task.date_closed = Date(date)
             self.closed_entry.set_text(Date(date).localized_str)
+
+        self._dismiss_date_popover(kind)
 
     def on_date_changed(self, calendar):
         date, date_kind = calendar.get_selected_date()
