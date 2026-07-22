@@ -308,7 +308,7 @@ class Backend(PeriodicImportBackend):
                 logger.warning("Couldn't find calendar for %r", task)
                 return
             try:  # fetching missing todo from server
-                todo = calendar.todo_by_uid(uid)
+                todo = calendar.todo_by_uid(remote_uid(task, self.namespace))
             except caldav.lib.error.NotFoundError:
                 do_delete = True
             else:
