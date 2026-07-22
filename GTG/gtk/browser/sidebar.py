@@ -181,7 +181,7 @@ class Sidebar(Gtk.ScrolledWindow):
         button.set_margin_start(6)
         button.set_margin_end(6)
 
-        tags_icon = Gtk.Image.new_from_icon_name('view-list-symbolic')
+        tags_icon = Gtk.Image.new_from_icon_name('tag-symbolic')
         tags_icon.set_margin_end(6)
         btn_box.append(tags_icon)
         btn_box.append(button_label)
