@@ -180,6 +180,49 @@ class TestTask(TestCase):
         self.assertEqual(len(task.tags), 0)
 
 
+    def test_remove_tag_with_regex_metacharacters(self):
+        """Tag names are injected into the content regexes verbatim.
+
+        A name carrying regex metacharacters either changes the
+        pattern's meaning (parentheses become a group, so the tag is
+        never removed) or makes it invalid ('a[b' opens a character
+        set that is never closed, which raises re.error). GTG's editor
+        already accepts those characters in a tag, and since #1305
+        CalDAV categories reach the store verbatim too, so a remote
+        name can now crash the removal.
+        """
+        for name in ('x(y)', 'a[b', '50%', 'a+b', 'v1.2', 'fin*',
+                     'Deck:_Server', "7-N'importe_ou"):
+            task = Task(id=uuid4(), title='A Task')
+            task.content = f'start @{name} end'
+            task.add_tag(Tag(id=uuid4(), name=name))
+
+            task.remove_tag(name)
+
+            self.assertEqual(0, len(task.tags), name)
+            self.assertNotIn('@', task.content,
+                             f'{name!r} was left behind in the content')
+
+    def test_remove_tag_leaves_longer_tags_alone(self):
+        task = Task(id=uuid4(), title='A Task')
+        task.content = 'start @work, @workshop, @work-item end'
+        task.add_tag(Tag(id=uuid4(), name='work'))
+
+        task.remove_tag('work')
+
+        self.assertIn('@workshop', task.content)
+        self.assertIn('@work-item', task.content)
+
+    def test_rename_tag_with_regex_metacharacters(self):
+        task = Task(id=uuid4(), title='A Task')
+        task.content = 'start @x(y) end'
+
+        task.rename_tag('x(y)', 'z')
+
+        self.assertIn('@z', task.content)
+        self.assertNotIn('@x(y)', task.content)
+
+
     def test_tags_children(self):
         task1 = Task(id=uuid4(), title='A Parent Task')
         task2 = Task(id=uuid4(), title='A Child Task')

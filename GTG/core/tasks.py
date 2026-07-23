@@ -65,6 +65,14 @@ def id_to_uuid(task_id) -> UUID:
 # ------------------------------------------------------------------------------
 
 TAG_LINE_REGEX = re.compile(r'^\B\@\w+(\-\w+)*\,*.*')
+
+# Guard for tag names spliced into content regexes: a name only ends
+# where no character the editor accepts inside a tag follows, so
+# removing @work leaves @workshop and @work-item alone. A plain \b
+# cannot do this, since it needs a word character and tag names may
+# end with ')', '%' or '*'. Names must also be re.escape()d, or a
+# name like 'a[b' builds an invalid pattern and raises re.error.
+TAG_CONTINUES = r'(?![\w\-.+%$\\()\[\]{}^=/*])'
 SUB_REGEX = re.compile(r'\{\!.+\!\}')
 
 
@@ -339,16 +347,18 @@ class Task(StoreItem):
             if t.name == tag_name:
                 self.tags.remove(t)
 
+                escaped = re.escape(tag_name)
+
                 # remove the tag and the unnecessary empty lines
                 # if this is the only tag in the list of tags at the beginning
-                self.content = re.sub(r'\A@'+tag_name+'\n\n','',self.content)
+                self.content = re.sub(r'\A@'+escaped+'\n\n','',self.content)
 
                 # remove the tag and the corresponding separators
                 # if it is not the last element in a list of tags
-                self.content = re.sub(r'\B@'+tag_name+',','',self.content)
+                self.content = re.sub(r'\B@'+escaped+',','',self.content)
 
                 # remove every other instance of the tag
-                self.content = re.sub(r'\B@'+tag_name+r'\b(?!-)','',self.content)
+                self.content = re.sub(r'\B@'+escaped+TAG_CONTINUES,'',self.content)
 
                 self.emit('tags-changed')
                 self.notify('row_css')
@@ -356,7 +366,8 @@ class Task(StoreItem):
 
     def rename_tag(self, old_tag_name: str, new_tag_name: str) -> None:
         """Replace a tag's name in the content."""
-        self.content = re.sub(r'\B@'+old_tag_name+r'\b(?!-)','@'+new_tag_name,self.content)
+        self.content = re.sub(r'\B@'+re.escape(old_tag_name)+TAG_CONTINUES,
+                              lambda _: '@'+new_tag_name, self.content)
 
 
     @property
