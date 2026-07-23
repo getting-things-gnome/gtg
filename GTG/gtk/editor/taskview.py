@@ -45,6 +45,20 @@ log = logging.getLogger(__name__)
 # characters and/or dashes
 TAG_REGEX = re.compile(r'(?<!\/|\w)\@\w+(\.*[\-\w+\+\%\$\\(\)\[\]\{\}\^\=\/\*])*')
 
+
+def tag_is_faithfully_representable(name: str) -> bool:
+    """True when writing '@name' in the text reads back as that exact tag.
+
+    Tags imported from CalDAV may carry characters the inline marker
+    cannot (colons, quotes, commas...). Writing those in the text gets
+    them truncated on re-parse, which then re-adds a second, mangled
+    tag on every open (#1265, #1305). Such tags still live in the tag
+    store, the pills and the sidebar; they just stay out of the text.
+    """
+    candidate = '@' + name
+    match = TAG_REGEX.match(candidate)
+    return bool(match) and match.group(0) == candidate
+
 # Regex to find internal links
 # Starts with gtg:// followed by a UUID.
 INTERNAL_REGEX = re.compile((r'gtg:\/\/'
@@ -850,6 +864,12 @@ class TaskView(GtkSource.View):
 
     def insert_tags(self, tags: List) -> None:
         """Insert tags in buffer."""
+
+        # Only write tags the parser reads back identically. Richer
+        # names (e.g. imported from CalDAV) stay in the store and the
+        # pills; writing them here would truncate them on re-parse and
+        # fork a mangled duplicate on every open (#1265, #1305).
+        tags = [t for t in tags if tag_is_faithfully_representable(t)]
 
         # Don't add tags that are already in the buffer
         for t in tags.copy():

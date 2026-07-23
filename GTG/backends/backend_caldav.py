@@ -744,18 +744,20 @@ class PercentComplete(Field):
 
 class Categories(Field):
     CAT_SPACE = '_'
-    # GTG's tag parsers do not agree on what a tag may contain: the
-    # editor's TAG_REGEX and core.tasks' TAG_LINE_REGEX both stop at
-    # anything outside \w and '-', while core.tags accepts more. A
-    # calendar named "Deck: Server" used to produce the tag
-    # "DAV_Deck:_Server", which the editor re-read as "@DAV_Deck" and
-    # then re-added as a second, truncated tag on every open. Only
-    # build tags every parser agrees on.
-    TAG_UNSAFE = re.compile(r'[^\w\-]', re.UNICODE)
+    # A server category may carry characters GTG's inline tag marker
+    # cannot (colons, quotes, ...). The historical contract only maps
+    # spaces to '_' and back, which is exactly reversible, so the
+    # server data survives the round trip untouched. Mapping *every*
+    # unsafe character onto '_' (as a previous fix did) is not
+    # reversible: '_' comes back as a space and the original category
+    # is overwritten on the server (#1305). Keeping richer names out
+    # of the task text is the editor's job (insert_tags only writes
+    # tags its parser reads back identically); the tag store itself
+    # accepts any name.
 
     @classmethod
     def to_tag(cls, category, prefix=''):
-        return f"{prefix}{cls.TAG_UNSAFE.sub(cls.CAT_SPACE, category)}"
+        return f"{prefix}{category.replace(' ', cls.CAT_SPACE)}"
 
     def get_gtg(self, task: Task, namespace: str = None) -> list:
         return [tag_name.lstrip('@').replace(self.CAT_SPACE, ' ')
