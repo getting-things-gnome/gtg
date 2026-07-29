@@ -835,3 +835,28 @@ class LoadStoreWithNonUuidIdsTest(TestCase):
         task_store = TaskStore()
         task_store.from_xml(XML(xml), TagStore())
         self.assertIn(canonical, [str(t.id) for t in task_store.lookup.values()])
+
+
+class TestDismissStatusMigration(TestCase):
+    """0.6 files spell the dismissed status 'Dismiss' (#1308)."""
+
+    XML = """<gtgData appVersion="0.6" xmlVersion="2">
+    <taglist/><searchlist/>
+    <tasklist>
+    <task id="9a4bf6dd-0001-4a5c-8f11-000000000001" status="Dismiss" recurring="False">
+    <title>dismissed in 0.6</title>
+    <dates><added>2024-01-01T00:00:00</added><modified>2024-01-02T00:00:00</modified></dates>
+    <recurring enabled="false"><term>None</term></recurring>
+    <subtasks/><tags/><content/>
+    </task>
+    </tasklist>
+    </gtgData>"""
+
+    def test_dismiss_spelling_loads_as_dismissed(self):
+        from lxml import etree
+        from GTG.core.tags import TagStore
+        store = TaskStore()
+        store.from_xml(etree.fromstring(self.XML), TagStore())
+        task = list(store.lookup.values())[0]
+        self.assertEqual(task.status, Status.DISMISSED)
+        self.assertFalse(task.is_active)

@@ -964,10 +964,18 @@ class TaskStore(BaseStore[Task]):
                             'on the modification date', tid)
                 task.date_added = task.date_modified
 
+            # 0.6 wrote the dismissed status as 'Dismiss'; 0.7 renamed
+            # it to 'Dismissed'. Accept both so migrated files keep
+            # their dismissed tasks (#1308). Set is_active alongside:
+            # set_status() is avoided on purpose here, as it would
+            # overwrite date_closed with today and trigger the
+            # recurrence duplication logic.
             if status == 'Done':
                 task.status = Status.DONE
-            elif status == 'Dismissed':
+                task.is_active = False
+            elif status in ('Dismissed', 'Dismiss'):
                 task.status = Status.DISMISSED
+                task.is_active = False
 
             # Dates
             done_element = dates.find('done')
