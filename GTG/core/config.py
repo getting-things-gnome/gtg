@@ -53,6 +53,7 @@ DEFAULTS = {
         'autoclean': True,
         'autoclean_days': 30,
         'dark_mode': False,
+        'show_empty_tags': True,
         'maximized': False,
         'sort_mode_open': 'title',
         'sort_mode_active': 'title',
