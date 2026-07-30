@@ -348,6 +348,16 @@ class MainWindow(Gtk.ApplicationWindow):
         order_action.connect('change-state', self.on_sort_order)
         self.add_action(order_action)
 
+        show_empty = self.config.get('show_empty_tags')
+        empty_variant = GLib.Variant.new_boolean(show_empty)
+        empty_action = Gio.SimpleAction.new_stateful('show_empty_tags',
+                                                     None,
+                                                     empty_variant)
+
+        empty_action.connect('change-state', self.on_show_empty_tags)
+        self.add_action(empty_action)
+        self.sidebar.set_show_empty_tags(show_empty)
+
     def _init_icon_theme(self):
         """
         sets the deafault theme for icon and its directory
@@ -1134,6 +1144,16 @@ class MainWindow(Gtk.ApplicationWindow):
         else:
             self.get_pane().set_sort_order(reverse=True)
             self.change_sort_icon('DESC')
+
+
+    def on_show_empty_tags(self, action, value) -> None:
+        """Callback when toggling the display of tags without tasks."""
+
+        action.set_state(value)
+        show = value.get_boolean()
+        self.config.set('show_empty_tags', show)
+        self.sidebar.set_show_empty_tags(show)
+
 
     def store_sorting(self, mode: str) -> None:
         """Store sorting mode."""

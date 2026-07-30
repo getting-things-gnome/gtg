@@ -158,6 +158,7 @@ class Sidebar(Gtk.ScrolledWindow):
         tags_signals.connect('unbind', self.tags_unbind_cb)
 
         view = Gtk.ListView.new(self.tag_selection, tags_signals)
+        self.tags_view = view
         view.get_style_context().add_class('navigation-sidebar')
         view.set_vexpand(True)
         view.set_hexpand(True)
@@ -213,6 +214,18 @@ class Sidebar(Gtk.ScrolledWindow):
 
         self.tags_filter.pane = pane
         self.tags_filter.changed(Gtk.FilterChange.DIFFERENT)
+
+
+    def set_show_empty_tags(self, value: bool) -> None:
+        """Show or hide tags that have no task in the current pane."""
+
+        self.tags_filter.show_zero = value
+        self.refresh_tags()
+
+        # The bulk splice emitted by the FilterListModel confuses the
+        # list view allocation; re-anchor it at the top to avoid
+        # leaving a gap where the filtered rows used to be.
+        self.tags_view.scroll_to(0, Gtk.ListScrollFlags.NONE, None)
 
 
     @GObject.Signal

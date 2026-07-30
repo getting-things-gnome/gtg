@@ -256,6 +256,10 @@
         <attribute name="action">win.sidebar</attribute>
         <attribute name="label" translatable="yes">Show Sidebar</attribute>
       </item>
+      <item>
+        <attribute name="action">win.show_empty_tags</attribute>
+        <attribute name="label" translatable="yes">Show Empty Tags</attribute>
+      </item>
     </section>
     <section>
       <item>
