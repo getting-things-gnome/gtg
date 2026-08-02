@@ -136,6 +136,57 @@ class TestBaseStoreParent(TestCase):
 
 
 
+class TestBaseStoreDoubleParenting(TestCase):
+    """A child claimed by several parents must not corrupt the tree.
+
+    Regression tests for #1307: the second claim used to overwrite
+    item.parent and append the child to the new parent's children
+    without detaching it from the first one, leaving the child in
+    several children lists at once. Multi-parenting is not legitimate
+    in the new core: the first parent wins, further claims are refused
+    with a warning."""
+
+
+    def setUp(self):
+        self.store = BaseStore()
+
+        self.parent1 = StoreItem(uuid4())
+        self.parent2 = StoreItem(uuid4())
+        self.child = StoreItem(uuid4())
+
+        self.store.add(self.parent1)
+        self.store.add(self.parent2)
+        self.store.add(self.child)
+        self.store.parent(self.child.id,self.parent1.id)
+
+
+    def test_second_claim_keeps_first_parent(self):
+        self.store.parent(self.child.id,self.parent2.id)
+        self.assertEqual(self.child.parent,self.parent1)
+
+
+    def test_second_claim_does_not_update_new_parent_children(self):
+        self.store.parent(self.child.id,self.parent2.id)
+        self.assertTrue(self.child not in self.parent2.children)
+
+
+    def test_second_claim_keeps_child_in_first_parent_children(self):
+        self.store.parent(self.child.id,self.parent2.id)
+        self.assertEqual(self.parent1.children.count(self.child),1)
+
+
+    def test_second_claim_does_not_update_root_elements(self):
+        self.store.parent(self.child.id,self.parent2.id)
+        self.assertEqual(self.store.count(root_only=True),2)
+
+
+    def test_reclaim_by_same_parent_is_idempotent(self):
+        self.store.parent(self.child.id,self.parent1.id)
+        self.assertEqual(self.parent1.children.count(self.child),1)
+        self.assertEqual(self.child.parent,self.parent1)
+        self.assertEqual(self.store.count(root_only=True),2)
+
+
 class TestBaseStoreUnparent(TestCase):
 
 

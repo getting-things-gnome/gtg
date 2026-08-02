@@ -491,6 +491,88 @@ class TestTask(TestCase):
         self.assertEqual(len(task_store.get(TASK_ID_1).children), 2)
 
 
+    def test_xml_load_multiparented_sub_first_parent_wins(self):
+        """Regression test for #1307: real 0.6 data files can list the
+        same task as <sub> of several parents (the bryce sample does,
+        36 times). Loading such a file must not corrupt the tree: the
+        first parent wins, further claims are refused."""
+        task_store = TaskStore()
+
+        TASK_ID_1 = uuid4()
+        TASK_ID_2 = uuid4()
+        TASK_ID_3 = uuid4()
+
+        parsed_xml = XML(f'''
+        <tasklist>
+            <task id="{TASK_ID_1}" status="Active" recurring="False">
+                <title>First parent</title>
+                <dates>
+                    <added>2020-10-23T00:00:00</added>
+                    <modified>2021-03-20T14:55:46.219761</modified>
+                    <done></done>
+                    <fuzzyDue></fuzzyDue>
+                    <start>2010-07-20</start>
+                </dates>
+                <recurring enabled="false">
+                    <term>None</term>
+                </recurring>
+                <subtasks>
+                    <sub>{TASK_ID_3}</sub>
+                </subtasks>
+
+                <content><![CDATA[ My Content ]]></content>
+            </task>
+
+            <task id="{TASK_ID_2}" status="Active" recurring="False">
+                <title>Second parent claiming the same child</title>
+                <dates>
+                    <added>2020-10-23T00:00:00</added>
+                    <modified>2021-03-20T14:55:46.219761</modified>
+                    <done></done>
+                    <fuzzyDue></fuzzyDue>
+                    <start>2010-07-20</start>
+                </dates>
+                <recurring enabled="false">
+                    <term>None</term>
+                </recurring>
+                <subtasks>
+                    <sub>{TASK_ID_3}</sub>
+                </subtasks>
+
+                <content><![CDATA[ My Content ]]></content>
+            </task>
+
+            <task id="{TASK_ID_3}" status="Active" recurring="False">
+                <title>Child claimed twice</title>
+                <dates>
+                    <added>2020-10-23T00:00:00</added>
+                    <modified>2021-03-20T14:55:46.219761</modified>
+                    <done></done>
+                    <fuzzyDue></fuzzyDue>
+                    <start>2010-07-20</start>
+                </dates>
+                <recurring enabled="false">
+                    <term>None</term>
+                </recurring>
+                <subtasks/>
+                <content><![CDATA[ My Content ]]></content>
+            </task>
+        </tasklist>
+        ''')
+
+        task_store.from_xml(parsed_xml, None)
+
+        child = task_store.get(TASK_ID_3)
+        first = task_store.get(TASK_ID_1)
+        second = task_store.get(TASK_ID_2)
+
+        self.assertEqual(task_store.count(), 3)
+        self.assertEqual(child.parent, first)
+        self.assertEqual(first.children.count(child), 1)
+        self.assertTrue(child not in second.children)
+        self.assertEqual(task_store.count(root_only=True), 2)
+
+
     def test_xml_load_bad(self):
         task_store = TaskStore()
 
