@@ -120,3 +120,66 @@ class TestPurgeBackups(BackupDirTestCase):
         shutil.rmtree(self.backup_dir)
 
         Datastore.purge_backups(self.main)  # must not raise
+
+
+class TestArchiveOldBackups(BackupDirTestCase):
+    """#443: old daily backups are gzipped, not deleted."""
+
+
+    def test_old_daily_is_gzipped_with_identical_content(self):
+        import gzip
+        old_daily = self._daily('2025-01-01', OLD)
+        original = open(old_daily, 'rb').read()
+
+        Datastore.archive_old_backups(self.main)
+
+        self.assertFalse(os.path.exists(old_daily),
+                         'plain copy removed after successful archive')
+        with gzip.open(old_daily + '.gz', 'rb') as archive:
+            self.assertEqual(original, archive.read())
+
+
+    def test_recent_daily_stays_plain(self):
+        recent_daily = self._daily('2026-08-01', RECENT)
+
+        Datastore.archive_old_backups(self.main)
+
+        self.assertTrue(os.path.exists(recent_daily))
+        self.assertFalse(os.path.exists(recent_daily + '.gz'))
+
+
+    def test_rotating_baks_are_never_archived(self):
+        rotating = self._write(
+            os.path.join(self.backup_dir, 'gtg_data.xml.bak.3'), OLD)
+
+        Datastore.archive_old_backups(self.main)
+
+        self.assertTrue(os.path.exists(rotating))
+        self.assertFalse(os.path.exists(rotating + '.gz'))
+
+
+    def test_archives_survive_archive_and_purge_runs(self):
+        archive = self._write(
+            os.path.join(self.backup_dir, 'gtg_data.xml.2024-01-01.bak.gz'),
+            OLD)
+
+        Datastore.archive_old_backups(self.main)
+        Datastore.purge_backups(self.main)
+
+        self.assertTrue(os.path.exists(archive))
+
+
+    def test_archive_survives_missing_backup_dir(self):
+        shutil.rmtree(self.backup_dir)
+
+        Datastore.archive_old_backups(self.main)  # must not raise
+
+
+    def test_write_backups_archives_old_dailies(self):
+        old_daily = self._daily('2025-01-01', OLD)
+
+        datastore = Datastore()
+        datastore.write_backups(self.main)
+
+        self.assertFalse(os.path.exists(old_daily))
+        self.assertTrue(os.path.exists(old_daily + '.gz'))

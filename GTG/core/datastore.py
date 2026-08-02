@@ -18,6 +18,7 @@
 
 """The datastore ties together all the basic type stores and backends."""
 
+import gzip
 import os
 import re
 import threading
@@ -443,15 +444,68 @@ class Datastore:
         if not os.path.exists(daily_backup):
             shutil.copy(path, daily_backup)
 
-        self.purge_backups(path)
+        self.archive_old_backups(path)
 
 
     # Dated daily backups: gtg_data.xml.2026-08-02.bak
     DAILY_BACKUP_RE = re.compile(r'\.\d{4}-\d{2}-\d{2}\.bak$')
 
     @staticmethod
+    def archive_old_backups(path: str, days: int = 30) -> None:
+        """Compress dated daily backups older than X days (#443).
+
+        Instead of deleting history, old daily backups are gzipped in
+        place (XML compresses to a few percent of its size), keeping a
+        space-efficient long-term archive. The compressed copy is read
+        back and compared before the original is removed: on any
+        failure the plain file is left untouched and will be retried
+        on the next run. Archives (.gz) are never removed
+        automatically."""
+
+        cutoff = time() - days * 86_400
+        backup_dir = os.path.dirname(Datastore.get_backup_path(path))
+
+        try:
+            filenames = os.listdir(backup_dir)
+        except FileNotFoundError:
+            return
+
+        for filename in filenames:
+            if not Datastore.DAILY_BACKUP_RE.search(filename):
+                continue
+
+            filepath = os.path.join(backup_dir, filename)
+            archive_path = filepath + '.gz'
+
+            try:
+                if os.stat(filepath).st_mtime >= cutoff:
+                    continue
+
+                with open(filepath, 'rb') as plain:
+                    original = plain.read()
+
+                with gzip.open(archive_path, 'wb') as archive:
+                    archive.write(original)
+
+                # Never delete the plain copy before proving the
+                # archive holds the exact same bytes.
+                with gzip.open(archive_path, 'rb') as archive:
+                    if archive.read() != original:
+                        raise IOError('archive verification failed')
+
+                os.remove(filepath)
+            except OSError as error:
+                log.warning('Could not archive backup %r: %r',
+                            filepath, error)
+
+    @staticmethod
     def purge_backups(path: str, days: int = 30) -> None:
         """Remove dated daily backups older than X days.
+
+        Not called automatically anymore: write_backups archives old
+        dailies instead of deleting them (#443). Kept as a manual
+        cleanup helper. Compressed archives (*.bak.gz) are not
+        matched and always survive.
 
         Only the dated daily backups (*.YYYY-MM-DD.bak) inside the
         backup directory are subject to age-based removal. The rotating
