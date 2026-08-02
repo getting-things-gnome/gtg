@@ -221,6 +221,22 @@ class BaseStore(GObject.Object,Generic[S]):
             raise KeyError("parent_id is not in store: "+str(parent_id))
 
         item = self.lookup[item_id]
+
+        if item.parent is not None:
+            if item.parent.id == parent_id:
+                return
+            # Multi-parenting is not supported in the new core, but real
+            # 0.6 data files can claim the same task as subtask of
+            # several parents (#1307). Honoring the second claim used to
+            # overwrite item.parent and leave the child in several
+            # children lists at once, an inconsistent tree. The first
+            # parent wins; moving an item requires unparent() first, as
+            # every UI call site already does.
+            log.warning('Refusing to parent %s to %s: already a child of '
+                        '%s (first parent wins, see #1307)',
+                        item_id, parent_id, item.parent.id)
+            return
+
         item.parent = self.lookup[parent_id]
 
         try:
