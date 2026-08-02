@@ -227,7 +227,8 @@ class Backend(PeriodicImportBackend):
         start = datetime.now()
         self._refresh_calendar_list()
         # browsing calendars
-        counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0}
+        counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0,
+                  'failed': 0}
         for cal_url, calendar in self._cache.calendars:
             # retrieving todos and updating various cache
             logger.info('Fetching todos from %r', cal_url)
@@ -374,9 +375,41 @@ class Backend(PeriodicImportBackend):
             CHILDREN_FIELD.write_dav(vtodo, [UID_FIELD.get_dav(child)
                                              for child in children])
 
+    @staticmethod
+    def _quarantine_unparsable_todos(todos: list, counts: dict) -> list:
+        """Filter out todos whose data cannot be parsed.
+
+        Calendars are written to by many clients and may contain
+        malformed objects (#1312: a bad folded line gluing PRIORITY
+        onto a datetime value). Parsing is lazy: force it here, object
+        by object, so that a single broken VTODO is skipped and logged
+        instead of aborting the import for the whole calendar. This is
+        a last-resort error boundary, hence the broad except: whatever
+        goes wrong with one object must not take the backend down."""
+        healthy = []
+        for todo in todos:
+            try:
+                todo.instance  # force lazy parsing
+            except Exception:
+                # logging the URL, not the UID: the UID may be exactly
+                # what could not be parsed
+                logger.warning('Skipping unparsable todo at %r',
+                               getattr(todo, 'url', None), exc_info=True)
+                counts['failed'] += 1
+                continue
+            healthy.append(todo)
+        return healthy
+
     def _import_calendar_todos(self, calendar: iCalendar,
                                import_started_on: datetime, counts: dict):
-        todos = calendar.todos(include_completed=not self._cache.initialized)
+        # GTG does its own hierarchical sort below (__sort_todos) and
+        # never uses the order returned by the library. An empty
+        # sort_keys also keeps the library from eagerly parsing every
+        # object just to sort them: with the default keys, one
+        # malformed VTODO on the server aborts the whole import (#1312).
+        todos = calendar.todos(include_completed=not self._cache.initialized,
+                               sort_keys=())
+        todos = self._quarantine_unparsable_todos(todos, counts)
         todo_uids = {str(uid_to_task_id(uid))
                      for uid in (UID_FIELD.get_dav(todo) for todo in todos)
                      if uid}
