@@ -621,6 +621,83 @@ class NonUuidUidRegressionTest(TestCase):
         # the projection decodes back to the exact calendar name
         stem = dav_tags[0][len('DAV_'):]
         self.assertEqual('Deck: Server', stem.replace('_', ' '))
+
+
+class MalformedTodoQuarantineTest(TestCase):
+    """Server data is written by many clients and may be malformed.
+
+    Regression test for #1312: a VTODO with a bad folded line (a
+    continuation line gluing PRIORITY onto a datetime value) made the
+    whole periodic import crash inside the caldav library sorting step.
+    One broken object on the server must not take the backend down."""
+
+    VTODO_HEALTHY = ("BEGIN:VTODO\r\n"
+                     "CREATED:20201212T092155Z\r\n"
+                     "DTSTAMP:20201212T172830Z\r\n"
+                     "LAST-MODIFIED:20201212T172558Z\r\n"
+                     "STATUS:NEEDS-ACTION\r\n"
+                     "SUMMARY:healthy todo\r\n"
+                     "UID:HEALTHY-UID\r\n"
+                     "END:VTODO\r\n")
+
+    class BrokenTodo:
+        """A todo whose lazy parsing fails on first access."""
+
+        url = 'https://my.fa.ke/calendar/broken.ics'
+        parent = None
+
+        @property
+        def instance(self):
+            raise ValueError("Expected datetime, date, or time. "
+                             "Got: '20240808T120000ZPRIORITY:0'")
+
+    @staticmethod
+    def _todo(raw):
+        todo = Mock()
+        todo.instance.vtodo = vobject.readOne(raw)
+        todo.parent.name = 'My Calendar'
+        return todo
+
+    @staticmethod
+    def _backend():
+        parameters = {'pid': 'test', 'service-url': 'unittest',
+                      'username': 'u', 'password': 'p', 'period': 1}
+        backend = Backend(parameters)
+        backend.datastore = Datastore()
+        return backend
+
+    def test_malformed_todo_is_quarantined(self):
+        backend = self._backend()
+        calendar = Mock()
+        calendar.name = 'My Calendar'
+        calendar.todos.return_value = [self._todo(self.VTODO_HEALTHY),
+                                       self.BrokenTodo()]
+        counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0,
+                  'failed': 0}
+        start = datetime.now(LOCAL_TIMEZONE)
+        backend._import_calendar_todos(calendar, start, counts)
+        self.assertEqual(1, counts['failed'],
+                         'the broken todo should be counted as failed')
+        self.assertEqual(1, counts['created'],
+                         'the healthy todo should still be imported')
+        self.assertEqual(1, len(backend.datastore.tasks.lookup))
+
+    def test_todos_are_fetched_without_library_sorting(self):
+        """GTG sorts todos itself (__sort_todos): asking the library to
+        sort makes it eagerly parse every object, which is where #1312
+        crashed."""
+        backend = self._backend()
+        calendar = Mock()
+        calendar.name = 'My Calendar'
+        calendar.todos.return_value = []
+        counts = {'created': 0, 'updated': 0, 'unchanged': 0, 'deleted': 0,
+                  'failed': 0}
+        backend._import_calendar_todos(
+            calendar, datetime.now(LOCAL_TIMEZONE), counts)
+        _, kwargs = calendar.todos.call_args
+        self.assertEqual((), kwargs.get('sort_keys'))
+
+
 class RecurrenceRRuleTest(TestCase):
     """The CalDAV Recurrence field maps between iCalendar RRULE FREQ and
     GTG recurring terms. Reading a DAILY rule used to go through
