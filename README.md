@@ -181,7 +181,7 @@ We first need some files to be pre-processed by meson, which is done by the
 following one-time step:
 ```sh
 meson setup ./build
-cd GTG/core/ && ln -s ../../.build/GTG/core/info.py .
+cd GTG/core/ && ln -s ../../build/GTG/core/info.py .
 ```
 
 Then you can run the tests with `pytest` in the repository root.
