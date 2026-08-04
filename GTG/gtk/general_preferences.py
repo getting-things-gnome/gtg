@@ -45,7 +45,6 @@ class GeneralPreferences(Gtk.ScrolledWindow):
     _refresh_time_entry = Gtk.Template.Child()
     _autoclean_switch = Gtk.Template.Child()
     _autoclean_days_spin = Gtk.Template.Child()
-    _dark_mode_switch = Gtk.Template.Child()
 
     def __init__(self, app):
         super().__init__()
@@ -104,10 +103,6 @@ class GeneralPreferences(Gtk.ScrolledWindow):
 
         autoclean_days = self.config.get("autoclean_days")
         self._autoclean_days_spin.set_value(autoclean_days)
-
-        dark_mode = self.config.get("dark_mode")
-        self._dark_mode_switch.set_active(dark_mode)
-
 
     @Gtk.Template.Callback()
     def on_valid_time_check(self, widget):
@@ -184,9 +179,3 @@ class GeneralPreferences(Gtk.ScrolledWindow):
 
         self.app.purge_old_tasks(widget)
 
-    @Gtk.Template.Callback()
-    def on_dark_mode_toggled(self, widget, state):
-        """Toggle darkmode."""
-
-        self.config.set("dark_mode", self._dark_mode_switch.get_active())
-        self.app.toggle_darkmode(self._dark_mode_switch.get_active())
