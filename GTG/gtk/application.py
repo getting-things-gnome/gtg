@@ -18,7 +18,7 @@
 
 """Main class of GTG."""
 
-from gi.repository import Gtk, Gdk, Gio, GLib, Xdp
+from gi.repository import Gtk, Gdk, Gio, GLib
 import configparser
 import os
 import sys
@@ -54,8 +54,6 @@ log = logging.getLogger(__name__)
 
 class Application(Gtk.Application):
 
-    portal: Xdp.Portal | None = None
-    settings: Xdp.Settings | None = None
     ds: Datastore = Datastore()
     """Datastore loaded with the default data file"""
 
@@ -102,10 +100,6 @@ class Application(Gtk.Application):
                          flags=Gio.ApplicationFlags.HANDLES_OPEN)
         self.set_option_context_parameter_string("[gtg://TASK-ID…]")
 
-        self.portal = Xdp.Portal.initable_new()
-        if self.portal:
-            self.settings = self.portal.get_settings()
-
     # --------------------------------------------------------------------------
     # INIT
     # --------------------------------------------------------------------------
@@ -134,17 +128,6 @@ class Application(Gtk.Application):
 
             self.preferences_dialog = Preferences(self)
             self.plugins_dialog = PluginsDialog(self.config_plugins)
-
-            if self.portal:
-                self.settings.connect("changed", self.update_theme)
-
-                namespace = "org.gnome.desktop.interface"
-                key = "color-scheme"
-                state = self.settings.read_string(namespace, key) == "prefer-dark"
-            else:
-                state = self.config.get('dark_mode')
-
-            self.toggle_darkmode(state)
 
             self.init_style()
         except Exception as e:
@@ -284,14 +267,16 @@ class Application(Gtk.Application):
         provider.load_from_path(css_path)
         add_provider(display, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-    def toggle_darkmode(self, state=True):
-        """Use dark mode theme."""
-
         settings = Gtk.Settings.get_default()
-        settings.set_property("gtk-application-prefer-dark-theme", state)
+        settings.connect("notify::gtk-interface-color-scheme", self._update_color_scheme)
 
-        # Toggle dark mode for preferences and editors
-        if state:
+        self._update_color_scheme()
+
+    def _update_color_scheme(self, *args) -> None:
+        settings = Gtk.Settings.get_default()
+
+        color_scheme = settings.get_property("gtk-interface-color-scheme")
+        if color_scheme == Gtk.InterfaceColorScheme.DARK:
             self.preferences_dialog.add_css_class('dark')
             text_tags.use_dark_mode()
         else:
@@ -337,16 +322,6 @@ class Application(Gtk.Application):
     # --------------------------------------------------------------------------
     # ACTIONS
     # --------------------------------------------------------------------------
-
-    def update_theme(self, _settings, namespace, key, value, *args):
-        """
-        Callback to set color theme according to the user's
-        color-scheme preference.
-        """
-
-        if namespace == "org.gnome.desktop.interface" and key == "color-scheme":
-            state = self.settings.read_string(namespace, key) == "prefer-dark"
-            self.toggle_darkmode(state)
 
     def new_task(self, param=None, action=None):
         """Callback to add a new task."""
