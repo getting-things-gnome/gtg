@@ -59,6 +59,26 @@ def tag_is_faithfully_representable(name: str) -> bool:
     match = TAG_REGEX.match(candidate)
     return bool(match) and match.group(0) == candidate
 
+
+def subtask_bullet_span(text: str):
+    """Locate the "- " subtask bullet on a line, tolerating indentation.
+
+    Returns (offset, title) where offset is the number of characters to
+    delete from the start of the line (leading whitespace plus the "- ")
+    and title is the subtask name, or None when the line is not a subtask
+    bullet. Computing both from the same stripped position keeps the
+    buffer deletion and the stored title consistent, so an indented
+    bullet no longer leaks its leading whitespace into the task title.
+    """
+    stripped = text.lstrip()
+    if not stripped.startswith('- '):
+        return None
+    title = stripped[2:]
+    if not title:
+        return None
+    offset = (len(text) - len(stripped)) + 2
+    return offset, title
+
 # Regex to find internal links
 # Starts with gtg:// followed by a UUID.
 INTERNAL_REGEX = re.compile((r'gtg:\/\/'
@@ -327,16 +347,22 @@ class TaskView(GtkSource.View):
         # </subtask>
 
         # Add a new subtask
-        if text.lstrip().startswith('- ') and len(text[2:]) > 0:
-            # Remove the -
+        bullet = subtask_bullet_span(text)
+        if bullet is not None:
+            bullet_offset, title = bullet
+
+            # Remove the leading whitespace and the "- ". The offset is
+            # computed once so the buffer deletion and the subtask title
+            # stay consistent even when the line is indented (otherwise the
+            # leading whitespace leaked into the stored title).
             delete_end = start.copy()
-            delete_end.forward_chars(2)
+            delete_end.forward_chars(bullet_offset)
             self.buffer.begin_irreversible_action()
             self.buffer.delete(start, delete_end)
             self.buffer.end_irreversible_action()
 
             # Add new subtask
-            task = self.new_subtask_cb(text[2:])
+            task = self.new_subtask_cb(title)
             status = task.status if task else Status.ACTIVE
 
             # Add the checkbox
