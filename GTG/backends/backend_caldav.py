@@ -29,12 +29,14 @@ from gettext import gettext as _
 from hashlib import md5
 
 import caldav
+import requests
 from dateutil.tz import UTC
 from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
 from GTG.backends.periodic_import_backend import PeriodicImportBackend
 from GTG.core.dates import LOCAL_TIMEZONE, Accuracy, Date
 from GTG.core.interruptible import interruptible
+from GTG.core.networkmanager import is_connection_up
 from GTG.core.tasks import Task, Status as TaskStatus
 from vobject import iCalendar
 
@@ -89,6 +91,25 @@ def remote_uid(task: Task, namespace: str) -> str:
     """
     return (task.get_attribute(REMOTE_UID_ATTR, namespace=namespace)
             or str(task.id))
+
+
+def _dav_failure_errno(error):
+    """Map a raised exception to the BackendSignals error code that best
+    describes it, or None when it is not a known CalDAV failure and must
+    propagate untouched.
+
+    AuthorizationError is checked first on purpose: it is a subclass of
+    DAVError. Anything that is a transport problem (a requests error such
+    as a refused connection or DNS failure, or any other DAV protocol
+    error) is reported as a network failure, which the GUI shows as a
+    transient warning and the periodic timer will retry on its own.
+    """
+    if isinstance(error, caldav.lib.error.AuthorizationError):
+        return BackendSignals.ERRNO_AUTHENTICATION
+    if isinstance(error, (caldav.lib.error.DAVError,
+                          requests.exceptions.RequestException)):
+        return BackendSignals.ERRNO_NETWORK
+    return None
 
 
 class Backend(PeriodicImportBackend):
@@ -150,8 +171,27 @@ class Backend(PeriodicImportBackend):
 
     @interruptible
     def do_periodic_import(self) -> None:
-        with self.datastore.mutex:
-            self._do_periodic_import()
+        # Don't even try while the OS reports no connectivity: it would
+        # only produce a cascade of connection tracebacks (#1324). The
+        # periodic timer will call us again once the machine is back
+        # online.
+        if not is_connection_up():
+            logger.debug("No network connectivity, skipping CalDAV import "
+                         "for %r", self.get_id())
+            return
+        try:
+            with self.datastore.mutex:
+                self._do_periodic_import()
+        except Exception as error:
+            errno = _dav_failure_errno(error)
+            if errno is None:
+                # Not a known auth/network failure: let it surface.
+                raise
+            # Report it to the GUI (a clear banner) instead of killing the
+            # sync thread; the next periodic cycle will retry (#1322, #1324).
+            logger.warning("CalDAV sync failed for %r, reporting %s: %s",
+                           self.get_id(), errno, error)
+            BackendSignals().backend_failed(self.get_id(), errno)
 
     @interruptible
     def set_task(self, task: Task) -> None:
@@ -272,18 +312,13 @@ class Backend(PeriodicImportBackend):
 
     def _refresh_calendar_list(self):
         """Will browse calendar list available after principal call and cache
-        them"""
-        try:
-            principal = self._dav_client.principal()
-        except caldav.lib.error.AuthorizationError as error:
-            message = _(
-                "You need a correct login to CalDAV\n"
-                "Configure CalDAV with login information.\n Error:"
-            )
-            BackendSignals().interaction_requested(
-                self.get_id(), f"{message} {error!r}",
-                BackendSignals().INTERACTION_INFORM, "on_continue_clicked")
-            raise error
+        them.
+
+        Auth and network failures raised here (principal() hits the server)
+        are classified and reported by do_periodic_import so the whole
+        backend has a single, consistent error path -- see _dav_failure_errno.
+        """
+        principal = self._dav_client.principal()
         for calendar in principal.calendars():
             self._cache.set_calendar(calendar)
 

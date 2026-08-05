@@ -80,6 +80,9 @@ X-APPLE-SORT-ORDER:1\r
 END:VTODO\r\n"""
 
 
+# do_periodic_import now skips when the OS reports no connectivity; keep
+# these network-mocked tests deterministic regardless of the runner.
+@patch('GTG.backends.backend_caldav.is_connection_up', new=lambda: True)
 class CalDAVTest(TestCase):
     """The historical CalDAV test suite, migrated to the new core API.
 
@@ -668,6 +671,7 @@ class RecurrenceRRuleTest(TestCase):
 
 
 
+@patch('GTG.backends.backend_caldav.is_connection_up', new=lambda: True)
 class LocalDeletionPushTest(TestCase):
     """Deleting a task in GTG must delete the matching todo on the
     CalDAV server, otherwise it reappears on the next import.
@@ -779,6 +783,7 @@ class LocalDeletionPushTest(TestCase):
         self.assertIsNone(backend._cache.get_todo(str(task.id)))
 
 
+@patch('GTG.backends.backend_caldav.is_connection_up', new=lambda: True)
 class ServerSideSubtaskDeletionTest(TestCase):
     """A subtask deleted on the server must be removed locally too.
 
