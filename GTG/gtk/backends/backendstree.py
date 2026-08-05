@@ -113,6 +113,11 @@ class BackendsTree(Gtk.TreeView):
             b_iter = self.backendid_to_iter[backend_id]
             b_path = self.liststore.get_path(b_iter)
             backend = self.ds.get_backend(backend_id)
+            if not backend:
+                # The backend was removed between the signal and this
+                # callback (e.g. a failed account being torn down);
+                # nothing left to refresh in the row.
+                return
             backend_name = backend.get_human_name()
             self.liststore[b_path][self.COLUMN_TEXT] = backend_name
             self.liststore[b_path][self.COLUMN_ENABLED] = backend.is_enabled()
