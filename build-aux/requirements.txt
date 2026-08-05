@@ -4,3 +4,4 @@ pytest
 Cheetah3
 dbus-python==1.2.18
 typing_extensions==4.12.2
+setproctitle
