@@ -34,8 +34,14 @@ from GTG.backends.backend_signals import BackendSignals
 from GTG.core.dirs import SYNC_DATA_DIR
 from GTG.core.interruptible import _cancellation_point
 from GTG.core.keyring import Keyring
+from GTG.core.networkmanager import is_connection_up, register_for_retry
 
 log = logging.getLogger(__name__)
+
+# How many consecutive times launch_setting_thread will retry pushing a
+# single task before giving up on it, so one task that always fails (a
+# "poison" task) cannot block the queue head or retry forever.
+MAX_SYNC_ATTEMPTS = 3
 PICKLE_BACKUP_NBR = 2
 
 ALLTASKS_TAG = 'gtg-tags-all'
@@ -303,6 +309,12 @@ class GenericBackend():
             lambda: self.please_quit)
         self.to_set = deque()
         self.to_remove = deque()
+        # Per-task consecutive push/delete failure counters, reset on
+        # success and capped by MAX_SYNC_ATTEMPTS (see launch_setting_thread).
+        self._sync_failures = {}
+        # Retry pending writes as soon as connectivity comes back, instead
+        # of waiting for the next local change (see networkmanager).
+        register_for_retry(self)
 
     def get_attached_tags(self):
         """
@@ -660,16 +672,68 @@ class GenericBackend():
             if tid not in self.to_remove:
                 task = self.datastore.tasks.lookup.get(tid)
                 if task:
-                    self.set_task(task)
+                    try:
+                        self.set_task(task)
+                        self._sync_failures.pop(tid, None)
+                    except Exception:
+                        log.exception("Backend %s failed to push task %s",
+                                      self.get_id(), tid)
+                        if self.__handle_sync_failure(tid, self.to_set):
+                            break
 
         while not self.please_quit or bypass_quit_request:
             try:
                 tid = self.to_remove.pop()
             except IndexError:
                 break
-            self.remove_task(tid)
+            try:
+                self.remove_task(tid)
+                self._sync_failures.pop(tid, None)
+            except Exception:
+                log.exception("Backend %s failed to delete task %s",
+                              self.get_id(), tid)
+                if self.__handle_sync_failure(tid, self.to_remove):
+                    break
         # we release the weak lock
         self.to_set_timer = None
+
+    def __handle_sync_failure(self, tid, queue):
+        """React to a set_task/remove_task that raised.
+
+        Returns True when the caller should stop the current drain cycle
+        (the task was re-queued and will be retried later), False when the
+        task was abandoned after too many attempts -- in that case the
+        caller keeps draining so a single poison task cannot block the
+        queue head (HoL) indefinitely.
+
+        Only failures that happen while the OS reports connectivity count
+        toward MAX_SYNC_ATTEMPTS: a failure while offline is transient, so
+        the task stays queued (counter frozen) and network-changed will
+        retry it once connectivity returns (see networkmanager).
+        """
+        if is_connection_up():
+            count = self._sync_failures.get(tid, 0) + 1
+            self._sync_failures[tid] = count
+        else:
+            count = self._sync_failures.get(tid, 0)
+        if count >= MAX_SYNC_ATTEMPTS:
+            log.error("Backend %s giving up on task %s after %d attempts",
+                      self.get_id(), tid, count)
+            self._sync_failures.pop(tid, None)
+            self._signal_manager.backend_failed(self.get_id(),
+                                                BackendSignals.ERRNO_NETWORK)
+            return False
+        queue.appendleft(tid)
+        return True
+
+    def retry_pending_sync(self):
+        """Relaunch the setting thread if writes are still queued.
+
+        Called when network connectivity comes back so tasks edited while
+        offline are pushed without waiting for the next local change.
+        """
+        if self.to_set or self.to_remove:
+            self.__try_launch_setting_thread()
 
     def queue_set_task(self, tid):
         """ Save the task in the backend. In particular, it just enqueues the
