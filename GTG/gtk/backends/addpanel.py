@@ -18,7 +18,7 @@
 
 from functools import reduce
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from GTG.gtk.backends.backendscombo import BackendsCombo
 from GTG.backends import BackendFactory
@@ -71,15 +71,15 @@ class AddPanel(Gtk.Box):
 
         @param box: the Gtk.Box to fill
         """
-        label = Gtk.Label(label=_("Select synchronization service:"))
-        label.set_xalign(0)
-        label.set_yalign(0.5)
+        self.select_label = Gtk.Label(label=_("Select synchronization service:"))
+        self.select_label.set_xalign(0)
+        self.select_label.set_yalign(0.5)
         self.combo_types = BackendsCombo(self.dialog)
         # FIXME
         # self.combo_types.get_child().connect(
         #     'changed', self.on_combo_changed)
         self.combo_types.connect('changed', self.on_combo_changed)
-        box.append(label)
+        box.append(self.select_label)
         box.append(self.combo_types)
 
     def _fill_middle_box(self, box):
@@ -135,6 +135,9 @@ class AddPanel(Gtk.Box):
     def refresh_backends(self):
         """Populates the combo box containing the available backends"""
         self.combo_types.refresh()
+        # An empty combo box emits no 'changed' signal, so refresh the
+        # description explicitly to handle the no-backends case
+        self.on_combo_changed()
 
     def on_confirm(self, widget=None):
         """
@@ -166,7 +169,12 @@ class AddPanel(Gtk.Box):
         """
         backend_name = self.combo_types.get_selected()
         if backend_name is None:
+            self.on_no_backend_available()
             return
+        self.select_label.set_visible(True)
+        self.combo_types.set_visible(True)
+        self.ok_button.set_sensitive(True)
+        self.label_author.set_visible(True)
         backend = BackendFactory().get_backend(backend_name)
         self.label_description.set_markup(backend.Backend.get_description())
 
@@ -179,3 +187,35 @@ class AddPanel(Gtk.Box):
              reduce(lambda a, b: a + "\n" + "   - " + b, authors))
         self.label_author.set_markup(author_txt)
         self.image_icon.set_from_icon_name(backend.Backend.get_icon())
+
+    def on_no_backend_available(self):
+        """
+        Explains why there is no backend available to add, instead of
+        showing an empty combo box and blank labels.
+        """
+        self.select_label.set_visible(False)
+        self.combo_types.set_visible(False)
+        self.ok_button.set_sensitive(False)
+        self.label_author.set_visible(False)
+        self.image_icon.set_from_icon_name('dialog-warning-symbolic')
+
+        markup = '<big><big><big><b>%s</b></big></big></big>' % \
+            _("No synchronization services available")
+        self.label_name.set_markup(markup)
+
+        inactive_modules = BackendFactory().get_inactive_modules()
+        if inactive_modules:
+            prefix = BackendFactory.BACKEND_PREFIX
+            errors = '\n'.join(
+                '• %s: %s' % (
+                    GLib.markup_escape_text(name[len(prefix):]
+                                            if name.startswith(prefix)
+                                            else name),
+                    GLib.markup_escape_text(error))
+                for name, error in sorted(inactive_modules.items()))
+            description = '%s\n\n%s' % (
+                _("The following synchronization services could not be "
+                  "loaded because of missing dependencies:"), errors)
+        else:
+            description = _("There are no synchronization services to add.")
+        self.label_description.set_markup(description)
