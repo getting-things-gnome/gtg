@@ -23,7 +23,8 @@ class TextUI(Gtk.Box):
     """A widget to display a simple textbox and a label to describe its content
     """
 
-    def __init__(self, ds, backend, width, description, parameter_name):
+    def __init__(self, ds, backend, width, description, parameter_name,
+                 placeholder=None):
         """
         Creates the textbox and the related label. Loads the current
         content.
@@ -37,6 +38,7 @@ class TextUI(Gtk.Box):
         self.ds = ds
         self.parameter_name = parameter_name
         self.description = description
+        self.placeholder = placeholder
         self._populate_gtk(width)
 
     def _populate_gtk(self, width):
@@ -53,6 +55,8 @@ class TextUI(Gtk.Box):
         self.append(label)
         self.textbox = Gtk.Entry()
         self.textbox.set_hexpand(True)
+        if self.placeholder:
+            self.textbox.set_placeholder_text(self.placeholder)
         backend_parameters = self.backend.get_parameters()[self.parameter_name]
         self.textbox.set_text(backend_parameters)
         self.textbox.connect('changed', self.on_text_modified)

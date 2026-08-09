@@ -76,12 +76,14 @@ class ParametersUI(Gtk.Box):
             ("username", self.UI_generator(TextUI, {
                 "description": _("Username"),
                 "parameter_name": "username",
+                "placeholder": _("insert your username"),
             })),
             ("password", self.UI_generator(PasswordUI)),
             ("period", self.UI_generator(PeriodUI)),
             ("service-url", self.UI_generator(TextUI, {
                 "description": _("Service URL"),
                 "parameter_name": "service-url",
+                "placeholder": "https://example.com/webdav/",
             })),
             ("import-from-replies", self.UI_generator(CheckBoxUI, {
                 "text": _("Import tasks from @ replies directed to you"),

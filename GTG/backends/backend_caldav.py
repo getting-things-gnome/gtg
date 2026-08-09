@@ -134,13 +134,13 @@ class Backend(PeriodicImportBackend):
             GenericBackend.PARAM_DEFAULT_VALUE: 15},
         "username": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
-            GenericBackend.PARAM_DEFAULT_VALUE: _('insert your username')},
+            GenericBackend.PARAM_DEFAULT_VALUE: ''},
         "password": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_PASSWORD,
             GenericBackend.PARAM_DEFAULT_VALUE: ''},
         "service-url": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
-            GenericBackend.PARAM_DEFAULT_VALUE: 'https://example.com/webdav/'},
+            GenericBackend.PARAM_DEFAULT_VALUE: ''},
         "is-first-run": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL,
             GenericBackend.PARAM_DEFAULT_VALUE: True},
