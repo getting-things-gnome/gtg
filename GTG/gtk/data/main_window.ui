@@ -223,6 +223,12 @@
       </item>
 
       <item>
+        <attribute name="label" translatable="yes">Sort by Closed Date</attribute>
+        <attribute name="target">Closed</attribute>
+        <attribute name="action">win.sort</attribute>
+      </item>
+
+      <item>
         <attribute name="label" translatable="yes">Sort by Modified Date</attribute>
         <attribute name="target">Modified</attribute>
         <attribute name="action">win.sort</attribute>
