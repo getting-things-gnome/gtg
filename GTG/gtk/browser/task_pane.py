@@ -197,6 +197,7 @@ class TaskPane(Gtk.ScrolledWindow):
         tasks_signals.connect('unbind', self.task_unbind_cb)
 
         view = Gtk.ListView.new(self.task_selection, tasks_signals)
+        self.task_view = view
         view.set_show_separators(True)
         view.add_css_class('rich-list')
         view.add_css_class('task-list')
@@ -718,6 +719,18 @@ class TaskPane(Gtk.ScrolledWindow):
         rect.y = y
 
         menu.set_pointing_to(rect)
+
+        # The popover takes keyboard focus away from the list, so the
+        # selected row turns to the unfocused (gray) selection color
+        # and stays that way after the menu closes (#1333). Hand the
+        # focus back to the list when the popover goes away. One-shot:
+        # the menus are shared between panes, a persistent connection
+        # would pile up handlers.
+        def _refocus(popover):
+            popover.disconnect(handler)
+            self.task_view.grab_focus()
+
+        handler = menu.connect('closed', _refocus)
         menu.popup()
 
 
