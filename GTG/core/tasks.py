@@ -887,6 +887,10 @@ class TaskStore(BaseStore[Task]):
         new_task.tags = task.tags
         new_task.content = task.content
         new_task.date_added = task.date_added
+        # Inherit the recurrence, as the 0.6 core did: without this the
+        # duplicate is born non-recurring and the chain dies at its next
+        # completion (#1339).
+        new_task.set_recurring(True, task.recurring_term)
         new_task.date_due = task.get_next_occurrence()
 
         # Only goes through for the first task
