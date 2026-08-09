@@ -54,6 +54,15 @@ PANE_STACK_NAMES_MAP = {
 }
 PANE_STACK_NAMES_MAP_INVERTED = {v: k for k, v in PANE_STACK_NAMES_MAP.items()}
 
+# Per-pane config keys for sorting: pane id -> (mode key, direction key).
+# The historical key names do not match the pane ids: 'sort_mode_active'
+# belongs to the Actionable (workview) pane. Keep the mapping in one place.
+SORT_CONFIG_KEYS = {
+    'active':   ('sort_mode_open',   'sort_order_open'),
+    'workview': ('sort_mode_active', 'sort_order_active'),
+    'closed':   ('sort_mode_closed', 'sort_order_closed'),
+}
+
 
 @Gtk.Template(filename=GnomeConfig.BROWSER_UI_FILE)
 class MainWindow(Gtk.ApplicationWindow):
@@ -640,15 +649,14 @@ class MainWindow(Gtk.ApplicationWindow):
         pane_name = self.config.get('view')
         self.set_pane(pane_name)
 
-        match pane_name:
-            case 'actionable_view':
-                sort_mode = self.config.get('sort_mode_active')
-            case 'closed_view':
-                sort_mode = self.config.get('sort_mode_closed')
-            case _:
-                sort_mode = self.config.get('sort_mode_open')
+        for pane_id, (mode_key, order_key) in SORT_CONFIG_KEYS.items():
+            pane = self.panes[pane_id]
+            pane.set_sorter(self.config.get(mode_key).capitalize())
+            pane.set_sort_order(reverse=self.config.get(order_key) == 'DESC')
 
-        self.set_sorter(sort_mode.capitalize())
+        self.sync_sort_menu()
+        self.stack_switcher.get_stack().connect(
+            'notify::visible-child-name', self.on_pane_switched_sync_sort)
 
         # Every row is born collapsed (autoexpand is off on the tree
         # model): once the pane is up, expand everything except what
@@ -1133,6 +1141,12 @@ class MainWindow(Gtk.ApplicationWindow):
         self.set_sorter(value_str)
         self.store_sorting(value_str.lower())
 
+        # set_sorter installed a fresh sorter, born ascending:
+        # reapply the direction stored for this pane.
+        _, order_key = SORT_CONFIG_KEYS[self.get_selected_pane()]
+        self.get_pane().set_sort_order(
+            reverse=self.config.get(order_key) == 'DESC')
+
     def on_sort_order(self, action, value) -> None:
 
         action.set_state(value)
@@ -1145,6 +1159,8 @@ class MainWindow(Gtk.ApplicationWindow):
             self.get_pane().set_sort_order(reverse=True)
             self.change_sort_icon('DESC')
 
+        self.store_sort_order(value_str)
+
 
     def on_show_empty_tags(self, action, value) -> None:
         """Callback when toggling the display of tags without tasks."""
@@ -1156,15 +1172,32 @@ class MainWindow(Gtk.ApplicationWindow):
 
 
     def store_sorting(self, mode: str) -> None:
-        """Store sorting mode."""
+        """Store the sorting mode of the current pane."""
 
-        match self.get_selected_pane():
-            case 'actionable':
-                self.config.set('sort_mode_active', mode)
-            case 'closed':
-                self.config.set('sort_mode_closed', mode)
-            case _:
-                self.config.set('sort_mode_open', mode)
+        mode_key, _ = SORT_CONFIG_KEYS[self.get_selected_pane()]
+        self.config.set(mode_key, mode)
+
+    def store_sort_order(self, order: str) -> None:
+        """Store the sorting direction of the current pane."""
+
+        _, order_key = SORT_CONFIG_KEYS[self.get_selected_pane()]
+        self.config.set(order_key, order)
+
+    def sync_sort_menu(self) -> None:
+        """Reflect the current pane's stored sorting in the menu and icon."""
+
+        mode_key, order_key = SORT_CONFIG_KEYS[self.get_selected_pane()]
+        order = self.config.get(order_key)
+
+        self.lookup_action('sort').set_state(
+            GLib.Variant.new_string(self.config.get(mode_key).capitalize()))
+        self.lookup_action('sort_order').set_state(GLib.Variant.new_string(order))
+        self.change_sort_icon(order)
+
+    def on_pane_switched_sync_sort(self, stack, pspec) -> None:
+        """Callback when the visible pane changes: refresh the sort menu."""
+
+        self.sync_sort_menu()
 
     def set_sorter(self, value: str) -> None:
         """Set sorter for current task pane."""

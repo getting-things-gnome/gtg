@@ -58,6 +58,9 @@ DEFAULTS = {
         'sort_mode_open': 'title',
         'sort_mode_active': 'title',
         'sort_mode_closed': 'title',
+        'sort_order_open': 'ASC',
+        'sort_order_active': 'ASC',
+        'sort_order_closed': 'ASC',
         'selected_tag': '',
     },
     'tag_editor': {
