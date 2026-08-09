@@ -991,6 +991,17 @@ class TaskStore(BaseStore[Task]):
             if done_element is not None and done_element.text is not None:
                 closed = Date.parse(done_element.text)
                 task.date_closed = closed
+            elif task.status is not Status.ACTIVE:
+                # A closed task without a closed date is invisible to
+                # the reaper: today minus no_date is -9999 days, never
+                # above any purge threshold (#1338). Files written by
+                # 0.7 lost the closed date of every dismissed task,
+                # since the serializer only wrote it for Done: heal
+                # them with the modification date, the same fallback
+                # the added date uses above.
+                log.warning('Closed task %s has no closed date, falling '
+                            'back on the modification date', tid)
+                task.date_closed = Date(str(task.date_modified)[:10])
 
             fuzzy_due_date = Date.parse(dates.findtext('fuzzyDue'))
             due_date = Date.parse(dates.findtext('due'))
@@ -1067,7 +1078,7 @@ class TaskStore(BaseStore[Task]):
             modified_date = SubElement(dates, 'modified')
             modified_date.text = str(task.date_modified)
 
-            if task.status == Status.DONE:
+            if task.status is not Status.ACTIVE:
                 done_date = SubElement(dates, 'done')
                 done_date.text = str(task.date_closed)
 
