@@ -18,7 +18,7 @@
 
 """Sidebar widgets."""
 
-from gi.repository import Gtk, GObject, Gdk, Gio
+from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 
 from gettext import gettext as _
 
@@ -318,6 +318,9 @@ class Sidebar(Gtk.ScrolledWindow):
         color.set_vexpand(False)
         label.set_halign(Gtk.Align.START)
         label.set_hexpand(True)
+        # A long tag name must truncate instead of pushing the counters
+        # out into a horizontally scrollable sidebar (#1341).
+        label.set_ellipsize(Pango.EllipsizeMode.END)
 
         open_count_label.set_halign(Gtk.Align.START)
         open_count_label.add_css_class('dim-label')
@@ -395,6 +398,7 @@ class Sidebar(Gtk.ScrolledWindow):
 
         listitem.bindings = [
             item.bind_property('name', label, 'label', BIND_FLAGS),
+            item.bind_property('name', label, 'tooltip-text', BIND_FLAGS),
             item.bind_property('icon', icon, 'label', BIND_FLAGS),
             item.bind_property('color', color, 'color_list', BIND_FLAGS),
 
@@ -540,6 +544,9 @@ class Sidebar(Gtk.ScrolledWindow):
         icon.set_margin_end(6)
         label.set_halign(Gtk.Align.START)
         label.set_hexpand(True)
+        # Same as for tags: a long query must not push the sidebar into
+        # horizontal scrolling (#1341).
+        label.set_ellipsize(Pango.EllipsizeMode.END)
 
         box.set_margin_start(18)
 
@@ -564,6 +571,7 @@ class Sidebar(Gtk.ScrolledWindow):
 
         listitem.bindings = [
             item.bind_property('name', label, 'label', BIND_FLAGS),
+            item.bind_property('name', label, 'tooltip-text', BIND_FLAGS),
             item.bind_property('icon', icon, 'label', BIND_FLAGS),
         ]
 
