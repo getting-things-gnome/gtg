@@ -868,6 +868,11 @@ class TaskStore(BaseStore[Task]):
         """Signal to emit when a task was changed in a filterable way. (E.g., A tag was added.)"""
 
 
+    @GObject.Signal(name='task-sortably-changed', arg_types=(object,))
+    def task_sortably_changed_signal(self, *_):
+        """Signal to emit when a task changed in a way that can affect sorting."""
+
+
     def __str__(self) -> str:
         """String representation."""
 
@@ -1102,6 +1107,12 @@ class TaskStore(BaseStore[Task]):
         for event in ['notify::title', 'notify::is-actionable',
                       'notify::is-active', 'tags-changed']:
             item.connect(event,lambda *_: self.emit('task-filterably-changed',item))
+
+        # Date edits update the row labels through these notifies, but
+        # nothing used to re-sort the lists (#1332): relay them so the
+        # panes can ask their sort model to recompute.
+        for event in ['notify::date-due-str', 'notify::date-start-str']:
+            item.connect(event, lambda *_: self.emit('task-sortably-changed', item))
 
 
     def unparent(self, item_id: UUID) -> None:

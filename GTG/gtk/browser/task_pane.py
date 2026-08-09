@@ -189,6 +189,14 @@ class TaskPane(Gtk.ScrolledWindow):
         self.main_sorter.set_model(self.filtered)
         self.main_sorter.set_sorter(self.sort_model)
 
+        # A task edit that changes a date or the title updates the row
+        # in place but used to leave it at its old position (#1332):
+        # ask the sorter to recompute when the store reports a change.
+        for signal in ('task-filterably-changed', 'task-sortably-changed'):
+            self.app.ds.tasks.connect(
+                signal,
+                lambda *_: self.sort_model.changed(Gtk.SorterChange.DIFFERENT))
+
         self.task_selection = Gtk.MultiSelection.new(self.main_sorter)
 
         tasks_signals = Gtk.SignalListItemFactory()
