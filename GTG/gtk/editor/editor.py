@@ -687,7 +687,7 @@ class TaskEditor(Gtk.Window):
             self.app.close_task(task.id)
 
     def dismiss(self):
-        self.task.toggle_dismissed()
+        self.task.toggle_dismiss()
         self.refresh_editor()
 
         if self.task.status != Status.ACTIVE:
