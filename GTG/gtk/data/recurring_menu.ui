@@ -22,7 +22,8 @@
         <section>
           <item>
             <attribute name="label" translatable="yes">On Monday</attribute>
-            <!-- TRNASLATORS: this is locale dependant and should be the correct full
+            <attribute name="action">recurring_menu.recurr_week_day</attribute>
+            <!-- TRANSLATORS: this is locale dependant and should be the correct full
             name of the weekday -->
             <attribute name="target" translatable="yes">Monday</attribute>
           </item>
@@ -60,8 +61,7 @@
         <section>
           <item>
             <attribute name="label" translatable="yes">On This Day</attribute>
-            <attribute name="action">recurring_menu.recurr_week_day</attribute>
-            <attribute name="target">THIS</attribute>
+            <attribute name="action">recurring_menu.recurr_every_week</attribute>
           </item>
         </section>
       </submenu>
