@@ -95,6 +95,20 @@ class TaskDueSorter(ReversibleSorter):
         return self.reversible_compare(first, second)
 
 
+class TaskClosedSorter(ReversibleSorter):
+    __gtype_name__ = 'ClosedSorter'
+
+    def do_compare(self, a, b) -> Gtk.Ordering:
+
+        a = unwrap(a, Task)
+        b = unwrap(b, Task)
+
+        first = a.date_closed
+        second = b.date_closed
+
+        return self.reversible_compare(first, second)
+
+
 class TaskStartSorter(ReversibleSorter):
     __gtype_name__ = 'StartSorter'
 

@@ -21,7 +21,7 @@
 from gi.repository import Gtk, GObject, Gdk, Gio, GLib, Pango
 from GTG.core.tasks import Task, Status, FilteredTaskTreeManager
 from GTG.core.filters import TaskFilter
-from GTG.core.sorters import (TaskAddedSorter, TaskDueSorter,
+from GTG.core.sorters import (TaskAddedSorter, TaskClosedSorter, TaskDueSorter,
                               TaskModifiedSorter, TaskStartSorter,
                               TaskTagSorter, TaskTitleSorter)
 from GTG.gtk.browser.tag_pill import TagPill
@@ -295,6 +295,8 @@ class TaskPane(Gtk.ScrolledWindow):
             sorter = TaskStartSorter()
         if method == 'Due':
             sorter = TaskDueSorter()
+        if method == 'Closed':
+            sorter = TaskClosedSorter()
         if method == 'Modified':
             sorter = TaskModifiedSorter()
         elif method == 'Added':
