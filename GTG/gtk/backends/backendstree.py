@@ -242,6 +242,12 @@ class BackendsTree(Gtk.TreeView):
                 # If nothing is selected, we select the first entry
                 if selection:
                     selection.select_path("0")
+                if not self._get_selected_path():
+                    # Nothing selectable at all (no backend registered):
+                    # still bring the configuration panel back, so that
+                    # cancelling the add panel returns to the initial
+                    # state instead of doing nothing (#1337).
+                    self.dialog._show_panel("configuration")
         self.dialog.on_backend_selected(self.get_selected_backend_id())
 
     def get_selected_backend_id(self):

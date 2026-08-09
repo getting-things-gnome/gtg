@@ -198,6 +198,31 @@ class BackendsDialog():
         @param widget: not used, here only for using this as signal callback
         @param data: same as widget, disregard the content
         """
+        factory = BackendFactory()
+        if not factory.get_all_backends():
+            # Every backend module failed to load (typically a missing
+            # python dependency): showing the add panel would only offer
+            # empty widgets. Say what is wrong instead (#1337).
+            reasons = '\n'.join(
+                f'{name}: {reason}'
+                for name, reason in sorted(factory.failed_modules.items()))
+            dialog = Gtk.MessageDialog(
+                transient_for=self.dialog,
+                modal=True,
+                message_type=Gtk.MessageType.ERROR,
+                buttons=Gtk.ButtonsType.CLOSE,
+                text=_("No synchronization service is available"),
+            )
+            dialog.props.secondary_text = _(
+                "Every synchronization service failed to load, "
+                "probably because of a missing python library:"
+            ) + f"\n\n{reasons}\n\n" + _(
+                "Install the missing library and restart GTG."
+            )
+            dialog.connect('response', lambda d, r: d.destroy())
+            dialog.present()
+            return
+
         self._show_panel("add")
         self.add_panel.refresh_backends()
 
@@ -209,6 +234,10 @@ class BackendsDialog():
         @param backend_name: the name of the type of the backend to add
                              (identified as BACKEND_NAME in the Backend class)
         """
+        if backend_name is None:
+            # Nothing was selectable in the add panel: do not switch to
+            # the configuration panel of nothing (#1337).
+            return
         # Create Backend
         backend_dic = BackendFactory().get_new_backend_dict(backend_name)
         if backend_dic:

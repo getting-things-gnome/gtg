@@ -41,8 +41,10 @@ class ConfigurePanel(Gtk.Box):
         self.task_deleted_handle = None
         self.task_added_handle = None
         self.ds = ds
+        self.backend = None
         self._create_widgets()
         self._connect_signals()
+        self.show_empty()
 
     def _connect_signals(self):
         """ Connects the backends generated signals """
@@ -115,11 +117,29 @@ class ConfigurePanel(Gtk.Box):
         box.append(self.sync_status_label)
         box.append(self.sync_button)
 
+    def show_empty(self) -> None:
+        """Show an explicitly empty panel: no backend is selected.
+
+        The widgets of this panel only make sense once set_backend has
+        been called; before that (no backend registered at all, or the
+        add panel was cancelled) they must not be offered to the
+        user (#1337).
+        """
+        self.backend = None
+        for widget in (self.image_icon, self.human_name_label,
+                       self.sync_status_label, self.sync_button,
+                       self.parameters_ui):
+            widget.set_visible(False)
+
     def set_backend(self, backend_id):
         """Changes the backend to configure, refreshing this view.
 
         @param backend_id: the id of the backend to configure
         """
+        for widget in (self.image_icon, self.human_name_label,
+                       self.sync_status_label, self.sync_button,
+                       self.parameters_ui):
+            widget.set_visible(True)
         self.backend = self.dialog.ds.get_backend(backend_id)
         self.refresh_title()
         self.refresh_sync_status()
@@ -135,6 +155,8 @@ class ConfigurePanel(Gtk.Box):
         @param sender: not used, here only for signal callback compatibility
         @param data: not used, here only for signal callback compatibility
         """
+        if self.backend is None:
+            return
         markup = "<big><big><big><b>%s</b></big></big></big>" % \
             self.backend.get_human_name()
         self.human_name_label.set_markup(markup)
@@ -170,6 +192,8 @@ class ConfigurePanel(Gtk.Box):
         @param sender: not used, here only for signal callback compatibility
         @param data: not used, here only for signal callback compatibility
         """
+        if self.backend is None:
+            return
         self.refresh_sync_button()
         self.refresh_sync_status_label()
 
@@ -179,6 +203,8 @@ class ConfigurePanel(Gtk.Box):
 
         @param sender: not used, here only for signal callback compatibility
         """
+        if self.backend is None:
+            return
         self.parameters_ui.commit_changes()
         self.ds.set_backend_enabled(self.backend.get_id(),
                                      not self.backend.is_enabled())
@@ -191,7 +217,7 @@ class ConfigurePanel(Gtk.Box):
         @param sender: not used, here only for signal callback compatibility
         @param backend_id: the id of the backend that emitted this signal
         """
-        if backend_id == self.backend.get_id():
+        if self.backend and backend_id == self.backend.get_id():
             self.spinner_set_active(True)
 
     def on_sync_ended(self, sender, backend_id):
@@ -203,7 +229,7 @@ class ConfigurePanel(Gtk.Box):
         @param backend_id: the id of the backend that emitted this signal
         """
 
-        if backend_id == self.backend.get_id():
+        if self.backend and backend_id == self.backend.get_id():
             self.spinner_set_active(False)
 
     def on_spinner_show(self, sender):

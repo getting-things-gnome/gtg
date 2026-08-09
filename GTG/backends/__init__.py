@@ -54,6 +54,7 @@ class BackendFactory(Borg):
             # This object has already been constructed
             return
         self.backend_modules = {}
+        self.failed_modules = {}
         backend_files = self._find_backend_files()
         # Create module names
         module_names = [f.replace(".py", "") for f in backend_files]
@@ -64,7 +65,9 @@ class BackendFactory(Borg):
             try:
                 __import__(extended_module_name)
             except ImportError as exception:
-                # Something is wrong with this backend, skipping
+                # Something is wrong with this backend, skipping. Keep the
+                # reason: the Synchronization dialog reports it to the user.
+                self.failed_modules[module_name] = str(exception)
                 log.warning("Backend %s could not be loaded: %r",
                             module_name, exception)
                 continue
