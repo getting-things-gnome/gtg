@@ -759,8 +759,18 @@ class Status(Field):
         return self._translate(dav_value=super().get_dav(todo, vtodo))[1]
 
     def write_gtg(self, task: Task, value, namespace: str = None):
-        value = self._translate(dav_value=value, gtg_value=value)[0]
-        return super().write_gtg(task, value, namespace)
+        status = self._translate(dav_value=value, gtg_value=value)[0]
+        # Applying the status through Task.set_status() would overwrite
+        # date_closed with today (the COMPLETED field owns that value),
+        # propagate the status to every subtask and trigger the
+        # recurrence duplication logic. A sync must do none of that:
+        # set the properties directly, like the XML loader does.
+        task.status = status
+        task.is_active = (status == TaskStatus.ACTIVE)
+        if status == TaskStatus.ACTIVE:
+            # A reopened todo carries no COMPLETED field anymore, so
+            # the date field leaves the stale value in place: clear it.
+            task.date_closed = Date.no_date()
 
 
 class PercentComplete(Field):
