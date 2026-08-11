@@ -40,6 +40,12 @@ class ConfigurePanel(Gtk.Box):
         self.should_spinner_be_shown = False
         self.task_deleted_handle = None
         self.task_added_handle = None
+        # No backend is selected until set_backend() is called, but the
+        # signals below are global (they fire for every backend, e.g. a
+        # CalDAV account syncing in the background) and can reach this
+        # panel before then. Keep the attribute defined so the handlers
+        # can bail out cleanly instead of raising AttributeError.
+        self.backend = None
         self.ds = ds
         self._create_widgets()
         self._connect_signals()
@@ -135,6 +141,8 @@ class ConfigurePanel(Gtk.Box):
         @param sender: not used, here only for signal callback compatibility
         @param data: not used, here only for signal callback compatibility
         """
+        if self.backend is None:
+            return
         markup = "<big><big><big><b>%s</b></big></big></big>" % \
             self.backend.get_human_name()
         self.human_name_label.set_markup(markup)
@@ -170,6 +178,8 @@ class ConfigurePanel(Gtk.Box):
         @param sender: not used, here only for signal callback compatibility
         @param data: not used, here only for signal callback compatibility
         """
+        if self.backend is None:
+            return
         self.refresh_sync_button()
         self.refresh_sync_status_label()
 
@@ -191,7 +201,7 @@ class ConfigurePanel(Gtk.Box):
         @param sender: not used, here only for signal callback compatibility
         @param backend_id: the id of the backend that emitted this signal
         """
-        if backend_id == self.backend.get_id():
+        if self.backend is not None and backend_id == self.backend.get_id():
             self.spinner_set_active(True)
 
     def on_sync_ended(self, sender, backend_id):
@@ -203,7 +213,7 @@ class ConfigurePanel(Gtk.Box):
         @param backend_id: the id of the backend that emitted this signal
         """
 
-        if backend_id == self.backend.get_id():
+        if self.backend is not None and backend_id == self.backend.get_id():
             self.spinner_set_active(False)
 
     def on_spinner_show(self, sender):

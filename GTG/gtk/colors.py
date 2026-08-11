@@ -80,8 +80,6 @@ def background_color(tags, bgcolor=None, galpha_scale=1, use_alpha=True):
     if not bgcolor:
         bgcolor = Gdk.RGBA()
         bgcolor.parse("#FFFFFF")
-    if type(bgcolor) is Gdk.Color: # TODO remove on gtk4 port, caused by liblarch
-        bgcolor = Gdk.RGBA.from_color(bgcolor)
     # Compute color
     my_color = None
     color_count = 0.0
@@ -89,7 +87,7 @@ def background_color(tags, bgcolor=None, galpha_scale=1, use_alpha=True):
     green = 0
     blue = 0
     for my_tag in tags:
-        my_color_str = my_tag.get_attribute("color")
+        my_color_str = my_tag.color
         if my_color_str is not None and my_color_str not in used_color:
             used_color.append(my_color_str)
         if my_color_str:
@@ -125,12 +123,18 @@ def get_colored_tag_markup(ds, tag_name, html=False):
     tag name
     if html, returns a string insertable in html
     """
-    tag = ds.tags.find(tag_name)
+    try:
+        tag = ds.tags.find(tag_name)
+    except KeyError:
+        # The name is attached to a backend but no longer in the store
+        # (e.g. the tag was deleted): find() raises KeyError rather than
+        # returning None, so a stale attached tag must not crash markup.
+        tag = None
     if tag is None:
         # no task loaded with that tag, color cannot be taken
         return tag_name
     else:
-        tag_color = tag.get_attribute("color")
+        tag_color = tag.color
         if tag_color:
             if html:
                 format_string = '<span style="color:%s">%s</span>'
