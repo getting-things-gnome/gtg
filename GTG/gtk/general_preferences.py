@@ -22,7 +22,7 @@ It enables user to set the most general settings of GTG."""
 
 import os
 
-from gi.repository import Gtk, GLib, GObject
+from gi.repository import Gtk, GLib
 
 from GTG.core.dirs import UI_DIR
 from GTG.gtk.action_row import ActionRow
@@ -45,9 +45,6 @@ class GeneralPreferences(Gtk.ScrolledWindow):
     _refresh_time_entry = Gtk.Template.Child()
     _autoclean_switch = Gtk.Template.Child()
     _autoclean_days_spin = Gtk.Template.Child()
-    _dark_mode_switch = Gtk.Template.Child()
-
-    is_portal_initiated = GObject.Property(type=bool, default=False)
 
     def __init__(self, app):
         super().__init__()
@@ -63,7 +60,6 @@ class GeneralPreferences(Gtk.ScrolledWindow):
         # as setting certain preferences depends on the complete initialization
         # of the app.
         GLib.idle_add(self._refresh_preferences_store)
-        self.is_portal_initiated = bool(self.app.portal)
 
     # Following 3 methods: get_name, get_title, get_ui are
     # required for all children of stack in Preferences class.
@@ -183,9 +179,3 @@ class GeneralPreferences(Gtk.ScrolledWindow):
 
         self.app.purge_old_tasks(widget)
 
-    @Gtk.Template.Callback()
-    def on_dark_mode_toggled(self, widget, state):
-        """Toggle darkmode."""
-
-        self.config.set("dark_mode", self._dark_mode_switch.get_active())
-        self.app.toggle_darkmode(self._dark_mode_switch.get_active())

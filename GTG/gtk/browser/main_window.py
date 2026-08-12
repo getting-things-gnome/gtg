@@ -25,7 +25,7 @@ import re
 from uuid import UUID
 from typing import Optional
 
-from gi.repository import GObject, Gtk, Gdk, Gio, GLib, Xdp
+from gi.repository import GObject, Gtk, Gdk, Gio, GLib
 from webbrowser import open as openurl
 from textwrap import dedent
 
