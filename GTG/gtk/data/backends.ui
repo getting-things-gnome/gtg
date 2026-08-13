@@ -9,6 +9,8 @@
     <property name="page_size">10</property>
   </object>
   <object class="GtkWindow" id="backends">
+    <property name="default_width">700</property>
+    <property name="default_height">500</property>
     <child>
       <object class="GtkBox" id="big_central_box">
         <child>
@@ -66,6 +68,7 @@
         <child>
           <object class="GtkScrolledWindow" id="central_pane_window">
             <property name="hexpand">True</property>
+            <property name="hscrollbar_policy">never</property>
             <property name="width_request">480</property>
             <property name="vadjustment">adjustment1</property>
             <child>
