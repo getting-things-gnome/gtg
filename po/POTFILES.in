@@ -11,7 +11,6 @@ GTG/plugins/send-email.gtg-plugin.desktop
 GTG/plugins/untouched-tasks.gtg-plugin.desktop
 GTG/plugins/urgency-color.gtg-plugin.desktop
 GTG/plugins/hamster.gtg-plugin.desktop
-GTG/plugins/gamify.gtg-plugin.desktop
 
 # GtkBuilder XML UI files:
 
@@ -28,8 +27,6 @@ GTG/gtk/data/search_editor.ui
 GTG/gtk/data/task_editor.ui
 GTG/gtk/data/recurring_menu.ui
 GTG/plugins/export/export.ui
-GTG/plugins/gamify/gamify.ui
-GTG/plugins/gamify/prefs.ui
 GTG/plugins/hamster/prefs.ui
 GTG/plugins/untouched_tasks/untouchedTasks.ui
 GTG/plugins/urgency_color/preferences.ui
@@ -123,8 +120,6 @@ GTG/plugins/urgency_color/urgency_color.py
 GTG/plugins/dev_console.gtg-plugin.desktop
 GTG/plugins/dev_console/console.py
 GTG/plugins/dev_console/utils.py
-GTG/plugins/gamify/__init__.py
-GTG/plugins/gamify/gamify.py
 GTG/plugins/hamster/hamster.py
 
 # This one is an experimental part of the ListView that is not yet ready:
