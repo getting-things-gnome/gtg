@@ -487,7 +487,7 @@ class MainWindow(Gtk.ApplicationWindow):
         uri_box.set_halign(Gtk.Align.CENTER)
         uri_box.append(create_uri_button(_("_Website"), info.URL))
         uri_box.append(create_uri_button(_("_Dev Chatroom"), info.CHAT_URL))
-        uri_box.append(create_uri_button(_("_GitHub"), info.SOURCE_CODE_URL))
+        uri_box.append(create_uri_button(_("Dev _Forge"), info.SOURCE_CODE_URL))
 
         about_box.append(uri_box)
 
