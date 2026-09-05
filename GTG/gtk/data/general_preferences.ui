@@ -57,7 +57,7 @@
                 <child>
                   <object class="ActionRow">
                     <property name="title" translatable="yes">Compact mode</property>
-                    <property name="subtitle" translatable="yes">Use smaller padding for tasks in the task browser.</property>
+                    <property name="subtitle" translatable="yes">Use smaller padding for tasks in the task browser</property>
                     <property name="activatable_widget">_compact_mode_button</property>
                     <child>
                       <object class="GtkSwitch" id="_compact_mode_button">
