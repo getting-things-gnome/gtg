@@ -481,7 +481,15 @@ class Backend(PeriodicImportBackend):
                     yield todo
                     known_todos.add(uid)
             if loop >= MAX_CALENDAR_DEPTH:
-                logger.error("Too deep, %dth recursion isn't allowed", loop)
+                stuck = [t for t in todos
+                         if UID_FIELD.get_dav(t) not in known_todos]
+                stuck_uids = [UID_FIELD.get_dav(t) or '<no-uid>'
+                              for t in stuck]
+                logger.error(
+                    "Too deep, %dth recursion isn't allowed; importing "
+                    "%d todo(s) whose parent never resolved, without "
+                    "hierarchy: %s", loop, len(stuck), ', '.join(stuck_uids))
+                yield from stuck
                 break
 
     def _get_calendar_tasks(self, calendar: iCalendar):
