@@ -26,8 +26,8 @@ from gettext import gettext as _
 class GnomeConfig():
     CANLOAD = _("Everything necessary to run this plugin is available.")
     CANNOTLOAD = _("This plugin can not be loaded.")
-    miss1 = _("Some python modules are missing.")
-    miss2 = _("Please install the following python modules:")
+    miss1 = _("Some Python modules are missing.")
+    miss2 = _("Please install the following Python modules:")
     MODULEMISSING = f"{miss1} \n{miss2}"
     dmiss1 = _("Some remote D-Bus objects are missing.")
     dmiss2 = _("Please start the following applications:")

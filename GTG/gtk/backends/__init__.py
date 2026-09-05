@@ -215,7 +215,7 @@ class BackendsDialog():
             )
             dialog.props.secondary_text = _(
                 "Every synchronization service failed to load, "
-                "probably because of a missing python library:"
+                "probably because of a missing Python library:"
             ) + f"\n\n{reasons}\n\n" + _(
                 "Install the missing library and restart GTG."
             )
