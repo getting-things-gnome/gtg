@@ -435,13 +435,9 @@ class MainWindow(Gtk.ApplicationWindow):
         ohstats_url = f'<a href="{info.OPENHUB_URL}">OpenHub</a>'
         ghstats_url = '<a href="https://github.com/getting-things-gnome/gtg/graphs/contributors">GitHub</a>'
 
-        UNITED_AUTHORS_OF_GTGETTON = dedent(
-            _(
-                """\
-        Many others contributed to GTG over the years.
-        You can find them on {OH_stats} and {GH_stats}."""
-            ).format(OH_stats=ohstats_url, GH_stats=ghstats_url)
-        )
+        UNITED_AUTHORS_OF_GTGETTON = _("Many others contributed to GTG over the years.\n" \
+                                       "You can see them on {OH_stats} and {GH_stats}.").format(
+                                       OH_stats=ohstats_url, GH_stats=ghstats_url)
 
         self.about.set_transient_for(self)
         self.about.set_modal(True)
@@ -466,10 +462,12 @@ class MainWindow(Gtk.ApplicationWindow):
         )
 
         authors = info.AUTHORS_RELEASE_CONTRIBUTORS
-        authors.append(UNITED_AUTHORS_OF_GTGETTON)
+        authors.append("\n" + UNITED_AUTHORS_OF_GTGETTON)
 
         self.about.add_credit_section(
-            _("Contributed by"), info.AUTHORS_RELEASE_CONTRIBUTORS
+            # This string, unlike the others, requires the colon (:) in English,
+            # as there is no " by" word that can serve as conjunction.
+            _("Contributors to this release:"), info.AUTHORS_RELEASE_CONTRIBUTORS
         )
 
         # Translators for a particular language should put their names here.
