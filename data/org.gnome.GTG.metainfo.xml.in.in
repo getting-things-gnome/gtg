@@ -19,6 +19,39 @@
         </ul>
     </description>
 
+    <!-- These allow us to be found in GNOME Software, as it ignores the description for searching: -->
+    <keywords>
+      <keyword>organizer</keyword>
+      <keyword>task</keyword>
+      <keyword>tasks list</keyword>
+      <keyword>actionable tasks</keyword>
+      <keyword>tags</keyword>
+      <keyword>projects</keyword>
+      <keyword>activities</keyword>
+      <keyword>productivity</keyword>
+      <keyword>plan</keyword>
+      <keyword>planning</keyword>
+      <keyword>planner</keyword>
+      <keyword>time management</keyword>
+      <keyword>scheduling</keyword>
+      <keyword>todo</keyword>
+      <keyword>to-do</keyword>
+      <keyword>memos</keyword>
+      <keyword>reminders</keyword>
+      <keyword>blockers</keyword>
+      <keyword>dependencies</keyword>
+      <keyword>synchronization</keyword>
+      <keyword>synchronizing</keyword>
+      <keyword>plugins</keyword>
+      <keyword translatable="no">Hamster</keyword>
+      <keyword translatable="no">GTD</keyword>
+      <keyword translatable="no">getting things done</keyword>
+      <keyword translatable="no">gtg</keyword>
+      <keyword translatable="no">CalDAV</keyword>
+      <keyword translatable="no">RTM</keyword>
+      <keyword translatable="no">Remember the Milk</keyword>
+    </keywords>
+
     <url type="homepage">https://github.com/getting-things-gnome/</url>
     <url type="bugtracker">https://github.com/getting-things-gnome/gtg/issues</url>
     <url type="translate">https://github.com/getting-things-gnome/gtg/tree/master/po</url>
