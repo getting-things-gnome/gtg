@@ -451,8 +451,8 @@ class TaskEditor(Gtk.Window):
             __nb_siblings = len(self.task.parent.children) - 1
             if __nb_siblings > 0:
                 __tip_contents += "\n\n"
-                __tip_contents += ngettext('That parent task also has <b>%(nb)d</b> other child.',
-                                           'That parent task also has <b>%(nb)d</b> other children.',
+                __tip_contents += ngettext('That parent task also has <b>%(nb)d</b> other subtask.',
+                                           'That parent task also has <b>%(nb)d</b> other subtasks.',
                                            __nb_siblings) % {'nb': __nb_siblings}
 
             self.parent_button.set_tooltip_markup(__tip_contents)
