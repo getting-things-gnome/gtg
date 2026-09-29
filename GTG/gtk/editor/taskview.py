@@ -153,6 +153,9 @@ class TaskView(GtkSource.View):
         self.set_wrap_mode(Gtk.WrapMode.WORD)
         self.set_editable(True)
         self.set_cursor_visible(True)
+        # Let Tab move focus instead of inserting a tab character, so the
+        # editor doesn't trap keyboard/screen-reader users (#1364).
+        self.set_accepts_tab(False)
 
         # Tags and buffer setup
         self.buffer = self.get_buffer()
