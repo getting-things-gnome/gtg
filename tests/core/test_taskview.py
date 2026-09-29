@@ -45,6 +45,12 @@ class TestTaskView(TestCase):
 
         self.assertEqual([], matches)
 
+    def test_tab_does_not_get_trapped(self):
+        """Tab should move focus, not insert a tab char (a11y, #1364)."""
+        task = Task(id=uuid4(), title='x')
+        view = TaskView(Datastore(), task, None, False)
+        self.assertFalse(view.get_accepts_tab())
+
     def test_get_title(self):
         task_title = 'Very important task'
         task = Task(id = uuid4(), title=task_title)
