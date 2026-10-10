@@ -342,13 +342,18 @@ class TagStore(BaseStore[Tag]):
         Remove the tag indicated by tag_id from the model of its parent's children.
         This is required to trigger a GUI update.
         """
+
         item = self.lookup[tag_id]
+
         if item.parent is None:
             return
+
         if item.parent.id not in self.tid_to_children_model:
             return
+
         model = self.tid_to_children_model[item.parent.id]
         pos = model.find(item)
+
         if pos[0]:
             model.remove(pos[1])
 
@@ -385,10 +390,13 @@ class TagStore(BaseStore[Tag]):
 
 
     def remove(self, item_id: UUID) -> None:
-        """Remove an existing tag."""
+        """Remove an existing tag, de-parenting children."""
 
         item = self.lookup[item_id]
-        parent = item.parent
+
+        for child in list(item.children):
+            if child.parent and child.parent.id == item_id:
+                self.unparent(child.id)
 
         # Remove from UI
         if item.parent is not None:
@@ -398,6 +406,7 @@ class TagStore(BaseStore[Tag]):
             self.model.remove(pos[1])
 
         super().remove(item_id)
+        self.lookup_names.pop(item.name, None)
 
 
     def parent(self, item_id: UUID, parent_id: UUID) -> None:
@@ -431,4 +440,4 @@ class TagStore(BaseStore[Tag]):
         super().unparent(item_id)
 
         # Add back to UI
-        self.model.append(item)
+        self._insert_sorted(self.model, item)
