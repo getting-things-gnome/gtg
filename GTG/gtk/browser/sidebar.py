@@ -236,7 +236,18 @@ class Sidebar(Gtk.ScrolledWindow):
     def on_tag_RMB_click(self, gesture, sequence) -> None:
         """Callback when right-clicking on a tag."""
 
-        tags = self.selected_tags() or [gesture.get_widget().tag]
+        clicked = gesture.get_widget().tag
+        selected = self.selected_tags()
+
+        if clicked in selected:
+            # Acting on a multi-selection: keep it whole.
+            tags = selected
+        else:
+            # Like 0.6, select the tag under the pointer first, so the
+            # menu visibly acts on it rather than on the previous
+            # selection (#1377).
+            self.select_tag(clicked.name)
+            tags = [clicked]
 
         menu = TagContextMenu(self.ds, self.app, tags)
         menu.set_parent(gesture.get_widget())
