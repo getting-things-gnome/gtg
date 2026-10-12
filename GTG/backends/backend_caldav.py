@@ -22,6 +22,8 @@ Backend for storing/loading tasks in CalDAV Tasks
 """
 import logging
 import re
+import threading
+import time
 from collections import defaultdict
 from uuid import NAMESPACE_URL, UUID, uuid5
 from datetime import date, datetime
@@ -31,11 +33,12 @@ from hashlib import md5
 import caldav
 import requests
 from dateutil.tz import UTC
+from gi.repository import GLib
 from GTG.backends.backend_signals import BackendSignals
 from GTG.backends.generic_backend import GenericBackend
 from GTG.backends.periodic_import_backend import PeriodicImportBackend
 from GTG.core.dates import LOCAL_TIMEZONE, Accuracy, Date
-from GTG.core.interruptible import interruptible
+from GTG.core.interruptible import Interrupted, interruptible
 from GTG.core.networkmanager import is_connection_up
 from GTG.core.tasks import Task, Status as TaskStatus
 from vobject import iCalendar
@@ -44,6 +47,21 @@ logger = logging.getLogger(__name__)
 # found elsewhere, should be factorized
 TAG_REGEX = re.compile(r'\B@\w+[-_()\w]*')
 MAX_CALENDAR_DEPTH = 500
+
+# How long a backend worker thread may wait for the GTK main loop to run
+# one of its apply callbacks (see Backend._run_in_main) before giving up
+# on the current cycle. The main loop normally gets to idle callbacks
+# within milliseconds; hitting this timeout means it is stalled or gone
+# (typically during shutdown).
+MAIN_LOOP_APPLY_TIMEOUT = 30  # seconds
+
+
+class MainLoopStalled(Exception):
+    """The GTK main loop did not run an apply callback in time.
+
+    Raised by Backend._run_in_main when MAIN_LOOP_APPLY_TIMEOUT expires.
+    Callers abandon the current operation; for the periodic import the
+    next tick retries from scratch."""
 DAV_TAG_PREFIX = 'DAV_'
 REMOTE_UID_ATTR = 'remote_uid'
 
@@ -180,8 +198,17 @@ class Backend(PeriodicImportBackend):
                          "for %r", self.get_id())
             return
         try:
-            with self.datastore.mutex:
-                self._do_periodic_import()
+            # No datastore.mutex here: the worker must never hold it
+            # while _run_in_main waits on the main loop (lock ordering,
+            # see the threading model note on _run_in_main). The apply
+            # callbacks take it themselves, on the main thread.
+            self._do_periodic_import()
+        except MainLoopStalled:
+            logger.error(
+                "Main loop did not process the CalDAV import for %r in "
+                "time; abandoning this cycle, the next periodic tick "
+                "will retry", self.get_id())
+            return
         except Exception as error:
             errno = _dav_failure_errno(error)
             if errno is None:
@@ -198,9 +225,15 @@ class Backend(PeriodicImportBackend):
         if self._parameters["is-first-run"] or not self._cache.initialized:
             logger.warning("not loaded yet, ignoring set_task")
             return
-        with self.datastore.mutex:
-            if task.id not in self.datastore.tasks.lookup:
-                self.datastore.tasks.add(task)
+        # Adding a task to the datastore mutates GTK-facing list models,
+        # which is only legal on the main thread (#1359).
+        try:
+            self._run_in_main(self._add_task_if_missing, task)
+        except MainLoopStalled:
+            # Only plausible while the main loop is going away; skip the
+            # local publication, the remote push below is still safe.
+            logger.error("Main loop unavailable, task %r not published "
+                         "to the datastore", task.id)
         self._set_task(task)
 
     @interruptible
@@ -221,6 +254,82 @@ class Backend(PeriodicImportBackend):
     #
     # real main methods
     #
+
+    def _run_in_main(self, func, *args):
+        """Run func(*args) on the GTK main thread and wait for the result.
+
+        Threading model of this backend (#1359): worker threads (the
+        periodic import timer and the setting thread) do all the network
+        I/O, but every mutation of the datastore or of Task GObject
+        properties must happen on the main thread. Mutating them from a
+        worker fires GObject notifications there, the GTK sorters and
+        filters react on the wrong thread, and gtk_tim_sort asserts.
+        This method is the single bridge: workers hand the mutating
+        callback over to the main loop and block until it has run, then
+        get its return value; an exception raised by func is re-raised
+        here, in the worker, so the caller's error handling applies.
+
+        Lock ordering rule: never call this while holding
+        datastore.mutex. The callback may take the mutex itself (it runs
+        on the main thread, where nothing blocks on it for long); a
+        worker holding it while waiting here could deadlock with any
+        main-thread code trying to acquire it.
+
+        If this thread *is* the main thread (unit tests, or a future
+        main-thread caller), func runs directly: there is no other
+        thread to marshal to, and waiting on the loop from within the
+        loop would deadlock.
+
+        The wait is chunked so that:
+        - quit requests interrupt it promptly (cancellation_point raises
+          Interrupted, unwound by @interruptible upstream);
+        - a stalled or stopped main loop raises MainLoopStalled after
+          MAIN_LOOP_APPLY_TIMEOUT instead of hanging the worker forever.
+        In both bail-out cases a flag turns the still-pending callback
+        into a no-op if the main loop ever gets around to it: better to
+        drop an apply than to mutate the datastore mid-shutdown. The
+        flag cannot stop a callback that has already started, only one
+        that has not run yet.
+        """
+        if threading.current_thread() is threading.main_thread():
+            return func(*args)
+        state = {'value': None, 'error': None, 'abandoned': False}
+        done = threading.Event()
+
+        def _apply():
+            if state['abandoned']:
+                return False  # the worker gave up; touch nothing
+            try:
+                state['value'] = func(*args)
+            except Exception as error:  # re-raised in the worker below
+                state['error'] = error
+            finally:
+                done.set()
+            return False  # one-shot idle callback
+
+        GLib.idle_add(_apply)
+        deadline = time.monotonic() + MAIN_LOOP_APPLY_TIMEOUT
+        while not done.wait(0.1):
+            try:
+                self.cancellation_point()
+            except Interrupted:
+                state['abandoned'] = True
+                raise
+            if time.monotonic() > deadline:
+                state['abandoned'] = True
+                raise MainLoopStalled(
+                    "main loop did not run the apply callback within "
+                    "%ss" % MAIN_LOOP_APPLY_TIMEOUT)
+        if state['error'] is not None:
+            raise state['error']
+        return state['value']
+
+    def _add_task_if_missing(self, task: Task) -> None:
+        """Main-thread half of set_task: publish a local task to the
+        datastore if it is not there yet."""
+        with self.datastore.mutex:
+            if task.id not in self.datastore.tasks.lookup:
+                self.datastore.tasks.add(task)
 
     def _do_periodic_import(self) -> None:
         logger.info("Running periodic import")
@@ -323,38 +432,37 @@ class Backend(PeriodicImportBackend):
         for calendar in principal.calendars():
             self._cache.set_calendar(calendar)
 
-    def _clean_task_missing_from_backend(self, uid: str,
-                                         calendar_tasks: dict, counts: dict,
-                                         import_started_on: datetime):
-        """For a given UID will decide if we remove it from GTG or ignore the
-        fact that it's missing"""
-        task, do_delete = None, False
+    def _plan_missing_task_action(self, uid: str, calendar_tasks: dict,
+                                  import_started_on: datetime):
+        """For a task the calendar fetch did not return, decide what the
+        apply phase should do about it.
+
+        Runs on the worker thread: it may hit the network (refetching
+        one todo from the server) but must not mutate anything. Returns
+        None (leave the task alone), ('delete', uid) or
+        ('update', task, todo) -- applied by _apply_calendar_import.
+        """
         task = calendar_tasks[uid]
         if import_started_on < task.date_added:
-            return
-        # if first run, we're getting all task, including completed
-        # if we miss one, we delete it
+            # created locally while the fetch was in flight
+            return None
+        # On first run every todo was fetched, completed included: a
+        # task we did not see is gone from the server.
         if not self._cache.initialized:
-            do_delete = True
-        # if cache is initialized, it's normal we missed completed
-        # task, but we should have seen active ones
-        elif task.status == TaskStatus.ACTIVE:
-            __, calendar = self._get_todo_and_calendar(task)
-            if not calendar:
-                logger.warning("Couldn't find calendar for %r", task)
-                return
-            try:  # fetching missing todo from server
-                todo = calendar.todo_by_uid(remote_uid(task, self.namespace))
-            except caldav.lib.error.NotFoundError:
-                do_delete = True
-            else:
-                result = self._update_task(task, todo, force=True)
-                counts[result] += 1
-                return
-        if do_delete:  # the task was missing for a good reason
-            counts['deleted'] += 1
-            self._cache.del_todo(uid)
-            self.datastore.tasks.remove(UUID(uid))
+            return ('delete', uid)
+        # Later runs skip completed todos, so missing a closed task is
+        # normal; an active one however should have been fetched.
+        if task.status != TaskStatus.ACTIVE:
+            return None
+        __, calendar = self._get_todo_and_calendar(task)
+        if not calendar:
+            logger.warning("Couldn't find calendar for %r", task)
+            return None
+        try:  # fetching the missing todo from the server
+            todo = calendar.todo_by_uid(remote_uid(task, self.namespace))
+        except caldav.lib.error.NotFoundError:
+            return ('delete', uid)
+        return ('update', task, todo)
 
     @staticmethod
     def _denorm_children_on_vtodos(todos: list):
@@ -402,11 +510,23 @@ class Backend(PeriodicImportBackend):
 
     def _import_calendar_todos(self, calendar: iCalendar,
                                import_started_on: datetime, counts: dict):
-        # GTG does its own hierarchical sort below (__sort_todos) and
-        # never uses the order returned by the library. An empty
-        # sort_keys also keeps the library from eagerly parsing every
-        # object just to sort them: with the default keys, one
-        # malformed VTODO on the server aborts the whole import (#1312).
+        """Sync one calendar, in two phases (#1359).
+
+        Fetch phase, on the calling worker thread: all the network I/O
+        (downloading the calendar's todos, refetching individually the
+        ones that look missing) and the read-only planning derived from
+        it. Apply phase, marshalled to the main thread as one block per
+        calendar: every datastore and Task mutation. One block per
+        calendar keeps the marshalling overhead low while bounding how
+        long each main loop iteration spends applying.
+        """
+        # -- fetch phase (worker thread: network I/O, no mutations) --
+        # GTG does its own hierarchical sort in the apply phase
+        # (__sort_todos) and never uses the order returned by the
+        # library. An empty sort_keys also keeps the library from
+        # eagerly parsing every object just to sort them: with the
+        # default keys, one malformed VTODO on the server aborts the
+        # whole import (#1312).
         todos = calendar.todos(include_completed=not self._cache.initialized,
                                sort_keys=())
         todos = self._quarantine_unparsable_todos(todos, counts)
@@ -414,44 +534,80 @@ class Backend(PeriodicImportBackend):
                      for uid in (UID_FIELD.get_dav(todo) for todo in todos)
                      if uid}
 
-        # browsing all task linked to current calendar,
-        # removing missed ones we don't see in fetched todos
+        # Tasks linked to this calendar that the fetch did not return:
+        # decide -- and refetch from the server when needed -- here on
+        # the worker; mutate only in the apply phase below.
         calendar_tasks = dict(self._get_calendar_tasks(calendar))
+        missing_plan = []
         for uid in set(calendar_tasks).difference(todo_uids):
-            self._clean_task_missing_from_backend(uid, calendar_tasks, counts,
-                                                  import_started_on)
+            action = self._plan_missing_task_action(uid, calendar_tasks,
+                                                    import_started_on)
+            if action is not None:
+                missing_plan.append(action)
 
         self._denorm_children_on_vtodos(todos)
 
-        for todo in self.__sort_todos(todos):
-            uid = UID_FIELD.get_dav(todo)
-            if not uid:  # RFC 5545 requires a UID, but stay safe
-                logger.warning('Skipping todo without UID: %r', todo)
-                continue
-            tid = uid_to_task_id(uid)
-            self._cache.set_todo(todo, str(tid))
-            # Updating and creating task according to todos
-            task = self.datastore.tasks.lookup.get(tid)
-            if not task:  # not found, creating it
-                task = Task(id=tid, title='')
-                Translator.fill_task(todo, task, self.namespace, self.datastore)
-                self.datastore.tasks.add(task)
-                counts['created'] += 1
-            else:
-                result = self._update_task(task, todo)
-                counts[result] += 1
-            # wire hierarchy with real Task objects; __sort_todos
-            # guarantees parents are imported first. Conservative:
-            # links are only created, never changed nor removed here.
-            parent_uids = PARENT_FIELD.get_dav(todo)
-            if parent_uids and task.parent is None:
-                parent_task = self.datastore.tasks.lookup.get(
-                    uid_to_task_id(parent_uids[0]))
-                if parent_task:
-                    self.datastore.tasks.parent(tid, parent_task.id)
-            if logger.isEnabledFor(logging.DEBUG):
-                if Translator.should_sync(task, self.namespace, todo):
-                    logger.warning("Shouldn't be diff for %r", uid)
+        # -- apply phase (main thread: mutations, no network I/O) --
+        self._run_in_main(self._apply_calendar_import,
+                          todos, missing_plan, counts)
+
+    def _apply_calendar_import(self, todos: list, missing_plan: list,
+                               counts: dict) -> None:
+        """Apply one calendar's sync outcome to the datastore.
+
+        Runs on the main thread (via _run_in_main): this is where tasks
+        are created, updated, deleted and re-parented, where Task
+        GObject properties change and where the GTK sorters react --
+        which is exactly why none of it may happen on a worker thread
+        (#1359). No network I/O belongs here: everything remote was
+        fetched by _import_calendar_todos beforehand. The mutex keeps
+        serializing us with the backend worker threads' reads.
+        """
+        with self.datastore.mutex:
+            # Deletions and forced refreshes decided by
+            # _plan_missing_task_action, applied before the import loop
+            # as the historical order did.
+            for action in missing_plan:
+                if action[0] == 'delete':
+                    __, uid = action
+                    counts['deleted'] += 1
+                    self._cache.del_todo(uid)
+                    self.datastore.tasks.remove(UUID(uid))
+                else:  # ('update', task, todo)
+                    __, task, todo = action
+                    result = self._update_task(task, todo, force=True)
+                    counts[result] += 1
+
+            for todo in self.__sort_todos(todos):
+                uid = UID_FIELD.get_dav(todo)
+                if not uid:  # RFC 5545 requires a UID, but stay safe
+                    logger.warning('Skipping todo without UID: %r', todo)
+                    continue
+                tid = uid_to_task_id(uid)
+                self._cache.set_todo(todo, str(tid))
+                # Updating and creating task according to todos
+                task = self.datastore.tasks.lookup.get(tid)
+                if not task:  # not found, creating it
+                    task = Task(id=tid, title='')
+                    Translator.fill_task(todo, task, self.namespace,
+                                         self.datastore)
+                    self.datastore.tasks.add(task)
+                    counts['created'] += 1
+                else:
+                    result = self._update_task(task, todo)
+                    counts[result] += 1
+                # wire hierarchy with real Task objects; __sort_todos
+                # guarantees parents are imported first. Conservative:
+                # links are only created, never changed nor removed here.
+                parent_uids = PARENT_FIELD.get_dav(todo)
+                if parent_uids and task.parent is None:
+                    parent_task = self.datastore.tasks.lookup.get(
+                        uid_to_task_id(parent_uids[0]))
+                    if parent_task:
+                        self.datastore.tasks.parent(tid, parent_task.id)
+                if logger.isEnabledFor(logging.DEBUG):
+                    if Translator.should_sync(task, self.namespace, todo):
+                        logger.warning("Shouldn't be diff for %r", uid)
 
     def _update_task(self, task: Task, todo: iCalendar, force: bool = False):
         if not force:
@@ -495,8 +651,11 @@ class Backend(PeriodicImportBackend):
     def _get_calendar_tasks(self, calendar: iCalendar):
         """Getting all tasks that has the calendar tag"""
         # lookup holds every task; data only holds toplevel ones, and
-        # iterating it would hide subtasks from the deletion detection
-        for task in self.datastore.tasks.lookup.values():
+        # iterating it would hide subtasks from the deletion detection.
+        # This runs on the worker thread while the main thread may add or
+        # remove tasks (#1359): walk a snapshot, not the live dict, or
+        # the walk aborts with "dictionary changed size during iteration".
+        for task in list(self.datastore.tasks.lookup.values()):
             if CATEGORIES.has_calendar_tag(task, calendar):
                 yield str(task.id), task
 
