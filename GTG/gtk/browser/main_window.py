@@ -33,7 +33,7 @@ from GTG.core import info
 from GTG.core.system_info import SystemInfo
 from GTG.backends.backend_signals import BackendSignals
 from GTG.core.dirs import ICONS_DIR
-from gettext import gettext as _
+from gettext import gettext as _, ngettext
 from GTG.gtk.browser import GnomeConfig
 from GTG.gtk.browser import quick_add
 from GTG.gtk.browser.backend_infobar import BackendInfoBar
@@ -62,6 +62,19 @@ SORT_CONFIG_KEYS = {
     'workview': ('sort_mode_active', 'sort_order_active'),
     'closed':   ('sort_mode_closed', 'sort_order_closed'),
 }
+
+
+def start_tomorrow_tooltip(count: int) -> str:
+    """Tooltip of the "Start Tomorrow" button for `count` selected tasks.
+
+    Real plural forms rather than "task(s)", which translators cannot
+    adapt and screen readers read aloud with the parentheses (#1366).
+    """
+    if not count:
+        return _("Start the selected tasks tomorrow")
+    return ngettext("Start {count} selected task tomorrow",
+                    "Start {count} selected tasks tomorrow",
+                    count).format(count=count)
 
 
 @Gtk.Template(filename=GnomeConfig.BROWSER_UI_FILE)
@@ -755,7 +768,10 @@ class MainWindow(Gtk.ApplicationWindow):
 
         pane = self.get_pane()
 
-        if pane.get_selected_number():
+        selected = pane.get_selected_number()
+        self.defer_btn.set_tooltip_text(start_tomorrow_tooltip(selected))
+
+        if selected:
             self.defer_btn.set_sensitive(True)
             self.defer_menu_btn.set_sensitive(True)
         else:
