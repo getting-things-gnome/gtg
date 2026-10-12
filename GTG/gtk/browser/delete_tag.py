@@ -20,12 +20,10 @@
 from gi.repository import Gtk
 from GTG.core.tasks import Filter
 
-from gettext import gettext as _, ngettext
+from gettext import ngettext
 
 
 class DeleteTagsDialog:
-
-    MAXIMUM_TAGS_TO_SHOW = 5
 
     def __init__(self, browser):
         self.browser = browser
@@ -64,37 +62,23 @@ class DeleteTagsDialog:
             return []
 
         # Prepare labels
-        singular = len(self.tags_todelete)
+        count = len(self.tags_todelete)
 
-        cancel_text = ngettext("Keep selected tag", "Keep selected tags", singular)
+        cancel_text = ngettext("Keep selected tag", "Keep selected tags", count)
 
-        delete_text = ngettext("Permanently remove tag", "Permanently remove tags", singular)
+        delete_text = ngettext("Permanently remove %d tag" % count,
+                               "Permanently remove %d tags" % count,
+                               count)
 
-        label_text = ngettext("Deleting a tag cannot be undone, "
-                              "and will delete the tag shown below. Tasks containing this tag will not be deleted: ",
-                              "Deleting a tag cannot be undone, "
-                              "and will delete the tag shown below. Tasks containing this tag will not be deleted:",
-                              singular)
+        header_text = ngettext("Confirm tag deletion",
+                               "Confirm tags deletion",
+                               count)
 
-        label_text = label_text[0:label_text.find(":") + 1]
-
-        # we don't want to end with just one task that doesn't fit the
-        # screen and a line saying "And one more task", so we go a
-        # little over our limit
-        tags_count = len(self.tags_todelete)
-        missing_tags_count = tags_count - self.MAXIMUM_TAGS_TO_SHOW
-        if missing_tags_count >= 2:
-            tagslist = self.tags_todelete[:self.MAXIMUM_TAGS_TO_SHOW]
-            titles_suffix = _("\nAnd %d more tags") % missing_tags_count
-        else:
-            tagslist = self.tags_todelete
-            titles_suffix = ""
-
-        if len(tagslist) == 1:
-            # Don't show a bulleted list if there's only one item
-            titles = "".join(tag.name for tag in tagslist)
-        else:
-            titles = "".join("\n• " + tag.name for tag in tagslist)
+        body_text = ngettext("Deleting a tag cannot be undone.\n"
+                             "Tasks containing this tag will not be deleted. ",
+                             "Deleting a tag cannot be undone.\n"
+                             "Tasks containing these tags will not be deleted.",
+                             count)
 
         # Build and run dialog
         dialog = Gtk.MessageDialog(transient_for=self.browser, modal=True)
@@ -105,9 +89,9 @@ class DeleteTagsDialog:
 
         dialog.props.use_markup = True
         # Decrease size of title to workaround not being able to put two texts in GTK4
-        dialog.props.text = "<span size=\"small\" weight=\"bold\">" + label_text + "</span>"
+        dialog.props.text = "<span size=\"small\" weight=\"bold\">" + header_text + "</span>"
 
-        dialog.props.secondary_text = titles + titles_suffix
+        dialog.props.secondary_text = body_text
 
-        dialog.connect("response", self.on_response, tagslist, callback)
+        dialog.connect("response", self.on_response, self.tags_todelete, callback)
         dialog.present()
