@@ -1484,7 +1484,6 @@ class MainWindow(Gtk.ApplicationWindow):
         self._remove_backend_infobars(backend_id)
         # add a new one
         infobar = BackendInfoBar(self, self.app, backend_id)
-        infobar.set_vexpand(True)
         self.vbox_toolbars.append(infobar)
         return infobar
 
