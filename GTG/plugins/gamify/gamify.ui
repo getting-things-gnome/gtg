@@ -13,6 +13,9 @@
   <object class="GtkLevelBar" id="goal-levelbar">
     <property name="max-value">3</property>
     <property name="mode">discrete</property>
+    <property name="margin-start">6</property>
+    <property name="margin-end">6</property>
+    <property name="margin-bottom">6</property>
   </object>
   <object class="GtkPopover" id="headerbar-popover">
     <property name="width-request">260</property>

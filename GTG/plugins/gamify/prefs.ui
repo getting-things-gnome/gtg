@@ -118,9 +118,9 @@
         <property name="has-entry">True</property>
         <property name="active-id">0</property>
         <items>
-          <item id="0" translatable="yes">Full/Both</item>
-          <item id="1" translatable="yes">Button</item>
-          <item id="2" translatable="yes">Discrete</item>
+          <item id="0" translatable="yes">Button + bar</item>
+          <item id="1" translatable="yes">Button only</item>
+          <item id="2" translatable="yes">Bar only</item>
         </items>
       </object>
     </child>
@@ -129,7 +129,7 @@
     <child>
       <object class="GtkLabel" id="target-label">
         <property name="margin-start">6</property>
-        <property name="label" translatable="yes">Target Tasks per day</property>
+        <property name="label" translatable="yes">Target tasks per day</property>
       </object>
     </child>
     <child>
@@ -176,7 +176,7 @@
                 <!-- AdwWindowTitle would drasticly simplify this -->
                 <child>
                   <object class="GtkLabel">
-                    <property name="label" translatable="yes">Mappings</property>
+                    <property name="label" translatable="yes">Create a tag mapping</property>
                     <property name="single-line-mode">True</property>
                     <property name="ellipsize">end</property>
                     <property name="width-chars">5</property>
@@ -187,7 +187,7 @@
                 </child>
                 <child>
                   <object class="GtkLabel">
-                    <property name="label" translatable="yes">Add</property>
+                    <property name="label" translatable="yes">Associate a number of points with a custom tag name</property>
                     <property name="single-line-mode">True</property>
                     <property name="ellipsize">end</property>
                     <property name="width-chars">5</property>
@@ -200,7 +200,7 @@
             </property>
             <child>
               <object class="GtkButton" id="dismiss-new-mapping">
-                <property name="label" translatable="yes">Close</property>
+                <property name="label" translatable="yes">Cancel</property>
                 <signal name="clicked" handler="dismiss-new-mapping" swapped="no"/>
               </object>
             </child>
