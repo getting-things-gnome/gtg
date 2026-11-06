@@ -1,7 +1,6 @@
 import os
 import random
 from datetime import date
-from collections import defaultdict
 import logging
 
 from gi.repository import Gtk
@@ -9,7 +8,7 @@ from gi.repository import Gtk
 from gettext import gettext as _
 from gettext import ngettext
 
-from GTG.core.tasks import Task
+from GTG.core.tasks import Status
 
 log = logging.getLogger(__name__)
 PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -255,6 +254,11 @@ class Gamify:
         self.preferences = None
         self.builder = Gtk.Builder.new_from_file(f'{PLUGIN_PATH}/gamify.ui')
 
+        # Last known status of every task, to tell a task that has just
+        # been marked as done apart from other changes to it.
+        self._statuses = {}
+        self._signal_ids = []
+
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
         self.browser = plugin_api.get_browser()
@@ -277,14 +281,61 @@ class Gamify:
         # Settings up the menu
         self.add_ui()
 
+        # Listen for tasks being marked as done or not done
+        self.connect_task_signals()
+
         self.update_date()
         self.update_streak()
         self.analytics_save()
         self.update_widget()
 
     def deactivate(self, plugin_api):
+        # Nothing was set up for task editors
+        if plugin_api.is_editor():
+            return
+
+        self.disconnect_task_signals()
         self.pref_dialog.destroy()
         self.remove_ui()
+
+    # TASK SIGNALS ############################################################
+
+    def connect_task_signals(self):
+        """Follow status changes of tasks in the task store.
+
+        The store has no signal for status changes as such. Marking a
+        task as done or not done changes its is-active property, which
+        the store relays as task-filterably-changed; that signal also
+        fires for other changes, so the status is compared with the
+        last one seen.
+        """
+        store = self.plugin_api.ds.tasks
+        self._statuses = {tid: task.status
+                          for tid, task in store.lookup.items()}
+        self._signal_ids = [
+            store.connect('task-filterably-changed', self.on_task_changed),
+            store.connect('added', self.on_task_added),
+            store.connect('removed', self.on_task_removed),
+        ]
+
+    def disconnect_task_signals(self):
+        store = self.plugin_api.ds.tasks
+        for signal_id in self._signal_ids:
+            store.disconnect(signal_id)
+        self._signal_ids = []
+        self._statuses = {}
+
+    def on_task_added(self, store, task):
+        self._statuses[task.id] = task.status
+
+    def on_task_removed(self, store, task):
+        self._statuses.pop(task.id, None)
+
+    def on_task_changed(self, store, task):
+        old_status = self._statuses.get(task.id)
+        self._statuses[task.id] = task.status
+        if old_status is not None and old_status != task.status:
+            self.on_status_changed(task.id, old_status, task.status)
 
     def is_configurable(self):
         return True
@@ -330,6 +381,9 @@ class Gamify:
     def get_current_level(self):
         score_levels = [(score, level) for score, level in self.LEVELS.items()
                 if score >= self.get_score()]
+        if not score_levels:
+            # Beyond the last threshold, stay at the highest level
+            return self.LEVELS[max(self.LEVELS)]
         return min(score_levels)[1]
 
     def get_score(self):
@@ -341,10 +395,10 @@ class Gamify:
     def get_streak(self):
         return self.data['streak']
 
-    def on_status_changed(self, sender, task_id, old_status, status):
-        if status == Task.STA_DONE:
+    def on_status_changed(self, task_id, old_status, status):
+        if status == Status.DONE:
             self.on_marked_as_done(task_id)
-        elif status == Task.STA_ACTIVE and old_status == Task.STA_DONE:
+        elif status == Status.ACTIVE and old_status == Status.DONE:
             self.on_marked_as_not_done(task_id)
 
     def on_marked_as_done(self, task_id):
@@ -383,18 +437,20 @@ class Gamify:
         self.analytics_save()
         self.update_widget()
 
-    def get_points(self, tag):
-        return defaultdict(int, self.preferences['tag_mapping'])[tag]
-
     def get_points_for_task(self, task_id):
         """Returns the number of point for doing a perticular task
         By default the tag mappings are:
         1 point for @easy
         2 points for @medium
         3 points for @hard
+
+        A task with several mapped tags gets the highest value; a task
+        without any mapped tag gets 1 point.
         """
         task = self.plugin_api.ds.tasks.lookup[task_id]
-        return max(list(map(self.get_points, task.get_tags_name())), default=1)
+        mapping = self.preferences['tag_mapping']
+        points = [mapping[name] for name in task.tag_names if name in mapping]
+        return max(points, default=1)
 
     # FRONTEND/UI #############################################################
 
@@ -419,7 +475,9 @@ class Gamify:
             self.headerbar.pack_start(self.headerbar_button)
 
     def remove_headerbar_button(self):
-        self.headerbar.remove(self.headerbar_button)
+        # Only remove what is there: the button is absent in LEVELBAR mode
+        if self.headerbar_button.get_parent() is not None:
+            self.headerbar.remove(self.headerbar_button)
 
     def add_levelbar(self):
         self.quickadd_pane = self.plugin_api.get_quickadd_pane()
@@ -428,8 +486,10 @@ class Gamify:
         self.quickadd_pane.append(self.levelbar)
 
     def remove_levelbar(self):
-        self.quickadd_pane.set_orientation(Gtk.Orientation.HORIZONTAL)
-        self.quickadd_pane.remove(self.levelbar)
+        # Only remove what is there: the level bar is absent in BUTTON mode
+        if self.levelbar.get_parent() is not None:
+            self.quickadd_pane.set_orientation(Gtk.Orientation.HORIZONTAL)
+            self.quickadd_pane.remove(self.levelbar)
 
     def add_ui(self):
         """Add the appropriate UI elements"""
